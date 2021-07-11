@@ -1,44 +1,42 @@
 <script>
-  import { Grid, Row, MultiSelect, Button } from "carbon-components-svelte";
-  import { nStrands, eStrands } from './globalVars.js'
+  import { Grid, Row, Checkbox } from "carbon-components-svelte";
+  import { nStrands, eStrands, curStrandID } from './globalVars.js'
 
-  let items = [];
-  for (let i = 0; i < $nStrands; ++i)
-    items.push({id: `${i}`, text: `${i+1}`});
+  let overwrite = false;
 
-  let selectedIds = ['0'];
-  const checkcount = () =>
+  const checkenables = () =>
   {
-    // must have at least one strand selected
-    //if (selectedIds.length < 1) selectedIds.push('0');
-
-    // convert array of selected ids into array of enables
-    let list = [];
     for (let i = 0; i < $nStrands; ++i)
-      list[i] = false;
-    for (const s of selectedIds)
-      list[parseInt(s)] = true;
-
-    eStrands.set(list);
+    {
+      if (!overwrite && $eStrands[i] && ($curStrandID != i))
+      {
+        $eStrands[$curStrandID] = false;
+        curStrandID.set(i);
+      }
+    }
   }
 
-  // BUG in MultiSelect:
-  // if 'label' is empty then if all checkboxes are cleared the item text disapears!
+  const checkowrite = () =>
+  {
+    if (!(overwrite = !overwrite))
+    {
+      let list = [];
+      for (let i = 0; i < $nStrands; ++i)
+        list.push(false);
+
+      list[$curStrandID] = true;
+      eStrands.set(list);
+    }
+  }
+
   </script>
 
 <Grid>
   <Row>
-    <MultiSelect
-      on:select={checkcount}
-      type="inline"
-      label="&nbsp;&nbsp;Strands"
-      bind:selectedIds
-      items={items}
-    />
-
-    <div style="margin-left: 30px;"></div>
-    <!--
-      <button kind="secondary">hello</button>
-    -->
+    <p style="margin-right:17px;">Strands:</p>
+    {#each $eStrands as _,n}
+      <Checkbox on:check={checkenables} labelText={n+1} bind:checked={$eStrands[n]}/>
+    {/each}
+    <Checkbox on:check={checkowrite} labelText="Overwrite" />
   </Row>
 </Grid>

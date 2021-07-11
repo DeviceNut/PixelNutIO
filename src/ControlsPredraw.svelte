@@ -1,7 +1,7 @@
 <script>
+
   import {
-    Row, Column,
-    Button,
+    Button, Checkbox,
     RadioButtonGroup, RadioButton,
   }
   from "carbon-components-svelte";
@@ -13,13 +13,22 @@
   let repcount = 1;
   let mintime = 1;
   let rantime = 0;
+  let ranforce = false;
+
+  const dotrigtype = () =>
+  {
+    console.log(`TrigType: type=${trigtype}`);
+  }
 
   const dotrigger = () =>
   {
     console.log(`Trigger: type=${trigtype}`);
   }
 
-  //<NumberInput hideLabel bind:value={repcount} />
+  // BUG: RadioButton on:click doesn't work?!
+  // also on:click for RadioButtonGroup happens twice?
+  // and when it does 'selected' hasn't changed yet
+  // solution: use on:change on RadioButtonGroup
 
 </script>
 
@@ -27,9 +36,10 @@
 
 <RadioButtonGroup
   orientation="vertical"
-  legendText="Trigger Type"
+  legendText="Trigger Settings"
   bind:selected={trigtype}
->
+  on:change={dotrigtype}
+  >
   <RadioButton labelText="Once at startup" value="once" />
   <RadioButton labelText="Automatically" value="auto" />
   <RadioButton labelText="External Source" value="ext" />
@@ -38,32 +48,27 @@
 
 {#if (trigtype == "auto") }
   <div style="margin-top:10px; ">
-    <span style="margin-right:8px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+    <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
     <input type="number" min="1" max="9999" bind:value={repcount}/>
   </div>
-  <div>
+  <div style="margin-top:10px; ">
     <span style="margin-right:8px">Minimum Time:&nbsp;</span>
     <input type="number" min="1" max="9999" bind:value={mintime}/>
   </div>
-  <div>
+  <div style="margin-top:10px; ">
     <span style="margin-right:8px">Random Period:</span>
     <input type="number" min="1" max="9999" bind:value={rantime}/>
   </div>
   <div style="margin-top:-2px;"></div>
 {/if}
 
+<div style="margin-top: 22px;"></div>
+<Checkbox labelText="Random Force" bind:checked={ranforce}></Checkbox>
+<SliderVal disabled={ranforce} name='Force&nbsp;' />
 <div style="margin-top:7px;"></div>
-<Row>
-  <Column style="background-color:green" sm={1} md={4} lg={8} >
-    <SliderVal name='Force&nbsp;' />
-  </Column>
-  <Column  style="background-color:blue" sm={1} md={2} lg={2}>
-    <Button size="small" kind="secondary" on:click={dotrigger}>Trigger</Button>
-  </Column>
-  <Column style="background-color:red" sm={1} md={1} lg={1}>
-    <Button size="small" kind="secondary" on:click={dotrigger}>Trigger</Button>
-  </Column>
-  <Column style="background-color:pink" sm={1} md={1} lg={1}>
-  </Column>
-</Row>
-<div style="margin-top:5px;"></div>
+<Button
+  size="small"
+  kind="secondary"
+  on:click={dotrigger}
+  >Trigger
+</Button>

@@ -6,6 +6,7 @@
     xTracks, xLayers,
     nTracks, nLayers,
     iTracks, iLayers,
+    curStrandID
    }
    from './globalVars.js';
 
@@ -19,23 +20,24 @@
   nStrands.set(3);
   let list = [];
   for (let i = 0; i < $nStrands; ++i) list.push(false);
+  list[$curStrandID] = true;
   eStrands.set(list);
 
   // set from device:
   xTracks.set(4);      // maximum possible
   xLayers.set(8);
   nTracks.set(1);      // currently instantiated
-  nLayers.set([1]);
-  iTracks.set([[0]]);  // layer ids from 0
-  iLayers.set([{track:1, layer:1}]);
+  nLayers.set([2]);
+  iTracks.set([[0,1]]);  // layer ids from 0
+  iLayers.set([{track:1, layer:1},{track:1, layer:2}]);
 
-  let nlayers = 1;
+  let nlayers = $nLayers;
   $: {
     list = [];
     list.push(nlayers);
     nLayers.set(list);
   }
-  $: if (nlayers > 2) makePatternsAndEffects();
+  $: if (nlayers >= 2) makePatternsAndEffects();
 
 </script>
 

@@ -3,25 +3,26 @@ import { aPatterns, aEffectsDraw, aEffectsPre } from './globalVars.js';
 
 export let makePatternsAndEffects = () =>
 {
-  let list = [
-    { id: '1',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },
-    { id: '2',  text: 'Rainbow Roll',       cmd:  'E1 D20 F1 I T E101 F1000 I T G' },
-    { id: '3',  text: 'Light Waves',        cmd:  'E1 T G' },
-    { id: '4',  text: 'Color Twinkles',     cmd:  'E1 T G' },
-    { id: '5',  text: 'Twinkle Comets',     cmd:  'E1 T G' },
-    { id: '6',  text: 'Comet Party',        cmd:  'E1 T G' },
-    { id: '7',  text: 'Scanner Mix',        cmd:  'E1 T G' },
-    { id: '8',  text: 'Ferris Wheel',       cmd:  'E1 T G' },
-    { id: '9',  text: 'Expanding Noise',    cmd:  'E1 T G' },
-    { id: '10', text: 'Crazy Blinks',       cmd:  'E1 T G' },
-    { id: '11', text: 'Blink Surges',       cmd:  'E1 T G' },
-    { id: '12', text: 'Bright Swells',      cmd:  'E1 T G' },
-    { id: '13', text: 'Color Melts',        cmd:  'E1 T G' },
-    { id: '14', text: 'Holiday',            cmd:  'E1 T G' },
-    { id: '15', text: 'MashUp',             cmd:  'E1 T G' },
-  ];
-  aPatterns.set(get(aPatterns).concat(list));
-  console.log('Patterns created');
+  //let list = [
+  aPatterns.set([
+    { id: '0',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },
+    { id: '1',  text: 'Rainbow Roll',       cmd:  'E1 D20 F1 I T E101 F1000 I T G' },
+    { id: '2',  text: 'Light Waves',        cmd:  'E1 T G' },
+    { id: '3',  text: 'Color Twinkles',     cmd:  'E1 T G' },
+    { id: '4',  text: 'Twinkle Comets',     cmd:  'E1 T G' },
+    { id: '5',  text: 'Comet Party',        cmd:  'E1 T G' },
+    { id: '6',  text: 'Scanner Mix',        cmd:  'E1 T G' },
+    { id: '7',  text: 'Ferris Wheel',       cmd:  'E1 T G' },
+    { id: '8',  text: 'Expanding Noise',    cmd:  'E1 T G' },
+    { id: '9',  text: 'Crazy Blinks',       cmd:  'E1 T G' },
+    { id: '10', text: 'Blink Surges',       cmd:  'E1 T G' },
+    { id: '11', text: 'Bright Swells',      cmd:  'E1 T G' },
+    { id: '12', text: 'Color Melts',        cmd:  'E1 T G' },
+    { id: '13', text: 'Holiday',            cmd:  'E1 T G' },
+    { id: '14', text: 'MashUp',             cmd:  'E1 T G' },
+  ]);
+  //aPatterns.set(get(aPatterns).concat(list));
+  //console.log('Patterns created');
 
   aEffectsDraw.set([
     { id: '0', text: 'DrawAll' },

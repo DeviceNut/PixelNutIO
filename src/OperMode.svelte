@@ -16,9 +16,9 @@ import {Grid, Row, ContentSwitcher, Switch } from "carbon-components-svelte";
 
 <Grid>
   <Row>
-    <ContentSwitcher size="sm" on:click={didclick} bind:selectedIndex >
+    <ContentSwitcher size="sm" on:click={didclick} bind:selectedIndex>
       <Switch disabled={!$customClear} text={textBuiltins} />
-      <Switch text="Customize" />
+      <Switch text="Custom" />
     </ContentSwitcher>
   </Row>
 </Grid>

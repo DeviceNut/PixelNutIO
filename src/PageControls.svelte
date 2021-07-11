@@ -3,8 +3,8 @@
   import { nStrands, customMode } from './globalVars.js';
   import MultiStrands from "./MultiStrands.svelte"
   import OperMode from "./OperMode.svelte"
-  import ControlsPreBuilt from "./ControlsPreBuilt.svelte";
-  import ControlsCustom from "./ControlsCustom.svelte";
+  import PanelPreBuilt from "./PanelPreBuilt.svelte";
+  import PanelCustom from "./PanelCustom.svelte";
 
   export let appname = '';
 
@@ -17,14 +17,16 @@
     <MultiStrands/>
   {/if}
 
+  <div style="margin-top:5px;"></div>
+
   <OperMode/>
 
   <div class="divider"></div>
 
   {#if $customMode}
-    <ControlsCustom/>
+    <PanelCustom/>
   {:else}
-    <ControlsPreBuilt/>
+    <PanelPreBuilt/>
   {/if}
 
   <div class="divider"></div>
@@ -46,7 +48,7 @@
     background-color:#333433;
   }
   .divider {
-    margin-top: 12px;
+    margin-top: 10px;
     padding-top: 2px;
     background-color:#333433;
   }

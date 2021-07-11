@@ -1,5 +1,8 @@
 import { get } from 'svelte/store';
-import { aPatterns, aEffectsDraw, aEffectsPre } from './globalVars.js';
+import {
+  aPatterns, aEffectsDraw, aEffectsPre,
+  curPatternID, curPatternStr,
+} from './globalVars.js';
 
 const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
@@ -52,7 +55,7 @@ let allLayers = [];
 let allTracks = [];
 let cmdStr = '';
 
-console.log('Here in pixCmds...');
+console.log('Here in cmdsPatterns...');
 
 export const sendCmd = (cmdstr, cmdval) =>
 {
@@ -61,11 +64,15 @@ export const sendCmd = (cmdstr, cmdval) =>
   else console.log(`Send: ${cmdstr}`);
 }
 
-export const sendPattern = (index) =>
+export const newPatternID = () =>
 {
   let list = get(aPatterns);
-  let cmdstr = list[index].cmd;
-  if (cmdstr) console.log(`Send: ${cmdstr}`);
+  let cmdstr = list[get(curPatternID)].cmd;
+  if (cmdstr)
+  {
+    console.log(`Send: ${cmdstr}`);
+    curPatternStr.set(cmdstr);
+  }
 }
 
 // given a list of tracks/layers,

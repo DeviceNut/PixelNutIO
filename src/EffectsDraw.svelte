@@ -1,6 +1,6 @@
 <script>
   import { Dropdown } from "carbon-components-svelte";
-  import { aEffectsDraw } from './globalVars.js'
+  import { aEffectsDraw } from './globals.js'
 </script>
 
 <Dropdown

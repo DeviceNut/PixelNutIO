@@ -2,14 +2,14 @@
 
   import {
     Grid, Row, Column,
-    TextInput, Button, Modal,
-    TooltipDefinition,
+    TextInput, Button, Modal
   } from "carbon-components-svelte";
 
-  import { nTracks, curPatternStr } from './globalVars.js';
+  import { nTracks, curPatternStr } from './globals.js';
   import OneTrack from "./OneTrack.svelte"
   import SlidersMain from "./SlidersMain.svelte";
   import DropPatterns from "./DropPatterns.svelte"
+  import ButtonsAddDel from "./ButtonsAddDel.svelte";
 
   let open = false;
   
@@ -82,9 +82,14 @@
     <SlidersMain/>
   </Row>
 
-  {#each Array($nTracks) as _,n}
-    <OneTrack tracknum={n+1} />
-  {/each}
+  <div style="background-color: #444544;">
+    {#each Array($nTracks) as _,n}
+      <OneTrack tracknum={n+1} />
+    {/each}
+  </div>
+  <Row style="margin-top: 10px;">
+    <ButtonsAddDel tracknum={0}/>
+  </Row>
 </Grid>
 
 <!-- does not matter where you put this -->

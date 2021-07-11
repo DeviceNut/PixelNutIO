@@ -65,7 +65,7 @@
 <div style="margin-top: 22px;"></div>
 <Checkbox labelText="Random Force" bind:checked={ranforce}></Checkbox>
 <SliderVal disabled={ranforce} name='Force&nbsp;' />
-<div style="margin-top:7px;"></div>
+<div style="margin-top:10px;"></div>
 <Button
   size="small"
   kind="secondary"

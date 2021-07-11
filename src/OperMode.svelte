@@ -1,7 +1,7 @@
 <script>
 
 import {Grid, Row, ContentSwitcher, Switch } from "carbon-components-svelte";
-  import { customMode, customClear } from './globalVars.js';
+  import { customMode, customClear } from './globals.js';
 
   let selectedIndex = ($customMode ? 1 : 0);
   let textBuiltins = ($customClear ? "PreBuilt" : "Reset");

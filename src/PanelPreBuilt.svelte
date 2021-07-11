@@ -6,8 +6,8 @@
   } from "carbon-components-svelte";
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
-  import { aPatterns, curPatternID } from './globalVars.js'
-  import { newPatternID } from "./cmdsPatterns.js";
+  import { aPatterns, curPatternID } from './globals.js'
+  import { newPatternID } from "./patterns.js";
   import SlidersMain from "./SlidersMain.svelte";
   import SlidersProps from "./SlidersProps.svelte";
   import SliderVal from "./SliderVal.svelte"

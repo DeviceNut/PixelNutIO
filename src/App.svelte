@@ -1,49 +1,83 @@
 <script>
-  import { NumberInput } from "carbon-components-svelte";
+
+  //import { NumberInput } from "carbon-components-svelte";
 
   import {
     nStrands, eStrands,
-    xTracks, xLayers,
-    nTracks, nLayers,
-    iTracks, iLayers,
+    xTracks, nTracks, sTracks, mTracks,
+    xLayers, tLayers, nLayers, sLayers, mLayers,
     curStrandID
    }
-   from './globalVars.js';
+   from './globals.js';
 
-  import { makePatternsAndEffects } from './makeLists.js';
+  import { makePatternsAndEffects } from './presets.js';
 
   import PageControls from "./PageControls.svelte"
 
   let appname = 'PixelNut!';
 
-  // 3 strands, enable only first one
-  nStrands.set(3);
-  let list = [];
+  // obtained from the device:
+  let max_strands = 3;      // number present
+  let max_tracks = 4;       // maximum possible
+  let max_layers = 16;      // maximum possible
+
+  let list = []; // used to create arrays
+
+  // 3 strands, enable the current one
+  nStrands.set(max_strands);
+  list = [];
   for (let i = 0; i < $nStrands; ++i) list.push(false);
   list[$curStrandID] = true;
   eStrands.set(list);
 
-  // set from device:
-  xTracks.set(4);      // maximum possible
-  xLayers.set(8);
-  nTracks.set(1);      // currently instantiated
-  nLayers.set([2]);
-  iTracks.set([[0,1]]);  // layer ids from 0
-  iLayers.set([{track:1, layer:1},{track:1, layer:2}]);
+  xTracks.set(max_tracks);
+  xLayers.set(max_layers);
+  tLayers.set(max_layers/max_tracks);
 
-  let nlayers = $nLayers;
-  $: {
-    list = [];
-    list.push(nlayers);
-    nLayers.set(list);
+  nTracks.set(1); // track #1 always active
+  list = [];      // create list of booleans
+  for (let i = 0; i < $xTracks; ++i) list.push(false);
+  let list2 = [...list]; // make copy of this list
+  mTracks.set(list);     // all track starts off by being
+  sTracks.set(list2);    // not muted and solo disabled
+
+  list = [];  // create list of active layers
+  for (let i = 0; i < $xTracks; ++i) list.push(1);
+  nLayers.set(list);  // layer #1 always active
+
+  list = [];  // create list of solo/mute enables
+  for (let j = 0; j < $tLayers; ++j) list.push(false);
+
+  let alist1 = []; // create array of solo lists
+  let alist2 = []; // create array of mute lists
+  for (let i = 0; i < $tLayers; ++i)
+  {
+    let newlist = [...list]; // make copy of list
+    alist1.push(newlist);
+    newlist = [...list];
+    alist2.push(newlist);
   }
-  $: if (nlayers >= 2) makePatternsAndEffects();
+
+  sLayers.set(alist1); // all track starts off by being
+  mLayers.set(alist2); // not muted and solo disabled
+
+  makePatternsAndEffects();
+
+  /*
+    let nlayers = $nLayers;
+    $: {
+      list = [];
+      list.push(nlayers);
+      nLayers.set(list);
+    }
+    $: if (nlayers >= 2) makePatternsAndEffects();
+
+    <div style="position:absolute; bottom:30px; margin:10px;">
+        <NumberInput label="Tracks" bind:value={$nTracks} />
+        <NumberInput label="Layers" bind:value={nlayers} />
+    </div>
+  */
 
 </script>
-
-<div style="position:absolute; bottom:30px; margin:10px;">
-    <NumberInput label="Tracks" bind:value={$nTracks} />
-    <NumberInput label="Layers" bind:value={nlayers} />
-</div>
 
 <PageControls {appname}/>

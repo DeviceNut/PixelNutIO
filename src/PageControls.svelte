@@ -1,6 +1,6 @@
 <script>
 
-  import { nStrands, customMode } from './globalVars.js';
+  import { nStrands, customMode } from './globals.js';
   import MultiStrands from "./MultiStrands.svelte"
   import OperMode from "./OperMode.svelte"
   import PanelPreBuilt from "./PanelPreBuilt.svelte";

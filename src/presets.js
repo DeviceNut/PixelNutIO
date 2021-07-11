@@ -1,9 +1,8 @@
 import { get } from 'svelte/store';
-import { aPatterns, aEffectsDraw, aEffectsPre } from './globalVars.js';
+import { aPatterns, aEffectsDraw, aEffectsPre } from './globals.js';
 
 export let makePatternsAndEffects = () =>
 {
-  //let list = [
   aPatterns.set([
     { id: '0',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },
     { id: '1',  text: 'Rainbow Roll',       cmd:  'E1 D20 F1 I T E101 F1000 I T G' },
@@ -21,8 +20,6 @@ export let makePatternsAndEffects = () =>
     { id: '13', text: 'Holiday',            cmd:  'E1 T G' },
     { id: '14', text: 'MashUp',             cmd:  'E1 T G' },
   ]);
-  //aPatterns.set(get(aPatterns).concat(list));
-  //console.log('Patterns created');
 
   aEffectsDraw.set([
     { id: '0', text: 'DrawAll' },

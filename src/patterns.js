@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 import {
   aPatterns, aEffectsDraw, aEffectsPre,
   curPatternID, curPatternStr,
-} from './globalVars.js';
+} from './globals.js';
 
 const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
@@ -54,8 +54,6 @@ const defTrack =
 let allLayers = [];
 let allTracks = [];
 let cmdStr = '';
-
-console.log('Here in cmdsPatterns...');
 
 export const sendCmd = (cmdstr, cmdval) =>
 {

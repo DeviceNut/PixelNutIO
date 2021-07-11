@@ -1,6 +1,6 @@
 <script>
   import { Grid, Row, Checkbox } from "carbon-components-svelte";
-  import { nStrands, eStrands, curStrandID } from './globalVars.js'
+  import { nStrands, eStrands, curStrandID } from './globals.js'
 
   let overwrite = false;
 
@@ -37,6 +37,6 @@
     {#each $eStrands as _,n}
       <Checkbox on:check={checkenables} labelText={n+1} bind:checked={$eStrands[n]}/>
     {/each}
-    <Checkbox on:check={checkowrite} labelText="Overwrite" />
+    <Checkbox on:check={checkowrite} labelText="Combine" />
   </Row>
 </Grid>

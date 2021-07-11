@@ -1,8 +1,8 @@
 <script>
   import { Accordion, AccordionItem } from "carbon-components-svelte";
 
-  import DrawControls from "./DrawControls.svelte"
-  import PredrawControls from "./PredrawControls.svelte"
+  import ControlsDrawing from "./ControlsDrawing.svelte"
+  import ControlsPredraw from "./ControlsPredraw.svelte"
 
   export let layernum = 0;
 </script>
@@ -10,9 +10,9 @@
 <Accordion align="start" size="sm">
   <AccordionItem  title="Layer {layernum}">
     {#if (layernum == 1) }
-      <DrawControls/>
+      <ControlsDrawing/>
     {:else}
-      <PredrawControls/>
+      <ControlsPredraw/>
     {/if}
   </AccordionItem>
 </Accordion>

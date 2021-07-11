@@ -1,15 +1,15 @@
 <script>
   import { Dropdown } from "carbon-components-svelte";
-  import { aPatterns, curPatternID } from './globalVars.js'
+  import { aPatterns, patternID } from './globalVars.js'
   import { sendPattern } from "./pixCmds.js";
 
-  let didselect = () => { sendPattern($curPatternID); }
+  const didselect = () => { sendPattern($patternID); }
 </script>
 
 <Dropdown
   type="inline"
   titleText="Pattern:"
   on:select={didselect}
-  bind:selectedIndex={$curPatternID}
+  bind:selectedIndex={$patternID}
   bind:items={$aPatterns}
 />

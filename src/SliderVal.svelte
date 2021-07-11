@@ -6,7 +6,7 @@
   export let disabled = undefined;
 </script>
 
-<Slider
+<Slider style="margin-bottom:5px;"
   {disabled}
   min={0}
   max={maxval}

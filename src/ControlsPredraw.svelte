@@ -6,8 +6,8 @@
   }
   from "carbon-components-svelte";
 
-  import PredrawEffects from "./PredrawEffects.svelte"
-  import MySlider from "./MySlider.svelte"
+  import EffectsPredraw from "./EffectsPredraw.svelte"
+  import SliderVal from "./SliderVal.svelte"
 
   let trigtype = "once";
   let repcount = 1;
@@ -23,7 +23,7 @@
 
 </script>
 
-<PredrawEffects />
+<EffectsPredraw />
 
 <RadioButtonGroup
   orientation="vertical"
@@ -55,7 +55,7 @@
 <div style="margin-top:7px;"></div>
 <Row>
   <Column style="background-color:green" sm={1} md={4} lg={8} >
-    <MySlider name='Force&nbsp;' />
+    <SliderVal name='Force&nbsp;' />
   </Column>
   <Column  style="background-color:blue" sm={1} md={2} lg={2}>
     <Button size="small" kind="secondary" on:click={dotrigger}>Trigger</Button>

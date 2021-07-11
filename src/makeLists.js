@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { aPatterns, aDrawEffects, aPreEffects } from './globalVars.js';
+import { aPatterns, aEffectsDraw, aEffectsPre } from './globalVars.js';
 
 export let makePatternsAndEffects = () =>
 {
@@ -23,7 +23,7 @@ export let makePatternsAndEffects = () =>
   aPatterns.set(get(aPatterns).concat(list));
   console.log('Patterns created');
 
-  aDrawEffects.set([
+  aEffectsDraw.set([
     { id: '0', text: 'DrawAll' },
     { id: '1', text: 'DrawPush' },
     { id: '2', text: 'LightWave' },
@@ -35,7 +35,7 @@ export let makePatternsAndEffects = () =>
     { id: '8', text: 'Noise' },
   ]);
 
-  aPreEffects.set([
+  aEffectsPre.set([
     { id: '0',  text: 'HueSet' },
     { id: '1',  text: 'HueRotate' },
     { id: '2',  text: 'ColorMeld' },

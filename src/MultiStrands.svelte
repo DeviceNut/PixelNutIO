@@ -1,5 +1,5 @@
 <script>
-  import { MultiSelect } from "carbon-components-svelte";
+  import { Grid, Row, MultiSelect, Button } from "carbon-components-svelte";
   import { nStrands, eStrands } from './globalVars.js'
 
   let items = [];
@@ -26,10 +26,19 @@
   // if 'label' is empty then if all checkboxes are cleared the item text disapears!
   </script>
 
-<MultiSelect
-  on:select={checkcount}
-  type="inline"
-  label="&nbsp;&nbsp;Strands"
-  bind:selectedIds
-  items={items}
-/>
+<Grid>
+  <Row>
+    <MultiSelect
+      on:select={checkcount}
+      type="inline"
+      label="&nbsp;&nbsp;Strands"
+      bind:selectedIds
+      items={items}
+    />
+
+    <div style="margin-left: 30px;"></div>
+    <!--
+      <button kind="secondary">hello</button>
+    -->
+  </Row>
+</Grid>

@@ -1,7 +1,7 @@
 <script>
-  import { Accordion, AccordionItem } from "carbon-components-svelte";
+  import { Row, Accordion, AccordionItem } from "carbon-components-svelte";
 
-  import Layer from "./Layer.svelte"
+  import OneLayer from "./OneLayer.svelte"
   import { nLayers } from './globalVars.js';
 
   export let tracknum = 0;
@@ -21,7 +21,8 @@
   <AccordionItem title="Track {tracknum}" on:click={openTrack}>
   </AccordionItem>
 </Accordion>
-<div style="margin-top:-25px; display:{tstate};"></div>
+<div style="display:{tstate}; margin-top:-35px;">
 {#each Array($nLayers[tracknum-1]) as _,n}
-  <div style="margin-left:20px; display:{tstate};"><Layer layernum={n+1} /></div>
+  <div style="margin-left:20px; display:{tstate};"><OneLayer layernum={n+1} /></div>
 {/each}
+</div>

@@ -1,29 +1,41 @@
 <script>
 
+  import {
+    cmdStr_Pause,
+    cmdStr_Resume,
+    sendCmd
+  } from "./patterns.js"
+
   export let appname = '';
 
-  let goback = () =>
+  let isPaused = false;
+  let textPause = '';
+  $: textPause = (isPaused ? 'Resume' : 'Pause');
+
+  let dopause = () =>
   {
-    console.log('Return to Devices Page');
+    if (isPaused = !isPaused)
+         sendCmd(cmdStr_Pause);
+    else sendCmd(cmdStr_Resume);
   }
 
-  let goweb = () =>
-  {
-    console.log('Create tab for: www.devicenut.com/pixelnut');
-  }
+  let goback = () => { history.back() }
+  let goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
 
   let dohelp = () =>
   {
     console.log('Show Help Page');
+    // TODO open model with context sensitive help message
   }
 
 </script>
 
 <div class="header">
   <button on:click={goback} class="button left" >&lt;&lt; Back</button>
+  <button on:click={goweb} class="button left2" >Website</button>
   <p class="title">{appname}</p>
   <button on:click={dohelp} class="button rite" >Help</button>
-  <button on:click={goweb} class="button rite" >Website</button>
+  <button on:click={dopause} class="button rite" >{textPause}</button>
 </div>
 
 <style>
@@ -56,9 +68,13 @@
     float: left;
     margin-left: 10px;
   }
+  .button.left2 {
+    float: left;
+    margin-left: 15px;
+  }
   .button.rite {
     float: right;
-    margin-right: 17px;
+    margin-right: 15px;
   }
   .button:hover {
     cursor: pointer;

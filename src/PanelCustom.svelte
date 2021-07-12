@@ -7,7 +7,7 @@
   } from "carbon-components-svelte";
 
   import {
-    nTracks, aPatterns,
+    aTracks, aPatterns,
     curPatternStr, curPatternID
   } from './globals.js'
 
@@ -87,7 +87,7 @@
   </Row>
 
   <div style="background-color: #444544;">
-    {#each Array($nTracks) as _,n}
+    {#each Array($aTracks) as _,n}
       <OneTrack tracknum={n+1} />
     {/each}
   </div>

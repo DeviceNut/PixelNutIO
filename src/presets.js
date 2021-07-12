@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { aPatterns, aEffectsDraw, aEffectsPre } from './globals.js';
 
-export let makePatternsAndEffects = () =>
+export let presetsInit = () =>
 {
   aPatterns.set([
     { id: '0',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },

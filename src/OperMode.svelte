@@ -15,7 +15,7 @@
     customMode.set(selectedIndex == 1);
   }
 
-  </script>
+</script>
 
 <Grid>
   <Row>

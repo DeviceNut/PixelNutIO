@@ -32,7 +32,7 @@
       {#if (layernum != 1) }
         <ControlsPredraw/>
       {:else}
-        <ControlsDrawing/>
+        <ControlsDrawing {tracknum} {layernum} />
       {/if}
     </Column>
   {/if}

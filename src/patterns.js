@@ -1,5 +1,7 @@
 import { get } from 'svelte/store';
 import {
+  nStrands, nPixels,
+  nTracks, tLayers, aLayers,
   aPatterns, aEffectsDraw, aEffectsPre,
   curPatternID, curPatternStr,
 } from './globals.js';
@@ -10,9 +12,28 @@ const pluginBit_USEFORCE    = 0x20;   // trigger force is used in effect
 const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
 const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
 
+const cmdStr_GetInfo        = "?";
+const cmdStr_GetSegments    = "?S";
+const cmdStr_GetPatterns    = "?P";
+const cmdStr_SetBright      = "%";
+const cmdStr_SetDelay       = ":";
+const cmdStr_SetFirst       = "Z";
+const cmdStr_SetStart       = "J";
+const cmdStr_SetFinish      = "K";
+const cmdStr_SetProps       = "=";
+const cmdStr_SetXmode       = "_";
+const cmdStr_SetName        = "@";
+const cmdStr_Trigger        = "!";
+const cmdStr_Pause          = "[";
+const cmdStr_Resume         = "]";
+const cmdStr_SegsEnable     = "#";
+const cmdStr_PopPattern     = "P";
+
+const cmdStr_Effect         = "E";
+const cmdStr_Modify         = "M";
+
 const defLayer =
 {
-  id              : 0,      // index into all layers: target ID for force
   num             : 0,      // relative to track, numbered from 1 (1=drawing)
   otrack          : 0,      // index into all tracks to owning track
 
@@ -23,7 +44,7 @@ const defLayer =
   trigCount       : 0,      // number of times to trigger (-1 to repeat forever)
   trigDelayMin    : 0,      // min amount of delay before next trigger in seconds
   trigDelayRange  : 0,      // range of delay values possible (min...min+range)
-                              // these apply to both auto and manual triggering:
+                            // these apply to both auto and manual triggering:
   trigForce       : 0,      // amount of force to apply (-1 for random)
   trigExtern      : false,  // true if external triggering is enabled for this layer
   trigSource      : -1,     // what other layer can trigger this layer (-1 for none)
@@ -47,19 +68,74 @@ const defProps =
 const defTrack =
 {
   num             : 0,      // this track's number, from 1
-  layers          : [],     // list of layer indexes (first one is drawing layer)
-  drawProps       : defProps, // drawing properties for that drawing layer
+  layers          : [],     // list of DefLayers for this track
+  drawProps       : {},     // drawing properties for that drawing layer
 }
 
-let allLayers = [];
 let allTracks = [];
-let cmdStr = '';
 
-export const sendCmd = (cmdstr, cmdval) =>
+export const patternsInit = () =>
 {
-  if (cmdval)
-       console.log(`Send: ${cmdstr}${cmdval}`);
-  else console.log(`Send: ${cmdstr}`);
+  for (let s = 0; s < get(xStrands); ++i)
+
+  for (let i = 0; i < get(nTracks); ++i)
+  {
+    let track = {...defTrack};
+    track.num = i+1;
+    track.drawProps = {...defProps};
+
+    track.drawProps.pixCount = get(nPixels)[strand];
+    track.drawProps.pixStart = 0;
+    track.drawProps.pixEnd = track.drawProps.pixCount-1;
+
+    let layers = [];
+    for (let j = 0; j < get(tLayers); ++j)
+    {
+      let layer = {...defLayer};
+      layer.num = j+1;
+      layer.otrack = i;
+      layers.concat(layer);
+    }
+
+    track.layers = layers;
+    allTracks.concat(track);
+  }
+}
+
+function calcLayerID(track, layer)
+{
+  // calculate what pixelnut engine layerid is
+  let layerid = 0;
+  for (let i = 0; i < track-1; ++i) layerid += get(aLayers)[i];
+  layerid += layer-1;
+  return layerid;
+}
+
+function dosend(str)
+{
+  console.log(str);
+}
+
+function sendCmd(cmdstr, cmdval, track, layer)
+{
+  if (cmdval != undefined)
+  {
+    if ((track != undefined) && (layer != undefined))
+    {
+      // calculate what pixelnut engine layerid is
+      let layerid = 0;
+      for (let i = 0; i < track-1; ++i) layerid += get(aLayers)[i];
+      layerid += layer-1;
+
+      let str = '';
+      str = str.concat(`${cmdStr_Modify}${layerid} `);
+      str = str.concat(`${cmdstr}${cmdval} `);
+      str = str.concat(`${cmdStr_Modify} `);
+      dosend(str);
+    }
+    else dosend(`${cmdstr}${cmdval}`);
+  }
+  else dosend(cmdstr);
 }
 
 export const newPatternID = () =>
@@ -68,7 +144,7 @@ export const newPatternID = () =>
   let cmdstr = list[get(curPatternID)].cmd;
   if (cmdstr)
   {
-    console.log(`Send: ${cmdstr}`);
+    dosend(cmdstr);
     curPatternStr.set(cmdstr);
   }
 }
@@ -81,29 +157,37 @@ export const makePattern = (tlist) =>
 
   for (const track of tlist)
   {
-    cmdstr.concat(`E${track.layers[0].pluginID} `);
+    cmdstr = cmdstr.concat(`E${track.layers[0].pluginID} `);
 
     if (track.drawProps.pcentBright != 100)
-      cmdstr.concat(`B${track.drawProps.pcentBright} `);
+      cmdstr = cmdstr.concat(`B${track.drawProps.pcentBright} `);
 
     if (track.drawProps.msecsDelay != 0)
-      cmdstr.concat(`D${track.drawProps.msecsDelay} `);
+      cmdstr = cmdstr.concat(`D${track.drawProps.msecsDelay} `);
 
     if (track.drawProps.degreeHue != 0)
-      cmdstr.concat(`H${track.drawProps.degreeHue} `);
+      cmdstr = cmdstr.concat(`H${track.drawProps.degreeHue} `);
 
     if (track.drawProps.pcentWhite != 0)
-      cmdstr.concat(`W${track.drawProps.pcentWhite} `);
+      cmdstr = cmdstr.concat(`W${track.drawProps.pcentWhite} `);
 
     if (track.drawProps.goUpwards != true)
-      cmdstr.concat('U0 ');
+      cmdstr = cmdstr.concat('U0 ');
 
-      if (track.drawProps.orPixelValues != false)
-      cmdstr.concat('V1 ');
+    if (track.drawProps.orPixelValues != false)
+      cmdstr = cmdstr.concat('V1 ');
 
     for (const layer of track.layers)
     {
 
     }
   }
+
+  return cmdstr;
 }
+
+export const sendBright = (track, layer) =>
+{
+  sendCmd(cmdStr_SetBright, track, layer);
+}
+

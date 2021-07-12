@@ -1,12 +1,12 @@
 <script>
 
   import {
-    Button, Checkbox,
+    Button, Checkbox, Dropdown,
     RadioButtonGroup, RadioButton,
   }
   from "carbon-components-svelte";
 
-  import EffectsPredraw from "./EffectsPredraw.svelte"
+  import { aEffectsPre } from './globals.js'
   import SliderVal from "./SliderVal.svelte"
 
   let trigtype = "once";
@@ -32,7 +32,12 @@
 
 </script>
 
-<EffectsPredraw />
+<Dropdown
+  type="inline"
+  titleText="Effect:"
+  selectedIndex={0}
+  bind:items={$aEffectsPre}
+/>
 
 <RadioButtonGroup
   orientation="vertical"
@@ -53,11 +58,11 @@
   </div>
   <div style="margin-top:10px; ">
     <span style="margin-right:8px">Minimum Time:&nbsp;</span>
-    <input type="number" min="1" max="9999" bind:value={mintime}/>
+    <input type="number" min="1" max="9999" bind:value={mintime}/>&nbsp;&nbsp;secs
   </div>
   <div style="margin-top:10px; ">
     <span style="margin-right:8px">Random Period:</span>
-    <input type="number" min="1" max="9999" bind:value={rantime}/>
+    <input type="number" min="1" max="9999" bind:value={rantime}/>&nbsp;&nbsp;secs
   </div>
   <div style="margin-top:-2px;"></div>
 {/if}

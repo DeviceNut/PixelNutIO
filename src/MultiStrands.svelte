@@ -1,4 +1,5 @@
 <script>
+
   import { Grid, Row, Checkbox } from "carbon-components-svelte";
   import { nStrands, eStrands, curStrandID } from './globals.js'
 
@@ -12,24 +13,37 @@
       {
         $eStrands[$curStrandID] = false;
         curStrandID.set(i);
+        break; // just one switch
+      }
+      else if (overwrite && !$eStrands[i] && ($curStrandID == i))
+      {
+        // disabled what was current strand, so set to first enabled one
+        for (let j = 0; j < $nStrands; ++j)
+        {
+          if ($eStrands[j])
+          {
+            curStrandID.set(j);
+            break;
+          }
+        }
       }
     }
   }
 
   const checkowrite = () =>
   {
+    // must disable all but the current one
+
     if (!(overwrite = !overwrite))
     {
-      let list = [];
       for (let i = 0; i < $nStrands; ++i)
-        list.push(false);
+        $eStrands[i] = false;
 
-      list[$curStrandID] = true;
-      eStrands.set(list);
+      $eStrands[$curStrandID] = true;
     }
   }
 
-  </script>
+</script>
 
 <Grid>
   <Row>

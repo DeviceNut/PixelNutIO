@@ -1,7 +1,7 @@
 <script>
 
   import {
-    Grid, Row,
+    Grid, Row, Column,
     Dropdown, Button, Modal
   } from "carbon-components-svelte";
   import Help32 from "carbon-icons-svelte/lib/Help32";
@@ -25,7 +25,7 @@
   */
 
   let open = false;
-  let pattext = 'bla bla bla .s ldf ;lsjd f;lsjd f;lsjd ;lfsj d;lfsj;ldfjsldf';
+  let pattext = 'bla bla bla .s ldf ;lsjd f;lsjd f;lsjd ;lfsj d;lfsj;ldfjsldf'; // TODO
 
 </script>
 
@@ -58,12 +58,13 @@
 
   <Row>
     <SlidersMain/>
-    <SlidersProps/>
+    <SlidersProps {tracknum} {layernum} {extcontrol} />
   </Row>
 
   <Row>
+    <Column style="margin-left: -25px;">
     <SliderVal name='Force&nbsp;' />
-    <div style="margin-top:5px;">
+    <div style="margin-top: 15px; margin-bottom: 10px">
       <Button
         size="small"
         kind="secondary"
@@ -71,5 +72,6 @@
         >Trigger
       </Button>
     </div>
-  </Row>
+  </Column>
+</Row>
 </Grid>

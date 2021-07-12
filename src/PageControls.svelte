@@ -33,7 +33,8 @@
 <style>
   main {
     margin: 0 auto;
-    max-width: 500px;
+    padding: 10px;
+    max-width: 550px;
     background-color:black;
   }
   .divider {

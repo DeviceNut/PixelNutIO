@@ -32,7 +32,6 @@ export let aPatterns      = writable([]);     // list of all patterns
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsPre    = writable([]);     // list of all predraw effects
 
-export let customMode     = writable(false);  // true if customizing pattern
 export let customClear    = writable(true);   // true when custom pattern is clear
 export let curPatternID   = writable(0);      // else current pattern index
 export let curPatternStr  = writable('');     // current pattern string

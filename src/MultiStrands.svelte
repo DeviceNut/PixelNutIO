@@ -3,20 +3,20 @@
   import { Grid, Row, Checkbox } from "carbon-components-svelte";
   import { nStrands, aStrands, idStrand, pStrand } from './globals.js'
 
-  let overwrite = false;
+  let combine = false;
 
   const checkenables = () =>
   {
     for (let i = 0; i < $nStrands; ++i)
     {
-      if (!overwrite && $aStrands[i].selected && ($idStrand != i))
+      if (!combine && $aStrands[i].selected && ($idStrand != i))
       {
         idStrand.set(i);
-        pStrand.set($aStrands[i]);
         $pStrand.selected = false;
+        pStrand.set($aStrands[i]);
         break; // just one switch
       }
-      else if (overwrite && !$aStrands[i].selected && ($idStrand == i))
+      else if (combine && !$aStrands[i].selected && ($idStrand == i))
       {
         // disabled what was current strand, so set to first enabled one
         for (let j = 0; j < $nStrands; ++j)
@@ -36,7 +36,7 @@
   {
     // must disable all but the current one
 
-    if (!(overwrite = !overwrite))
+    if (!(combine = !combine))
     {
       for (let i = 0; i < $nStrands; ++i)
         $aStrands[i].selected = false;
@@ -44,6 +44,8 @@
       $pStrand.selected = true;
     }
   }
+
+  // BUG in CheckBox: first box is lower vertically than the others !!!
 
 </script>
 
@@ -60,7 +62,7 @@
     {/each}
 
     <Checkbox
-    labelText="Combine"
+      labelText="Combine"
       on:check={checkowrite}
     />
   </Row>

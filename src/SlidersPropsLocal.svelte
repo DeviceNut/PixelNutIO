@@ -10,14 +10,12 @@
   let setProps = () => { cmdSetProps(tracknum); }
 
   let bgc = '';
-  $: bgc = extcontrol ? '#222322' : '#111211'
+  //$: bgc = extcontrol ? '#222322' : '#111211'
 
 </script>
 
 <Row style="margin-top: 10px; margin-bottom: 10px;">
-
-  <!-- max-wdith prevents putting second col on separate line >670px for some reason -->
-  <Column style="margin-left: 13px; max-width:350px">
+  <Column>
 
     <SliderVal
       name='Hue&nbsp;&nbsp;&nbsp;'
@@ -43,14 +41,17 @@
   </Column>
 
   <Column>
+    <div style="margin-top: 8px;"></div>
     <Checkbox
       labelText="Override"
       bind:checked={$pStrand.tracks[tracknum-1].drawProps.overHue}
     />
+    <div style="margin-top: 8px;"></div>
     <Checkbox
       labelText="Override"
       bind:checked={$pStrand.tracks[tracknum-1].drawProps.overWhite}
     />
+    <div style="margin-top: 8px;"></div>
     <Checkbox
       labelText="Override"
       bind:checked={$pStrand.tracks[tracknum-1].drawProps.overCount}

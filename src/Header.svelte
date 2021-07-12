@@ -8,15 +8,15 @@
   let textPause = '';
   $: textPause = (isPaused ? 'Resume' : 'Pause');
 
-  let dopause = () =>
+  const dopause = () =>
   {
     cmdSendPause(isPaused = !isPaused);
   }
 
-  let goback = () => { history.back() }
-  let goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
+  const goback = () => { history.back() }
+  const goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
 
-  let dohelp = () =>
+  const dohelp = () =>
   {
     console.log('Show Help Page');
     // TODO open model with context sensitive help message
@@ -35,7 +35,6 @@
 <style>
   .header {
     padding: 2px 0 8px 0;
-    margin-bottom: 13px;
     height: 44px;
     background-color:#333433;
   }

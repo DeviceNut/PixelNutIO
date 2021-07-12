@@ -10,7 +10,7 @@
   let appname = 'PixelNut!';
 
   // obtained from the device:
-  let max_strands = 3;      // number present
+  let max_strands = 4;      // number present
   let max_tracks = 4;       // max possible
   let max_layers = 16;      // max possible
   let max_pixels = [];      // max pixels list

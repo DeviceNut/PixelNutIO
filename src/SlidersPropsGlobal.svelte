@@ -7,6 +7,12 @@
 
   // setprops is called with mouse event
   const setprops = ()=> { cmdSetProps(); }
+  const docheck = ()=>
+  {
+    // if turning ON the override send the props
+    // (doOverride value here is before the toggle)
+    if (!$pStrand.doOverride) cmdSetProps();
+  }
 
   let bgc = '';
   $: bgc = $pStrand.doOverride ? '#222322' : '#111211'
@@ -21,7 +27,7 @@
       name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
-      disabled={$pStrand.doOverride}
+      disabled={!$pStrand.doOverride}
       max={359}
     />
 
@@ -29,14 +35,14 @@
       name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
-      disabled={$pStrand.doOverride}
+      disabled={!$pStrand.doOverride}
     />
 
     <SliderVal
       name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.percentPixs}
-      disabled={$pStrand.doOverride}
+      disabled={!$pStrand.doOverride}
     />
 
   </Column>
@@ -44,7 +50,7 @@
     <Checkbox
       labelText="Override"
       bind:checked={$pStrand.doOverride}
-      on:change={setprops}
+      on:change={docheck}
     />
   </Column>
 </Row>

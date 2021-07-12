@@ -9,10 +9,10 @@
 
   export let tracknum = 0;
 
-  let setBright = () => { cmdSetBright(tracknum, layernum); }
-  let setDelay  = () => { cmdSetDelay( tracknum, layernum); }
-  let setStart  = () => { cmdSetStart( tracknum, layernum); }
-  let setFinish = () => { cmdSetFinish(tracknum, layernum); }
+  const setBright = () => { cmdSetBright(tracknum, 1); }
+  const setDelay  = () => { cmdSetDelay( tracknum, 1); }
+  const setStart  = () => { cmdSetStart( tracknum, 1); }
+  const setFinish = () => { cmdSetFinish(tracknum, 1); }
 
   </script>
 

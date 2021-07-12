@@ -5,9 +5,19 @@
   export let name = "";
   export let min = 0;
   export let max = 100;
-  export let cur = 50;
+  export let cur = 0;
   export let disabled = undefined;
   export let onchange = 0;
+
+  let lastval = 0;
+  const dochange = () =>
+  {
+    if (lastval != cur) // on:change fires on each click!!
+    {
+      lastval = cur;
+      if (!disabled && onchange) onchange();
+    }
+  }
 
 </script>
 
@@ -16,7 +26,7 @@
   {min} {max}
   bind:value={cur}
   minLabel={name}
-  on:click={onchange}
+  on:change={dochange}
   maxLabel=" "
   hideTextInput
 />

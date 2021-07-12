@@ -1,10 +1,11 @@
 <script>
 
-  import { nStrands, customMode } from './globals.js';
+  import { nStrands } from './globals.js';
   import MultiStrands from "./MultiStrands.svelte"
-  import OperMode from "./OperMode.svelte"
-  import PanelPreBuilt from "./PanelPreBuilt.svelte";
+  import PanelBasic from "./PanelBasic.svelte";
   import PanelCustom from "./PanelCustom.svelte";
+
+  let doshow = true;
 
 </script>
 
@@ -12,21 +13,19 @@
 
   {#if ($nStrands > 1) }
     <MultiStrands/>
-  {/if}
+    <div class="divider"></div>
+    {/if}
 
-  <div style="margin-top:5px;"></div>
-
-  <OperMode/>
-
+  <PanelBasic/>
   <div class="divider"></div>
 
-  {#if $customMode}
+  <div class="bdiv" class:select={doshow} on:click={()=>{doshow = !doshow}} >
+    <span class="btext" >Customize Pattern </span>
+  </div>
+
+  {#if (doshow) }
     <PanelCustom/>
-  {:else}
-    <PanelPreBuilt/>
   {/if}
-
-  <div class="divider"></div>
 
 </main>
 
@@ -41,5 +40,19 @@
     margin-top: 10px;
     padding-top: 2px;
     background-color:#333433;
+  }
+  .bdiv {
+    margin-top: 10px;
+    padding: 5px;
+    text-align: center;
+    background-color:#333433;
+    cursor: pointer;
+  }
+  .select {
+    background-color:#555655;
+  }
+  .btext {
+    font-size: 1.2em;
+    color: white;
   }
 </style>

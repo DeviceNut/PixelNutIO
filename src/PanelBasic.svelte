@@ -31,10 +31,9 @@
 </script>
 
 <Grid>
-  <Row>
+  <Row style="margin-top: 10px;">
+    <p style="margin: 7px 12px 0 0;">Prebuilt Pattern:</p>
     <Dropdown
-      type="inline"
-      titleText="Pattern:"
       on:select={didselect}
       bind:selectedIndex={$curPatternID}
       bind:items={$aPatterns}
@@ -57,24 +56,23 @@
     </Modal>
   </Row>
 
-  <Row>
-    <SlidersMain/>
-    <SlidersPropsGlobal/>
-  </Row>
-
-  <Row>
+  <Row style="margin-top: 7px;">
     <Column style="margin-left: -15px;">
-    <SliderVal name='Force&nbsp;' />
 
-    <div style="margin-top: 15px; margin-bottom: 10px">
-      <Button
-        size="small"
-        kind="secondary"
-        on:click={dotrigger}
-        >Trigger
-      </Button>
-    </div>
+      <SlidersMain/>
+      <SlidersPropsGlobal/>
 
-  </Column>
-</Row>
+      <SliderVal name='Force&nbsp;' />
+
+      <div style="margin-top: 15px; margin-bottom: 10px">
+        <Button
+          size="small"
+          kind="secondary"
+          on:click={dotrigger}
+          >Trigger
+        </Button>
+      </div>
+
+    </Column>
+  </Row>
 </Grid>

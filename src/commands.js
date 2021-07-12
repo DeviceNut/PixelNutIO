@@ -82,6 +82,7 @@ function calcLayerID(track, layer)
 function dosend(str)
 {
   console.log(str);
+  //console.log(get(aStrands));
 }
 
 function sendCmd(cmdstr, cmdval)
@@ -99,7 +100,7 @@ function sendLayerCmd(id, cmdstr, cmdval)
   if (id >= 0)
   {
     let str = '';
-    str = str.concat(`${cmdStr_Modify}${layerid} `);
+    str = str.concat(`${cmdStr_Modify}${id} `);
     str = str.concat(`${cmdstr} `);
     str = str.concat(`${cmdStr_Modify}`);
     dosend(str);

@@ -85,36 +85,36 @@ export const patternsInit = () =>
   for (let s = 0; s < get(nStrands); ++s)
   {
     let strand = {...oneStrand};
-    //FIXME console.log('=====>', strand);
     strand.tactives = 1;
 
     if (s == curstrand)
       strand.selected = true;
 
+    let scount = get(nPixels)[s];
+
+    let tracks = [];
     for (let i = 0; i < get(nTracks); ++i)
     {
       let track = {...oneTrack};
-      track.num = i+1;
       track.drawProps = {...drawProps};
-  
+
       // must set these properties upon creation
-      track.drawProps.pixCount = get(nPixels)[strand];
       track.drawProps.pixStart = 0;
-      track.drawProps.pixEnd = track.drawProps.pixCount-1;
+      track.drawProps.pixEnd = scount-1;
+      track.drawProps.pixCount = scount;
   
       let layers = [];
       for (let j = 0; j < get(tLayers); ++j)
       {
         let layer = {...oneLayer};
-        layer.num = j+1;
-        layer.otrack = i;
         layers.push(layer);
       }
   
       track.layers = layers;
-      strand.tracks.push(track);
+      tracks.push(track);
     }
 
+    strand.tracks = tracks;
     slist.push(strand);
   }
 

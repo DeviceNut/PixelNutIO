@@ -1,34 +1,38 @@
 <script>
 
   import {
-    Grid, Row, Column,
-    TextInput, Button, Modal
+    Grid, Row,
+    TextInput, Button,
+    Modal, Dropdown
   } from "carbon-components-svelte";
 
-  import { nTracks, curPatternStr } from './globals.js';
+  import {
+    nTracks, aPatterns,
+    curPatternStr, curPatternID
+  } from './globals.js'
+
+  import { newPatternID } from "./patterns.js";
   import OneTrack from "./OneTrack.svelte"
   import SlidersMain from "./SlidersMain.svelte";
-  import DropPatterns from "./DropPatterns.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
 
   let open = false;
-  
-  const doshow = () =>
-  {
-    open = true;
-  }
+  let pid = $curPatternID;
+
+  const doshow = () => { open = true; }
 
   const doload = () =>
   {
     open = false;
+    curPatternID.set(pid);
+    newPatternID();
   }
 
-  const dosave = () =>
-  {
-  }
+  const dosave = () => {} // TODO
 
   const doclear = () =>
   {
+    curPatternID.set(0);
     curPatternStr.set('');
   }
 
@@ -96,15 +100,21 @@
 <Modal
   bind:open
   modalHeading="Load Pattern"
-  primaryButtonText="Set Pattern"
   secondaryButtonText="Cancel"
-  on:click:button--secondary={doload}
+  primaryButtonText="Set Pattern"
+  on:submit={doload}
+  on:click:button--secondary={()=>{open=false}}
   hasScrollingContent
   on:open
   on:close
   on:submit
   >
-  <DropPatterns/>
+  <Dropdown
+    type="inline"
+    titleText=""
+    bind:selectedIndex={pid}
+    bind:items={$aPatterns}
+  />
   <p>&nbsp;</p>
   <p>&nbsp;</p>
   <p>&nbsp;</p>

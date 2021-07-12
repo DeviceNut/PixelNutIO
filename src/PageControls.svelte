@@ -6,11 +6,8 @@
   import PanelPreBuilt from "./PanelPreBuilt.svelte";
   import PanelCustom from "./PanelCustom.svelte";
 
-  export let appname = '';
+</script>
 
-  </script>
-
-<p class="header">{appname}</p>
 <main>
 
   {#if ($nStrands > 1) }
@@ -38,14 +35,6 @@
     margin: 0 auto;
     max-width: 500px;
     background-color:black;
-  }
-  .header {
-    margin: 0 0 7px 0;
-    text-align:center;
-    font-style:italic;
-    font-family:'Trebuchet MS';
-    font-size:1.7em;
-    background-color:#333433;
   }
   .divider {
     margin-top: 10px;

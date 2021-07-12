@@ -1,10 +1,13 @@
 <script>
 
-import {Grid, Row, ContentSwitcher, Switch } from "carbon-components-svelte";
+  import {
+    Grid, Row,
+    ContentSwitcher, Switch
+  } from "carbon-components-svelte";
+
   import { customMode, customClear } from './globals.js';
 
   let selectedIndex = ($customMode ? 1 : 0);
-  let textBuiltins = ($customClear ? "PreBuilt" : "Reset");
 
   let didclick = () =>
   {
@@ -17,7 +20,7 @@ import {Grid, Row, ContentSwitcher, Switch } from "carbon-components-svelte";
 <Grid>
   <Row>
     <ContentSwitcher size="sm" on:click={didclick} bind:selectedIndex>
-      <Switch disabled={!$customClear} text={textBuiltins} />
+      <Switch disabled={!$customClear} text="PreBuilt" />
       <Switch text="Custom" />
     </ContentSwitcher>
   </Row>

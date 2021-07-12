@@ -10,6 +10,7 @@
    }
    from './globals.js';
 
+  import Header from "./Header.svelte"
   import { makePatternsAndEffects } from './presets.js';
 
   import PageControls from "./PageControls.svelte"
@@ -80,4 +81,5 @@
 
 </script>
 
-<PageControls {appname}/>
+<Header {appname}/>
+<PageControls/>

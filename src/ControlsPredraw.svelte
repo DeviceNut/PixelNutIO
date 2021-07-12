@@ -9,6 +9,9 @@
   import { aEffectsPre } from './globals.js'
   import SliderVal from "./SliderVal.svelte"
 
+  export let tracknum = 0;
+  export let layernum = 0;
+
   let trigtype = "once";
   let repcount = 1;
   let mintime = 1;
@@ -68,8 +71,13 @@
 {/if}
 
 <div style="margin-top: 22px;"></div>
-<Checkbox labelText="Random Force" bind:checked={ranforce}></Checkbox>
+<Checkbox
+  labelText="Random Force"
+  bind:checked={ranforce}
+/>
+
 <SliderVal disabled={ranforce} name='Force&nbsp;' />
+
 <div style="margin-top:10px;"></div>
 <Button
   size="small"

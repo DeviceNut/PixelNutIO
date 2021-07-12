@@ -1,10 +1,6 @@
 <script>
  
-  import {
-    nTracks, aTracks,
-    tLayers, aLayers
-  }
-  from './globals.js';
+  import { pStrand, nTracks, tLayers } from './globals.js';
 
   export let tracknum = 0;
 
@@ -16,33 +12,30 @@
   function isAddDisabled()
   {
     if (istrack)
-         return ($aTracks >= $nTracks);
-    else return ($aLayers[tracknum-1] >= $tLayers);
+         return ($pStrand.tactives >= $nTracks);
+    else return ($pStrand.tracks[tracknum-1].lactives >= $tLayers);
   }
 
   function isDelDisabled()
   {
     if (istrack)
-         return ($aTracks <= 1);
-    else return ($aLayers[tracknum-1] <= 1);
+         return ($pStrand.tactives <= 1);
+    else return ($pStrand.tracks[tracknum-1].lactives <= 1);
   }
 
   const doadd = () =>
   {
     if (istrack)
     {
-      let n = $aTracks + 1;
+      let n = ++($pStrand.tactives);
       if (n >= $nTracks) add_disabled = true;
       del_disabled = false;
-      aTracks.set(n);
     }
     else
     {
-      let e = $aLayers;
-      let n = ++e[tracknum-1];
+      let n = ++($pStrand.tracks[tracknum-1].lactives);
       if (n >= $tLayers) add_disabled = true;
       del_disabled = false;
-      aLayers.set(e);
     }
   }
 
@@ -50,18 +43,15 @@
   {
     if (istrack)
     {
-      let n = $aTracks - 1;
+      let n = --($pStrand.tactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
-      aTracks.set(n);
     }
     else
     {
-      let e = $aLayers;
-      let n = --e[tracknum-1];
+      let n = --($pStrand.tracks[tracknum-1].lactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
-      aLayers.set(e);
     }
   }
 

@@ -1,10 +1,6 @@
 <script>
 
-  import {
-    cmdStr_Pause,
-    cmdStr_Resume,
-    sendCmd
-  } from "./patterns.js"
+  import { cmdSendPause } from "./commands.js"
 
   export let appname = '';
 
@@ -14,9 +10,7 @@
 
   let dopause = () =>
   {
-    if (isPaused = !isPaused)
-         sendCmd(cmdStr_Pause);
-    else sendCmd(cmdStr_Resume);
+    cmdSendPause(isPaused = !isPaused);
   }
 
   let goback = () => { history.back() }

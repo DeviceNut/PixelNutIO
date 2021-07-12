@@ -7,11 +7,12 @@
   } from "carbon-components-svelte";
 
   import {
-    aTracks, aPatterns,
+    pStrand,
+    aPatterns,
     curPatternStr, curPatternID
   } from './globals.js'
 
-  import { newPatternID } from "./patterns.js";
+  import { newPatternID } from "./commands.js";
   import OneTrack from "./OneTrack.svelte"
   import SlidersMain from "./SlidersMain.svelte";
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
@@ -87,7 +88,7 @@
   </Row>
 
   <div style="background-color: #444544;">
-    {#each Array($aTracks) as _,n}
+    {#each Array($pStrand.tactives) as _,n}
       <OneTrack tracknum={n+1} />
     {/each}
   </div>

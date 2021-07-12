@@ -7,9 +7,10 @@
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
   import { aPatterns, curPatternID } from './globals.js'
-  import { newPatternID } from "./patterns.js";
+  import { newPatternID } from "./commands.js";
+
   import SlidersMain from "./SlidersMain.svelte";
-  import SlidersProps from "./SlidersProps.svelte";
+  import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
   import SliderVal from "./SliderVal.svelte"
 
   const dotrigger = () => { console.log('Trigger!'); }
@@ -44,8 +45,8 @@
       hasIconOnly icon={Help32}
       iconDescription="Pattern description"
       tooltipPosition="right"
-      on:click={()=>open=true}>
-    </Button>
+      on:click={()=>open=true}
+    />
     <Modal
       bind:open
       passiveModal
@@ -58,12 +59,13 @@
 
   <Row>
     <SlidersMain/>
-    <SlidersProps {tracknum} {layernum} {extcontrol} />
+    <SlidersPropsGlobal/>
   </Row>
 
   <Row>
-    <Column style="margin-left: -25px;">
+    <Column style="margin-left: -15px;">
     <SliderVal name='Force&nbsp;' />
+
     <div style="margin-top: 15px; margin-bottom: 10px">
       <Button
         size="small"
@@ -72,6 +74,7 @@
         >Trigger
       </Button>
     </div>
+
   </Column>
 </Row>
 </Grid>

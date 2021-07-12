@@ -30,9 +30,9 @@
   {#if isopen }
     <Column style="margin-right: 15px; padding-top: 10px; padding-bottom: 15px; background-color: #111211;">
       {#if (layernum != 1) }
-        <ControlsPredraw/>
+        <ControlsPredraw {tracknum} {layernum} />
       {:else}
-        <ControlsDrawing {tracknum} {layernum} />
+        <ControlsDrawing {tracknum} />
       {/if}
     </Column>
   {/if}

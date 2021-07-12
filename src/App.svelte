@@ -16,7 +16,7 @@
   let max_pixels = [];      // max pixels list
 
   for (let i = 0; i < max_strands; ++i)
-    max_pixels.concat(300);
+    max_pixels.push(300);
 
   globalsInit(max_strands, max_tracks, max_layers, max_pixels);
   presetsInit();

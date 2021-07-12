@@ -1,41 +1,17 @@
 import { get } from 'svelte/store';
+
 import {
-  nStrands, nPixels,
-  nTracks, tLayers, aLayers,
+  nStrands, aStrands, idStrand, eStrands, pStrand,
+  nPixels, nTracks, tLayers,
   aPatterns, aEffectsDraw, aEffectsPre,
-  curPatternID, curPatternStr,
+  curPatternID, curPatternStr
 } from './globals.js';
 
-const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
-const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
-const pluginBit_USEFORCE    = 0x20;   // trigger force is used in effect
-const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
-const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
-
-const cmdStr_GetInfo        = "?";
-const cmdStr_GetSegments    = "?S";
-const cmdStr_GetPatterns    = "?P";
-const cmdStr_SetBright      = "%";
-const cmdStr_SetDelay       = ":";
-const cmdStr_SetFirst       = "Z";
-const cmdStr_SetStart       = "J";
-const cmdStr_SetFinish      = "K";
-const cmdStr_SetProps       = "=";
-const cmdStr_SetXmode       = "_";
-const cmdStr_SetName        = "@";
-const cmdStr_Trigger        = "!";
-const cmdStr_Pause          = "[";
-const cmdStr_Resume         = "]";
-const cmdStr_SegsEnable     = "#";
-const cmdStr_PopPattern     = "P";
-
-const cmdStr_Effect         = "E";
-const cmdStr_Modify         = "M";
-
-const defLayer =
+const oneLayer =
 {
-  num             : 0,      // relative to track, numbered from 1 (1=drawing)
-  otrack          : 0,      // index into all tracks to owning track
+  // not used for layer 1
+  solo            : false,  // true if currently solo
+  mute            : false,  // true if currently mute
 
   pluginID        : 0,      // effect plugin ID
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
@@ -48,105 +24,102 @@ const defLayer =
   trigForce       : 0,      // amount of force to apply (-1 for random)
   trigExtern      : false,  // true if external triggering is enabled for this layer
   trigSource      : -1,     // what other layer can trigger this layer (-1 for none)
+
+  cmdstr          : ''      // command string for the current settings
 }
 
-const defProps =
+const drawProps =
 {
   pixStart        : 0,      // start/end of range of pixels to be drawn (0...)
-  pixEnd          : 0,      // 
-  pixCount        : 0,      // actual number of pixels to use in this range
+  pixEnd          : 0,
 
-  pcentBright     : 0,      // percent brightness (0-MAX_PERCENTAGE)
+  pcentBright     : 100,    // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 0,      // determines msecs delay after each redraw
+
+  overHue         : false,  // true to allow global override
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
+
+  overWhite       : false,  // true to allow global override
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
 
+  overCount       : false,  // true to allow global override
+  pcentCount      : 100,    // percent of pixels affected in range
+                          
   goUpwards       : true,   // drawing direction (true for increasing pixel index)
   orPixelValues   : false,  // whether pixels overwrites (false) or are OR'ed (true)
 }
 
-const defTrack =
+const oneTrack =
 {
-  num             : 0,      // this track's number, from 1
-  layers          : [],     // list of DefLayers for this track
-  drawProps       : {},     // drawing properties for that drawing layer
+  solo            : false,  // true if currently solo
+  mute            : false,  // true if currently mute
+
+  lactives        : 1,      // current number of active layers (>=1)
+  layers          : [],     // list of 'oneLayer's for this track
+  drawProps       : {},     // drawing properties for first layer
 }
 
-let allTracks = [];
+const oneStrand =
+{
+  selected        : false,  // true if selected for modification
+
+                            // global per-strand settings:
+  pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
+  msecsDelay      : 50,     // determines msecs delay after each redraw
+  firstPixel      : 0,      // determines pixel to start drawing from
+
+  doOverride      : false,  // true to override local properties with:
+  degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
+  pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
+  pcentCount      : 100,    // percent of pixels affected in range
+
+  tactives        : 1,      // current number of active tracks (>=1)
+  tracks          : [],     // list of 'oneTrack's for this strand
+}
 
 export const patternsInit = () =>
 {
-  for (let s = 0; s < get(xStrands); ++i)
+  let curstrand = get(idStrand);
+  let slist = [];
 
-  for (let i = 0; i < get(nTracks); ++i)
+  for (let s = 0; s < get(nStrands); ++s)
   {
-    let track = {...defTrack};
-    track.num = i+1;
-    track.drawProps = {...defProps};
+    let strand = {...oneStrand};
+    //FIXME console.log('=====>', strand);
+    strand.tactives = 1;
 
-    track.drawProps.pixCount = get(nPixels)[strand];
-    track.drawProps.pixStart = 0;
-    track.drawProps.pixEnd = track.drawProps.pixCount-1;
+    if (s == curstrand)
+      strand.selected = true;
 
-    let layers = [];
-    for (let j = 0; j < get(tLayers); ++j)
+    for (let i = 0; i < get(nTracks); ++i)
     {
-      let layer = {...defLayer};
-      layer.num = j+1;
-      layer.otrack = i;
-      layers.concat(layer);
+      let track = {...oneTrack};
+      track.num = i+1;
+      track.drawProps = {...drawProps};
+  
+      // must set these properties upon creation
+      track.drawProps.pixCount = get(nPixels)[strand];
+      track.drawProps.pixStart = 0;
+      track.drawProps.pixEnd = track.drawProps.pixCount-1;
+  
+      let layers = [];
+      for (let j = 0; j < get(tLayers); ++j)
+      {
+        let layer = {...oneLayer};
+        layer.num = j+1;
+        layer.otrack = i;
+        layers.push(layer);
+      }
+  
+      track.layers = layers;
+      strand.tracks.push(track);
     }
 
-    track.layers = layers;
-    allTracks.concat(track);
+    slist.push(strand);
   }
-}
 
-function calcLayerID(track, layer)
-{
-  // calculate what pixelnut engine layerid is
-  let layerid = 0;
-  for (let i = 0; i < track-1; ++i) layerid += get(aLayers)[i];
-  layerid += layer-1;
-  return layerid;
-}
-
-function dosend(str)
-{
-  console.log(str);
-}
-
-function sendCmd(cmdstr, cmdval, track, layer)
-{
-  if (cmdval != undefined)
-  {
-    if ((track != undefined) && (layer != undefined))
-    {
-      // calculate what pixelnut engine layerid is
-      let layerid = 0;
-      for (let i = 0; i < track-1; ++i) layerid += get(aLayers)[i];
-      layerid += layer-1;
-
-      let str = '';
-      str = str.concat(`${cmdStr_Modify}${layerid} `);
-      str = str.concat(`${cmdstr}${cmdval} `);
-      str = str.concat(`${cmdStr_Modify} `);
-      dosend(str);
-    }
-    else dosend(`${cmdstr}${cmdval}`);
-  }
-  else dosend(cmdstr);
-}
-
-export const newPatternID = () =>
-{
-  let list = get(aPatterns);
-  let cmdstr = list[get(curPatternID)].cmd;
-  if (cmdstr)
-  {
-    dosend(cmdstr);
-    curPatternStr.set(cmdstr);
-  }
+  aStrands.set(slist);
+  pStrand.set(slist[curstrand]);
 }
 
 // given a list of tracks/layers,
@@ -185,9 +158,3 @@ export const makePattern = (tlist) =>
 
   return cmdstr;
 }
-
-export const sendBright = (track, layer) =>
-{
-  sendCmd(cmdStr_SetBright, track, layer);
-}
-

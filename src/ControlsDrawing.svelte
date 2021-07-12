@@ -1,33 +1,18 @@
 <script>
 
   import { Dropdown } from "carbon-components-svelte";
-
-  import {
-    cmdStr_SetBright,
-    cmdStr_SetDelay,
-    cmdStr_SetStart,
-    cmdStr_SetFinish,
-    sendCmd
-  } from "./patterns.js"
-
+  import { pStrand } from './globals.js';
+  import { cmdSetBright, cmdSetDelay, cmdSetStart, cmdSetFinish } from "./commands.js"
   import { aEffectsDraw } from './globals.js'
-  import SlidersProps from "./SlidersProps.svelte"
+  import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
   export let tracknum = 0;
-  export let layernum = 0;
 
-  let extcontrol = false;
-
-  let bright = 80;
-  let delay = 50;
-  let start = 0;
-  let finish = 100;
-
-  let setBright = () => { sendCmd(cmdStr_SetBright,   bright, tracknum, layernum); }
-  let setDelay  = () => { sendCmd(cmdStr_SetDelay,    delay,  tracknum, layernum); }
-  let setStart  = () => { sendCmd(cmdStr_SetStart,    start,  tracknum, layernum); }
-  let setFinish = () => { sendCmd(cmdStr_SetFinish,   finish, tracknum, layernum); }
+  let setBright = () => { cmdSetBright(tracknum, layernum); }
+  let setDelay  = () => { cmdSetDelay( tracknum, layernum); }
+  let setStart  = () => { cmdSetStart( tracknum, layernum); }
+  let setFinish = () => { cmdSetFinish(tracknum, layernum); }
 
   </script>
 
@@ -38,10 +23,27 @@
   bind:items={$aEffectsDraw}
 />
 
-<SliderVal name='Bright'      onchange={setBright} bind:cur={bright} />
-<SliderVal name='Delay&nbsp;' onchange={setDelay}  bind:cur={delay} />
+<SliderVal name='Bright'
+  onchange={setBright}
+  bind:cur={$pStrand.tracks[tracknum-1].drawProps.pcentBright}
+/>
 
-<SlidersProps {tracknum} {layernum} {extcontrol} />
+<SliderVal name='Delay&nbsp;'
+  onchange={setDelay}
+  bind:cur={$pStrand.tracks[tracknum-1].drawProps.msecsDelay}
+/>
 
-<SliderVal name='Start&nbsp;' onchange={setStart}  bind:cur={start} />
-<SliderVal name='Finish'      onchange={setFinish} bind:cur={finish} />
+<SlidersPropsLocal {tracknum} />
+
+<SliderVal name='Start&nbsp;'
+  onchange={setStart}
+  bind:cur={$pStrand.tracks[tracknum-1].drawProps.pixStart}
+/>
+
+<SliderVal name='Finish'
+  onchange={setFinish}
+  bind:cur={$pStrand.tracks[tracknum-1].drawProps.pixEnd}
+/>
+
+<!-- TODO add checkboxes for GoUpwards and OverwritePixels 
+-->

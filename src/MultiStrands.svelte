@@ -1,7 +1,7 @@
 <script>
 
   import { Grid, Row, Checkbox } from "carbon-components-svelte";
-  import { nStrands, eStrands, curStrandID } from './globals.js'
+  import { nStrands, aStrands, idStrand, pStrand } from './globals.js'
 
   let overwrite = false;
 
@@ -9,20 +9,22 @@
   {
     for (let i = 0; i < $nStrands; ++i)
     {
-      if (!overwrite && $eStrands[i] && ($curStrandID != i))
+      if (!overwrite && $aStrands[i].selected && ($idStrand != i))
       {
-        $eStrands[$curStrandID] = false;
-        curStrandID.set(i);
+        idStrand.set(i);
+        pStrand.set($aStrands[i]);
+        $pStrand.selected = false;
         break; // just one switch
       }
-      else if (overwrite && !$eStrands[i] && ($curStrandID == i))
+      else if (overwrite && !$aStrands[i].selected && ($idStrand == i))
       {
         // disabled what was current strand, so set to first enabled one
         for (let j = 0; j < $nStrands; ++j)
         {
-          if ($eStrands[j])
+          if ($aStrands[j].selected)
           {
-            curStrandID.set(j);
+            idStrand.set(j);
+            pStrand.set($aStrands[j]);
             break;
           }
         }
@@ -37,9 +39,9 @@
     if (!(overwrite = !overwrite))
     {
       for (let i = 0; i < $nStrands; ++i)
-        $eStrands[i] = false;
+        $aStrands[i].selected = false;
 
-      $eStrands[$curStrandID] = true;
+      $pStrand.selected = true;
     }
   }
 
@@ -48,9 +50,18 @@
 <Grid>
   <Row>
     <p style="margin-right:17px;">Strands:</p>
-    {#each $eStrands as _,n}
-      <Checkbox on:check={checkenables} labelText={n+1} bind:checked={$eStrands[n]}/>
+
+    {#each $aStrands as _,n}
+      <Checkbox
+        labelText={n+1}
+        on:check={checkenables}
+        bind:checked={$aStrands[n].selected}
+      />
     {/each}
-    <Checkbox on:check={checkowrite} labelText="Combine" />
+
+    <Checkbox
+    labelText="Combine"
+      on:check={checkowrite}
+    />
   </Row>
 </Grid>

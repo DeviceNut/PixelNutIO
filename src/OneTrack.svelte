@@ -1,7 +1,7 @@
 <script>
  
   import { Row, Column } from "carbon-components-svelte";
-  import { aLayers } from './globals.js';
+  import { pStrand } from './globals.js';
   import Revealer from "./Revealer.svelte";
   import ButtonsSoloMute from "./ButtonsSoloMute.svelte";
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
@@ -24,7 +24,7 @@
   </Column>
 </Row>
 <div style="display:{tstate};">
-  {#each Array($aLayers[tracknum-1]) as _,n}
+  {#each Array($pStrand.tracks[tracknum-1].lactives) as _,n}
     <div style="margin-left:20px; display:{tstate};">
       <OneLayer {tracknum} layernum={n+1} />
     </div>

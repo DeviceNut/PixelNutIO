@@ -5,9 +5,8 @@
     TextInput, Button,
   } from "carbon-components-svelte";
 
-  import { pStrand, curPatternStr } from './globals.js'
-  import { cmdClearPattern } from './cmdmain.js';
-  import { userSetPatternStr } from './cmduser.js';
+  import { pStrand, refreshCmdStr } from './globals.js'
+  import { userSetPatternStr, userClearPattern } from './cmduser.js';
 
   import OneTrack from "./OneTrack.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
@@ -15,7 +14,17 @@
   const dosave = () => {} // TODO
   const dosend = () => {} // TODO
 
-  const doclear = () => { cmdClearPattern(); }
+  const doclear = () => { userClearPattern(); }
+
+  // hack to force updating display of command string
+  // after change the value of sliders, for some reason
+  $: {
+    if ($refreshCmdStr)
+    {
+      $pStrand.patternStr = $pStrand.patternStr;
+      $refreshCmdStr = false;
+    }
+  } 
 
 </script>
 
@@ -26,7 +35,7 @@
     <TextInput
       size="sm"
       on:change={userSetPatternStr}
-      bind:value={$curPatternStr}
+      bind:value={$pStrand.patternStr}
     />
     <div class="buttons">
       <Button

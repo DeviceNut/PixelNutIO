@@ -1,6 +1,6 @@
 <script>
 
-  import { cmdSendPause } from "./cmdmain.js"
+  import { userSendPause } from "./cmduser.js"
 
   export let appname = '';
 
@@ -10,7 +10,7 @@
 
   const dopause = () =>
   {
-    cmdSendPause(isPaused = !isPaused);
+    userSendPause(isPaused = !isPaused);
   }
 
   const goback = () => { history.back() }

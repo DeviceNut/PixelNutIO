@@ -7,14 +7,7 @@
 
   // setprops is called with mouse event
   const setprops = ()=> { userSetProps(); }
-  const docheck = ()=>
-  {
-    // value here is before the toggle
-    let enable = !$pStrand.doOverride;
-
-    userSetOverMode(enable);
-    if (enable) userSetProps();
-  }
+  const docheck  = ()=> { userSetOverMode(); }
 
   let bgc = '';
   $: bgc = $pStrand.doOverride ? '#222322' : '#111211'
@@ -47,7 +40,7 @@
   </Column>
   <Column>
     <Checkbox labelText="Override"
-      on:change={docheck}
+      on:check={docheck}
       bind:checked={$pStrand.doOverride}
     />
   </Column>

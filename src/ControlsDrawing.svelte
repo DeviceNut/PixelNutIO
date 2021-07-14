@@ -1,13 +1,22 @@
 <script>
 
-  import { Row, Dropdown, Checkbox } from "carbon-components-svelte";
-  import { pStrand, aEffectsDraw } from './globals.js';
+  import {
+    Row,
+    Dropdown, Checkbox
+  } from "carbon-components-svelte";
+
+  import {
+    pStrand,
+    aEffectsDraw
+  } from './globals.js';
+
   import {
     userSetDrawEffect,
     userSetBright, userSetDelay,
     userSetStart, userSetFinish,
     userSetOwrite, userSetDirect
   } from "./cmduser.js"
+
   import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
@@ -35,11 +44,7 @@
       $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
     }
   }
-
-  let setdir = 0;
-  let overwrite = 0;
-
-  </script>
+</script>
 
 <Row style="margin: 3px 0 5px 0;">
   <p style="margin: 7px 12px 0 0;">Draw Effect:</p>

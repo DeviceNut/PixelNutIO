@@ -11,10 +11,11 @@ import { writable } from 'svelte/store'
 //    with the Solo/Mute buttons.
 
 export let nStrands       = writable(0);      // number of physical strands
-export let eStrands       = writable(1);      // number of strands currently selected
+export let eStrands       = writable([]);     // array of current strand enables
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
+export let dStrands       = writable([]);     // used to hold current device values
 export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
-export let pStrand        = writable([]);     // "points" to current strand
+export let pStrand        = writable([]);     // "points" to current strand in aStrands
 
 export let nPixels        = writable([]);     // array of pixel counts by strand
 export let maxPixels      = writable(0);      // max pixel count across strands
@@ -26,8 +27,7 @@ export let aPatterns      = writable([]);     // list of all patterns
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsFilter = writable([]);     // list of all filter effects
 
-export let curPatternID   = writable(0);      // else current pattern index
-export let curPatternStr  = writable('');     // current pattern string
+export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
 
 export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
 {

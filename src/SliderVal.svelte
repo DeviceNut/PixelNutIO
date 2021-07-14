@@ -10,20 +10,8 @@
   export let onchange = 0;
   export let dolabels = false;
 
-  let minLabel = ' ';
   let maxLabel = ' ';
-
   $: maxLabel = dolabels ? max : ' ';
-
-  let lastval = 0;
-  const dochange = () =>
-  {
-    if (lastval != cur) // on:change fires on each click!!
-    {
-      lastval = cur;
-      if (!disabled) onchange();
-    }
-  }
 
 </script>
 
@@ -32,7 +20,7 @@
   {min} {max}
   bind:value={cur}
   minLabel={name}
-  on:change={dochange}
+  on:change={onchange}
   {maxLabel}
   hideTextInput
 />

@@ -1,36 +1,11 @@
 import { get } from 'svelte/store';
 
 import {
-  pStrand,
-  aEffectsDraw, aEffectsFilter,
-  curPatternStr,
-} from './globals.js';
-
-import {
   overBits_DegreeHue   ,
   overBits_PcentWhite  ,
   overBits_PixCount    ,
-  cmdStr_GetInfo       ,
-  cmdStr_GetSegments   ,
-  cmdStr_GetPatterns   ,
-  cmdStr_DeviceName    ,
-  cmdStr_PullTrigger   ,
-  cmdStr_Pause         ,
-  cmdStr_Resume        ,
-  cmdStr_SetBright     ,
-  cmdStr_SetDelay      ,
-  cmdStr_SetFirst      ,
-  cmdStr_SetProps      ,
-  cmdStr_SetXmode      ,
-  cmdStr_AddrStrand    ,
-  cmdStr_AddrLayer     ,
-  cmdStr_Clear         ,
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
-  cmdStr_PcentFirst    ,
-  cmdStr_PixStart      ,
-  cmdStr_PixCount      ,
-  cmdStr_PixFirst      ,
   cmdStr_Effect        ,
   cmdStr_Bright        ,
   cmdStr_Delay         ,
@@ -49,13 +24,55 @@ import {
   cmdStr_Go            
   } from './pixelnut.js';
 
+import {
+  pStrand,
+  aEffectsDraw, aEffectsFilter,
+  refreshCmdStr
+} from './globals.js';
+  
+export const makeOrideBits = (p, track) =>
+{
+  let bits = 0;
+
+  if (p.tracks[track].drawProps.overHue)
+    bits |= overBits_DegreeHue;
+
+  if (p.tracks[track].drawProps.overWhite)
+    bits |= overBits_PcentWhite;
+
+  if (p.tracks[track].drawProps.overCount)
+    bits |= overBits_PixCount;
+
+  return bits;
+}
+  
+// calculate what pixelnut engine layerid is
+export const makeLayerID = (track, layer) =>
+{
+  let layerid = 0;
+
+  if (track >= get(pStrand).tactives)
+  {
+    console.error(`No track=${track+1}`);
+    track = get(pStrand).tactives-1;
+  }
+
+  for (let i = 0; i < track; ++i)
+    layerid += get(pStrand).tracks[i].lactives;
+
+  if (layer >= get(pStrand).tracks[track].lactives)
+  {
+    console.error(`No layer=${layer+1}`);
+    layer = get(pStrand).tracks[track].lactives-1;
+  }
+
+  return layerid + layer;
+}
 
 function combineAllCmdStrs()
 {
   // combine all layers into single string
   let cmdstr = '';
-
-  console.log('Make Command String:');
 
   let strand = get(pStrand);
   for (let i = 0; i < strand.tactives; ++i)
@@ -71,9 +88,9 @@ function combineAllCmdStrs()
   }
 
   cmdstr = cmdstr.concat(`${cmdStr_Go}`);
-  curPatternStr.set(cmdstr);
+  get(pStrand).patternStr = cmdstr;
 
-  console.log(get(curPatternStr));
+  refreshCmdStr.set(true); // hack to force refresh
 }
 
 // create partial command string for track/layer
@@ -117,7 +134,7 @@ export const makeLayerCmdStr = (track, layer) =>
       if (pdraw.pcentCount != 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
   
-      let bits = makeOrideBits(track);
+      let bits = makeOrideBits(get(pStrand), track);
       if (bits != 0)
         cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
   
@@ -140,7 +157,7 @@ export const makeLayerCmdStr = (track, layer) =>
     {
       let tracknum = player.trigTrackNum;
       let layernum = player.trigLayerNum;
-      let tlayer = calcLayerID(tracknum-1, layernum-1);
+      let tlayer = makeLayerID(tracknum-1, layernum-1);
       cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
     }
   
@@ -167,7 +184,7 @@ export const makeLayerCmdStr = (track, layer) =>
     }
   }
   
-  console.log(`${track}:${layer}: ${cmdstr}`)
+  //console.log(`${track}:${layer}: ${cmdstr}`)
   player.cmdstr = cmdstr;
 }
 

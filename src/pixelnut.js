@@ -28,7 +28,7 @@ export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "M";    // layer index
 
 // Commands that form patterns        // value is:
-export const cmdStr_Clear         = "P ";   // none
+export const cmdStr_Clear         = "P";    // none
 export const cmdStr_PcentStart    = "J";    // percent of pixels **
 export const cmdStr_PcentLength   = "K";    // percent of pixels **
 export const cmdStr_PcentFirst    = "L";    // percent of pixel length ++

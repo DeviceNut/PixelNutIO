@@ -1,8 +1,8 @@
 import { get } from 'svelte/store';
 
 import {
-  nStrands, aStrands,
-  idStrand, pStrand,
+  nStrands, idStrand, pStrand,
+  eStrands, aStrands, dStrands,
   nTracks, tLayers, nPixels
 } from './globals.js';
 
@@ -69,10 +69,12 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-                            // global per-strand settings:
+  patternID       : 0,      // current pattern index
+  patternStr      : '',     // current pattern string
+  
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
-  firstPixel      : 0,      // determines pixel to start drawing from
+  firstPixel      : 1,      // determines pixel to start drawing from
 
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
@@ -85,17 +87,12 @@ const oneStrand =
   tracks          : [],     // list of 'oneTrack's for this strand
 }
 
-// creates default data for a single strand
-export const createStrandData = (sid) =>
+function makeNewStrand(s)
 {
+  let scount = get(nPixels)[s];
   let strand = {...oneStrand};
+
   strand.tactives = 1;
-
-  if (sid == get(idStrand))
-    strand.selected = true;
-
-  // pixel count is device specific
-  let scount = get(nPixels)[sid];
 
   let tracks = [];
   for (let i = 0; i < get(nTracks); ++i)
@@ -103,6 +100,7 @@ export const createStrandData = (sid) =>
     let track = {...oneTrack};
     track.drawProps = {...drawProps};
 
+    // must set these properties upon creation
     track.drawProps.pixStart = 0;
     track.drawProps.pixEnd = scount-1;
     track.drawProps.pixCount = scount;
@@ -119,21 +117,107 @@ export const createStrandData = (sid) =>
   }
 
   strand.tracks = tracks;
-  aStrands[sid] = strand;
-
-  if (sid == get(idStrand))
-    pStrand.set(strand);
+  return strand;
 }
 
 export const patternsInit = () =>
 {
+  const sid = get(idStrand);
   let slist = [];
+  let elist = [];
 
-  for (let sid = 0; sid < get(nStrands); ++sid)
-    slist.push([]);
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    const strand = makeNewStrand(s);
+    const select = (s == sid) ? true : false;
+    strand.selected = select;
+    slist.push(strand);
+    elist.push(select);
+  }
 
   aStrands.set(slist);
+  eStrands.set(elist);
+  pStrand.set(slist[sid]);
 
-  for (let sid = 0; sid < get(nStrands); ++sid)
-    createStrandData(sid);
+  slist = [];
+  for (let s = 0; s < get(nStrands); ++s)
+    slist.push(makeNewStrand(s));
+  dStrands.set(slist);
 }
+
+// copy all top level values from current strand
+// to all the other currently selected strands
+export const copyStrandTop = () =>
+{
+  const sid = get(idStrand);
+  const ps = get(pStrand);
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (s != sid)
+    {
+      const strand = get(aStrands)[s];
+      if (strand.selected)
+      {
+        strand.patternID   = ps.patternID;
+        strand.patternStr  = ps.patternStr;
+        strand.pcentBright = ps.pcentBright;
+        strand.msecsDelay  = ps.msecsDelay;
+        strand.firstPixel  = ps.firstPixel;
+        strand.doOverride  = ps.doOverride;
+        strand.degreeHue   = ps.degreeHue;
+        strand.pcentWhite  = ps.pcentWhite;
+        strand.pcentCount  = ps.pcentCount;
+        strand.forceValue  = ps.forceValue;
+      }
+      get(eStrands)[s] = strand.selected;
+    }
+  }
+}
+
+// copy values in entire layer from current strand
+// to all the other currently selected strands
+export const copyStrandLayer = (track, layer) =>
+{
+  const sid = get(idStrand);
+  const props = get(pStrand).tracks[track].drawProps;
+  const player = get(pStrand).tracks[track].layers[layer];
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (s != sid)
+    {
+      const strand = get(aStrands)[s];
+      if (strand.selected)
+      {
+        strand.tracks[track].layers[layer] = {...player};
+
+        if (layer == 0)
+          strand.tracks[track].drawProps = {...props};
+      }
+    }
+  }
+}
+
+// copy all values for current strand to all other selected ones
+export const copyStrand = () =>
+{
+  copyStrandTop();
+
+  for (let track = 0; track < get(pStrand).tactives; ++track)
+    for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
+      copyStrandLayer(track, layer);
+}
+
+// clears all the values for the current strand,
+// but don't change the selected value
+export const clearStrand = () =>
+{
+  let sid = get(idStrand);
+  let selected = get(aStrands)[sid].selected;
+  const strand = makeNewStrand(sid);
+  strand.selected = selected;
+  get(aStrands)[sid] = strand;
+  pStrand.set(strand);
+}
+

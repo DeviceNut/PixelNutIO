@@ -22,12 +22,6 @@ export let maxPixels      = writable(0);      // max pixel count across strands
 export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
-export let sTracks        = writable([]);     // array of track solos (booleans)
-export let mTracks        = writable([]);     // array of track mutes (booleans)
-
-export let sLayers        = writable([[]]);   // double array of layer solos by track
-export let mLayers        = writable([[]]);   // double array of layer mutes by track
-
 export let aPatterns      = writable([]);     // list of all patterns
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsPre    = writable([]);     // list of all predraw effects
@@ -52,27 +46,4 @@ export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
   }
   nPixels.set(nlist);
   maxPixels.set(maxcount);
-
-
-  let list = [];  // create list of booleans
-  for (let i = 0; i < get(nTracks); ++i) list.push(false);
-  let list2 = [...list]; // make copy of this list
-  mTracks.set(list);     // all track starts off by being
-  sTracks.set(list2);    // not muted and solo disabled
-
-  list = [];  // create list of solo/mute enables
-  for (let j = 0; j < get(tLayers); ++j) list.push(false);
-
-  let alist1 = []; // create array of solo lists
-  let alist2 = []; // create array of mute lists
-  for (let i = 0; i < get(tLayers); ++i)
-  {
-    let newlist = [...list]; // make copy of list
-    alist1.push(newlist);
-    newlist = [...list];
-    alist2.push(newlist);
-  }
-
-  sLayers.set(alist1); // all track starts off by being
-  mLayers.set(alist2); // not muted and solo disabled
 }

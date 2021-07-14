@@ -1,10 +1,6 @@
 <script>
  
-  import {
-    sTracks, mTracks,
-    sLayers, mLayers
-  }
-  from './globals.js';
+  import { pStrand, nTracks, tLayers } from './globals.js';
 
   export let tracknum = 0;
   export let layernum = 0;
@@ -13,74 +9,78 @@
   let isMute = false;
 
   $: {
-    if (layernum == 0)
-         isSolo = $sTracks[tracknum-1];
-    else isSolo = $sLayers[tracknum-1][layernum-1];
-
-    if (layernum == 0)
-         isMute = $mTracks[tracknum-1];
-    else isMute = $mLayers[tracknum-1][layernum-1];
+    if (layernum == 0) // controls for a track
+    {
+      isSolo = $pStrand.tracks[tracknum-1].solo;
+      isMute = $pStrand.tracks[tracknum-1].mute;
+    }
+    else // for one of the predraw layers (layernum > 1)
+    {
+      isSolo = $pStrand.tracks[tracknum-1].layers[layernum-1].solo;
+      isMute = $pStrand.tracks[tracknum-1].layers[layernum-1].mute;
+    }
   }
 
   const dosolo = () =>
   {
     isSolo = !isSolo;
 
-    // setting a track to Solo turns on the Mute for all other tracks,
-    // whereas turning off Solo turns off all the other track Mutes
+    // setting a track to Solo turns off its Mute but turns it on for all other
+    // tracks, but turning off the Solos for all other tracks, whereas turning
+    // off the Solo turns off all Mutes for all tracks.
     if (layernum == 0)
     {
       if (isSolo)
       {
-        let elist = $sTracks;           // array of solos
-        for (let i = 0; i < elist.length; ++i) elist[i] = false;
-        elist[tracknum-1] = true;       // only solo this track
-        sTracks.set(elist);
+        $pStrand.tracks[tracknum-1].solo = true;
 
-        elist = $mTracks;               // array of mutes
-        for (let i = 0; i < elist.length; ++i) elist[i] = true;
-        elist[tracknum-1] = false;      // don't mute this track
-        mTracks.set(elist);
+        for (let i = 0; i < $nTracks; ++i)
+        {
+          if (i == tracknum-1) {
+            $pStrand.tracks[i].mute = false;
+          } else {
+            $pStrand.tracks[i].solo = false;
+            $pStrand.tracks[i].mute = true;
+          }
+        }
       }
       else
       {
-        let elist = $sTracks;           // array of solos
-        elist[tracknum-1] = false;      // turn off only this solo
-        sTracks.set(elist);
+        $pStrand.tracks[tracknum-1].solo = false;
 
-        elist = $mTracks;               // array of mutes
-        for (let i = 0; i < elist.length; ++i) elist[i] = false;
-        mTracks.set(elist);
+        for (let i = 0; i < $nTracks; ++i) {
+          $pStrand.tracks[i].mute = false;
+        }
       }
     }
-    // setting a layer to Solo turns on the Mute for all the (other)
-    //  pre-draw layers in the same track (but not the drawing layer,
-    //  which is always on), whereas turning it off turns them off.
+    // setting a layer to Solo turns it off all other layers (in the same track),
+    //  and turns on the mute for all pre-draw layers in the same track (but not
+    //  the drawing layer, which is always on).
+    //
+    // turning off a layer Solo turns off all mutes all all layers in this track.
     else
     {
       if (isSolo)
       {
-        let elist = $sLayers[tracknum-1]; // array of solos
-        for (let i = 0; i < elist.length; ++i) elist[i] = false;
-        elist[layernum-1] = true;         // only solo this layer
+        $pStrand.tracks[tracknum-1].layers[layernum-1].solo = true;
 
-        elist = $mLayers[tracknum-1];     // array of mutes
-        for (let i = 0; i < elist.length; ++i) elist[i] = true;
-        elist[layernum-1] = false;        // don't mute this track
-
-        // trigger update without setting entire double array
-        $mLayers[tracknum-1][layernum-1] = false;
+        for (let i = 0; i < $tLayers; ++i)
+        {
+          if (i == layernum-1) {
+            $pStrand.tracks[tracknum-1].layers[i].mute = false;
+          } else {
+            $pStrand.tracks[tracknum-1].layers[i].solo = false;
+            $pStrand.tracks[tracknum-1].layers[i].mute = true;
+          }
+        }
       }
       else
       {
-        let elist = $sLayers[tracknum-1]; // array of solos
-        elist[layernum-1] = false;        // turn off only this solo
+        $pStrand.tracks[tracknum-1].layers[layernum-1].solo = false;
 
-        elist = $mLayers[tracknum-1];     // turn off all mutes for track
-        for (let i = 0; i < elist.length; ++i) elist[i] = false;
-
-        // trigger update without setting entire double array
-        $mLayers[tracknum-1][layernum-1] = false;
+        for (let i = 0; i < $tLayers; ++i) {
+          $pStrand.tracks[tracknum-1].layers[i].mute = false;
+        }
       }
     }
   }
@@ -89,15 +89,10 @@
   {
     isMute = !isMute;
 
-    if (layernum == 0) // enable/disable entire track
-    {
-      $mTracks[tracknum-1] = isMute;
-      //console.log(`Mute=${isMute} track #${tracknum}`);
-    }
-    else // enable/disable just one layer of a track
-    {
-      $mLayers[tracknum-1][layernum-1] = isMute;
-      //console.log(`Mute=${isMute} track #${tracknum} layer #${layernum}`);
+    if (layernum == 0) {
+      $pStrand.tracks[tracknum-1].mute = isMute;
+    } else {
+      $pStrand.tracks[tracknum-1].layers[layernum-1].mute = isMute;
     }
   }
 

@@ -1,6 +1,6 @@
 <script>
 
-  import { Dropdown } from "carbon-components-svelte";
+  import { Row, Dropdown } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
   import { cmdSetBright, cmdSetDelay, cmdSetStart, cmdSetFinish } from "./commands.js"
   import { aEffectsDraw } from './globals.js'
@@ -14,14 +14,18 @@
   const setStart  = () => { cmdSetStart( tracknum, 1); }
   const setFinish = () => { cmdSetFinish(tracknum, 1); }
 
-  </script>
+</script>
 
-<Dropdown
-  type="inline"
-  titleText="Effect:"
-  selectedIndex={0}
-  bind:items={$aEffectsDraw}
-/>
+<Row style="margin: 3px 0 5px 0;">
+  <p style="margin: 7px 12px 0 0;">Choose Effect:</p>
+  <div style="background-color: #333433;">
+    <Dropdown
+      type="inline"
+      selectedIndex={0}
+      bind:items={$aEffectsDraw}
+    />
+  </div>
+</Row>
 
 <SliderVal name='Bright'
   onchange={setBright}

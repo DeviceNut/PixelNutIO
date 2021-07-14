@@ -6,15 +6,12 @@
   } from "carbon-components-svelte";
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
-  import { aPatterns, curPatternID } from './globals.js'
-  import { newPatternID } from "./commands.js";
+  import { pStrand, aPatterns, curPatternID } from './globals.js'
+  import { newPatternID, cmdTrigger } from "./commands.js";
 
   import SlidersMain from "./SlidersMain.svelte";
   import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
   import SliderVal from "./SliderVal.svelte"
-
-  const dotrigger = () => { console.log('Trigger!'); }
-  const didselect = () => { newPatternID(); }
 
   /* BUG in tooltips: sliders knob bleeds through "whiting out" the text!
     <Tooltip style="margin-top:12px; float: right;"
@@ -32,9 +29,10 @@
 
 <Grid>
   <Row style="margin-top: 10px;">
-    <p style="margin: 7px 12px 0 0;">Prebuilt Pattern:</p>
+    <p style="margin: 7px 12px 0 0;">Choose Pattern:</p>
     <Dropdown
-      on:select={didselect}
+      size="lg"
+      on:select={newPatternID}
       bind:selectedIndex={$curPatternID}
       bind:items={$aPatterns}
     />
@@ -58,21 +56,36 @@
 
   <Row style="margin-top: 7px;">
     <Column style="margin-left: -15px;">
-
       <SlidersMain/>
       <SlidersPropsGlobal/>
-
-      <SliderVal name='Force&nbsp;' />
-
-      <div style="margin-top: 15px; margin-bottom: 10px">
-        <Button
-          size="small"
-          kind="secondary"
-          on:click={dotrigger}
-          >Trigger
-        </Button>
-      </div>
-
+      <Row>
+        <Column style="margin-top: 10px; max-width:300px">
+          <SliderVal name='Force&nbsp;'
+            bind:cur={$pStrand.pcentForce}
+          />
+        </Column>
+        <Column>
+          <div style="margin: 10px 0 10px 0;">
+            <button on:click={cmdTrigger} class="button">Trigger</button>
+          </div>
+        </Column>
+      </Row>
     </Column>
   </Row>
 </Grid>
+
+<style>
+  .button {
+    float: left;
+    padding: 5px;
+    margin-top: 3px;
+    border-radius: 5%;
+    color: white;
+    border: 1px solid #bbbcbb;
+    background-color:#555655;
+  }
+  .button:hover {
+    cursor: pointer;
+    background-color:#444544;
+  }
+</style>

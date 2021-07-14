@@ -15,7 +15,7 @@
 
 </script>
 
-<Row style="margin-top:7px; background-color: #111211;">
+<Row style="margin-top:7px; background-color:#111211;">
   <Column>
     <Revealer bind:isopen name='Track' num={tracknum} />
   </Column>

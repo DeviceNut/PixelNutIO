@@ -16,7 +16,7 @@ const oneLayer =
   pluginID        : 0,      // effect plugin ID
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
-                            // random auto triggering information:
+                            // for auto triggering:
   trigCount       : 0,      // number of times to trigger (-1 to repeat forever)
   trigDelayMin    : 0,      // min amount of delay before next trigger in seconds
   trigDelayRange  : 0,      // range of delay values possible (min...min+range)
@@ -72,6 +72,8 @@ const oneStrand =
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
   pcentCount      : 100,    // percent of pixels affected in range
+
+  pcentForce      : 50,     // force value for triggering
 
   tactives        : 1,      // current number of active tracks (>=1)
   tracks          : [],     // list of 'oneTrack's for this strand

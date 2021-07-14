@@ -6,6 +6,8 @@
   import PanelCustom from "./PanelCustom.svelte";
 
   let doshow = true;
+  let pstr = '';
+  $: pstr = (doshow ? "Hide Customizer" : "Show Customizer");
 
 </script>
 
@@ -19,13 +21,15 @@
   <PanelBasic/>
   <div class="divider"></div>
 
-  <div class="bdiv" class:select={doshow} on:click={()=>{doshow = !doshow}} >
-    <span class="btext" >Customize Pattern </span>
+  <div class:outline={doshow} style="margin-top: 7px;">
+    <div class="bdiv" class:select={doshow} on:click={()=>{doshow = !doshow}} >
+      <span class="btext" >{pstr}</span>
+    </div>
+  
+    {#if (doshow) }
+      <PanelCustom/>
+    {/if}
   </div>
-
-  {#if (doshow) }
-    <PanelCustom/>
-  {/if}
 
 </main>
 
@@ -41,15 +45,17 @@
     padding-top: 2px;
     background-color:#333433;
   }
+  .outline {
+    border: 2px solid #333433;
+  }
   .bdiv {
-    margin-top: 10px;
     padding: 5px;
     text-align: center;
-    background-color:#333433;
+    background-color:#555655;
     cursor: pointer;
   }
   .select {
-    background-color:#555655;
+    margin-top: -2px;
   }
   .btext {
     font-size: 1.2em;

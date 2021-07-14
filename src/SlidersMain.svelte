@@ -6,20 +6,17 @@
 
 </script>
 
-<SliderVal
-  name='Bright'
+<SliderVal name='Bright'
   onchange={cmdSetBright}
   bind:cur={$pStrand.pcentBright}
 />
 
-<SliderVal
-  name='Delay&nbsp;'
+<SliderVal name='Delay&nbsp;'
   onchange={cmdSetDelay}
   bind:cur={$pStrand.msecsDelay}
 />
 
-<SliderVal
-  name='Rotate'
+<SliderVal name='Rotate'
   onchange={cmdSetRotate}
   bind:cur={$pStrand.firstPixel}
   min={1}

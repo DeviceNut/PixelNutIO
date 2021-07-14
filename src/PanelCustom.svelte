@@ -23,31 +23,6 @@
     curPatternStr.set('');
   }
 
-  /*
-      <Button
-        style="margin-right:13px;"
-        size="small"
-        kind="secondary"
-        disabled
-        on:click={dosave}
-        >Save
-      </Button>
-      <Button
-        style="margin-right:13px;"
-        size="small"
-        kind="secondary"
-        disabled
-        on:click={dosend}
-        >Send
-      </Button>
-      <Button
-        style="margin-right:13px;"
-        size="small"
-        kind="secondary"
-        on:click={doclear}
-        >Clear
-      </Button>
-  */
 </script>
 
 <Grid>
@@ -87,9 +62,11 @@
       <OneTrack tracknum={n+1} />
     {/each}
   </div>
+
   <Row style="margin-top: 10px;">
     <ButtonsAddDel tracknum={0}/>
   </Row>
+
 </Grid>
 
 <style>

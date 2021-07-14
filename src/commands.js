@@ -82,7 +82,6 @@ function calcLayerID(track, layer)
 function dosend(str)
 {
   console.log(str);
-  //console.log(get(aStrands));
 }
 
 function sendCmd(cmdstr, cmdval)
@@ -167,6 +166,11 @@ export const cmdSetRotate = () =>
   copyStrandTop();
 }
 
+export const cmdSetOverMode = (enable) =>
+{
+  sendCmd(cmdStr_SetXmode, enable ? 1 : 0);
+}
+
 export const cmdSetProps = (track) =>
 {
   let layerid = calcLayerID(track, 1);
@@ -212,4 +216,9 @@ export const cmdSetFinish = (track, layer) =>
     copyStrandLayer(track, layer);
   }
   else cmdError(track, layer);
+}
+
+export const cmdTrigger = () =>
+{
+  sendCmd(cmdStr_Trigger, get(pStrand).pcentForce);
 }

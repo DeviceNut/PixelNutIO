@@ -1,6 +1,7 @@
 <script>
 
   import {
+    Row,
     Button, Checkbox, Dropdown,
     RadioButtonGroup, RadioButton,
   }
@@ -35,12 +36,16 @@
 
 </script>
 
-<Dropdown
-  type="inline"
-  titleText="Effect:"
-  selectedIndex={0}
-  bind:items={$aEffectsPre}
-/>
+<Row style="margin: 3px 0 5px 0;">
+  <p style="margin: 7px 12px 0 0;">Choose Effect:</p>
+  <div style="background-color: #333433;">
+    <Dropdown
+      type="inline"
+      selectedIndex={0}
+      bind:items={$aEffectsPre}
+    />
+  </div>
+</Row>
 
 <RadioButtonGroup
   orientation="vertical"
@@ -50,7 +55,7 @@
   >
   <RadioButton labelText="Once at startup" value="once" />
   <RadioButton labelText="Automatically" value="auto" />
-  <RadioButton labelText="External Source" value="ext" />
+  <RadioButton labelText="Manually" value="ext" />
   <RadioButton labelText="From Layer" value="layer" />
 </RadioButtonGroup>
 
@@ -70,18 +75,10 @@
   <div style="margin-top:-2px;"></div>
 {/if}
 
-<div style="margin-top: 22px;"></div>
+<div style="margin-top:22px;"></div>
 <Checkbox
   labelText="Random Force"
   bind:checked={ranforce}
 />
 
 <SliderVal disabled={ranforce} name='Force&nbsp;' />
-
-<div style="margin-top:10px;"></div>
-<Button
-  size="small"
-  kind="secondary"
-  on:click={dotrigger}
-  >Trigger
-</Button>

@@ -7,7 +7,7 @@
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
   import OneLayer from "./OneLayer.svelte"
 
-  export let track = 0;
+  export let track;
 
   let isopen = true;
   let tstate = '';

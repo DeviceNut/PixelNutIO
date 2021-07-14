@@ -6,8 +6,8 @@
   import ControlsDrawing from "./ControlsDrawing.svelte"
   import ControlsFilter from "./ControlsFilter.svelte"
 
-  export let track = 0;
-  export let layer = 0;
+  export let track;
+  export let layer;
 
   let isopen = true;
 

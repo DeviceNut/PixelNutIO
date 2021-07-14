@@ -18,6 +18,7 @@
     userSetFilterEffect,
     userSetTrigManual,
     userSetTrigLayer,
+    userSetTrigNums,
     userSetTrigType,
     userSetTrigRandom,
     userSetTrigCount,
@@ -28,12 +29,13 @@
 
   import SliderVal from "./SliderVal.svelte"
 
-  export let track = 0;
-  export let layer = 0;
+  export let track;
+  export let layer;
 
   const seteffect = () => { userSetFilterEffect(track, layer); }
   const setmanual = () => { userSetTrigManual(track, layer); }
   const setlayer  = () => { userSetTrigLayer(track, layer); }
+  const settnums  = () => { userSetTrigNums(track, layer); }
 
   $: {
     let tracknum = $pStrand.tracks[track].layers[layer].trigTrackNum;
@@ -119,14 +121,14 @@
     <input type="number"
       style="margin-left: 5px;"
       min="1" max={$nTracks}
-      on:change={setlayer}
+      on:change={settnums}
       bind:value={$pStrand.tracks[track].layers[layer].trigTrackNum}
       disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
     />
     <input type="number"
       style="margin-left: 5px;"
       min="1" max={$tLayers}
-      on:change={setlayer}
+      on:change={settnums}
       bind:value={$pStrand.tracks[track].layers[layer].trigLayerNum}
       disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
     />

@@ -3,7 +3,7 @@ import { get } from 'svelte/store';
 import {
   nStrands, idStrand, pStrand,
   eStrands, aStrands, dStrands,
-  nTracks, tLayers, nPixels
+  nTracks, tLayers
 } from './globals.js';
 
 import { MAX_FORCE } from "./pixelnut.js"
@@ -89,7 +89,6 @@ const oneStrand =
 
 function makeNewStrand(s)
 {
-  let scount = get(nPixels)[s];
   let strand = {...oneStrand};
 
   strand.tactives = 1;
@@ -99,11 +98,6 @@ function makeNewStrand(s)
   {
     let track = {...oneTrack};
     track.drawProps = {...drawProps};
-
-    // must set these properties upon creation
-    track.drawProps.pixStart = 0;
-    track.drawProps.pixEnd = scount-1;
-    track.drawProps.pixCount = scount;
 
     let layers = [];
     for (let j = 0; j < get(tLayers); ++j)

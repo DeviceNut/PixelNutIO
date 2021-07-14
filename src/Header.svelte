@@ -2,7 +2,7 @@
 
   import { userSendPause } from "./cmduser.js"
 
-  export let appname = '';
+  export let appname;
 
   let isPaused = false;
   let textPause = '';

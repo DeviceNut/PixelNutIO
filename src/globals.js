@@ -17,7 +17,7 @@ export let dStrands       = writable([]);     // used to hold current device val
 export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
 export let pStrand        = writable([]);     // "points" to current strand in aStrands
 
-export let nPixels        = writable([]);     // array of pixel counts by strand
+export let nPixels        = writable([]);     // array of pixel counts by strand (not used?) FIXME?
 export let maxPixels      = writable(0);      // max pixel count across strands
 
 export let nTracks        = writable(0);      // total number of tracks

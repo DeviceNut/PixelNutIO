@@ -70,7 +70,6 @@ export const parsePattern = (cmdstr) =>
 
   const cmds = cmdstr.split(/\s+/); // remove all spaces
   console.log('parse: ', cmds);
-  return;
 
   for (let cmd of cmds)
   {

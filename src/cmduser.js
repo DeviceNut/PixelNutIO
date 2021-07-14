@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 
 import {
   DRAW_LAYER,
+  MAX_BYTE_VALUE,
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
@@ -13,8 +14,6 @@ import {
   cmdStr_SetProps      ,
   cmdStr_SetXmode      ,
   cmdStr_Clear         ,
-  cmdStr_PcentStart    ,
-  cmdStr_PcentLength   ,
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
@@ -41,9 +40,10 @@ import {
 } from './patterns.js'
 
 import {
-  makeCmdStrs,
   makeLayerID,
   makeOrideBits,
+  makeLayerCmdStr,
+  makeEntireCmdStr
 } from './cmdmake.js'
 
 import { writeDevice } from './device.js'
@@ -70,14 +70,19 @@ export const sendCmd = (cmdstr) =>
   if (didone) writeDevice(cmdStr_AddrStrand.concat(sid));
 }
 
-export const sendCmdVal = (cmdstr, cmdval) =>
+export const sendEntireCmdStr = () =>
+{
+  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternStr));
+}
+
+function sendCmdVal(cmdstr, cmdval)
 {
   if (cmdval != undefined)
        sendCmd(cmdstr.concat(cmdval, ' '));
   else sendCmd(cmdstr);
 }
 
-export const sendLayerCmd = (id, cmdstr, cmdval) =>
+function sendLayerCmd(id, cmdstr, cmdval)
 {
   if (cmdval != undefined)
     cmdstr = cmdstr.concat(cmdval);
@@ -92,16 +97,11 @@ export const sendLayerCmd = (id, cmdstr, cmdval) =>
   else sendCmd(cmdstr);
 }
 
-export const sendLayerCmds = (id, cmdstr1, cmdval1, cmdstr2, cmdval2) =>
+function updateLayerVals(track, layer)
 {
-  cmdstr1 = cmdstr1.concat(cmdval1);
-  cmdstr2 = cmdstr2.concat(cmdval2);
-
-  let str = `${cmdStr_AddrLayer}${id} `;
-  str = str.concat(`${cmdstr1} `);
-  str = str.concat(`${cmdstr2} `);
-  str = str.concat(`${cmdStr_AddrLayer}`);
-  sendCmd(str);
+  makeLayerCmdStr(track, layer);
+  copyStrandLayer(track, layer);
+  makeEntireCmdStr();
 }
 
 // Commands from Header:
@@ -116,13 +116,24 @@ export const userSendPause = (enable) =>
 
 export const userStrandCombine = (combine) =>
 {
-  if (!combine) // user turned of combine
+  if (!combine) // user turned off combine
   {
     // must disable all but the current one
     for (let i = 0; i < get(nStrands); ++i)
-      get(aStrands)[i].selected = false;
+    {
+      if (i == get(idStrand))
+      {
+        get(aStrands)[i].selected = true;
+        get(eStrands)[i] = true;
+      }
+      else
+      {
+        get(aStrands)[i].selected = false;
+        get(eStrands)[i] = false;
+      }
+    }
 
-    get(pStrand).selected = true;
+    aStrands.set(get(aStrands)); // triggers update
   }
 }
 
@@ -153,6 +164,9 @@ export const userStrandSelect = (combine) =>
       }
       else if (nowon && combine && (s != cur))
       {
+        get(eStrands)[cur] = true;
+        copyStrand();
+
         // mirror current strand by sending entire current command to newly selected strand
         writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternStr));
       }
@@ -173,7 +187,7 @@ export const userStrandSelect = (combine) =>
       {
         // must resend entire command string
         // after having all strands disabled
-        sendCmd(get(pStrand).patternStr);
+        sendEntireCmdStr();
       }
       else
       {
@@ -194,7 +208,7 @@ export const userSetPatternID = () =>
   let cmdstr = get(aPatterns)[get(pStrand).patternID].cmd;
   if (cmdstr != '')
   {
-    //FIXME if (parsePattern(cmdstr)) // sets vars for current strand
+    if (parsePattern(cmdstr)) // sets vars for current strand
     {
       // display new pattern on all selected strands
       get(pStrand).patternStr = cmdstr;
@@ -202,7 +216,7 @@ export const userSetPatternID = () =>
       sendCmd(cmdstr);
     }
     // shouldn't happen: all pre-builts are valid
-    //else console.error('Parse Failed: ', cmdstr);
+    else console.error('Parse Failed: ', cmdstr);
   }
 }
 
@@ -210,28 +224,26 @@ export const userSetBright = (track) =>
 {
   if (track == undefined)
   {
-    let value = get(pStrand).pcentBright;
-    if (get(dStrands)[get(idStrand)].pcentBright != value)
+    let bright = get(pStrand).pcentBright;
+    if (get(dStrands)[get(idStrand)].pcentBright != bright)
     {
-      get(dStrands)[get(idStrand)].pcentBright = value;
+      get(dStrands)[get(idStrand)].pcentBright = bright;
 
       copyStrandTop();
-      sendCmdVal(cmdStr_SetBright, value);
+      sendCmdVal(cmdStr_SetBright, bright);
     }
   }
   else
   {
-    let value = get(pStrand).tracks[track].drawProps.pcentBright;
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright != value)
+    let bright = get(pStrand).tracks[track].drawProps.pcentBright;
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright != bright)
     {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = value;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
 
-      get(pStrand).patternStr = '';
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
+      updateLayerVals(track, DRAW_LAYER);
   
       let layerid = makeLayerID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_SetBright, value);
+      sendLayerCmd(layerid, cmdStr_SetBright, bright);
     }
   }
 }
@@ -240,52 +252,51 @@ export const userSetDelay = (track) =>
 {
   if (track == undefined)
   {
-    let value = get(pStrand).msecsDelay;
-    if (get(dStrands)[get(idStrand)].msecsDelay != value)
+    let delay = get(pStrand).msecsDelay;
+    if (get(dStrands)[get(idStrand)].msecsDelay != delay)
     {
-      get(dStrands)[get(idStrand)].msecsDelay = value;
+      get(dStrands)[get(idStrand)].msecsDelay = delay;
 
       copyStrandTop();
-      sendCmdVal(cmdStr_SetDelay, value);
+      sendCmdVal(cmdStr_SetDelay, delay);
     }
   }
   else
   {
-    let value = get(pStrand).tracks[track].drawProps.msecsDelay;
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay != value)
+    let delay = get(pStrand).tracks[track].drawProps.msecsDelay;
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay != delay)
     {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = value;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
 
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
+      updateLayerVals(track, DRAW_LAYER);
 
       let layerid = makeLayerID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_SetDelay, value);
+      sendLayerCmd(layerid, cmdStr_SetDelay, delay);
     }
   }
 }
 
 export const userSetRotate = () =>
 {
-  let value = get(pStrand).firstPixel;
-  if (get(dStrands)[get(idStrand)].firstPixel != value)
+  let firstp = get(pStrand).firstPixel;
+  if (get(dStrands)[get(idStrand)].firstPixel != firstp)
   {
-    get(dStrands)[get(idStrand)].firstPixel = value;
+    get(dStrands)[get(idStrand)].firstPixel = firstp;
 
     copyStrandTop();
-    sendCmdVal(cmdStr_SetFirst, value);
+    sendCmdVal(cmdStr_SetFirst, firstp);
   }
 }
 
 export const userSetOverMode = () =>
 {
-  let value = get(pStrand).doOverride;
-  if (get(dStrands)[get(idStrand)].doOverride != value)
+  let oride = get(pStrand).doOverride;
+  if (get(dStrands)[get(idStrand)].doOverride != oride)
   {
-    get(dStrands)[get(idStrand)].doOverride = value;
+    get(dStrands)[get(idStrand)].doOverride = oride;
 
-    sendCmdVal(cmdStr_SetXmode, value ? 1 : 0);
-    if (value) userSetProps();
+    sendCmdVal(cmdStr_SetXmode, oride ? 1 : 0);
+    if (oride) userSetProps();
   }
 }
 
@@ -293,17 +304,17 @@ export const userSetProps = (track) =>
 {
   if (track == undefined)
   {
-    let hue = get(pStrand).degreeHue;
+    let hue   = get(pStrand).degreeHue;
     let white = get(pStrand).pcentWhite;
     let count = get(pStrand).pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].hue   != hue)   ||
-        (get(dStrands)[get(idStrand)].white != white) ||
-        (get(dStrands)[get(idStrand)].count != count))
+    if ((get(dStrands)[get(idStrand)].degreeHue   != hue)   ||
+        (get(dStrands)[get(idStrand)].pcentWhite != white) ||
+        (get(dStrands)[get(idStrand)].pcentCount != count))
     {
-      get(dStrands)[get(idStrand)].hue = hue;
-      get(dStrands)[get(idStrand)].white = white;
-      get(dStrands)[get(idStrand)].count = count;
+      get(dStrands)[get(idStrand)].degreeHue   = hue;
+      get(dStrands)[get(idStrand)].pcentWhite = white;
+      get(dStrands)[get(idStrand)].pcentCount = count;
 
       copyStrandTop();
       sendCmdVal(cmdStr_SetProps, `${hue} ${white} ${count}`);
@@ -311,16 +322,19 @@ export const userSetProps = (track) =>
   }
   else
   {
-    let hue = get(pStrand).tracks[track].drawProps.degreeHue;
+    let hue   = get(pStrand).tracks[track].drawProps.degreeHue;
     let white = get(pStrand).tracks[track].drawProps.pcentWhite;
     let count = get(pStrand).tracks[track].drawProps.pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.hue   != hue)   ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.white != white) ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.count != count))
+    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue   != hue)   ||
+        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite != white) ||
+        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount != count))
     {
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue   = hue;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
+
+      updateLayerVals(track, DRAW_LAYER);
   
       let layerid = makeLayerID(track, DRAW_LAYER);
       sendLayerCmd(layerid, cmdStr_SetProps, `${hue} ${white} ${count}`);
@@ -370,17 +384,17 @@ export const userClearPattern = () =>
 
 export const userSetDrawEffect = (track) =>
 {
-  let value = get(pStrand).tracks[track].layers[0].pluginIndex;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex != value)
+  let pindex = get(pStrand).tracks[track].layers[0].pluginIndex;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex != pindex)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex = pindex;
 
-    if (value > 0)
+    if (pindex > 0)
     {
-      // must recreate entire command string when an effect is changed
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
-      sendCmd(get(pStrand).patternStr);
+      updateLayerVals(track, DRAW_LAYER);
+
+      // must resend entire command when an effect is changed
+      sendEntireCmdStr();
     }
   }
 }
@@ -388,14 +402,13 @@ export const userSetDrawEffect = (track) =>
 export const userSetOverrides = (track) =>
 {
   let bits = makeOrideBits(get(pStrand), track);
-  if (makeOrideBits(get(pStrand), track) != bits)
+  if (makeOrideBits(get(dStrands)[get(idStrand)], track) != bits)
   {
-    get(pStrand).tracks[track].drawProps.overHue   = get(pStrand).tracks[track].drawProps.overHue;
-    get(pStrand).tracks[track].drawProps.overWhite = get(pStrand).tracks[track].drawProps.overWhite;
-    get(pStrand).tracks[track].drawProps.overCount = get(pStrand).tracks[track].drawProps.overCount;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue   = get(pStrand).tracks[track].drawProps.overHue;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = get(pStrand).tracks[track].drawProps.overWhite;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = get(pStrand).tracks[track].drawProps.overCount;
 
-    makeCmdStrs(track, DRAW_LAYER);
-    copyStrandLayer(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
   
     let layerid = makeLayerID(track, DRAW_LAYER);
     sendLayerCmd(layerid, cmdStr_OrideBits, bits);
@@ -405,16 +418,17 @@ export const userSetOverrides = (track) =>
 export const userSetStart = (track) =>
 {
   let start = get(pStrand).tracks[track].drawProps.pcentStart;
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart  != start)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart != start)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart = start;
 
     let length = get(pStrand).tracks[track].drawProps.pcentFinish - start;
     if (length >= 0)
     {
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
-      sendCmd(get(pStrand).patternStr); // must resend entire string
+      updateLayerVals(track, DRAW_LAYER);
+
+      // must resend entire command when start/fnish has changed
+      sendEntireCmdStr();
       return false;
     }
     else
@@ -436,9 +450,10 @@ export const userSetFinish = (track) =>
     let length = finish - start;
     if (length >= 0)
     {
-      makeCmdStrs(track, DRAW_LAYER);
-      copyStrandLayer(track, DRAW_LAYER);
-      sendCmd(get(pStrand).patternStr); // must resend entire string
+      updateLayerVals(track, DRAW_LAYER);
+
+      // must resend entire command when start/fnish has changed
+      sendEntireCmdStr();
       return false;
     }
     else
@@ -451,31 +466,29 @@ export const userSetFinish = (track) =>
 
 export const userSetOwrite = (track) =>
 {
-  let value = get(pStrand).tracks[track].drawProps.orPixelValues;
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues != value)
+  let orval = get(pStrand).tracks[track].drawProps.orPixelValues;
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues != orval)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues = value;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues = orval;
 
-    makeCmdStrs(track, DRAW_LAYER);
-    copyStrandLayer(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
 
     let layerid = makeLayerID(track, DRAW_LAYER);
-    sendLayerCmd(layerid, cmdStr_OwritePixs, (value ? 1 : 0));
+    sendLayerCmd(layerid, cmdStr_OwritePixs, (orval ? 1 : 0));
   }
 }
 
 export const userSetDirect = (track) =>
 {
-  let value = get(pStrand).tracks[track].drawProps.reverseDir;
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir != value)
+  let rdir = get(pStrand).tracks[track].drawProps.reverseDir;
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir != rdir)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = value;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
 
-    makeCmdStrs(track, DRAW_LAYER);
-    copyStrandLayer(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
 
     let layerid = makeLayerID(track, DRAW_LAYER);
-    sendLayerCmd(layerid, cmdStr_Direction, (value ? 0 : 1)); // 1 is default
+    sendLayerCmd(layerid, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
   }
 }
 
@@ -486,9 +499,10 @@ export const userSetFilterEffect = (track, layer) =>
   let pid = get(pStrand).tracks[track].layers[layer].pluginIndex;
   if (pid > 0)
   {
-    // must recreate entire command string when an effect is changed
-    makeCmdStrs(track, layer);
-    sendCmd(get(pStrand).patternStr);
+    updateLayerVals(track, layer);
+
+    // must resend entire command when an effect is changed
+    sendEntireCmdStr();
   }
 }
 
@@ -497,37 +511,55 @@ export const userSetTrigManual = (track, layer) =>
   // TODO: if not new firmware then must send
   //       entire command string if turning off
 
-  let value = get(pStrand).tracks[track].layers[layer].trigDoManual;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual != value)
+  let doman = get(pStrand).tracks[track].layers[layer].trigDoManual;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual != doman)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual = doman;
 
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
     let layerid = makeLayerID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TrigManual, (doman ? undefined : 0));
     // don't need to send value if enabling (1 is default)
-    sendLayerCmd(layerid, cmdStr_TrigManual, (value ? undefined : 0));
   }
 }
 
 export const userSetTrigLayer = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].trigDoLayer;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer != value)
+  let dolayer = get(pStrand).tracks[track].layers[layer].trigDoLayer;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer != dolayer)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = dolayer;
 
     let tracknum = get(pStrand).tracks[track].layers[layer].trigTrackNum;
     let layernum = get(pStrand).tracks[track].layers[layer].trigLayerNum;
 
     let tlayer = MAX_BYTE_VALUE; // indicates disabled state
-    if (value) tlayer = makeLayerID(tracknum-1, layernum-1);
+    if (dolayer) tlayer = makeLayerID(tracknum-1, layernum-1);
     
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
     let layerid = makeLayerID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
+  }
+}
+
+// if this is called then dolayer has already been enabled
+export const userSetTrigNums = (track, layer) =>
+{
+  let tracknum = get(pStrand).tracks[track].layers[layer].trigTrackNum;
+  let layernum = get(pStrand).tracks[track].layers[layer].trigLayerNum;
+
+  if ((get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum != tracknum) ||
+      (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum != layernum))
+  {
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tracknum;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = layernum;
+
+    updateLayerVals(track, layer);
+
+    let layerid = makeLayerID(track, layer);
+    let tlayer = makeLayerID(tracknum-1, layernum-1);
     sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
   }
 }
@@ -535,103 +567,122 @@ export const userSetTrigLayer = (track, layer) =>
 // must recreate entire command string if no-triggering is chosen
 export const userSetTrigType = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].trigTypeStr;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr != value)
+  let valstr = get(pStrand).tracks[track].layers[layer].trigTypeStr;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr != valstr)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = valstr;
 
-    if (value == 'none')
+    if (valstr == 'none')
     {
-      makeCmdStrs(track, layer);
-      sendCmd(get(pStrand).patternStr);
+      updateLayerVals(track, layer);
+
+      // must resend entire command to remove trigger
+      sendEntireCmdStr();
     }
-    else if (value == 'once')
+    else if (valstr == 'once')
     {
-      makeCmdStrs(track, layer);
-      copyStrandLayer(track, layer);
+      updateLayerVals(track, layer);
 
       let layerid = makeLayerID(track, layer);
-      sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for once
+      sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for 'once' type
     }
-    else if (value == 'auto') userSetTrigDrange(track, layer);
+    else if (valstr == 'auto')
+    {
+      if (!userSetTrigDrange(track, layer))
+      {
+        updateLayerVals(track, layer);
+
+        let layerid = makeLayerID(track, layer);
+        let range = get(pStrand).tracks[track].layers[layer].trigDelayRange;
+        sendLayerCmd(layerid, cmdStr_TriggerRange, range);
+      }
+    }
   }
 }
 
 export const userSetTrigRandom = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].trigDoRepeat;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat != value)
+  let dorep = get(pStrand).tracks[track].layers[layer].trigDoRepeat;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat != dorep)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = dorep;
 
-    if (value)
+    if (dorep)
     {
-      makeCmdStrs(track, layer);
-      copyStrandLayer(track, layer);
+      updateLayerVals(track, layer);
 
       let layerid = makeLayerID(track, layer);
       sendLayerCmd(layerid, cmdStr_TrigCount); // no value is set for random
     }
-    else userSetTrigCount(track, layer);
+    else if (!userSetTrigCount(track, layer))
+    {
+      updateLayerVals(track, layer);
+
+      let layerid = makeLayerID(track, layer);
+      let count = get(pStrand).tracks[track].layers[layer].trigRepCount;
+      sendLayerCmd(layerid, cmdStr_TrigCount, count);
+    }
   }
 }
 
+// return true if did set new value, else false
 export const userSetTrigCount = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].trigRepCount;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount != value)
+  let count = get(pStrand).tracks[track].layers[layer].trigRepCount;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount != count)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
 
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
     let layerid = makeLayerID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigCount, value);
+    sendLayerCmd(layerid, cmdStr_TrigCount, count);
+    return true;
   }
+  return false;
 }
 
 export const userSetTrigDmin = (track, layer) =>
 {
-  let dmvaluein = get(pStrand).tracks[track].layers[layer].trigDelayMin;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin != value)
+  let dmin = get(pStrand).tracks[track].layers[layer].trigDelayMin;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin != dmin)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = dmin;
 
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
     let layerid = makeLayerID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigMinTime, value);
+    sendLayerCmd(layerid, cmdStr_TrigMinTime, dmin);
   }
 }
 
+// return true if did set new value, else false
 export const userSetTrigDrange = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].trigDelayRange;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange != value)
+  let dmax = get(pStrand).tracks[track].layers[layer].trigDelayRange;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange != dmax)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = dmax;
 
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
     let layerid = makeLayerID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TriggerRange, value);
+    sendLayerCmd(layerid, cmdStr_TriggerRange, dmax);
+    return true;
   }
+  return false;
 }
 
 export const userSetForceValue = (track, layer) =>
 {
-  let value = get(pStrand).tracks[track].layers[layer].forceRandom;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom != value)
+  let isrand = get(pStrand).tracks[track].layers[layer].forceRandom;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom != isrand)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom = value;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom = isrand;
 
-    makeCmdStrs(track, layer);
-    copyStrandLayer(track, layer);
+    updateLayerVals(track, layer);
 
-    if (!value)
+    if (!isrand)
     {
       let layerid = makeLayerID(track, layer);
       let force = get(pStrand).tracks[track].layers[layer].forceValue;

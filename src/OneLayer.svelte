@@ -4,10 +4,10 @@
   import Revealer from "./Revealer.svelte";
   import ButtonsSoloMute from "./ButtonsSoloMute.svelte"
   import ControlsDrawing from "./ControlsDrawing.svelte"
-  import ControlsPredraw from "./ControlsPredraw.svelte"
+  import ControlsFilter from "./ControlsFilter.svelte"
 
-  export let tracknum = 0;
-  export let layernum = 0;
+  export let track = 0;
+  export let layer = 0;
 
   let isopen = true;
 
@@ -18,21 +18,21 @@
 
 <Row style="background-color: {bgc}">
   <Column>
-    <Revealer bind:isopen name='Layer' num={layernum} />
+    <Revealer bind:isopen name='Layer' num={layer+1} />
   </Column>
   <Column>
-    {#if (layernum != 1) }
-      <ButtonsSoloMute {tracknum} {layernum} />
+    {#if (layer != 0) }
+      <ButtonsSoloMute {track} {layer} />
     {/if}
   </Column>
 </Row>
 <Row>
   {#if isopen }
     <Column style="margin-right: 15px; padding-top: 10px; padding-bottom: 15px; background-color: #111211;">
-      {#if (layernum != 1) }
-        <ControlsPredraw {tracknum} {layernum} />
+      {#if (layer == 0) }
+        <ControlsDrawing {track} />
       {:else}
-        <ControlsDrawing {tracknum} />
+        <ControlsFilter {track} {layer} />
       {/if}
     </Column>
   {/if}

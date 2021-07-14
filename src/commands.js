@@ -3,9 +3,13 @@ import { get } from 'svelte/store';
 import {
   nStrands, aStrands, idStrand, eStrands, pStrand,
   nPixels, nTracks, tLayers,
-  aPatterns, aEffectsDraw, aEffectsPre,
+  aPatterns, aEffectsDraw, aEffectsFilter,
   curPatternID, curPatternStr,
 } from './globals.js';
+
+import { makeCmdStr, parsePattern } from './patterns.js';
+
+export const MAX_FORCE      = 1000;   // maximum force value
 
 const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
@@ -33,27 +37,10 @@ const cmdStr_Trigger        = "!";
 const cmdStr_Pause          = "[";
 const cmdStr_Resume         = "]";
 const cmdStr_SetStrand      = "#";
-const cmdStr_PopPattern     = "P";
+const cmdStr_Clear          = "P ";
 
 const cmdStr_Effect         = "E";
 const cmdStr_Modify         = "M";
-
-function copyStrandTop(track, layer)
-{
-  // copy all top level values from current strand
-  // to all the other currently selected strands
-}
-
-function copyStrandLayer(track, layer)
-{
-  // copy values in entire layer from current strand
-  // to all the other currently selected strands
-
-  if (layer == 1) // also copy drawprops
-  {
-
-  }
-}
 
 function cmdError(track, layer)
 {
@@ -73,22 +60,41 @@ function calcLayerID(track, layer)
 
   let layerid = 0;
 
-  for (let i = 0; i < track-1; ++i)
-    layerid += get(aStrands)[get(idStrand)].tracks[track-1].lactives;
+  for (let i = 0; i < track; ++i)
+    layerid += get(aStrands)[get(idStrand)].tracks[i].lactives;
 
-  return layerid + layer-1;
+  return layerid + layer;
 }
 
-function dosend(str)
+function copyStrandTop(track, layer)
 {
-  console.log(str);
+  // copy all top level values from current strand
+  // to all the other currently selected strands
+}
+
+function copyStrandLayer(track, layer)
+{
+  // copy values in entire layer from current strand
+  // to all the other currently selected strands
+
+  if (layer == 1) // also copy drawprops
+  {
+
+  }
+}
+
+// send command string to all selected strands
+function doSend(cmdstr)
+{
+  // TODO: all strands
+  console.log(cmdstr);
 }
 
 function sendCmd(cmdstr, cmdval)
 {
   if (cmdval != undefined)
-       dosend(cmdstr.concat(cmdval, ' '));
-  else dosend(cmdstr);
+       doSend(cmdstr.concat(cmdval, ' '));
+  else doSend(cmdstr);
 }
 
 function sendLayerCmd(id, cmdstr, cmdval)
@@ -102,27 +108,43 @@ function sendLayerCmd(id, cmdstr, cmdval)
     str = str.concat(`${cmdStr_Modify}${id} `);
     str = str.concat(`${cmdstr} `);
     str = str.concat(`${cmdStr_Modify}`);
-    dosend(str);
+    doSend(str);
   }
-  else dosend(cmdstr);
+  else doSend(cmdstr);
 }
 
-export const newPatternID = () =>
+// user just selected drawing effect
+// must regenerate entire pattern cmd
+export const newDrawEffect = (track) =>
+{
+}
+
+// user just selected predraw effect
+// must regenerate entire pattern cmd
+export const newFilterEffect = (track, layer) =>
+{
+}
+
+// user just selected prebuilt pattern
+export const cmdNewPattern = () =>
 {
   let list = get(aPatterns);
   let cmdstr = list[get(curPatternID)].cmd;
   if (cmdstr)
   {
-    dosend(cmdstr);
+    // must clear first, then set new pattern
+    doSend(cmdStr_Clear.concat(cmdstr));
+
     curPatternStr.set(cmdstr);
+    parsePattern(cmdstr);
   }
 }
 
 export const cmdSendPause = (enable) =>
 {
   if (enable)
-       dosend(cmdStr_Pause);
-  else dosend(cmdStr_Resume);
+       doSend(cmdStr_Pause);
+  else doSend(cmdStr_Resume);
 }
 
 export const cmdSetBright = (track, layer) =>
@@ -130,9 +152,10 @@ export const cmdSetBright = (track, layer) =>
   let layerid = calcLayerID(track, layer);
   if (layerid >= 0)
   {
-    let value = get(pStrand).tracks[track-1].drawProps.pcentBright;
+    let value = get(pStrand).tracks[track].drawProps.pcentBright;
     sendLayerCmd(layerid, cmdStr_SetBright, value);
     copyStrandLayer(track, layer);
+    makeCmdStr(track, 1);
   }
   else
   {
@@ -147,9 +170,10 @@ export const cmdSetDelay = (track, layer) =>
   let layerid = calcLayerID(track, layer);
   if (layerid >= 0)
   {
-    let value = get(pStrand).tracks[track-1].drawProps.msecsDelay;
+    let value = get(pStrand).tracks[track].drawProps.msecsDelay;
     sendLayerCmd(layerid, cmdStr_SetDelay, value);
     copyStrandLayer(track, layer);
+    makeCmdStr(track, 1);
   }
   else
   {
@@ -176,12 +200,13 @@ export const cmdSetProps = (track) =>
   let layerid = calcLayerID(track, 1);
   if (layerid >= 0)
   {
-    let hue = get(pStrand).tracks[track-1].drawProps.degreeHue;
-    let white = get(pStrand).tracks[track-1].drawProps.pcentWhite;
-    let count = get(pStrand).tracks[track-1].drawProps.pcentCount;
+    let hue = get(pStrand).tracks[track].drawProps.degreeHue;
+    let white = get(pStrand).tracks[track].drawProps.pcentWhite;
+    let count = get(pStrand).tracks[track].drawProps.pcentCount;
     let valstr = `${hue} ${white} ${count}`
     sendLayerCmd(layerid, cmdStr_SetProps, valstr);
     copyStrandLayer(track, 1);
+    makeCmdStr(track, 1);
   }
   else
   {
@@ -199,9 +224,10 @@ export const cmdSetStart = (track, layer) =>
   let layerid = calcLayerID(track, layer);
   if (layerid >= 0)
   {
-    let value = get(pStrand).tracks[track-1].drawProps.pixStart;
+    let value = get(pStrand).tracks[track].drawProps.pixStart;
     sendLayerCmd(layerid, cmdStr_SetStart, value);
     copyStrandLayer(track, layer);
+    makeCmdStr(track, 1);
   }
   else cmdError(track, layer);
 }
@@ -211,14 +237,21 @@ export const cmdSetFinish = (track, layer) =>
   let layerid = calcLayerID(track, layer);
   if (layerid >= 0)
   {
-    let value = get(pStrand).tracks[track-1].drawProps.pixEnd;
+    let value = get(pStrand).tracks[track].drawProps.pixEnd;
     sendLayerCmd(layerid, cmdStr_SetFinish, value);
     copyStrandLayer(track, layer);
+    makeCmdStr(track, 1);
   }
   else cmdError(track, layer);
 }
 
 export const cmdTrigger = () =>
 {
-  sendCmd(cmdStr_Trigger, get(pStrand).pcentForce);
+  sendCmd(cmdStr_Trigger, get(pStrand).forceValue);
+}
+
+export const cmdSetTriggerExt = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
 }

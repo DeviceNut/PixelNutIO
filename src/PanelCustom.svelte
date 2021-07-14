@@ -58,13 +58,13 @@
   </div>
 
   <div style="background-color: #444544;">
-    {#each Array($pStrand.tactives) as _,n}
-      <OneTrack tracknum={n+1} />
+    {#each Array($pStrand.tactives) as _,track}
+      <OneTrack {track} />
     {/each}
   </div>
 
   <Row style="margin-top: 10px;">
-    <ButtonsAddDel tracknum={0}/>
+    <ButtonsAddDel track={-1}/>
   </Row>
 
 </Grid>

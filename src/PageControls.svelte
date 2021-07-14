@@ -5,9 +5,9 @@
   import PanelBasic from "./PanelBasic.svelte";
   import PanelCustom from "./PanelCustom.svelte";
 
-  let doshow = true;
+  let doshow = false;
   let pstr = '';
-  $: pstr = (doshow ? "Hide Customizer" : "Show Customizer");
+  $: pstr = (doshow ? "^" : "Customizer");
 
 </script>
 
@@ -56,9 +56,10 @@
   }
   .select {
     margin-top: -2px;
+    padding: 2px 0 0 0;
   }
   .btext {
-    font-size: 1.2em;
+    font-size: 1em;
     color: white;
   }
 </style>

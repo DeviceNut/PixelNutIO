@@ -47,8 +47,8 @@
   </Column>
   <Column>
     <Checkbox labelText="Override"
-      bind:checked={$pStrand.doOverride}
       on:change={docheck}
+      bind:checked={$pStrand.doOverride}
     />
   </Column>
 </Row>

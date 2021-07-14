@@ -2,9 +2,9 @@
  
   import { pStrand, nTracks, tLayers } from './globals.js';
 
-  export let tracknum = 0;
+  export let track = 0;
 
-  let istrack = (tracknum == 0);
+  let istrack = (track == -1);
 
   let add_disabled = isAddDisabled();
   let del_disabled = isDelDisabled();
@@ -13,14 +13,14 @@
   {
     if (istrack)
          return ($pStrand.tactives >= $nTracks);
-    else return ($pStrand.tracks[tracknum-1].lactives >= $tLayers);
+    else return ($pStrand.tracks[track].lactives >= $tLayers);
   }
 
   function isDelDisabled()
   {
     if (istrack)
          return ($pStrand.tactives <= 1);
-    else return ($pStrand.tracks[tracknum-1].lactives <= 1);
+    else return ($pStrand.tracks[track].lactives <= 1);
   }
 
   const doadd = () =>
@@ -33,7 +33,7 @@
     }
     else
     {
-      let n = ++($pStrand.tracks[tracknum-1].lactives);
+      let n = ++($pStrand.tracks[track].lactives);
       if (n >= $tLayers) add_disabled = true;
       del_disabled = false;
     }
@@ -49,7 +49,7 @@
     }
     else
     {
-      let n = --($pStrand.tracks[tracknum-1].lactives);
+      let n = --($pStrand.tracks[track].lactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
     }

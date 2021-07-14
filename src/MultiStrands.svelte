@@ -54,15 +54,13 @@
     <p style="margin-right:17px;">Strands:</p>
 
     {#each $aStrands as _,n}
-      <Checkbox
-        labelText={n+1}
+      <Checkbox labelText={n+1}
         on:check={checkenables}
         bind:checked={$aStrands[n].selected}
       />
     {/each}
 
-    <Checkbox
-      labelText="Combine"
+    <Checkbox labelText="Combine"
       on:check={checkowrite}
     />
   </Row>

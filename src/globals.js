@@ -24,9 +24,8 @@ export let tLayers        = writable(0);      // total layers for each track
 
 export let aPatterns      = writable([]);     // list of all patterns
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
-export let aEffectsPre    = writable([]);     // list of all predraw effects
+export let aEffectsFilter = writable([]);     // list of all filter effects
 
-export let customClear    = writable(true);   // true when custom pattern is clear
 export let curPatternID   = writable(0);      // else current pattern index
 export let curPatternStr  = writable('');     // current pattern string
 

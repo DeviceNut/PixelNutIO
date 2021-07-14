@@ -2,22 +2,22 @@
  
   import { pStrand, nTracks, tLayers } from './globals.js';
 
-  export let tracknum = 0;
-  export let layernum = 0;
+  export let track = 0;
+  export let layer = 0;
 
   let isSolo = false;
   let isMute = false;
 
   $: {
-    if (layernum == 0) // controls for a track
+    if (layer == 0) // controls for a track
     {
-      isSolo = $pStrand.tracks[tracknum-1].solo;
-      isMute = $pStrand.tracks[tracknum-1].mute;
+      isSolo = $pStrand.tracks[track].solo;
+      isMute = $pStrand.tracks[track].mute;
     }
-    else // for one of the predraw layers (layernum > 1)
+    else // for one of the predraw layers (layer > 1)
     {
-      isSolo = $pStrand.tracks[tracknum-1].layers[layernum-1].solo;
-      isMute = $pStrand.tracks[tracknum-1].layers[layernum-1].mute;
+      isSolo = $pStrand.tracks[track].layers[layer].solo;
+      isMute = $pStrand.tracks[track].layers[layer].mute;
     }
   }
 
@@ -28,15 +28,15 @@
     // setting a track to Solo turns off its Mute but turns it on for all other
     // tracks, but turning off the Solos for all other tracks, whereas turning
     // off the Solo turns off all Mutes for all tracks.
-    if (layernum == 0)
+    if (layer == 0)
     {
       if (isSolo)
       {
-        $pStrand.tracks[tracknum-1].solo = true;
+        $pStrand.tracks[track].solo = true;
 
         for (let i = 0; i < $nTracks; ++i)
         {
-          if (i == tracknum-1) {
+          if (i == track) {
             $pStrand.tracks[i].mute = false;
           } else {
             $pStrand.tracks[i].solo = false;
@@ -46,7 +46,7 @@
       }
       else
       {
-        $pStrand.tracks[tracknum-1].solo = false;
+        $pStrand.tracks[track].solo = false;
 
         for (let i = 0; i < $nTracks; ++i) {
           $pStrand.tracks[i].mute = false;
@@ -62,24 +62,24 @@
     {
       if (isSolo)
       {
-        $pStrand.tracks[tracknum-1].layers[layernum-1].solo = true;
+        $pStrand.tracks[track].layers[layer].solo = true;
 
         for (let i = 0; i < $tLayers; ++i)
         {
-          if (i == layernum-1) {
-            $pStrand.tracks[tracknum-1].layers[i].mute = false;
+          if (i == layer) {
+            $pStrand.tracks[track].layers[i].mute = false;
           } else {
-            $pStrand.tracks[tracknum-1].layers[i].solo = false;
-            $pStrand.tracks[tracknum-1].layers[i].mute = true;
+            $pStrand.tracks[track].layers[i].solo = false;
+            $pStrand.tracks[track].layers[i].mute = true;
           }
         }
       }
       else
       {
-        $pStrand.tracks[tracknum-1].layers[layernum-1].solo = false;
+        $pStrand.tracks[track].layers[layer].solo = false;
 
         for (let i = 0; i < $tLayers; ++i) {
-          $pStrand.tracks[tracknum-1].layers[i].mute = false;
+          $pStrand.tracks[track].layers[i].mute = false;
         }
       }
     }
@@ -89,10 +89,10 @@
   {
     isMute = !isMute;
 
-    if (layernum == 0) {
-      $pStrand.tracks[tracknum-1].mute = isMute;
+    if (layer == 0) {
+      $pStrand.tracks[track].mute = isMute;
     } else {
-      $pStrand.tracks[tracknum-1].layers[layernum-1].mute = isMute;
+      $pStrand.tracks[track].layers[layer].mute = isMute;
     }
   }
 

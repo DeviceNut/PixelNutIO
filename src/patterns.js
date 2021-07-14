@@ -1,11 +1,11 @@
 import { get } from 'svelte/store';
 
 import {
-  nStrands, aStrands, idStrand, eStrands, pStrand,
+  nStrands, aStrands, idStrand, pStrand,
   nPixels, nTracks, tLayers,
-  aPatterns, aEffectsDraw, aEffectsPre,
-  curPatternID, curPatternStr
 } from './globals.js';
+
+import { MAX_FORCE } from "./commands.js"
 
 const oneLayer =
 {
@@ -16,14 +16,17 @@ const oneLayer =
   pluginID        : 0,      // effect plugin ID
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
+  externTrigs     : false,  // true if external triggering is enabled for this layer
+  forceRandom     : false,  // true if a random force is applied when triggering
+  forceValue      : MAX_FORCE/2, // percent force to apply (ignored if random)
+
                             // for auto triggering:
   trigCount       : 0,      // number of times to trigger (-1 to repeat forever)
   trigDelayMin    : 0,      // min amount of delay before next trigger in seconds
   trigDelayRange  : 0,      // range of delay values possible (min...min+range)
                             // these apply to both auto and manual triggering:
-  trigForce       : 0,      // amount of force to apply (-1 for random)
-  trigExtern      : false,  // true if external triggering is enabled for this layer
-  trigSource      : -1,     // what other layer can trigger this layer (-1 for none)
+
+  trigLayer       : 0,      // what other layer can trigger this layer
 
   cmdstr          : ''      // command string for the current settings
 }
@@ -45,7 +48,7 @@ const drawProps =
   overCount       : false,  // true to allow global override
   pcentCount      : 100,    // percent of pixels affected in range
                           
-  goUpwards       : true,   // drawing direction (true for increasing pixel index)
+  reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)
   orPixelValues   : false,  // whether pixels overwrites (false) or are OR'ed (true)
 }
 
@@ -73,7 +76,7 @@ const oneStrand =
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
   pcentCount      : 100,    // percent of pixels affected in range
 
-  pcentForce      : 50,     // force value for triggering
+  forceValue      : MAX_FORCE/2, // force value for triggering
 
   tactives        : 1,      // current number of active tracks (>=1)
   tracks          : [],     // list of 'oneTrack's for this strand
@@ -126,7 +129,7 @@ export const patternsInit = () =>
 
 // given a list of tracks/layers,
 // generate & return a pattern cmd
-export const makePattern = (tlist) =>
+export const makePattern = () =>
 {
   let cmdstr = '';
 
@@ -159,4 +162,16 @@ export const makePattern = (tlist) =>
   }
 
   return cmdstr;
+}
+
+// create partial command string for track/layer
+export const makeCmdStr = (track, layer) =>
+{
+
+}
+
+// parse the givenpattern command string
+// and set values for selected strands
+export const parsePattern = (cmdstr) =>
+{
 }

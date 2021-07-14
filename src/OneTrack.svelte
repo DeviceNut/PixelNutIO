@@ -7,7 +7,7 @@
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
   import OneLayer from "./OneLayer.svelte"
 
-  export let tracknum = 0;
+  export let track = 0;
 
   let isopen = true;
   let tstate = '';
@@ -17,21 +17,21 @@
 
 <Row style="margin-top:7px; background-color:#111211;">
   <Column>
-    <Revealer bind:isopen name='Track' num={tracknum} />
+    <Revealer bind:isopen name='Track' num={track+1} />
   </Column>
   <Column>
-    <ButtonsSoloMute {tracknum} layernum={0} />
+    <ButtonsSoloMute {track} layer={0} />
   </Column>
 </Row>
 <div style="display:{tstate};">
-  {#each Array($pStrand.tracks[tracknum-1].lactives) as _,n}
+  {#each Array($pStrand.tracks[track].lactives) as _,layer}
     <div style="margin-left:20px; display:{tstate};">
-      <OneLayer {tracknum} layernum={n+1} />
+      <OneLayer {track} {layer} />
     </div>
   {/each}
   <Row>
     <Column style="margin: 3px 0 4px 5px;">
-      <ButtonsAddDel {tracknum}/>
+      <ButtonsAddDel {track}/>
     </Column>
   </Row>
 </div>

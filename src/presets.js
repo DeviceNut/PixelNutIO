@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { aPatterns, aEffectsDraw, aEffectsPre } from './globals.js';
+import { aPatterns, aEffectsDraw, aEffectsFilter } from './globals.js';
 
 export let presetsInit = () =>
 {
@@ -21,33 +21,36 @@ export let presetsInit = () =>
     { id: '14', text: 'MashUp',             cmd:  'E1 T G' },
   ]);
 
+  // TODO: create these dynamically from device settings:
+  
   aEffectsDraw.set([
-    { id: '0', text: 'DrawAll' },
-    { id: '1', text: 'DrawPush' },
-    { id: '2', text: 'LightWave' },
-    { id: '3', text: 'CometHeads' },
-    { id: '4', text: 'FerrisWheel' },
-    { id: '5', text: 'BlockScanner' },
-    { id: '6', text: 'Twinkle' },
-    { id: '7', text: 'Blinky' },
-    { id: '8', text: 'Noise' },
+    { id: '0',  bits: 0x00, text: 'DrawAll' },
+    { id: '1',  bits: 0x00, text: 'DrawPush' },
+    { id: '2',  bits: 0x00, text: 'DrawStep' },
+    { id: '10', bits: 0x00, text: 'LightWave' },
+    { id: '20', bits: 0x00, text: 'CometHeads' },
+    { id: '30', bits: 0x00, text: 'FerrisWheel' },
+    { id: '40', bits: 0x00, text: 'BlockScanner' },
+    { id: '50', bits: 0x00, text: 'Twinkle' },
+    { id: '51', bits: 0x00, text: 'Blinky' },
+    { id: '52', bits: 0x00, text: 'Noise' },
   ]);
 
-  aEffectsPre.set([
-    { id: '0',  text: 'HueSet' },
-    { id: '1',  text: 'HueRotate' },
-    { id: '2',  text: 'ColorMeld' },
-    { id: '3',  text: 'ColorModify' },
-    { id: '4',  text: 'ColorRandom' },
-    { id: '5',  text: 'CountSet' },
-    { id: '6',  text: 'CountSurge' },
-    { id: '7',  text: 'CountWave' },
-    { id: '8',  text: 'DelaySet' },
-    { id: '9',  text: 'DelaySurge' },
-    { id: '10', text: 'DelayWave' },
-    { id: '11', text: 'BrightSurge' },
-    { id: '12', text: 'BrightWave' },
-    { id: '13', text: 'WinExpander' },
-    { id: '14', text: 'FlipDirection' },
+  aEffectsFilter.set([
+    { id: '100', bits: 0x00, text: 'HueSet' },
+    { id: '101', bits: 0x00, text: 'HueRotate' },
+    { id: '110', bits: 0x00, text: 'ColorMeld' },
+    { id: '111', bits: 0x12, text: 'ColorModify' },
+    { id: '112', bits: 0x00, text: 'ColorRandom' },
+    { id: '120', bits: 0x00, text: 'CountSet' },
+    { id: '121', bits: 0x00, text: 'CountSurge' },
+    { id: '122', bits: 0x00, text: 'CountWave' },
+    { id: '130', bits: 0x00, text: 'DelaySet' },
+    { id: '131', bits: 0x00, text: 'DelaySurge' },
+    { id: '132', bits: 0x00, text: 'DelayWave' },
+    { id: '141', bits: 0x00, text: 'BrightSurge' },
+    { id: '142', bits: 0x00, text: 'BrightWave' },
+    { id: '150', bits: 0x00, text: 'WinExpander' },
+    { id: '160', bits: 0x00, text: 'FlipDirection' },
   ]);
 }

@@ -7,7 +7,7 @@
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
   import { pStrand, aPatterns, curPatternID } from './globals.js'
-  import { newPatternID, cmdTrigger } from "./commands.js";
+  import { MAX_FORCE, cmdNewPattern, cmdTrigger } from "./commands.js";
 
   import SlidersMain from "./SlidersMain.svelte";
   import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
@@ -30,12 +30,15 @@
 <Grid>
   <Row style="margin-top: 10px;">
     <p style="margin: 7px 12px 0 0;">Choose Pattern:</p>
-    <Dropdown
-      size="lg"
-      on:select={newPatternID}
-      bind:selectedIndex={$curPatternID}
-      bind:items={$aPatterns}
-    />
+    <div style="background-color: #333433;">
+      <Dropdown
+        type="inline"
+        on:select={cmdNewPattern}
+        bind:selectedIndex={$curPatternID}
+        bind:items={$aPatterns}
+      />
+    </div>
+    <!--
     <Button style="margin-left:20px;"
       size="small"
       kind="ghost"
@@ -52,6 +55,7 @@
       >
       <p>{pattext}</p>
     </Modal>
+    -->
   </Row>
 
   <Row style="margin-top: 7px;">
@@ -60,8 +64,9 @@
       <SlidersPropsGlobal/>
       <Row>
         <Column style="margin-top: 10px; max-width:300px">
-          <SliderVal name='Force&nbsp;'
-            bind:cur={$pStrand.pcentForce}
+          <SliderVal name='Force'
+            max={MAX_FORCE}
+            bind:cur={$pStrand.forceValue}
           />
         </Column>
         <Column>

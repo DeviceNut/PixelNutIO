@@ -8,6 +8,12 @@
   export let cur = 0;
   export let disabled = undefined;
   export let onchange = 0;
+  export let dolabels = false;
+
+  let minLabel = ' ';
+  let maxLabel = ' ';
+
+  $: maxLabel = dolabels ? max : ' ';
 
   let lastval = 0;
   const dochange = () =>
@@ -27,6 +33,6 @@
   bind:value={cur}
   minLabel={name}
   on:change={dochange}
-  maxLabel=" "
+  {maxLabel}
   hideTextInput
 />

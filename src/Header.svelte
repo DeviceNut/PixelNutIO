@@ -1,6 +1,6 @@
 <script>
 
-  import { cmdSendPause } from "./commands.js"
+  import { cmdSendPause } from "./cmdmain.js"
 
   export let appname = '';
 

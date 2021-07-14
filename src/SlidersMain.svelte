@@ -1,23 +1,23 @@
 <script>
 
   import { pStrand, maxPixels } from './globals.js';
-  import { cmdSetBright, cmdSetDelay, cmdSetRotate } from "./commands.js"
+  import { userSetBright, userSetDelay, userSetRotate } from "./cmduser.js"
   import SliderVal from "./SliderVal.svelte"
 
 </script>
 
 <SliderVal name='Bright'
-  onchange={cmdSetBright}
+  onchange={userSetBright}
   bind:cur={$pStrand.pcentBright}
 />
 
 <SliderVal name='Delay&nbsp;'
-  onchange={cmdSetDelay}
+  onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
 />
 
 <SliderVal name='Rotate'
-  onchange={cmdSetRotate}
+  onchange={userSetRotate}
   bind:cur={$pStrand.firstPixel}
   min={1}
   max={$maxPixels}

@@ -6,8 +6,15 @@
   } from "carbon-components-svelte";
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
-  import { pStrand, aPatterns, curPatternID } from './globals.js'
-  import { MAX_FORCE, cmdNewPattern, cmdTrigger } from "./commands.js";
+  import {
+    pStrand,
+    aPatterns,
+    curPatternID
+  } from './globals.js'
+
+  import { MAX_FORCE } from "./pixelnut.js";
+  import { cmdSendTrigger } from "./cmdmain.js";
+  import { userSetPatternID } from "./cmduser.js";
 
   import SlidersMain from "./SlidersMain.svelte";
   import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
@@ -33,7 +40,7 @@
     <div style="background-color: #333433;">
       <Dropdown
         type="inline"
-        on:select={cmdNewPattern}
+        on:select={userSetPatternID}
         bind:selectedIndex={$curPatternID}
         bind:items={$aPatterns}
       />
@@ -66,13 +73,13 @@
         <Column style="margin-top: 10px; max-width:300px">
           <SliderVal name='Force'
             max={MAX_FORCE}
-            onchange={cmdTrigger}
+            onchange={cmdSendTrigger}
             bind:cur={$pStrand.forceValue}
           />
         </Column>
         <Column>
           <div style="margin: 10px 0 10px 0;">
-            <button on:click={cmdTrigger} class="button">Trigger</button>
+            <button on:click={cmdSendTrigger} class="button">Trigger</button>
           </div>
         </Column>
       </Row>

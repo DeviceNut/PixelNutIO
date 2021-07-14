@@ -2,13 +2,13 @@
 
   import { Row, Column, Checkbox } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
-  import { cmdSetProps, cmdSetOverrides } from "./commands.js"
+  import { userSetProps, userSetOverrides } from "./cmduser.js"
   import SliderVal from "./SliderVal.svelte"
 
   export let track = 0;
   
-  const setprops = () => { cmdSetProps(track); }
-  const setovers = () => { cmdSetOverrides(track); }
+  const setprops = () => { userSetProps(track); }
+  const setovers = () => { userSetOverrides(track); }
 
 </script>
 

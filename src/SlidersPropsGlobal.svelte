@@ -2,18 +2,18 @@
 
   import { Row, Column, Checkbox } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
-  import { cmdSetOverMode, cmdSetProps } from "./commands.js"
+  import { userSetOverMode, userSetProps } from "./cmduser.js"
   import SliderVal from "./SliderVal.svelte"
 
   // setprops is called with mouse event
-  const setprops = ()=> { cmdSetProps(); }
+  const setprops = ()=> { userSetProps(); }
   const docheck = ()=>
   {
     // value here is before the toggle
     let enable = !$pStrand.doOverride;
 
-    cmdSetOverMode(enable);
-    if (enable) cmdSetProps();
+    userSetOverMode(enable);
+    if (enable) userSetProps();
   }
 
   let bgc = '';

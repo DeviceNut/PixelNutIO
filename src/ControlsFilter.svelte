@@ -12,27 +12,28 @@
     pStrand, aEffectsFilter
   } from './globals.js'
 
+  import { MAX_FORCE } from "./pixelnut.js";
+
   import {
-    MAX_FORCE,
-    cmdSetFilterEffect,
-    cmdSetTrigManual,
-    cmdSetTrigLayer,
-    cmdSetTrigType,
-    cmdSetTrigRandom,
-    cmdSetTrigCount,
-    cmdSetTrigDmin,
-    cmdSetTrigDrange,
-    cmdSetForceValue
-  } from "./commands.js"
+    userSetFilterEffect,
+    userSetTrigManual,
+    userSetTrigLayer,
+    userSetTrigType,
+    userSetTrigRandom,
+    userSetTrigCount,
+    userSetTrigDmin,
+    userSetTrigDrange,
+    userSetForceValue
+  } from "./cmduser.js"
 
   import SliderVal from "./SliderVal.svelte"
 
   export let track = 0;
   export let layer = 0;
 
-  const seteffect = () => { cmdSetFilterEffect(track, layer); }
-  const setmanual = () => { cmdSetTrigManual(track, layer); }
-  const setlayer  = () => { cmdSetTrigLayer(track, layer); }
+  const seteffect = () => { userSetFilterEffect(track, layer); }
+  const setmanual = () => { userSetTrigManual(track, layer); }
+  const setlayer  = () => { userSetTrigLayer(track, layer); }
 
   $: {
     let tracknum = $pStrand.tracks[track].layers[layer].trigTrackNum;
@@ -53,7 +54,7 @@
       resend = true;
     }
 
-    if (resend) cmdSetTrigLayer(track, layer);
+    if (resend) userSetTrigLayer(track, layer);
   }
 
   let opc = '';
@@ -74,12 +75,12 @@
   let disable_repcount = false;
   $: disable_repcount = (disable_ttype || $pStrand.tracks[track].layers[layer].trigDoRepeat);
 
-  const settype   = () => { cmdSetTrigType(track, layer); }
-  const setrandom = () => { cmdSetTrigRandom(track, layer); }
-  const setcount  = () => { cmdSetTrigCount(track, layer); }
-  const setdmin   = () => { cmdSetTrigDmin(track, layer); }
-  const setdrange = () => { cmdSetTrigDrange(track, layer); }
-  const setforce  = () => { cmdSetForceValue(track, layer); }
+  const settype   = () => { userSetTrigType(track, layer); }
+  const setrandom = () => { userSetTrigRandom(track, layer); }
+  const setcount  = () => { userSetTrigCount(track, layer); }
+  const setdmin   = () => { userSetTrigDmin(track, layer); }
+  const setdrange = () => { userSetTrigDrange(track, layer); }
+  const setforce  = () => { userSetForceValue(track, layer); }
 
   // BUG: RadioButton on:click doesn't work?!
   // also on:click for RadioButtonGroup happens twice?
@@ -94,7 +95,7 @@
     <Dropdown
       type="inline"
       on:select={seteffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginID}
+      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
       bind:items={$aEffectsFilter}
     />
   </div>

@@ -22,6 +22,9 @@
   presetsInit();
   patternsInit();
 
+  // if device has a saved pattern:
+  //curPatternID.set(index of saved pattern);
+
   //console.log('starting.............');
 </script>
 

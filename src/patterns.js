@@ -6,7 +6,7 @@ import {
   nTracks, tLayers, nPixels
 } from './globals.js';
 
-import { MAX_FORCE } from "./commands.js"
+import { MAX_FORCE } from "./pixelnut.js"
 
 const oneLayer =
 {
@@ -14,7 +14,7 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
   
-  pluginID        : 0,      // effect plugin ID
+  pluginIndex     : 0,      // effect plugin index, not value (0=none)
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
   trigDoManual    : false,  // true if can trigger manually from Main Panel
@@ -85,47 +85,55 @@ const oneStrand =
   tracks          : [],     // list of 'oneTrack's for this strand
 }
 
-export const patternsInit = () =>
+// creates default data for a single strand
+export const createStrandData = (sid) =>
 {
-  let curstrand = get(idStrand);
-  let slist = [];
+  let strand = {...oneStrand};
+  strand.tactives = 1;
 
-  for (let s = 0; s < get(nStrands); ++s)
+  if (sid == get(idStrand))
+    strand.selected = true;
+
+  // pixel count is device specific
+  let scount = get(nPixels)[sid];
+
+  let tracks = [];
+  for (let i = 0; i < get(nTracks); ++i)
   {
-    let strand = {...oneStrand};
-    strand.tactives = 1;
+    let track = {...oneTrack};
+    track.drawProps = {...drawProps};
 
-    if (s == curstrand)
-      strand.selected = true;
+    track.drawProps.pixStart = 0;
+    track.drawProps.pixEnd = scount-1;
+    track.drawProps.pixCount = scount;
 
-    let scount = get(nPixels)[s];
-
-    let tracks = [];
-    for (let i = 0; i < get(nTracks); ++i)
+    let layers = [];
+    for (let j = 0; j < get(tLayers); ++j)
     {
-      let track = {...oneTrack};
-      track.drawProps = {...drawProps};
-
-      // must set these properties upon creation
-      track.drawProps.pixStart = 0;
-      track.drawProps.pixEnd = scount-1;
-      track.drawProps.pixCount = scount;
-  
-      let layers = [];
-      for (let j = 0; j < get(tLayers); ++j)
-      {
-        let layer = {...oneLayer};
-        layers.push(layer);
-      }
-  
-      track.layers = layers;
-      tracks.push(track);
+      let layer = {...oneLayer};
+      layers.push(layer);
     }
 
-    strand.tracks = tracks;
-    slist.push(strand);
+    track.layers = layers;
+    tracks.push(track);
   }
 
+  strand.tracks = tracks;
+  aStrands[sid] = strand;
+
+  if (sid == get(idStrand))
+    pStrand.set(strand);
+}
+
+export const patternsInit = () =>
+{
+  let slist = [];
+
+  for (let sid = 0; sid < get(nStrands); ++sid)
+    slist.push([]);
+
   aStrands.set(slist);
-  pStrand.set(slist[curstrand]);
+
+  for (let sid = 0; sid < get(nStrands); ++sid)
+    createStrandData(sid);
 }

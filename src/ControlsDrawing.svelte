@@ -3,25 +3,25 @@
   import { Row, Dropdown, Checkbox } from "carbon-components-svelte";
   import { pStrand, aEffectsDraw } from './globals.js';
   import {
-    cmdSetDrawEffect,
-    cmdSetBright, cmdSetDelay,
-    cmdSetStart, cmdSetFinish,
-    cmdSetOwrite, cmdSetDirect
-  } from "./commands.js"
+    userSetDrawEffect,
+    userSetBright, userSetDelay,
+    userSetStart, userSetFinish,
+    userSetOwrite, userSetDirect
+  } from "./cmduser.js"
   import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
   export let track = 0;
 
-  const setEffect = () => { cmdSetDrawEffect(track); }
-  const setBright = () => { cmdSetBright(track); }
-  const setDelay  = () => { cmdSetDelay( track); }
-  const setOwrite = () => { cmdSetOwrite(track); }
-  const setDirect = () => { cmdSetDirect(track); }
+  const setEffect = () => { userSetDrawEffect(track); }
+  const setBright = () => { userSetBright(track); }
+  const setDelay  = () => { userSetDelay( track); }
+  const setOwrite = () => { userSetOwrite(track); }
+  const setDirect = () => { userSetDirect(track); }
 
   const setStart = () =>
   {
-    if (cmdSetStart(track)) // update for new values
+    if (userSetStart(track)) // update for new values
     {
       $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
       $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
@@ -29,7 +29,7 @@
   }
   const setFinish = () =>
   {
-    if (cmdSetFinish(track)) // update for new values
+    if (userSetFinish(track)) // update for new values
     {
       $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
       $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
@@ -47,7 +47,7 @@
     <Dropdown
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[0].pluginID}
+      bind:selectedIndex={$pStrand.tracks[track].layers[0].pluginIndex}
       bind:items={$aEffectsDraw}
     />
   </div>

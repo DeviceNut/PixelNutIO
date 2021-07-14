@@ -5,23 +5,17 @@
     TextInput, Button,
   } from "carbon-components-svelte";
 
-  import {
-    pStrand,
-    curPatternStr, curPatternID
-  } from './globals.js'
+  import { pStrand, curPatternStr } from './globals.js'
+  import { cmdClearPattern } from './cmdmain.js';
+  import { userSetPatternStr } from './cmduser.js';
 
   import OneTrack from "./OneTrack.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
 
   const dosave = () => {} // TODO
-
   const dosend = () => {} // TODO
 
-  const doclear = () =>
-  {
-    curPatternID.set(0);
-    curPatternStr.set('');
-  }
+  const doclear = () => { cmdClearPattern(); }
 
 </script>
 
@@ -29,7 +23,11 @@
 
   <div style="margin-top:12px;">
     <p style="margin-right:7px; font-size: .9em;">Command String:</p>
-    <TextInput size="sm" bind:value={$curPatternStr} />
+    <TextInput
+      size="sm"
+      on:change={userSetPatternStr}
+      bind:value={$curPatternStr}
+    />
     <div class="buttons">
       <Button
         style="margin-right:13px;"

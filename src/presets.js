@@ -1,9 +1,10 @@
 import { get } from 'svelte/store';
 import { aPatterns, aEffectsDraw, aEffectsFilter } from './globals.js';
 
-export let presetsInit = () =>
+export const presetsInit = () =>
 {
   aPatterns.set([
+    { id: '-1', text: '<custom>',           cmd:  '' },
     { id: '0',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },
     { id: '1',  text: 'Rainbow Roll',       cmd:  'E1 D20 F1 I T E101 F1000 I T G' },
     { id: '2',  text: 'Light Waves',        cmd:  'E1 T G' },
@@ -24,6 +25,7 @@ export let presetsInit = () =>
   // TODO: create these dynamically from device settings:
   
   aEffectsDraw.set([
+    { id: '-1', bits: 0x00, text: '<none>' },
     { id: '0',  bits: 0x00, text: 'DrawAll' },
     { id: '1',  bits: 0x00, text: 'DrawPush' },
     { id: '2',  bits: 0x00, text: 'DrawStep' },
@@ -37,20 +39,41 @@ export let presetsInit = () =>
   ]);
 
   aEffectsFilter.set([
-    { id: '100', bits: 0x00, text: 'HueSet' },
-    { id: '101', bits: 0x00, text: 'HueRotate' },
-    { id: '110', bits: 0x00, text: 'ColorMeld' },
-    { id: '111', bits: 0x12, text: 'ColorModify' },
-    { id: '112', bits: 0x00, text: 'ColorRandom' },
-    { id: '120', bits: 0x00, text: 'CountSet' },
-    { id: '121', bits: 0x00, text: 'CountSurge' },
-    { id: '122', bits: 0x00, text: 'CountWave' },
-    { id: '130', bits: 0x00, text: 'DelaySet' },
-    { id: '131', bits: 0x00, text: 'DelaySurge' },
-    { id: '132', bits: 0x00, text: 'DelayWave' },
-    { id: '141', bits: 0x00, text: 'BrightSurge' },
-    { id: '142', bits: 0x00, text: 'BrightWave' },
-    { id: '150', bits: 0x00, text: 'WinExpander' },
-    { id: '160', bits: 0x00, text: 'FlipDirection' },
+    { id: '-1',  bits: 0x01, text: '<none>' },
+    { id: '100', bits: 0x01, text: 'HueSet' },
+    { id: '101', bits: 0x01, text: 'HueRotate' },
+    { id: '110', bits: 0x01, text: 'ColorMeld' },
+    { id: '111', bits: 0x11, text: 'ColorModify' },
+    { id: '112', bits: 0x01, text: 'ColorRandom' },
+    { id: '120', bits: 0x01, text: 'CountSet' },
+    { id: '121', bits: 0x01, text: 'CountSurge' },
+    { id: '122', bits: 0x01, text: 'CountWave' },
+    { id: '130', bits: 0x01, text: 'DelaySet' },
+    { id: '131', bits: 0x01, text: 'DelaySurge' },
+    { id: '132', bits: 0x01, text: 'DelayWave' },
+    { id: '141', bits: 0x01, text: 'BrightSurge' },
+    { id: '142', bits: 0x01, text: 'BrightWave' },
+    { id: '150', bits: 0x01, text: 'WinExpander' },
+    { id: '160', bits: 0x01, text: 'FlipDirection' },
   ]);
+}
+
+export const pluginBit_FILTER      = 0x01;   // is filter, not drawing, effect
+export const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
+export const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
+export const pluginBit_USEFORCE    = 0x20;   // trigger force is used in effect
+export const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
+export const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
+
+export const presetsFindEffect = (plugnum) =>
+{
+  for (const f of get(aEffectsDraw))
+    if (f.id == plugnum)
+      return f.bits;
+
+  for (const f of get(aEffectsFilter))
+    if (f.id == plugnum)
+      return f.bits;
+
+  return undefined;
 }

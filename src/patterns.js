@@ -16,17 +16,17 @@ const oneLayer =
   pluginID        : 0,      // effect plugin ID
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
-  externTrigs     : false,  // true if external triggering is enabled for this layer
+  trigDoManual    : false,  // true if can trigger manually from Main Panel
+  trigDoLayer     : false,  // true if can trigger from other layer:
+  trigLayerNum    : 1,      //  the layer number that will trigger (from 1)
+  trigTypeStr     : 'once', // or 'none' or if 'auto' (auto triggering), then:
+  trigDoRepeat    : true,   // true to repeat forever, else:
+  trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
+  trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
+  trigDelayRange  : 0,      //  range of delay values possible (min...min+range)
+
   forceRandom     : false,  // true if a random force is applied when triggering
-  forceValue      : MAX_FORCE/2, // percent force to apply (ignored if random)
-
-                            // for auto triggering:
-  trigCount       : 0,      // number of times to trigger (-1 to repeat forever)
-  trigDelayMin    : 0,      // min amount of delay before next trigger in seconds
-  trigDelayRange  : 0,      // range of delay values possible (min...min+range)
-                            // these apply to both auto and manual triggering:
-
-  trigLayer       : 0,      // what other layer can trigger this layer
+  forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
 
   cmdstr          : ''      // command string for the current settings
 }

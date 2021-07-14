@@ -250,7 +250,49 @@ export const cmdTrigger = () =>
   sendCmd(cmdStr_Trigger, get(pStrand).forceValue);
 }
 
-export const cmdSetTriggerExt = (track, layer) =>
+export const cmdSetFilterEffect = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigManual = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigLayer = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigType = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigCount = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigDmin = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetTrigDrange = (track, layer) =>
+{
+
+    makeCmdStr(track, layer);
+}
+
+export const cmdSetForceValue = (track, layer) =>
 {
 
     makeCmdStr(track, layer);

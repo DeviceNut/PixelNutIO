@@ -22,6 +22,7 @@
   presetsInit();
   patternsInit();
 
+  //console.log('starting.............');
 </script>
 
 <Header {appname}/>

@@ -28,7 +28,7 @@
 <Grid>
 
   <div style="margin-top:12px;">
-    <p style="margin-right:7px; font-size: .9em;">Command String</p>
+    <p style="margin-right:7px; font-size: .9em;">Command String:</p>
     <TextInput size="sm" bind:value={$curPatternStr} />
     <div class="buttons">
       <Button

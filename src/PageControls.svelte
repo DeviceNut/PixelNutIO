@@ -2,7 +2,7 @@
 
   import { nStrands } from './globals.js';
   import MultiStrands from "./MultiStrands.svelte"
-  import PanelBasic from "./PanelBasic.svelte";
+  import PanelMain from "./PanelMain.svelte"
   import PanelCustom from "./PanelCustom.svelte";
 
   let doshow = false;
@@ -18,7 +18,7 @@
     <div class="divider"></div>
     {/if}
 
-  <PanelBasic/>
+  <PanelMain/>
   <div class="divider"></div>
 
   <div class:outline={doshow} style="margin-top: 7px;">
@@ -26,7 +26,7 @@
       <span class="btext" >{pstr}</span>
     </div>
   
-    {#if (doshow) }
+    {#if doshow }
       <PanelCustom/>
     {/if}
   </div>

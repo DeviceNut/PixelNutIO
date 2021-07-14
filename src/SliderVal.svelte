@@ -21,7 +21,7 @@
     if (lastval != cur) // on:change fires on each click!!
     {
       lastval = cur;
-      if (!disabled && onchange) onchange();
+      if (!disabled) onchange();
     }
   }
 

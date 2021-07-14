@@ -1,23 +1,25 @@
 import { get } from 'svelte/store';
 
 import {
-  nStrands, aStrands, idStrand, pStrand,
-  nPixels, nTracks, tLayers,
+  nStrands, aStrands,
+  idStrand, pStrand,
+  nTracks, tLayers, nPixels
 } from './globals.js';
 
 import { MAX_FORCE } from "./commands.js"
 
 const oneLayer =
 {
-  // not used for layer 1
+  // solo/mute not used for drawing layer
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
-
+  
   pluginID        : 0,      // effect plugin ID
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
   trigDoManual    : false,  // true if can trigger manually from Main Panel
   trigDoLayer     : false,  // true if can trigger from other layer:
+  trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number that will trigger (from 1)
   trigTypeStr     : 'once', // or 'none' or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
@@ -25,7 +27,7 @@ const oneLayer =
   trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
   trigDelayRange  : 0,      //  range of delay values possible (min...min+range)
 
-  forceRandom     : false,  // true if a random force is applied when triggering
+  forceRandom     : true,   // true if a random force is applied when triggering
   forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
 
   cmdstr          : ''      // command string for the current settings
@@ -33,9 +35,6 @@ const oneLayer =
 
 const drawProps =
 {
-  pixStart        : 0,      // start/end of range of pixels to be drawn (0...)
-  pixEnd          : 0,
-
   pcentBright     : 100,    // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 0,      // determines msecs delay after each redraw
 
@@ -46,8 +45,12 @@ const drawProps =
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
 
   overCount       : false,  // true to allow global override
-  pcentCount      : 100,    // percent of pixels affected in range
+  pcentCount      : 0,      // percent of pixels affected in range
                           
+  pcentStart      : 0,      // percent of pixels where start
+  pcentFinish     : 100,    // percent of pixels where finish
+                            //  (start must be <= finish)
+
   reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)
   orPixelValues   : false,  // whether pixels overwrites (false) or are OR'ed (true)
 }
@@ -74,7 +77,7 @@ const oneStrand =
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
-  pcentCount      : 100,    // percent of pixels affected in range
+  pcentCount      : 0,      // percent of pixels affected in range
 
   forceValue      : MAX_FORCE/2, // force value for triggering
 
@@ -125,53 +128,4 @@ export const patternsInit = () =>
 
   aStrands.set(slist);
   pStrand.set(slist[curstrand]);
-}
-
-// given a list of tracks/layers,
-// generate & return a pattern cmd
-export const makePattern = () =>
-{
-  let cmdstr = '';
-
-  for (const track of tlist)
-  {
-    cmdstr = cmdstr.concat(`E${track.layers[0].pluginID} `);
-
-    if (track.drawProps.pcentBright != 100)
-      cmdstr = cmdstr.concat(`B${track.drawProps.pcentBright} `);
-
-    if (track.drawProps.msecsDelay != 0)
-      cmdstr = cmdstr.concat(`D${track.drawProps.msecsDelay} `);
-
-    if (track.drawProps.degreeHue != 0)
-      cmdstr = cmdstr.concat(`H${track.drawProps.degreeHue} `);
-
-    if (track.drawProps.pcentWhite != 0)
-      cmdstr = cmdstr.concat(`W${track.drawProps.pcentWhite} `);
-
-    if (track.drawProps.goUpwards != true)
-      cmdstr = cmdstr.concat('U0 ');
-
-    if (track.drawProps.orPixelValues != false)
-      cmdstr = cmdstr.concat('V1 ');
-
-    for (const layer of track.layers)
-    {
-
-    }
-  }
-
-  return cmdstr;
-}
-
-// create partial command string for track/layer
-export const makeCmdStr = (track, layer) =>
-{
-
-}
-
-// parse the givenpattern command string
-// and set values for selected strands
-export const parsePattern = (cmdstr) =>
-{
 }

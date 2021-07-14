@@ -3,21 +3,38 @@
   import { Row, Dropdown, Checkbox } from "carbon-components-svelte";
   import { pStrand, aEffectsDraw } from './globals.js';
   import {
-    cmdNewPattern,
+    cmdSetDrawEffect,
     cmdSetBright, cmdSetDelay,
-    cmdSetStart, cmdSetFinish
+    cmdSetStart, cmdSetFinish,
+    cmdSetOwrite, cmdSetDirect
   } from "./commands.js"
-  import { makeCmdStr } from "./patterns.js";
   import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
   export let track = 0;
 
-  const setBright = () => { cmdSetBright(track, 1); }
-  const setDelay  = () => { cmdSetDelay( track, 1); }
-  const setStart  = () => { cmdSetStart( track, 1); }
-  const setFinish = () => { cmdSetFinish(track, 1); }
-  const newcmd    = () => { makeCmdStr(track, 1); }
+  const setEffect = () => { cmdSetDrawEffect(track); }
+  const setBright = () => { cmdSetBright(track); }
+  const setDelay  = () => { cmdSetDelay( track); }
+  const setOwrite = () => { cmdSetOwrite(track); }
+  const setDirect = () => { cmdSetDirect(track); }
+
+  const setStart = () =>
+  {
+    if (cmdSetStart(track)) // update for new values
+    {
+      $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
+      $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
+    }
+  }
+  const setFinish = () =>
+  {
+    if (cmdSetFinish(track)) // update for new values
+    {
+      $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
+      $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
+    }
+  }
 
   let setdir = 0;
   let overwrite = 0;
@@ -29,17 +46,19 @@
   <div style="background-color: #333433;">
     <Dropdown
       type="inline"
-      on:select={cmdNewPattern}
+      on:select={setEffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[0].pluginID}
       bind:items={$aEffectsDraw}
     />
   </div>
-  <div style="margin-top: 7px; margin-left: 50px;">
-  <Checkbox labelText="Pixel Overwrite"
-    on:check={newcmd}
-    bind:checked={$pStrand.tracks[track].drawProps.orPixelValues}
-  />
-  </div>
+  {#if (track != 0) }
+    <div style="margin-top: 7px; margin-left: 50px;">
+    <Checkbox labelText="Pixel Overwrite"
+      on:check={setOwrite}
+      bind:checked={$pStrand.tracks[track].drawProps.orPixelValues}
+    />
+    </div>
+  {/if}
 </Row>
 
 <SliderVal name='Bright'
@@ -56,17 +75,17 @@
 
 <SliderVal name='Start&nbsp;'
   onchange={setStart}
-  bind:cur={$pStrand.tracks[track].drawProps.pixStart}
+  bind:cur={$pStrand.tracks[track].drawProps.pcentStart}
 />
 
 <SliderVal name='Finish'
   onchange={setFinish}
-  bind:cur={$pStrand.tracks[track].drawProps.pixEnd}
+  bind:cur={$pStrand.tracks[track].drawProps.pcentFinish}
 />
 
 <Row style="margin: 13px 0 0 0;">
   <Checkbox labelText="Reverse Direction"
-    on:check={newcmd}
+    on:check={setDirect}
     bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
   />
 </Row>

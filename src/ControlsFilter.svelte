@@ -7,13 +7,18 @@
   }
   from "carbon-components-svelte";
 
-  import { pStrand, aEffectsFilter, tLayers } from './globals.js'
+  import {
+    nTracks, tLayers,
+    pStrand, aEffectsFilter
+  } from './globals.js'
+
   import {
     MAX_FORCE,
     cmdSetFilterEffect,
     cmdSetTrigManual,
     cmdSetTrigLayer,
     cmdSetTrigType,
+    cmdSetTrigRandom,
     cmdSetTrigCount,
     cmdSetTrigDmin,
     cmdSetTrigDrange,
@@ -28,6 +33,28 @@
   const seteffect = () => { cmdSetFilterEffect(track, layer); }
   const setmanual = () => { cmdSetTrigManual(track, layer); }
   const setlayer  = () => { cmdSetTrigLayer(track, layer); }
+
+  $: {
+    let tracknum = $pStrand.tracks[track].layers[layer].trigTrackNum;
+    let layernum = $pStrand.tracks[track].layers[layer].trigLayerNum;
+    let resend = false;
+
+    // keep track/layer values valid
+
+    if (tracknum > $pStrand.tactives)
+    {
+      $pStrand.tracks[track].layers[layer].trigTrackNum = $pStrand.tactives;
+      resend = true;
+    }
+
+    if (layernum > $pStrand.tracks[track].lactives)
+    {
+      $pStrand.tracks[track].layers[layer].trigLayerNum = $pStrand.tracks[track].lactives;
+      resend = true;
+    }
+
+    if (resend) cmdSetTrigLayer(track, layer);
+  }
 
   let opc = '';
   let disable_ttype = false;
@@ -48,6 +75,7 @@
   $: disable_repcount = (disable_ttype || $pStrand.tracks[track].layers[layer].trigDoRepeat);
 
   const settype   = () => { cmdSetTrigType(track, layer); }
+  const setrandom = () => { cmdSetTrigRandom(track, layer); }
   const setcount  = () => { cmdSetTrigCount(track, layer); }
   const setdmin   = () => { cmdSetTrigDmin(track, layer); }
   const setdrange = () => { cmdSetTrigDrange(track, layer); }
@@ -82,14 +110,22 @@
   />
 
   <div style="margin-bottom: 7px; padding: 3px;">
-    <Checkbox labelText="Trigger from Layer:"
-      style="display:inline-block; margin-right: 5px;"
+    <Checkbox labelText="Trigger from Track/Layer:"
+      style="display:inline-block;"
       on:check={setlayer}
       bind:checked={$pStrand.tracks[track].layers[layer].trigDoLayer}
     />
     <input type="number"
+      style="margin-left: 5px;"
+      min="1" max={$nTracks}
+      on:change={setlayer}
+      bind:value={$pStrand.tracks[track].layers[layer].trigTrackNum}
+      disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
+    />
+    <input type="number"
+      style="margin-left: 5px;"
       min="1" max={$tLayers}
-      on:input={setlayer}
+      on:change={setlayer}
       bind:value={$pStrand.tracks[track].layers[layer].trigLayerNum}
       disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
     />
@@ -111,13 +147,13 @@
       <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
       <input type="number"
         min="1" max="9999"
-        on:input={setcount}
+        on:change={setcount}
         bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
         disabled={disable_repcount}
       />
       <Checkbox labelText="Forever"
         style="display:inline-block; margin-left: 5px;"
-        on:check={setcount}
+        on:check={setrandom}
         bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
         disabled={disable_ttype}
       />
@@ -126,7 +162,7 @@
       <span style="margin-right:8px">Minimum Time:&nbsp;</span>
       <input type="number"
         min="1" max="9999"
-        on:input={setdmin}
+        on:change={setdmin}
         bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
         disabled={disable_ttype}
       />&nbsp;&nbsp;secs
@@ -135,7 +171,7 @@
       <span style="margin-right:8px">Random Period:</span>
       <input type="number"
         min="1" max="9999"
-        on:input={setdrange}
+        on:change={setdrange}
         bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
         disabled={disable_ttype}
       />&nbsp;&nbsp;secs

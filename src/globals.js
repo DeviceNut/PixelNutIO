@@ -1,4 +1,4 @@
-import { get, writable } from 'svelte/store'
+import { writable } from 'svelte/store'
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.

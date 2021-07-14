@@ -1,13 +1,9 @@
 import { get } from 'svelte/store';
 
 import {
-  nStrands, aStrands, idStrand, eStrands, pStrand,
-  nPixels, nTracks, tLayers,
-  aPatterns, aEffectsDraw, aEffectsFilter,
+  pStrand, aPatterns, 
   curPatternID, curPatternStr,
 } from './globals.js';
-
-import { makeCmdStr, parsePattern } from './patterns.js';
 
 export const MAX_FORCE      = 1000;   // maximum force value
 
@@ -25,43 +21,215 @@ const cmdStr_GetInfo        = "?";
 const cmdStr_GetSegments    = "?S";
 const cmdStr_GetPatterns    = "?P";
 
-const cmdStr_SetBright      = "%";
-const cmdStr_SetDelay       = ":";
-const cmdStr_SetFirst       = "^";
-const cmdStr_SetStart       = "J";
-const cmdStr_SetFinish      = "K";
-const cmdStr_SetProps       = "=";
-const cmdStr_SetXmode       = "_";
-const cmdStr_SetName        = "@";
-const cmdStr_Trigger        = "!";
-const cmdStr_Pause          = "[";
-const cmdStr_Resume         = "]";
-const cmdStr_SetStrand      = "#";
-const cmdStr_Clear          = "P ";
+// Device commands:                   // value is:
+const cmdStr_DeviceName     = "@";    // name of device
+const cmdStr_PullTrigger    = "!";    // trigger force
+const cmdStr_Pause          = "[";    // none
+const cmdStr_Resume         = "]";    // none
 
-const cmdStr_Effect         = "E";
-const cmdStr_Modify         = "M";
+// Properties associated with pattern // value is:
+const cmdStr_SetBright      = "%";    // percent of max ++
+const cmdStr_SetDelay       = ":";    // msecs of delay ++
+const cmdStr_SetFirst       = "^";    // first pixel to draw ++
+const cmdStr_SetProps       = "=";    // hue white count ++
+const cmdStr_SetXmode       = "_";    // 0=disable 1=enable override ++
+
+// Determines what is addressed       // value is:
+const cmdStr_AddrStrand     = "#";    // strand index
+const cmdStr_AddrLayer      = "M";    // layer index
+
+// Commands that form patterns        // value is:
+const cmdStr_Clear          = "P ";   // none
+const cmdStr_PcentStart     = "J";    // percent of pixels **
+const cmdStr_PcentLength    = "K";    // percent of pixels **
+const cmdStr_PcentFirst     = "L";    // percent of pixel length ++
+const cmdStr_PixStart       = "X";    // pixel index **
+const cmdStr_PixCount       = "Y";    // pixel index **
+const cmdStr_PixFirst       = "Z";    // pixel index ++
+const cmdStr_Effect         = "E";    // plugin number
+const cmdStr_Bright         = "B";    // percent of max
+const cmdStr_Delay          = "D";    // msecs of delay
+const cmdStr_degreeHue      = "H";    // hue degree (0..359)
+const cmdStr_PcentWhite     = "W";    // percent whiteness
+const cmdStr_PcentCount     = "C";    // percent of draw length
+const cmdStr_OrideBits      = "Q";    // property override bits
+const cmdStr_Direction      = "U";    // 0=down, 1=up (default)
+const cmdStr_OwritePixs     = "V";    // 0=OR, 1=overwrite pixels
+const cmdStr_TrigLayer      = "A";    // layer index that will trigger this one
+const cmdStr_TrigManual     = "I";    // none (sets manual triggerring)
+const cmdStr_TrigForce      = "F";    // force used in triggering (no value if random)
+const cmdStr_TrigCount      = "N";    // trigger count (none or 0 means forever)
+const cmdStr_TrigMinTime    = "O";    // min time before next auto trigger (secs)
+const cmdStr_TriggerRange   = "T";    // auto trigger range time (secs) (no value if not auto)
+const cmdStr_Go             = "G";    // causes all effects to be displayed
+
+const DRAW_LAYER            = 0;      // drawing layer is always first layer of the track
+const MAX_BYTE_VALUE        = 255;    // max byte value, used for certain commands
+
+// ++ these affect all tracks in the strand
+// ** these take effect only when plugin is created
+///////////////////////////////////////////////////////////////////////
+
+function makeOrideBits(track)
+{
+  let bits = 0;
+  if (get(pStrand).tracks[track].drawProps.overHue)
+    bits |= overBits_DegreeHue;
+
+  if (get(pStrand).tracks[track].drawProps.overWhite)
+    bits |= overBits_PcentWhite;
+
+  if (get(pStrand).tracks[track].drawProps.overCount)
+    bits |= overBits_PixCount;
+
+  return bits;
+}
+
+// create partial command string for track/layer
+// then combine all those into one single string
+function makeCmdStr(track, layer)
+{
+  let player = get(pStrand).tracks[track].layers[layer];
+  let pdraw = get(pStrand).tracks[track].drawProps;
+  let cmdstr = '';
+
+  if (layer == 0) // drawing layer
+  {
+    let start = pdraw.pcentStart;
+    let finish = pdraw.pcentFinish;
+
+    if (start != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentStart}${start} `);
+
+    if (finish != 100)
+    {
+      let length = finish - start;
+      cmdstr = cmdstr.concat(`${cmdStr_PcentLength}${length} `);
+    }
+  }
+
+  cmdstr = cmdstr.concat(`${cmdStr_Effect}${player.pluginID} `);
+
+  if (layer == 0) // drawing layer
+  {
+    if (pdraw.pcentBright != 100)
+      cmdstr = cmdstr.concat(`${cmdStr_Bright}${pdraw.pcentBright} `);
+
+    if (pdraw.msecsDelay != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_Delay}${pdraw.msecsDelay} `);
+
+    if (pdraw.degreeHue != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_degreeHue}${pdraw.degreeHue} `);
+
+    if (pdraw.pcentWhite != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
+
+    if (pdraw.pcentCount != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
+
+    let bits = makeOrideBits(track);
+    if (bits != 0)
+      cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
+
+    if (pdraw.reverseDir != false)
+      cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
+
+    if (pdraw.orPixelValues != false)
+      cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
+  }
+
+  if (player.trigDoManual)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
+
+  if (player.trigDoLayer)
+  {
+    let tracknum = player.trigTrackNum;
+    let layernum = player.trigLayerNum;
+    let tlayer = calcLayerID(tracknum-1, layernum-1);
+    cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
+  }
+
+  if (!player.forceRandom)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+
+  if (player.trigTypeStr == 'once')
+    cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
+
+  else if (player.trigTypeStr == 'auto')
+  {
+    if (player.trigDoRepeat)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigCount} `);
+
+    else if (player.trigRepCount != 1)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+
+    if (player.trigDelayMin != 1)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+
+    if (player.trigDelayRange != 0)
+         cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
+    else cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}$ `);
+  }
+  
+  console.log(`cmdstr=${cmdstr}`);
+  player.cmdstr = cmdstr;
+
+  makeCmdStrAll();
+}
+
+function makeCmdStrAll()
+{
+  // combine all layers into single string
+  let cmdstr = '';
+
+  let strand = get(pStrand);
+  for (let i = 0; i < strand.tactives; ++i)
+  {
+    let track = strand.tracks[i];
+    for (let j = 0; j < track.lactives; ++j)
+    {
+      let layer = track.layers[j];
+      cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+    }
+  }
+
+  cmdstr = cmdstr.concat(`${cmdStr_Go}`);
+  curPatternStr.set(cmdstr);
+
+  //console.log(get(curPatternStr));
+}
+
+// parse the givenpattern command string
+// and set values for selected strands
+export const parsePattern = (cmdstr) =>
+{
+}
+
 
 function cmdError(track, layer)
 {
   console.error(`Bad track:layer = ${track}:${layer}`);
 }
 
+// calculate what pixelnut engine layerid is
 function calcLayerID(track, layer)
 {
-  // calculate what pixelnut engine layerid is, or -1 if none
-  if ((track == undefined) || (layer == undefined)) return -1;
-
-  if ((track <= 0) || (layer <= 0))
-  {
-    cmdError(track, layer);
-    return -1;
-  }
-
   let layerid = 0;
 
+  if (track >= get(pStrand).tactives)
+  {
+    console.log(`No track=${track+1}`);
+    track = get(pStrand).tactives-1;
+  }
+
   for (let i = 0; i < track; ++i)
-    layerid += get(aStrands)[get(idStrand)].tracks[i].lactives;
+    layerid += get(pStrand).tracks[i].lactives;
+
+  if (layer >= get(pStrand).tracks[track].lactives)
+  {
+    console.log(`No layer=${layer+1}`);
+    layer = get(pStrand).tracks[track].lactives-1;
+  }
 
   return layerid + layer;
 }
@@ -77,7 +245,7 @@ function copyStrandLayer(track, layer)
   // copy values in entire layer from current strand
   // to all the other currently selected strands
 
-  if (layer == 1) // also copy drawprops
+  if (layer == 0) // also copy drawprops
   {
 
   }
@@ -104,26 +272,45 @@ function sendLayerCmd(id, cmdstr, cmdval)
 
   if (id >= 0)
   {
-    let str = '';
-    str = str.concat(`${cmdStr_Modify}${id} `);
+    let str = `${cmdStr_AddrLayer}${id} `;
     str = str.concat(`${cmdstr} `);
-    str = str.concat(`${cmdStr_Modify}`);
+    str = str.concat(`${cmdStr_AddrLayer}`);
     doSend(str);
   }
   else doSend(cmdstr);
 }
 
-// user just selected drawing effect
-// must regenerate entire pattern cmd
-export const newDrawEffect = (track) =>
+function sendLayerCmds(id, cmdstr1, cmdval1, cmdstr2, cmdval2)
 {
+  cmdstr1 = cmdstr1.concat(cmdval1);
+  cmdstr2 = cmdstr2.concat(cmdval2);
+
+  let str = `${cmdStr_AddrLayer}${id} `;
+  str = str.concat(`${cmdstr1} `);
+  str = str.concat(`${cmdstr2} `);
+  str = str.concat(`${cmdStr_AddrLayer}`);
+  doSend(str);
 }
 
-// user just selected predraw effect
-// must regenerate entire pattern cmd
-export const newFilterEffect = (track, layer) =>
+function checkCmdStr(track, layer)
 {
+  let dosend = (get(curPatternStr) == '');
+
+  makeCmdStr(track, layer);
+
+  if (dosend) doSend(get(curPatternStr));
 }
+
+// Commands on the Header:
+
+export const cmdSendPause = (enable) =>
+{
+  if (enable)
+       doSend(cmdStr_Pause);
+  else doSend(cmdStr_Resume);
+}
+
+// Commands from PanelMain:
 
 // user just selected prebuilt pattern
 export const cmdNewPattern = () =>
@@ -140,46 +327,39 @@ export const cmdNewPattern = () =>
   }
 }
 
-export const cmdSendPause = (enable) =>
+export const cmdSetBright = (track) =>
 {
-  if (enable)
-       doSend(cmdStr_Pause);
-  else doSend(cmdStr_Resume);
-}
-
-export const cmdSetBright = (track, layer) =>
-{
-  let layerid = calcLayerID(track, layer);
-  if (layerid >= 0)
-  {
-    let value = get(pStrand).tracks[track].drawProps.pcentBright;
-    sendLayerCmd(layerid, cmdStr_SetBright, value);
-    copyStrandLayer(track, layer);
-    makeCmdStr(track, 1);
-  }
-  else
+  if (track == undefined)
   {
     let value = get(pStrand).pcentBright;
     sendCmd(cmdStr_SetBright, value);
     copyStrandTop();
   }
+  else
+  {
+    let layerid = calcLayerID(track, DRAW_LAYER);
+    let value = get(pStrand).tracks[track].drawProps.pcentBright;
+    sendLayerCmd(layerid, cmdStr_SetBright, value);
+    copyStrandLayer(track, DRAW_LAYER);
+    checkCmdStr(track, DRAW_LAYER);
+  }
 }
 
-export const cmdSetDelay = (track, layer) =>
+export const cmdSetDelay = (track) =>
 {
-  let layerid = calcLayerID(track, layer);
-  if (layerid >= 0)
-  {
-    let value = get(pStrand).tracks[track].drawProps.msecsDelay;
-    sendLayerCmd(layerid, cmdStr_SetDelay, value);
-    copyStrandLayer(track, layer);
-    makeCmdStr(track, 1);
-  }
-  else
+  if (track == undefined)
   {
     let value = get(pStrand).msecsDelay;
     sendCmd(cmdStr_SetDelay, value);
     copyStrandTop();
+  }
+  else
+  {
+    let layerid = calcLayerID(track, DRAW_LAYER);
+    let value = get(pStrand).tracks[track].drawProps.msecsDelay;
+    sendLayerCmd(layerid, cmdStr_SetDelay, value);
+    copyStrandLayer(track, DRAW_LAYER);
+    checkCmdStr(track, DRAW_LAYER);
   }
 }
 
@@ -197,18 +377,7 @@ export const cmdSetOverMode = (enable) =>
 
 export const cmdSetProps = (track) =>
 {
-  let layerid = calcLayerID(track, 1);
-  if (layerid >= 0)
-  {
-    let hue = get(pStrand).tracks[track].drawProps.degreeHue;
-    let white = get(pStrand).tracks[track].drawProps.pcentWhite;
-    let count = get(pStrand).tracks[track].drawProps.pcentCount;
-    let valstr = `${hue} ${white} ${count}`
-    sendLayerCmd(layerid, cmdStr_SetProps, valstr);
-    copyStrandLayer(track, 1);
-    makeCmdStr(track, 1);
-  }
-  else
+  if (track == undefined)
   {
     let hue = get(pStrand).degreeHue;
     let white = get(pStrand).pcentWhite;
@@ -217,83 +386,205 @@ export const cmdSetProps = (track) =>
     sendCmd(cmdStr_SetProps, valstr);
     copyStrandTop();
   }
-}
-
-export const cmdSetStart = (track, layer) =>
-{
-  let layerid = calcLayerID(track, layer);
-  if (layerid >= 0)
+  else
   {
-    let value = get(pStrand).tracks[track].drawProps.pixStart;
-    sendLayerCmd(layerid, cmdStr_SetStart, value);
-    copyStrandLayer(track, layer);
-    makeCmdStr(track, 1);
-  }
-  else cmdError(track, layer);
-}
+    let layerid = calcLayerID(track, DRAW_LAYER);
 
-export const cmdSetFinish = (track, layer) =>
-{
-  let layerid = calcLayerID(track, layer);
-  if (layerid >= 0)
-  {
-    let value = get(pStrand).tracks[track].drawProps.pixEnd;
-    sendLayerCmd(layerid, cmdStr_SetFinish, value);
-    copyStrandLayer(track, layer);
-    makeCmdStr(track, 1);
+    let hue = get(pStrand).tracks[track].drawProps.degreeHue;
+    let white = get(pStrand).tracks[track].drawProps.pcentWhite;
+    let count = get(pStrand).tracks[track].drawProps.pcentCount;
+    let valstr = `${hue} ${white} ${count}`
+
+    sendLayerCmd(layerid, cmdStr_SetProps, valstr);
+    copyStrandLayer(track, DRAW_LAYER);
+    checkCmdStr(track, DRAW_LAYER);
   }
-  else cmdError(track, layer);
 }
 
 export const cmdTrigger = () =>
 {
-  sendCmd(cmdStr_Trigger, get(pStrand).forceValue);
+  sendCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
 }
+
+// Commands from ControlsDrawing:
+
+export const cmdSetDrawEffect = (track) =>
+{
+  // must recreate entire command string when an effect is changed
+  curPatternStr.set(''); // causes refresh
+  checkCmdStr(track, DRAW_LAYER);
+}
+
+export const cmdSetOverrides = (track) =>
+{
+  let layerid = calcLayerID(track, DRAW_LAYER);
+  let bits = makeOrideBits(track);
+
+  sendLayerCmd(layerid, cmdStr_OrideBits, bits);
+  copyStrandLayer(track, DRAW_LAYER);
+  checkCmdStr(track, DRAW_LAYER);
+}
+
+export const cmdSetStart = (track) =>
+{
+  let layerid = calcLayerID(track, DRAW_LAYER);
+  let start = get(pStrand).tracks[track].drawProps.pcentStart;
+  let finish = get(pStrand).tracks[track].drawProps.pcentFinish;
+
+  let length = finish - start;
+  if (length >= 0)
+  {
+    sendLayerCmds(layerid, cmdStr_PcentStart, start, cmdStr_PcentLength, length);
+    copyStrandLayer(track, DRAW_LAYER);
+    checkCmdStr(track, DRAW_LAYER);
+    return false;
+  }
+  else
+  {
+    get(pStrand).tracks[track].drawProps.pcentFinish = start;
+    return true; // cause reactive change and call to SetFinish()
+  }
+}
+
+export const cmdSetFinish = (track) =>
+{
+  let layerid = calcLayerID(track, DRAW_LAYER);
+  let start = get(pStrand).tracks[track].drawProps.pcentStart;
+  let finish = get(pStrand).tracks[track].drawProps.pcentFinish;
+
+  let length = finish - start;
+  if (length >= 0)
+  {
+    sendLayerCmds(layerid, cmdStr_PcentStart, start, cmdStr_PcentLength, length);
+    copyStrandLayer(track, DRAW_LAYER);
+    checkCmdStr(track, DRAW_LAYER);
+    return false;
+  }
+  else
+  {
+    get(pStrand).tracks[track].drawProps.pcentStart = finish;
+    return true; // cause reactive change and call to SetStart()
+  } 
+}
+
+export const cmdSetOwrite = (track) =>
+{
+  let layerid = calcLayerID(track, DRAW_LAYER);
+  let value = get(pStrand).tracks[track].drawProps.orPixelValues;
+  sendLayerCmd(layerid, cmdStr_OwritePixs, (value ? 1 : 0));
+  copyStrandLayer(track, DRAW_LAYER);
+  checkCmdStr(track, DRAW_LAYER);
+}
+
+export const cmdSetDirect = (track) =>
+{
+  let layerid = calcLayerID(track, DRAW_LAYER);
+  let value = get(pStrand).tracks[track].drawProps.reverseDir;
+  sendLayerCmd(layerid, cmdStr_Direction, (value ? 0 : 1)); // 1 is default
+  copyStrandLayer(track, DRAW_LAYER);
+  checkCmdStr(track, DRAW_LAYER);
+}
+
+// Commands from ControlsFilter:
 
 export const cmdSetFilterEffect = (track, layer) =>
 {
-
-    makeCmdStr(track, layer);
+  // must recreate entire command string when an effect is changed
+  curPatternStr.set(''); // causes refresh
+  checkCmdStr(track, layer);
 }
 
 export const cmdSetTrigManual = (track, layer) =>
 {
+  // TODO: if not new firmware then must send
+  //       entire command string if turning off
 
-    makeCmdStr(track, layer);
+  let layerid = calcLayerID(track, layer);
+  let domanual = get(pStrand).tracks[track].layers[layer].trigDoManual;
+  // don't need to send value if enabling (1 is default)
+  sendLayerCmd(layerid, cmdStr_TrigManual, (domanual ? undefined : 0));
+  checkCmdStr(track, layer);
 }
 
 export const cmdSetTrigLayer = (track, layer) =>
 {
+  let layerid = calcLayerID(track, layer);
+  let dolayer = get(pStrand).tracks[track].layers[layer].trigDoLayer;
+  let tracknum = get(pStrand).tracks[track].layers[layer].trigTrackNum;
+  let layernum = get(pStrand).tracks[track].layers[layer].trigLayerNum;
 
-    makeCmdStr(track, layer);
+  let tlayer = MAX_BYTE_VALUE; // indicates disabled state
+  if (dolayer) tlayer = calcLayerID(tracknum-1, layernum-1);
+  
+  sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
+  checkCmdStr(track, layer);
+  return true;
 }
 
+// must recreate entire command string if no-triggering is chosen
 export const cmdSetTrigType = (track, layer) =>
 {
+  let tstr = get(pStrand).tracks[track].layers[layer].trigTypeStr;
+  if (tstr == 'none')
+  {
+    curPatternStr.set(''); // causes refresh
+    checkCmdStr(track, layer);
+  }
+  else if (tstr == 'once')
+  {
+    let layerid = calcLayerID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for once
+    checkCmdStr(track, layer);
+  }
+  else if (tstr == 'auto') cmdSetTrigDrange(track, layer);
+}
 
-    makeCmdStr(track, layer);
+export const cmdSetTrigRandom = (track, layer) =>
+{
+  let enabled = get(pStrand).tracks[track].layers[layer].trigDoRepeat;
+  if (enabled)
+  {
+    let layerid = calcLayerID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TrigCount); // no value is set for random
+    checkCmdStr(track, layer);
+  }
+  else cmdSetTrigCount(track, layer);
 }
 
 export const cmdSetTrigCount = (track, layer) =>
 {
-
-    makeCmdStr(track, layer);
+  let layerid = calcLayerID(track, layer);
+  let count = get(pStrand).tracks[track].layers[layer].trigRepCount;
+  sendLayerCmd(layerid, cmdStr_TrigCount, count);
+  checkCmdStr(track, layer);
 }
 
 export const cmdSetTrigDmin = (track, layer) =>
 {
-
-    makeCmdStr(track, layer);
+  let layerid = calcLayerID(track, layer);
+  let dmin = get(pStrand).tracks[track].layers[layer].trigDelayMin;
+  sendLayerCmd(layerid, cmdStr_TrigMinTime, dmin);
+  checkCmdStr(track, layer);
 }
 
 export const cmdSetTrigDrange = (track, layer) =>
 {
-
-    makeCmdStr(track, layer);
+  let layerid = calcLayerID(track, layer);
+  let range = get(pStrand).tracks[track].layers[layer].trigDelayRange;
+  sendLayerCmd(layerid, cmdStr_TriggerRange, range);
+  checkCmdStr(track, layer);
 }
 
 export const cmdSetForceValue = (track, layer) =>
 {
+  let layerid = calcLayerID(track, layer);
 
-    makeCmdStr(track, layer);
+  if (!get(pStrand).tracks[track].layers[layer].forceRandom)
+  {
+    let value = get(pStrand).tracks[track].layers[layer].forceValue;
+    sendLayerCmd(layerid, cmdStr_TrigForce, value);
+  }
+  else sendLayerCmd(layerid, cmdStr_TrigForce);
+
+  checkCmdStr(track, layer);
 }

@@ -40,7 +40,7 @@
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
-      bind:cur={$pStrand.percentPixs}
+      bind:cur={$pStrand.pcentCount}
       disabled={!$pStrand.doOverride}
     />
 

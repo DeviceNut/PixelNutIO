@@ -66,6 +66,7 @@
         <Column style="margin-top: 10px; max-width:300px">
           <SliderVal name='Force'
             max={MAX_FORCE}
+            onchange={cmdTrigger}
             bind:cur={$pStrand.forceValue}
           />
         </Column>

@@ -4,7 +4,7 @@ export const MAX_FORCE            = 1000;   // maximum force value
 
 export const overBits_DegreeHue   = 1;      // overwrite degreeHue
 export const overBits_PcentWhite  = 2;      // overwrite pcentWhite
-export const overBits_PixCount    = 4;      // overwrite pixCount
+export const overBits_PcentCount  = 4;      // overwrite pcentCount
 
 export const cmdStr_GetInfo       = "?";
 export const cmdStr_GetSegments   = "?S";
@@ -31,10 +31,14 @@ export const cmdStr_AddrLayer     = "M";    // layer index
 export const cmdStr_Clear         = "P";    // none
 export const cmdStr_PcentStart    = "J";    // percent of pixels **
 export const cmdStr_PcentLength   = "K";    // percent of pixels **
+
+////////////////////////////////////////////// not used
 export const cmdStr_PcentFirst    = "L";    // percent of pixel length ++
 export const cmdStr_PixStart      = "X";    // pixel index **
 export const cmdStr_PixCount      = "Y";    // pixel index **
 export const cmdStr_PixFirst      = "Z";    // pixel index ++
+//////////////////////////////////////////////
+
 export const cmdStr_Effect        = "E";    // plugin number
 export const cmdStr_Bright        = "B";    // percent of max
 export const cmdStr_Delay         = "D";    // msecs of delay

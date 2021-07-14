@@ -32,7 +32,7 @@ import {
 } from './globals.js';
 
 import {
-  clearStrand,
+  clearAllTracks,
   copyStrand,
   copyStrandTop,
   copyStrandLayer,
@@ -40,7 +40,7 @@ import {
 } from './patterns.js'
 
 import {
-  makeLayerID,
+  convTrackLayerToID,
   makeOrideBits,
   makeLayerCmdStr,
   makeEntireCmdStr
@@ -87,14 +87,14 @@ function sendLayerCmd(id, cmdstr, cmdval)
   if (cmdval != undefined)
     cmdstr = cmdstr.concat(cmdval);
 
-  if (id >= 0)
-  {
-    let str = `${cmdStr_AddrLayer}${id} `;
-    str = str.concat(`${cmdstr} `);
-    str = str.concat(`${cmdStr_AddrLayer}`);
-    sendCmd(str);
-  }
-  else sendCmd(cmdstr);
+  // don't need to set back to top-of-stack?
+  //let str = `${cmdStr_AddrLayer}${id} `;
+  //str = str.concat(`${cmdstr} `);
+  //str = str.concat(`${cmdStr_AddrLayer}`);
+  //sendCmd(str);
+
+  // Note: effective only within a command string
+  sendCmd(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
 }
 
 function updateLayerVals(track, layer)
@@ -208,16 +208,20 @@ export const userSetPatternID = () =>
   let cmdstr = get(aPatterns)[get(pStrand).patternID].cmd;
   if (cmdstr != '')
   {
+    clearAllTracks(); // clears entire strand to defaults
+
     if (parsePattern(cmdstr)) // sets vars for current strand
     {
-      // display new pattern on all selected strands
       get(pStrand).patternStr = cmdstr;
+      get(pStrand).backupStr = cmdstr;
+
       copyStrand();
-      sendCmd(cmdstr);
+      sendEntireCmdStr();
     }
-    // shouldn't happen: all pre-builts are valid
+    // software bug: all pre-builts are valid
     else console.error('Parse Failed: ', cmdstr);
   }
+  else clearAllTracks(); // clears entire strand to defaults
 }
 
 export const userSetBright = (track) =>
@@ -242,7 +246,7 @@ export const userSetBright = (track) =>
 
       updateLayerVals(track, DRAW_LAYER);
   
-      let layerid = makeLayerID(track, DRAW_LAYER);
+      let layerid = convTrackLayerToID(track, DRAW_LAYER);
       sendLayerCmd(layerid, cmdStr_SetBright, bright);
     }
   }
@@ -270,7 +274,7 @@ export const userSetDelay = (track) =>
 
       updateLayerVals(track, DRAW_LAYER);
 
-      let layerid = makeLayerID(track, DRAW_LAYER);
+      let layerid = convTrackLayerToID(track, DRAW_LAYER);
       sendLayerCmd(layerid, cmdStr_SetDelay, delay);
     }
   }
@@ -308,11 +312,11 @@ export const userSetProps = (track) =>
     let white = get(pStrand).pcentWhite;
     let count = get(pStrand).pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].degreeHue   != hue)   ||
+    if ((get(dStrands)[get(idStrand)].degreeHue  != hue)   ||
         (get(dStrands)[get(idStrand)].pcentWhite != white) ||
         (get(dStrands)[get(idStrand)].pcentCount != count))
     {
-      get(dStrands)[get(idStrand)].degreeHue   = hue;
+      get(dStrands)[get(idStrand)].degreeHue  = hue;
       get(dStrands)[get(idStrand)].pcentWhite = white;
       get(dStrands)[get(idStrand)].pcentCount = count;
 
@@ -326,17 +330,17 @@ export const userSetProps = (track) =>
     let white = get(pStrand).tracks[track].drawProps.pcentWhite;
     let count = get(pStrand).tracks[track].drawProps.pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue   != hue)   ||
+    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  != hue)   ||
         (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite != white) ||
         (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount != count))
     {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue   = hue;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  = hue;
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
 
       updateLayerVals(track, DRAW_LAYER);
   
-      let layerid = makeLayerID(track, DRAW_LAYER);
+      let layerid = convTrackLayerToID(track, DRAW_LAYER);
       sendLayerCmd(layerid, cmdStr_SetProps, `${hue} ${white} ${count}`);
     }
   }
@@ -365,16 +369,17 @@ export const userSetPatternStr = () =>
     copyStrand();
     sendCmd(cmdstr);
   }
-  else get(pStrand).patternStr = '<invalid command string>';
+  else get(pStrand).patternStr = get(pStrand).backupStr;
 }
 
 export const userClearPattern = () =>
 {
   // clears patterns to custom mode
   get(pStrand).patternStr = '';
+  get(pStrand).backupStr = '';
   get(pStrand).patternID = 0;
 
-  clearStrand();
+  clearAllTracks();
   copyStrand();
 
   sendCmd(cmdStr_Clear);
@@ -410,7 +415,7 @@ export const userSetOverrides = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
   
-    let layerid = makeLayerID(track, DRAW_LAYER);
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
     sendLayerCmd(layerid, cmdStr_OrideBits, bits);
   }
 }
@@ -423,7 +428,7 @@ export const userSetStart = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart = start;
 
     let length = get(pStrand).tracks[track].drawProps.pcentFinish - start;
-    if (length >= 0)
+    if (length > 0)
     {
       updateLayerVals(track, DRAW_LAYER);
 
@@ -446,9 +451,8 @@ export const userSetFinish = (track) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish = finish;
 
-    let start = get(pStrand).tracks[track].drawProps.pcentStart;
-    let length = finish - start;
-    if (length >= 0)
+    let length = finish - get(pStrand).tracks[track].drawProps.pcentStart;
+    if (length > 0)
     {
       updateLayerVals(track, DRAW_LAYER);
 
@@ -466,14 +470,14 @@ export const userSetFinish = (track) =>
 
 export const userSetOwrite = (track) =>
 {
-  let orval = get(pStrand).tracks[track].drawProps.orPixelValues;
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues != orval)
+  let orval = get(pStrand).tracks[track].drawProps.orPixelVals;
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals != orval)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelValues = orval;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = orval;
 
     updateLayerVals(track, DRAW_LAYER);
 
-    let layerid = makeLayerID(track, DRAW_LAYER);
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
     sendLayerCmd(layerid, cmdStr_OwritePixs, (orval ? 1 : 0));
   }
 }
@@ -487,7 +491,7 @@ export const userSetDirect = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
 
-    let layerid = makeLayerID(track, DRAW_LAYER);
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
     sendLayerCmd(layerid, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
   }
 }
@@ -518,7 +522,7 @@ export const userSetTrigManual = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
+    let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigManual, (doman ? undefined : 0));
     // don't need to send value if enabling (1 is default)
   }
@@ -535,11 +539,11 @@ export const userSetTrigLayer = (track, layer) =>
     let layernum = get(pStrand).tracks[track].layers[layer].trigLayerNum;
 
     let tlayer = MAX_BYTE_VALUE; // indicates disabled state
-    if (dolayer) tlayer = makeLayerID(tracknum-1, layernum-1);
+    if (dolayer) tlayer = convTrackLayerToID(tracknum-1, layernum-1);
     
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
+    let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
   }
 }
@@ -558,8 +562,8 @@ export const userSetTrigNums = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
-    let tlayer = makeLayerID(tracknum-1, layernum-1);
+    let layerid = convTrackLayerToID(track, layer);
+    let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
     sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
   }
 }
@@ -583,7 +587,7 @@ export const userSetTrigType = (track, layer) =>
     {
       updateLayerVals(track, layer);
 
-      let layerid = makeLayerID(track, layer);
+      let layerid = convTrackLayerToID(track, layer);
       sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for 'once' type
     }
     else if (valstr == 'auto')
@@ -592,7 +596,7 @@ export const userSetTrigType = (track, layer) =>
       {
         updateLayerVals(track, layer);
 
-        let layerid = makeLayerID(track, layer);
+        let layerid = convTrackLayerToID(track, layer);
         let range = get(pStrand).tracks[track].layers[layer].trigDelayRange;
         sendLayerCmd(layerid, cmdStr_TriggerRange, range);
       }
@@ -611,14 +615,14 @@ export const userSetTrigRandom = (track, layer) =>
     {
       updateLayerVals(track, layer);
 
-      let layerid = makeLayerID(track, layer);
+      let layerid = convTrackLayerToID(track, layer);
       sendLayerCmd(layerid, cmdStr_TrigCount); // no value is set for random
     }
     else if (!userSetTrigCount(track, layer))
     {
       updateLayerVals(track, layer);
 
-      let layerid = makeLayerID(track, layer);
+      let layerid = convTrackLayerToID(track, layer);
       let count = get(pStrand).tracks[track].layers[layer].trigRepCount;
       sendLayerCmd(layerid, cmdStr_TrigCount, count);
     }
@@ -635,7 +639,7 @@ export const userSetTrigCount = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
+    let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigCount, count);
     return true;
   }
@@ -651,7 +655,7 @@ export const userSetTrigDmin = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
+    let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigMinTime, dmin);
   }
 }
@@ -666,7 +670,7 @@ export const userSetTrigDrange = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let layerid = makeLayerID(track, layer);
+    let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TriggerRange, dmax);
     return true;
   }
@@ -684,7 +688,7 @@ export const userSetForceValue = (track, layer) =>
 
     if (!isrand)
     {
-      let layerid = makeLayerID(track, layer);
+      let layerid = convTrackLayerToID(track, layer);
       let force = get(pStrand).tracks[track].layers[layer].forceValue;
       sendLayerCmd(layerid, cmdStr_TrigForce, force);
     }

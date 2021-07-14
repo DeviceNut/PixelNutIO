@@ -26,13 +26,13 @@ export const presetsInit = () =>
   
   aEffectsDraw.set([
     { id: '-1', bits: 0x00, text: '<none>' },
-    { id: '0',  bits: 0x00, text: 'DrawAll' },
-    { id: '1',  bits: 0x00, text: 'DrawPush' },
-    { id: '2',  bits: 0x00, text: 'DrawStep' },
-    { id: '10', bits: 0x00, text: 'LightWave' },
-    { id: '20', bits: 0x00, text: 'CometHeads' },
-    { id: '30', bits: 0x00, text: 'FerrisWheel' },
-    { id: '40', bits: 0x00, text: 'BlockScanner' },
+    { id: '0',  bits: 0x00, text: 'Draw All' },
+    { id: '1',  bits: 0x00, text: 'Draw Push' },
+    { id: '2',  bits: 0x00, text: 'Draw Step' },
+    { id: '10', bits: 0x00, text: 'Light Wave' },
+    { id: '20', bits: 0x00, text: 'Comet Heads' },
+    { id: '30', bits: 0x00, text: 'Ferris Wheel' },
+    { id: '40', bits: 0x00, text: 'Block Scanner' },
     { id: '50', bits: 0x00, text: 'Twinkle' },
     { id: '51', bits: 0x00, text: 'Blinky' },
     { id: '52', bits: 0x00, text: 'Noise' },
@@ -40,21 +40,21 @@ export const presetsInit = () =>
 
   aEffectsFilter.set([
     { id: '-1',  bits: 0x01, text: '<none>' },
-    { id: '100', bits: 0x01, text: 'HueSet' },
-    { id: '101', bits: 0x01, text: 'HueRotate' },
-    { id: '110', bits: 0x01, text: 'ColorMeld' },
-    { id: '111', bits: 0x11, text: 'ColorModify' },
-    { id: '112', bits: 0x01, text: 'ColorRandom' },
-    { id: '120', bits: 0x01, text: 'CountSet' },
-    { id: '121', bits: 0x01, text: 'CountSurge' },
-    { id: '122', bits: 0x01, text: 'CountWave' },
-    { id: '130', bits: 0x01, text: 'DelaySet' },
-    { id: '131', bits: 0x01, text: 'DelaySurge' },
-    { id: '132', bits: 0x01, text: 'DelayWave' },
-    { id: '141', bits: 0x01, text: 'BrightSurge' },
-    { id: '142', bits: 0x01, text: 'BrightWave' },
-    { id: '150', bits: 0x01, text: 'WinExpander' },
-    { id: '160', bits: 0x01, text: 'FlipDirection' },
+    { id: '100', bits: 0x01, text: 'Hue Set' },
+    { id: '101', bits: 0x01, text: 'Hue Rotate' },
+    { id: '110', bits: 0x01, text: 'Color Meld' },
+    { id: '111', bits: 0x11, text: 'Color Modify' },
+    { id: '112', bits: 0x01, text: 'Color Random' },
+    { id: '120', bits: 0x01, text: 'Count Set' },
+    { id: '121', bits: 0x01, text: 'Count Surge' },
+    { id: '122', bits: 0x01, text: 'Count Wave' },
+    { id: '130', bits: 0x01, text: 'Delay Set' },
+    { id: '131', bits: 0x01, text: 'Delay Surge' },
+    { id: '132', bits: 0x01, text: 'Delay Wave' },
+    { id: '141', bits: 0x01, text: 'Bright Surge' },
+    { id: '142', bits: 0x01, text: 'Bright Wave' },
+    { id: '150', bits: 0x01, text: 'Window Expander' },
+    { id: '160', bits: 0x01, text: 'Flip Direction' },
   ]);
 }
 
@@ -67,13 +67,13 @@ export const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plu
 
 export const presetsFindEffect = (plugnum) =>
 {
-  for (const f of get(aEffectsDraw))
+  for (const [i, f] of get(aEffectsDraw).entries())
     if (f.id == plugnum)
-      return f.bits;
+      return { index:i, bits:f.bits };
 
-  for (const f of get(aEffectsFilter))
+  for (const [i, f] of get(aEffectsFilter).entries())
     if (f.id == plugnum)
-      return f.bits;
+      return { index:i, bits:f.bits };
 
   return undefined;
 }

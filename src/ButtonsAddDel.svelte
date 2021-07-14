@@ -1,26 +1,26 @@
 <script>
  
   import { pStrand, nTracks, tLayers } from './globals.js';
+  import { makeEntireCmdStr } from './cmdmake.js';
 
-  export let track = 0;
+  export let track;
 
   let istrack = (track == -1);
 
-  let add_disabled = isAddDisabled();
-  let del_disabled = isDelDisabled();
+  let add_disabled;
+  let del_disabled;
 
-  function isAddDisabled()
-  {
+  $: {
     if (istrack)
-         return ($pStrand.tactives >= $nTracks);
-    else return ($pStrand.tracks[track].lactives >= $tLayers);
-  }
-
-  function isDelDisabled()
-  {
-    if (istrack)
-         return ($pStrand.tactives <= 1);
-    else return ($pStrand.tracks[track].lactives <= 1);
+    {
+      add_disabled = ($pStrand.tactives >= $nTracks);
+      del_disabled = ($pStrand.tactives <= 1);
+    }
+    else
+    {
+      add_disabled = ($pStrand.tracks[track].lactives >= $tLayers);
+      del_disabled = ($pStrand.tracks[track].lactives <= 1);
+    }
   }
 
   const doadd = () =>
@@ -53,6 +53,8 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
     }
+
+    makeEntireCmdStr();
   }
 
 </script>

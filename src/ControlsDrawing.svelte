@@ -60,7 +60,7 @@
     <div style="margin-top: 7px; margin-left: 50px;">
     <Checkbox labelText="Pixel Overwrite"
       on:check={setOwrite}
-      bind:checked={$pStrand.tracks[track].drawProps.orPixelValues}
+      bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
     />
     </div>
   {/if}

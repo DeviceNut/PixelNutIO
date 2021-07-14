@@ -10,17 +10,17 @@ import { MAX_FORCE } from "./pixelnut.js"
 
 const oneLayer =
 {
-  // solo/mute not used for drawing layer
-  solo            : false,  // true if currently solo
-  mute            : false,  // true if currently mute
-  
   pluginIndex     : 0,      // effect plugin index, not value (0=none)
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
+
+  //////////////////////////// only used for filter layers:
+  solo            : false,  // true if currently solo
+  mute            : false,  // true if currently mute
 
   trigDoManual    : false,  // true if can trigger manually from Main Panel
   trigDoLayer     : false,  // true if can trigger from other layer:
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
-  trigLayerNum    : 1,      //  the layer number that will trigger (from 1)
+  trigLayerNum    : 1,      //  the layer number of that track (from 1)
   trigTypeStr     : 'once', // or 'none' or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
@@ -29,6 +29,7 @@ const oneLayer =
 
   forceRandom     : true,   // true if a random force is applied when triggering
   forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
+  ////////////////////////////
 
   cmdstr          : ''      // command string for the current settings
 }
@@ -52,7 +53,7 @@ const drawProps =
                             //  (start must be <= finish)
 
   reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)
-  orPixelValues   : false,  // whether pixels overwrites (false) or are OR'ed (true)
+  orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
 }
 
 const oneTrack =
@@ -71,6 +72,7 @@ const oneStrand =
 
   patternID       : 0,      // current pattern index
   patternStr      : '',     // current pattern string
+  backupStr       : '',     // reverts to know good after bad edit
   
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
@@ -87,12 +89,8 @@ const oneStrand =
   tracks          : [],     // list of 'oneTrack's for this strand
 }
 
-function makeNewStrand(s)
+function makeNewTracks(s)
 {
-  let strand = {...oneStrand};
-
-  strand.tactives = 1;
-
   let tracks = [];
   for (let i = 0; i < get(nTracks); ++i)
   {
@@ -110,7 +108,13 @@ function makeNewStrand(s)
     tracks.push(track);
   }
 
-  strand.tracks = tracks;
+  return tracks;
+}
+
+function makeNewStrand(s)
+{
+  let strand = {...oneStrand};
+  strand.tracks = makeNewTracks();
   return strand;
 }
 
@@ -133,9 +137,11 @@ export const patternsInit = () =>
   eStrands.set(elist);
   pStrand.set(slist[sid]);
 
+  // make duplicate object to keep shadow values
   slist = [];
   for (let s = 0; s < get(nStrands); ++s)
     slist.push(makeNewStrand(s));
+
   dStrands.set(slist);
 }
 
@@ -155,6 +161,7 @@ export const copyStrandTop = () =>
       {
         strand.patternID   = ps.patternID;
         strand.patternStr  = ps.patternStr;
+        strand.backupStr   = ps.backupStr;
         strand.pcentBright = ps.pcentBright;
         strand.msecsDelay  = ps.msecsDelay;
         strand.firstPixel  = ps.firstPixel;
@@ -203,15 +210,10 @@ export const copyStrand = () =>
       copyStrandLayer(track, layer);
 }
 
-// clears all the values for the current strand,
-// but don't change the selected value
-export const clearStrand = () =>
+// clears all values for all tracks in the current strand
+export const clearAllTracks = () =>
 {
   let sid = get(idStrand);
-  let selected = get(aStrands)[sid].selected;
-  const strand = makeNewStrand(sid);
-  strand.selected = selected;
-  get(aStrands)[sid] = strand;
-  pStrand.set(strand);
+  get(aStrands)[sid].tactives = 1;
+  get(aStrands)[sid].tracks = makeNewTracks();
 }
-

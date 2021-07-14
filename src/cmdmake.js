@@ -3,7 +3,7 @@ import { get } from 'svelte/store';
 import {
   overBits_DegreeHue   ,
   overBits_PcentWhite  ,
-  overBits_PixCount    ,
+  overBits_PcentCount    ,
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
   cmdStr_Effect        ,
@@ -41,13 +41,13 @@ export const makeOrideBits = (p, track) =>
     bits |= overBits_PcentWhite;
 
   if (p.tracks[track].drawProps.overCount)
-    bits |= overBits_PixCount;
+    bits |= overBits_PcentCount;
 
   return bits;
 }
   
-// calculate what pixelnut engine layerid is
-export const makeLayerID = (track, layer) =>
+// convert track,layer to device layerID
+export const convTrackLayerToID = (track, layer) =>
 {
   let layerid = 0;
 
@@ -67,6 +67,23 @@ export const makeLayerID = (track, layer) =>
   }
 
   return layerid + layer;
+}
+
+// convert device layerID to track,layer object
+export const getTrackLayerFromID = (layerid) =>
+{
+  let track = 0;
+
+  for (let i = 0; i < get(pStrand).tactives; ++i)
+  {
+    if (layerid < get(pStrand).tracks[i].lactives)
+      break;
+
+    layerid -= get(pStrand).tracks[i].lactives;
+    ++track;
+  }
+
+  return { track:track, layer:layerid };
 }
 
 // then combine all those into one single command output string
@@ -94,6 +111,7 @@ export const makeEntireCmdStr = () =>
   if (cmdstr != '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).patternStr = cmdstr;
+  get(pStrand).backupStr = cmdstr;
 
   refreshCmdStr.set(true); // hack to force refresh
 }
@@ -103,11 +121,10 @@ export const makeLayerCmdStr = (track, layer) =>
 {
   let player = get(pStrand).tracks[track].layers[layer];
   let cmdstr = '';
-  let plugvalue;
 
   if (layer == 0) // drawing layer
   {
-    plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
+    let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
     if (plugvalue >= 0)
     {
       let pdraw = get(pStrand).tracks[track].drawProps;
@@ -147,50 +164,50 @@ export const makeLayerCmdStr = (track, layer) =>
       if (pdraw.reverseDir != false)
         cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
 
-      if (pdraw.orPixelValues != false)
+      if (pdraw.orPixelVals != false)
         cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
     }
   }
   else
   {
-    plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
+    let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
     if (plugvalue >= 0) cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+
+    if (plugvalue >= 0)
+    {
+      if (player.trigDoManual)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
+
+      if (player.trigDoLayer)
+      {
+        let tracknum = player.trigTrackNum;
+        let layernum = player.trigLayerNum;
+        let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
+        cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
+      }
+
+      if (!player.forceRandom)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+
+      if (player.trigTypeStr == 'once')
+        cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
+
+      else if (player.trigTypeStr == 'auto')
+      {
+        if (player.trigDoRepeat)
+          cmdstr = cmdstr.concat(`${cmdStr_TrigCount} `);
+
+        else if (player.trigRepCount != 1)
+          cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+
+        if (player.trigDelayMin != 1)
+          cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+
+        cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
+      }
+    }
   }
 
-  if (plugvalue >= 0)
-  {
-    if (player.trigDoManual)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
-
-    if (player.trigDoLayer)
-    {
-      let tracknum = player.trigTrackNum;
-      let layernum = player.trigLayerNum;
-      let tlayer = makeLayerID(tracknum-1, layernum-1);
-      cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
-    }
-
-    if (!player.forceRandom)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
-
-    if (player.trigTypeStr == 'once')
-      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
-
-    else if (player.trigTypeStr == 'auto')
-    {
-      if (player.trigDoRepeat)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigCount} `);
-
-      else if (player.trigRepCount != 1)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
-
-      if (player.trigDelayMin != 1)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
-
-      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
-    }
-  }
-  
   player.cmdstr = cmdstr;
 }
 

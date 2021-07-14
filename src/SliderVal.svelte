@@ -7,15 +7,15 @@
   export let max = 100;
   export let cur = 0;
   export let disabled = undefined;
-  export let onchange = 0;
   export let dolabels = false;
+  export let onchange;
 
   // remove event parameter from call
   let dochange = () => { onchange(); }
 
-  // on:change triggers twice per click !!
+  // on:click doesn't always fire !!
 
-  let maxLabel = ' ';
+  let maxLabel;
   $: maxLabel = dolabels ? max : ' ';
 
 </script>
@@ -25,7 +25,7 @@
   {min} {max}
   bind:value={cur}
   minLabel={name}
-  on:click={dochange}
+  on:change={dochange}
   {maxLabel}
   hideTextInput
 />

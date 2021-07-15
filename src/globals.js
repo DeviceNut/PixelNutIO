@@ -28,6 +28,8 @@ export let aPatHelp       = writable([]);     // list of all pattern help string
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsFilter = writable([]);     // list of all filter effects
 
+export let bitsOverride   = writable(0);      // OR'ed override bits from all layers
+
 export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
 
 export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
@@ -44,6 +46,7 @@ export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
     if (maxcount < max_pixels[i])
         maxcount = max_pixels[i];
   }
+
   nPixels.set(nlist);
   maxPixels.set(maxcount);
 }

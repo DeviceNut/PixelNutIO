@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  MAX_FORCE,
   overBits_DegreeHue   ,
   overBits_PcentWhite  ,
   overBits_PcentCount    ,
@@ -26,10 +27,14 @@ import {
 
 import {
   pStrand,
-  aEffectsDraw, aEffectsFilter,
+  aEffectsDraw,
+  aEffectsFilter,
+  bitsOverride,
   refreshCmdStr
 } from './globals.js';
   
+///////////////////////////////////////////////////////////
+
 export const makeOrideBits = (p, track) =>
 {
   let bits = 0;
@@ -46,6 +51,18 @@ export const makeOrideBits = (p, track) =>
   return bits;
 }
   
+// sets global 'bitsOverride' from examining all tracks
+export const makeStrandOverrides = () =>
+{
+  let bits = 0;
+  let strand = get(pStrand);
+
+  for (let i = 0; i < strand.tactives; ++i)
+    bits |= makeOrideBits(strand, i);
+
+  bitsOverride.set(bits);
+}
+
 // convert track,layer to device layerID
 export const convTrackLayerToID = (track, layer) =>
 {
@@ -86,22 +103,38 @@ export const getTrackLayerFromID = (layerid) =>
   return { track:track, layer:layerid };
 }
 
-// then combine all those into one single command output string
+// combine all layer cmds into command output string
 export const makeEntireCmdStr = () =>
 {
   // combine all layers into single string
   let cmdstr = '';
+  let bits = 0;
 
   let strand = get(pStrand);
   for (let i = 0; i < strand.tactives; ++i)
   {
     let track = strand.tracks[i];
+    let drawplugin = false;
+
+    // must have effect and not be mute be enabled
+
     for (let j = 0; j < track.lactives; ++j)
     {
       let layer = track.layers[j];
 
       // must have effect and not be mute to get output
-      if ((layer.pluginIndex > 0) && !track.mute && !layer.mute)
+      // (note that draw layer does not have mute)
+      if (j == 0)
+      {
+        drawplugin = (layer.pluginIndex > 0);
+
+        if (drawplugin)
+        {
+          bits |= makeOrideBits(strand, i);
+          cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+        }
+      }
+      else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
 
       console.log(`  ${i}:${j}: ${layer.cmdstr}`)
@@ -112,6 +145,8 @@ export const makeEntireCmdStr = () =>
 
   get(pStrand).patternStr = cmdstr;
   get(pStrand).backupStr = cmdstr;
+
+  bitsOverride.set(bits);
 
   refreshCmdStr.set(true); // hack to force refresh
 }
@@ -189,8 +224,10 @@ export const makeLayerCmdStr = (track, layer) =>
     }
 
     if (player.forceRandom)
-         cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
-    else cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+
+    else if (player.forceValue != MAX_FORCE/2) // default
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
     if (player.trigTypeStr == 'auto')
     {
@@ -211,8 +248,7 @@ export const makeLayerCmdStr = (track, layer) =>
   player.cmdstr = cmdstr;
 }
 
-// create partial command strings for all layers in a track,
-// then combine all those into one single command output string
+// create partial command strings for all layers in a track
 export const makeTrackCmdStrs = (track) =>
 {
   let ptrack = get(pStrand).tracks[track];

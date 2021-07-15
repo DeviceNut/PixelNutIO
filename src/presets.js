@@ -129,9 +129,10 @@ export const presetsInit = () =>
 }
 
 export const pluginBit_FILTER      = 0x01;   // is filter, not drawing, effect
+export const pluginBit_DELAY       = 0x04;   // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 export const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
-export const pluginBit_USEFORCE    = 0x20;   // trigger force is used in effect
+export const pluginBit_TRIGFORCE   = 0x20;   // trigger force is used in effect
 export const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
 export const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
 

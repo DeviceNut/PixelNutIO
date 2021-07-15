@@ -20,7 +20,7 @@
   import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
-  export let track = 0;
+  export let track;
 
   const setEffect = () => { userSetDrawEffect(track); }
   const setBright = () => { userSetBright(track); }
@@ -56,7 +56,7 @@
       bind:items={$aEffectsDraw}
     />
   </div>
-  {#if (track != 0) }
+  {#if ((track != 0) && ($pStrand.tracks[track].layers[0].pluginIndex != 0)) }
     <div style="margin-top: 7px; margin-left: 50px;">
     <Checkbox labelText="Pixel Overwrite"
       on:check={setOwrite}
@@ -66,31 +66,35 @@
   {/if}
 </Row>
 
-<SliderVal name='Bright'
-  onchange={setBright}
-  bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
-/>
+{#if ($pStrand.tracks[track].layers[0].pluginIndex != 0) }
 
-<SliderVal name='Delay&nbsp;'
-  onchange={setDelay}
-  bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-/>
-
-<SlidersPropsLocal {track} />
-
-<SliderVal name='Start&nbsp;'
-  onchange={setStart}
-  bind:cur={$pStrand.tracks[track].drawProps.pcentStart}
-/>
-
-<SliderVal name='Finish'
-  onchange={setFinish}
-  bind:cur={$pStrand.tracks[track].drawProps.pcentFinish}
-/>
-
-<Row style="margin: 13px 0 0 0;">
-  <Checkbox labelText="Reverse Direction"
-    on:check={setDirect}
-    bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+  <SliderVal name='Bright'
+    onchange={setBright}
+    bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
   />
-</Row>
+
+  <SliderVal name='Delay&nbsp;'
+    onchange={setDelay}
+    bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
+  />
+
+  <SlidersPropsLocal {track} />
+
+  <SliderVal name='Start&nbsp;'
+    onchange={setStart}
+    bind:cur={$pStrand.tracks[track].drawProps.pcentStart}
+  />
+
+  <SliderVal name='Finish'
+    onchange={setFinish}
+    bind:cur={$pStrand.tracks[track].drawProps.pcentFinish}
+  />
+
+  <Row style="margin: 13px 0 0 0;">
+    <Checkbox labelText="Reverse Direction"
+      on:check={setDirect}
+      bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+    />
+  </Row>
+
+{/if}

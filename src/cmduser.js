@@ -49,6 +49,8 @@ import {
 import { writeDevice } from './device.js'
 import { parsePattern } from './cmdparse.js';
 
+///////////////////////////////////////////////////////////
+
 export const sendCmd = (cmdstr) =>
 {
   const sid = get(idStrand);
@@ -75,13 +77,15 @@ export const sendEntireCmdStr = () =>
   sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternStr));
 }
 
-function sendCmdVal(cmdstr, cmdval)
+// send command (and optional value) to entire strand
+function sendStrandCmd(cmdstr, cmdval)
 {
   if (cmdval != undefined)
-       sendCmd(cmdstr.concat(cmdval, ' '));
+       sendCmd(cmdstr.concat(cmdval));
   else sendCmd(cmdstr);
 }
 
+// send command (and optional value) to specific layer
 function sendLayerCmd(id, cmdstr, cmdval)
 {
   if (cmdval != undefined)
@@ -236,7 +240,7 @@ export const userSetBright = (track) =>
       get(dStrands)[get(idStrand)].pcentBright = bright;
 
       copyStrandTop();
-      sendCmdVal(cmdStr_SetBright, bright);
+      sendStrandCmd(cmdStr_SetBright, bright);
     }
   }
   else
@@ -264,7 +268,7 @@ export const userSetDelay = (track) =>
       get(dStrands)[get(idStrand)].msecsDelay = delay;
 
       copyStrandTop();
-      sendCmdVal(cmdStr_SetDelay, delay);
+      sendStrandCmd(cmdStr_SetDelay, delay);
     }
   }
   else
@@ -290,7 +294,7 @@ export const userSetRotate = () =>
     get(dStrands)[get(idStrand)].firstPixel = firstp;
 
     copyStrandTop();
-    sendCmdVal(cmdStr_SetFirst, firstp);
+    sendStrandCmd(cmdStr_SetFirst, firstp);
   }
 }
 
@@ -301,7 +305,7 @@ export const userSetOverMode = () =>
   {
     get(dStrands)[get(idStrand)].doOverride = oride;
 
-    sendCmdVal(cmdStr_SetXmode, oride ? 1 : 0);
+    sendStrandCmd(cmdStr_SetXmode, oride ? 1 : 0);
     if (oride) userSetProps();
   }
 }
@@ -323,7 +327,7 @@ export const userSetProps = (track) =>
       get(dStrands)[get(idStrand)].pcentCount = count;
 
       copyStrandTop();
-      sendCmdVal(cmdStr_SetProps, `${hue} ${white} ${count}`);
+      sendStrandCmd(cmdStr_SetProps, `${hue} ${white} ${count}`);
     }
   }
   else
@@ -355,10 +359,16 @@ export const userSetForce = () =>
 
 export const userSendTrigger = () =>
 {
-  sendCmdVal(cmdStr_PullTrigger, get(pStrand).forceValue);
+  sendCmd(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
 }
 
 // Commands from PanelCustom:
+
+export const userSavePattern = () =>
+{
+  let cmdstr = get(pStrand).patternStr;
+
+}
 
 // user just edited pattern string - DISABLED FIXME?
 export const userSetPatternStr = () =>
@@ -393,13 +403,10 @@ export const userSetDrawEffect = (track) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex = pindex;
 
-    if (pindex > 0)
-    {
-      updateLayerVals(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
 
-      // must resend entire command when an effect is changed
-      sendEntireCmdStr();
-    }
+    // must resend entire command when an effect is changed
+    sendEntireCmdStr();
   }
 }
 
@@ -504,13 +511,10 @@ export const userSetFilterEffect = (track, layer) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
 
-    if (pindex > 0)
-    {
-      updateLayerVals(track, layer);
+    updateLayerVals(track, layer);
 
-      // must resend entire command when an effect is changed
-      sendEntireCmdStr();
-    }
+    // must resend entire command when an effect is changed
+    sendEntireCmdStr();
   }
 }
 

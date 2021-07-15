@@ -8,6 +8,8 @@ import {
 
 import { MAX_FORCE } from "./pixelnut.js"
 
+///////////////////////////////////////////////////////////
+
 const oneLayer =
 {
   pluginIndex     : 0,      // effect plugin index, not value (0=none)
@@ -22,13 +24,13 @@ const oneLayer =
   trigDoLayer     : false,  // true if can trigger from other layer:
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
-  trigTypeStr     : 'none', // or 'once' or if 'auto' (auto triggering), then:
+  trigTypeStr     : 'once', // or 'none', or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
   trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
   trigDelayRange  : 0,      //  range of delay values possible (min...min+range)
 
-  forceRandom     : true,   // true if a random force is applied when triggering
+  forceRandom     : false,  // true if a random force is applied when triggering
   forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
 
   cmdstr          : ''      // command string for the current settings

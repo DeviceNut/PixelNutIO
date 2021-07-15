@@ -1,8 +1,26 @@
 <script>
 
-  import { Row, Column, Checkbox } from "carbon-components-svelte";
-  import { pStrand } from './globals.js';
-  import { userSetOverMode, userSetProps } from "./cmduser.js"
+  import {
+    Row, Column,
+    Checkbox
+  } from "carbon-components-svelte";
+
+  import {
+  overBits_DegreeHue,
+  overBits_PcentWhite,
+  overBits_PcentCount,
+  } from './pixelnut.js';
+
+  import {
+    pStrand,
+    bitsOverride
+  } from './globals.js';
+
+  import {
+    userSetOverMode,
+    userSetProps
+  } from "./cmduser.js"
+  
   import SliderVal from "./SliderVal.svelte"
 
   // setprops is called with mouse event
@@ -21,20 +39,20 @@
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
-      disabled={!$pStrand.doOverride}
+      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_DegreeHue)}
       max={359}
     />
 
     <SliderVal name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
-      disabled={!$pStrand.doOverride}
+      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_PcentWhite)}
     />
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
-      disabled={!$pStrand.doOverride}
+      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_PcentCount)}
     />
 
   </Column>
@@ -42,6 +60,7 @@
     <Checkbox labelText="Override"
       on:check={docheck}
       bind:checked={$pStrand.doOverride}
+      disabled={$bitsOverride == 0}
     />
   </Column>
 </Row>

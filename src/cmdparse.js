@@ -40,6 +40,8 @@ import {
   makeEntireCmdStr
 } from './cmdmake.js';
 
+///////////////////////////////////////////////////////////
+
 function valueToBool(value)
 {
   if (value <= 0) return false;

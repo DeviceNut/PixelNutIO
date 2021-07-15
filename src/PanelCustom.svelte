@@ -5,14 +5,23 @@
     TextInput, Button,
   } from "carbon-components-svelte";
 
-  import { pStrand, refreshCmdStr } from './globals.js'
-  import { userSetPatternStr, userClearPattern } from './cmduser.js';
+  import {
+    pStrand,
+    refreshCmdStr
+  } from './globals.js'
+
+  import {
+    userSetPatternStr,
+    userSavePattern,
+    userClearPattern
+  } from './cmduser.js';
 
   import OneTrack from "./OneTrack.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
 
   const dosave = () => {} // TODO
-  const dosend = () => {} // TODO
+
+  const dosend = () => { userSavePattern(); }
 
   const doclear = () => { userClearPattern(); }
 
@@ -26,6 +35,7 @@
     }
   } 
 
+  // FIXME: enable editing command string below
 </script>
 
 <Grid>
@@ -33,7 +43,7 @@
   <div style="margin-top:12px;">
     <p style="margin-right:7px; font-size: .9em;">Command String:</p>
     <TextInput
-      size="sm"
+      size="sm" disabled
       on:change={userSetPatternStr}
       bind:value={$pStrand.patternStr}
     />
@@ -42,7 +52,6 @@
         style="margin-right:13px;"
         size="small"
         kind="secondary"
-        disabled
         on:click={dosave}
         >Save
       </Button>

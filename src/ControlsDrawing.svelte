@@ -10,6 +10,8 @@
     aEffectsDraw
   } from './globals.js';
 
+  import { pluginBit_TRIGGER } from './presets.js';
+
   import {
     userSetDrawEffect,
     userSetBright, userSetDelay,
@@ -17,6 +19,7 @@
     userSetOwrite, userSetDirect
   } from "./cmduser.js"
 
+  import ControlsTrigger from './ControlsTrigger.svelte'
   import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
   import SliderVal from "./SliderVal.svelte"
 
@@ -97,4 +100,8 @@
     />
   </Row>
 
+{/if}
+
+{#if ($pStrand.tracks[track].layers[0].pluginBits & pluginBit_TRIGGER) }
+  <ControlsTrigger {track} layer={0} />
 {/if}

@@ -178,6 +178,12 @@ export const makeLayerCmdStr = (track, layer) =>
 
       cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
 
+      if (pdraw.reverseDir != false)
+        cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
+
+      if (pdraw.orPixelVals != false)
+        cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
+
       if (pdraw.pcentBright != 100)
         cmdstr = cmdstr.concat(`${cmdStr_Bright}${pdraw.pcentBright} `);
 
@@ -196,12 +202,6 @@ export const makeLayerCmdStr = (track, layer) =>
       let bits = makeOrideBits(get(pStrand), track);
       if (bits != 0)
         cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
-
-      if (pdraw.reverseDir != false)
-        cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
-
-      if (pdraw.orPixelVals != false)
-        cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
     }
   }
   else

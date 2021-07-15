@@ -96,39 +96,40 @@ export const presetsInit = () =>
 
   aEffectsDraw.set([
     { id: '-1', bits: 0x00, text: '<none>' },
-    { id: '0',  bits: 0x00, text: 'Draw All' },
-    { id: '1',  bits: 0x00, text: 'Draw Push' },
-    { id: '2',  bits: 0x00, text: 'Draw Step' },
-    { id: '10', bits: 0x00, text: 'Light Wave' },
-    { id: '20', bits: 0x00, text: 'Comet Heads' },
-    { id: '30', bits: 0x00, text: 'Ferris Wheel' },
-    { id: '40', bits: 0x00, text: 'Block Scanner' },
-    { id: '50', bits: 0x00, text: 'Twinkle' },
-    { id: '51', bits: 0x00, text: 'Blinky' },
-    { id: '52', bits: 0x00, text: 'Noise' },
+    { id: '0',  bits: 0x01, text: 'Draw All' },
+    { id: '1',  bits: 0x01, text: 'Draw Push' },
+    { id: '2',  bits: 0x01, text: 'Draw Step' },
+    { id: '10', bits: 0x01, text: 'Light Wave' },
+    { id: '20', bits: 0xFD, text: 'Comet Heads' },
+    { id: '30', bits: 0x01, text: 'Ferris Wheel' },
+    { id: '40', bits: 0x01, text: 'Block Scanner' },
+    { id: '50', bits: 0x01, text: 'Twinkle' },
+    { id: '51', bits: 0x01, text: 'Blinky' },
+    { id: '52', bits: 0x01, text: 'Noise' },
   ]);
 
   aEffectsFilter.set([
-    { id: '-1',  bits: 0x01, text: '<none>' },
-    { id: '100', bits: 0x01, text: 'Hue Set' },
-    { id: '101', bits: 0x01, text: 'Hue Rotate' },
-    { id: '110', bits: 0x01, text: 'Color Meld' },
-    { id: '111', bits: 0x11, text: 'Color Modify' },
-    { id: '112', bits: 0x01, text: 'Color Random' },
-    { id: '120', bits: 0x01, text: 'Count Set' },
-    { id: '121', bits: 0x01, text: 'Count Surge' },
-    { id: '122', bits: 0x01, text: 'Count Wave' },
-    { id: '130', bits: 0x01, text: 'Delay Set' },
-    { id: '131', bits: 0x01, text: 'Delay Surge' },
-    { id: '132', bits: 0x01, text: 'Delay Wave' },
-    { id: '141', bits: 0x01, text: 'Bright Surge' },
-    { id: '142', bits: 0x01, text: 'Bright Wave' },
-    { id: '150', bits: 0x01, text: 'Window Expander' },
-    { id: '160', bits: 0x01, text: 'Flip Direction' },
+    { id: '-1',  bits: 0x00, text: '<none>' },
+    { id: '100', bits: 0x03, text: 'Hue Set' },
+    { id: '101', bits: 0x03, text: 'Hue Rotate' },
+    { id: '110', bits: 0x03, text: 'Color Meld' },
+    { id: '111', bits: 0x13, text: 'Color Modify' },
+    { id: '112', bits: 0x03, text: 'Color Random' },
+    { id: '120', bits: 0x03, text: 'Count Set' },
+    { id: '121', bits: 0x03, text: 'Count Surge' },
+    { id: '122', bits: 0x03, text: 'Count Wave' },
+    { id: '130', bits: 0x03, text: 'Delay Set' },
+    { id: '131', bits: 0x03, text: 'Delay Surge' },
+    { id: '132', bits: 0x03, text: 'Delay Wave' },
+    { id: '141', bits: 0x03, text: 'Bright Surge' },
+    { id: '142', bits: 0x03, text: 'Bright Wave' },
+    { id: '150', bits: 0x03, text: 'Window Expander' },
+    { id: '160', bits: 0x03, text: 'Flip Direction' },
   ]);
 }
 
-export const pluginBit_FILTER      = 0x01;   // is filter, not drawing, effect
+export const pluginBit_PRESENT     = 0x01;   // effect is present
+export const pluginBit_FILTER      = 0x02;   // is filter, not drawing, effect
 export const pluginBit_DELAY       = 0x04;   // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 export const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect

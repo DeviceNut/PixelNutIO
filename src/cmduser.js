@@ -28,7 +28,7 @@ import {
 import {
   nStrands, idStrand, pStrand,
   aStrands, eStrands, dStrands,
-  aPatterns
+  aPatterns, aEffectsDraw, aEffectsFilter
 } from './globals.js';
 
 import {
@@ -403,6 +403,10 @@ export const userSetDrawEffect = (track) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex = pindex;
 
+    let bits = get(aEffectsDraw)[pindex].bits;
+    get(pStrand).tracks[track].layers[0].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = bits;
+
     updateLayerVals(track, DRAW_LAYER);
 
     // must resend entire command when an effect is changed
@@ -510,6 +514,10 @@ export const userSetFilterEffect = (track, layer) =>
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex != pindex)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
+
+    let bits = get(aEffectsFilter)[pindex].bits;
+    get(pStrand).tracks[track].layers[layer].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
     updateLayerVals(track, layer);
 

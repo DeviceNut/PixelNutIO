@@ -24,8 +24,6 @@
 
   // if device has a saved pattern:
   // set pStrand.patternID = index of saved pattern;
-
-  //console.log('starting.............');
 </script>
 
 <Header {appname}/>

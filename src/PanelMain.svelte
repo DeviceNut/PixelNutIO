@@ -62,7 +62,9 @@
         modalHeading={$aPatterns[$pStrand.patternID].text}
         on:close
         >
-        <p>{$aPatHelp[$pStrand.patternID]}</p>
+        {#each $aPatHelp[$pStrand.patternID] as s,n}
+          <p>{s}</p><br>
+        {/each}
       </Modal>
     {/if}
   </Row>

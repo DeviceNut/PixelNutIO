@@ -121,10 +121,11 @@ export const makeLayerCmdStr = (track, layer) =>
 {
   let player = get(pStrand).tracks[track].layers[layer];
   let cmdstr = '';
+  let plugvalue;
 
   if (layer == 0) // drawing layer
   {
-    let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
+    plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
     if (plugvalue >= 0)
     {
       let pdraw = get(pStrand).tracks[track].drawProps;
@@ -170,41 +171,40 @@ export const makeLayerCmdStr = (track, layer) =>
   }
   else
   {
-    let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
+    plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
     if (plugvalue >= 0) cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+  }
 
-    if (plugvalue >= 0)
+  if (plugvalue >= 0)
+  {
+    if (player.trigDoManual)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
+
+    if (player.trigDoLayer)
     {
-      if (player.trigDoManual)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
+      let tracknum = player.trigTrackNum;
+      let layernum = player.trigLayerNum;
+      let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
+      cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
+    }
 
-      if (player.trigDoLayer)
-      {
-        let tracknum = player.trigTrackNum;
-        let layernum = player.trigLayerNum;
-        let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-        cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
-      }
+    if (player.forceRandom)
+         cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+    else cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-      if (!player.forceRandom)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+    if (player.trigTypeStr == 'auto')
+    {
+      if (!player.trigDoRepeat)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
 
-      if (player.trigTypeStr == 'once')
-        cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
+      if (player.trigDelayMin != 1)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
 
-      else if (player.trigTypeStr == 'auto')
-      {
-        if (player.trigDoRepeat)
-          cmdstr = cmdstr.concat(`${cmdStr_TrigCount} `);
-
-        else if (player.trigRepCount != 1)
-          cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
-
-        if (player.trigDelayMin != 1)
-          cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
-
-        cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
-      }
+      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
+    }
+    else if (player.trigTypeStr == 'once')
+    {
+      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
     }
   }
 

@@ -106,6 +106,11 @@ function updateLayerVals(track, layer)
 
 // Commands from Header:
 
+export const userSetDevName = () =>
+{
+  console.log('set device name');
+}
+
 export const userSendPause = (enable) =>
 {
   if (enable) sendCmd(cmdStr_Pause);
@@ -212,9 +217,6 @@ export const userSetPatternID = () =>
 
     if (parsePattern(cmdstr)) // sets vars for current strand
     {
-      get(pStrand).patternStr = cmdstr;
-      get(pStrand).backupStr = cmdstr;
-
       copyStrand();
       sendEntireCmdStr();
     }
@@ -358,27 +360,23 @@ export const userSendTrigger = () =>
 
 // Commands from PanelCustom:
 
-// user just edited pattern string
+// user just edited pattern string - DISABLED FIXME?
 export const userSetPatternStr = () =>
 {
-  console.log('setpatstr');
   let cmdstr = get(pStrand).patternStr;
+
+  clearAllTracks(); // clears entire strand to defaults
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {
     copyStrand();
-    sendCmd(cmdstr);
+    sendEntireCmdStr();
   }
   else get(pStrand).patternStr = get(pStrand).backupStr;
 }
 
 export const userClearPattern = () =>
 {
-  // clears patterns to custom mode
-  get(pStrand).patternStr = '';
-  get(pStrand).backupStr = '';
-  get(pStrand).patternID = 0;
-
   clearAllTracks();
   copyStrand();
 
@@ -501,13 +499,18 @@ export const userSetDirect = (track) =>
 
 export const userSetFilterEffect = (track, layer) =>
 {
-  let pid = get(pStrand).tracks[track].layers[layer].pluginIndex;
-  if (pid > 0)
+  let pindex = get(pStrand).tracks[track].layers[layer].pluginIndex;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex != pindex)
   {
-    updateLayerVals(track, layer);
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
 
-    // must resend entire command when an effect is changed
-    sendEntireCmdStr();
+    if (pindex > 0)
+    {
+      updateLayerVals(track, layer);
+
+      // must resend entire command when an effect is changed
+      sendEntireCmdStr();
+    }
   }
 }
 
@@ -678,7 +681,7 @@ export const userSetTrigDrange = (track, layer) =>
   return false;
 }
 
-export const userSetForceValue = (track, layer) =>
+export const userSetForceType = (track, layer) =>
 {
   let isrand = get(pStrand).tracks[track].layers[layer].forceRandom;
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom != isrand)
@@ -687,12 +690,27 @@ export const userSetForceValue = (track, layer) =>
 
     updateLayerVals(track, layer);
 
+    let layerid = convTrackLayerToID(track, layer);
+
     if (!isrand)
     {
-      let layerid = convTrackLayerToID(track, layer);
       let force = get(pStrand).tracks[track].layers[layer].forceValue;
       sendLayerCmd(layerid, cmdStr_TrigForce, force);
     }
     else sendLayerCmd(layerid, cmdStr_TrigForce);
+  }
+}
+
+export const userSetForceValue = (track, layer) =>
+{
+  let force = get(pStrand).tracks[track].layers[layer].forceValue;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue != force)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue = force;
+
+    updateLayerVals(track, layer);
+
+    let layerid = convTrackLayerToID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TrigForce, force);
   }
 }

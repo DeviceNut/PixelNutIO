@@ -33,6 +33,7 @@
     }
     else
     {
+      console.log('WTF????');
       let n = ++($pStrand.tracks[track].lactives);
       if (n >= $tLayers) add_disabled = true;
       del_disabled = false;

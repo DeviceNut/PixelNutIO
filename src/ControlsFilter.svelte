@@ -24,6 +24,7 @@
     userSetTrigCount,
     userSetTrigDmin,
     userSetTrigDrange,
+    userSetForceType,
     userSetForceValue
   } from "./cmduser.js"
 
@@ -82,7 +83,8 @@
   const setcount  = () => { userSetTrigCount(track, layer); }
   const setdmin   = () => { userSetTrigDmin(track, layer); }
   const setdrange = () => { userSetTrigDrange(track, layer); }
-  const setforce  = () => { userSetForceValue(track, layer); }
+  const setftype  = () => { userSetForceType(track, layer); }
+  const setfvalue = () => { userSetForceValue(track, layer); }
 
   // BUG: RadioButton on:click doesn't work?!
   // also on:click for RadioButtonGroup happens twice?
@@ -173,7 +175,7 @@
     <div style="margin-top:8px; ">
       <span style="margin-right:8px">Random Period:</span>
       <input type="number"
-        min="1" max="9999"
+        min="0" max="9999"
         on:change={setdrange}
         bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
         disabled={disable_ttype}
@@ -186,12 +188,12 @@
 <div style="margin-top: 8px; padding: 5px 0 5px 5px; background-color: #222322;">
 
   <Checkbox labelText="Random Value"
-    on:check={setforce}
+    on:check={setftype}
     bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
   />
   <SliderVal name='Fixed Value:'
     max={MAX_FORCE}
-    onchange={setforce}
+    onchange={setfvalue}
     bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
     disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
   />

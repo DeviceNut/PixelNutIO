@@ -1,6 +1,8 @@
 <script>
 
-  import { userSendPause } from "./cmduser.js"
+  import { TextInput } from "carbon-components-svelte";
+
+  import { userSetDevName, userSendPause } from "./cmduser.js"
 
   export let appname;
 
@@ -22,12 +24,20 @@
     // TODO open model with context sensitive help message
   }
 
+  //<p class="title">{appname}</p>
 </script>
 
 <div class="header">
   <button on:click={goback} class="button left" >&lt;&lt; Back</button>
   <button on:click={goweb} class="button left2" >Website</button>
-  <p class="title">{appname}</p>
+
+  <div class="title">
+    <TextInput
+      size="sm"
+      on:change={userSetDevName}
+      bind:value={appname}
+    />
+  </div>
   <button on:click={dohelp} class="button rite" >Help</button>
   <button on:click={dopause} class="button rite" >{textPause}</button>
 </div>
@@ -42,7 +52,7 @@
     position: absolute;
     margin-left: 50%;
     margin-right: -50%;
-    margin-top: 17px;
+    margin-top: 21px;
     transform: translate(-50%, -50%);
     font-style:italic;
     font-family:'Trebuchet MS';

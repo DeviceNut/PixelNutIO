@@ -27,56 +27,71 @@ export const presetsInit = () =>
   ]);
 
   aPatHelp.set([
-    "",
-
-    "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.\n\n" +
-    "The Force applied changes the amount of color change per pixel. At maximum Force the entire spectrum is displayed again.",
-
-    "Colors hue changes occur at the head and get pushed down the strip. When the end is reached they start getting cleared, creating a \"rolling\" effect.\n\n" +
-    "Triggering restarts the effect, with the amount of Force determining how fast the colors change. At the maximum Force the entire spectrum is displayed again.",
-
-    "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, in a single color.\n\n" +
-    "Triggering changes the frequency of the waves, with larger Forces making longer waves.",
-
-    "This has bright white twinkling \"stars\" over a background color, which is determined by the ColorHue and Whiteness properties.\n\n" +
-    "Triggering causes the background brightness to swell up and down, with the amount of Force determining the speed of the swelling.",
-
-    "This has bright twinkling without a background. The ColorHue property changes the twinkling color.\n\n" +
-    "Occasional comets streak up and down and then disappear. One of the comets is red, and appears randomly every 3-6 seconds.\n\n" +
-    "The other is orange and appears only when Triggered, with the Force determining its length.",
-
-    "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs.\n\n" +
-    "The comet color and tail lengths can be modified with the ColorHue, Whiteness, and Count properties.",
-
-    "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered.\n\n" +
-    "The first one changes colors on each change in direction, and the length can be modified with the Count property.\n\n" +
-    "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with ColorHue property.",
-
-    "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect.\n\n" +
-    "The spokes periodically change colors, or can be modified with the ColorHue and Whiteness properties.\n\n" +
-    "The Count property determines the number of spokes. Triggering toggles the direction of the motion.",
-
-    "The background is \"noise\" (randomly set pixels of random brightness), with the color modified by the ColorHue and Whiteness properties.\n\n" +
-    "A Trigger causes the background to slowly and continuously expand and contract, with the Force determining the extent of the expansion.",
-
-    "Random colored blinking that periodically surge in the rate of blinking. The Count property determines the number of blinking changes made at once.\n\n" +
-    "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges.",
-
-    "Random colored blinking that periodically surge in the rate of blinking.\n\nTriggering changes the frequency of the blinking, " +
-    "with larger Forces causing faster blinking surges.",
-
-    "All pixels swell up and down in brightness, with random color hue and whiteness changes, or set with the ColorHue and Whiteness properties.\n\n" +
-    "Triggering changes the pace of the swelling, with larger Forces causing faster swelling.",
-
-    "Colors melt from one to the other, with slow and smooth transitions.\n\n" +
-    "Triggering causes a new target color to be is chosen, with larger Forces causing larger color changes.",
-
-    "Festive red and green twinkles, with an occasional white comet that streaks across them.\n\n." +
-    "The comet's whiteness can be modified, and Triggering creates them.",
-
-    "Combination of a purple scanner over a greenish twinkling background, with a red comet that is fired off every time the scanner " +
-    "bounces off the end of the strip, or when Triggered.\n\n" +
-    "The ColorHue property only affects the color of the twinkling."
+    [""],
+    [
+      "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
+      "The Force applied changes the amount of color change per pixel. At maximum Force the entire spectrum is displayed again."
+    ],
+    [
+      "Colors hue changes occur at the head and get pushed down the strip. When the end is reached they start getting cleared, creating a \"rolling\" effect.",
+      "Triggering restarts the effect, with the amount of Force determining how fast the colors change. At the maximum Force the entire spectrum is displayed again."
+    ],
+    [
+      "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, in a single color.",
+      "Triggering changes the frequency of the waves, with larger Forces making longer waves."
+    ],
+    [
+      "This has bright white twinkling \"stars\" over a background color, which is determined by the 'Hue' and 'White' properties.",
+      "Triggering causes the background brightness to swell up and down, with the amount of Force determining the speed of the swelling."
+    ],
+    [
+      "This has bright twinkling without a background. The 'Hue' property changes the twinkling color.",
+      "Occasional comets streak up and down and then disappear. One of the comets is red, and appears randomly every 3-6 seconds.",
+      "The other is orange and appears only when Triggered, with the Force determining its length."
+    ],
+    [
+      "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs.",
+      "The comet color and tail lengths can be modified with the 'Hue', 'White', and 'Count' properties."
+    ],
+    [
+      "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered.",
+      "The first one changes colors on each change in direction, and the length can be modified with the 'Count' property.",
+      "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with 'Hue' property."
+    ],
+    [
+      "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect.",
+      "The spokes periodically change colors, or can be modified with the 'Hue' and 'White' properties.",
+      "The 'Count' property determines the number of spokes. Triggering toggles the direction of the motion."
+    ],
+    [
+      "The background is \"noise\" (randomly set pixels of random brightness), with the color modified by the 'Hue' and 'White' properties.",
+      "A Trigger causes the background to slowly and continuously expand and contract, with the Force determining the extent of the expansion."
+    ],
+    [
+      "Random colored blinking that periodically surge in the rate of blinking. The 'Count' property determines the number of blinking changes made at once.",
+      "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
+    ],
+    [
+      "Random colored blinking that periodically surge in the rate of blinking.",
+      "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
+    ],
+    [
+      "All pixels swell up and down in brightness, with random color hue and whiteness changes, or set with the 'Hue' and 'White' properties.",
+      "Triggering changes the pace of the swelling, with larger Forces causing faster swelling."
+    ],
+    [
+      "Colors melt from one to the other, with slow and smooth transitions.",
+      "Triggering causes a new target color to be is chosen, with larger Forcs causing larger color changes."
+    ],
+    [
+      "Festive red and green twinkles, with an occasional white comet that streaks across them.",
+      "The comet's whiteness can be modified, and Triggering creates them."
+    ],
+    [
+      "Combination of a purple scanner over a greenish twinkling background, with a red comet that is fired off every time the scanner " +
+      "bounces off the end of the strip, or when Triggered.",
+      "The 'Hue' property only affects the color of the twinkling."
+    ],
   ]);
 
   aEffectsDraw.set([

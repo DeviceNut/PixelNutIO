@@ -16,12 +16,13 @@ const oneLayer =
   //////////////////////////// only used for filter layers:
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
+  ////////////////////////////
 
   trigDoManual    : false,  // true if can trigger manually from Main Panel
   trigDoLayer     : false,  // true if can trigger from other layer:
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
-  trigTypeStr     : 'once', // or 'none' or if 'auto' (auto triggering), then:
+  trigTypeStr     : 'none', // or 'once' or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
   trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
@@ -29,7 +30,6 @@ const oneLayer =
 
   forceRandom     : true,   // true if a random force is applied when triggering
   forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
-  ////////////////////////////
 
   cmdstr          : ''      // command string for the current settings
 }

@@ -29,8 +29,16 @@ import {
   pStrand, dStrands, idStrand,
 } from './globals.js';
 
-import { pluginBit_FILTER, presetsFindEffect } from './presets.js';
-import { getTrackLayerFromID, makeLayerCmdStr } from './cmdmake.js';
+import {
+  pluginBit_FILTER,
+  presetsFindEffect
+} from './presets.js';
+
+import {
+  getTrackLayerFromID,
+  makeLayerCmdStr,
+  makeEntireCmdStr
+} from './cmdmake.js';
 
 function valueToBool(value)
 {
@@ -60,7 +68,7 @@ function valueToPositive(value)
 
 function valueToTrackLayer(value)
 {
-  if (isNaN(val))
+  if (isNaN(value))
     return {track:0, layer:0};
 
   return getTrackLayerFromID(value);
@@ -76,7 +84,7 @@ export const parsePattern = (cmdstr) =>
   let start = 0;
   let finish = 100;
 
-  const cmds = cmdstr.split(/\s+/); // remove all spaces
+  const cmds = cmdstr.toUpperCase().split(/\s+/); // remove all spaces
   //console.log('parse: ', cmds);
 
   for (let cmd of cmds)
@@ -143,16 +151,13 @@ export const parsePattern = (cmdstr) =>
             console.error('Too many tracks');
             return false;
           }
+
           // there is always at least one track
-          else if (track >= 0)
-            get(pStrand).tactives++;
+          // and the default value is 1
+          if (track >= 0) get(pStrand).tactives++;
 
           ++track;
-          ++layer;
-
-          // set trig type to default
-          get(pStrand).tracks[track].layers[layer].trigTypeStr = 'none';
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'none';
+          layer = 0;
 
           if (start > finish)
           {
@@ -161,6 +166,9 @@ export const parsePattern = (cmdstr) =>
   
             get(pStrand).tracks[track].drawProps.pcentFinish = finish;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish = finish;
+
+            start = 0;
+            finish = 100;
           }
         }
 
@@ -267,12 +275,12 @@ export const parsePattern = (cmdstr) =>
             let tlayer = (isNaN(val)) ? 0 : valueToTrackLayer(val);
 
             get(pStrand).tracks[track].layers[layer].trigDoLayer = true;
-            get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track;
-            get(pStrand).tracks[track].layers[layer].trigLayerNum = tlayer.layer;
+            get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
+            get(pStrand).tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
 
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
             break;
           }
           case cmdStr_TrigForce:
@@ -342,6 +350,6 @@ export const parsePattern = (cmdstr) =>
   if ((track >= 0) && (layer >= 0))
     makeLayerCmdStr(track, layer);
 
-  //console.log(get(pStrand));
+  makeEntireCmdStr();
   return true;
 }

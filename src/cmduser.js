@@ -383,6 +383,7 @@ export const userClearPattern = () =>
   copyStrand();
 
   sendCmd(cmdStr_Clear);
+  makeEntireCmdStr();
 }
 
 // Commands from ControlsDrawing:

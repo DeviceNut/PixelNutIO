@@ -24,6 +24,7 @@ export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
 export let aPatterns      = writable([]);     // list of all patterns
+export let aPatHelp       = writable([]);     // list of all pattern help strings
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsFilter = writable([]);     // list of all filter effects
 

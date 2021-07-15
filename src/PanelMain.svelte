@@ -6,8 +6,12 @@
   } from "carbon-components-svelte";
   import Help32 from "carbon-icons-svelte/lib/Help32";
 
-  import { pStrand, aPatterns } from './globals.js'
   import { MAX_FORCE } from "./pixelnut.js";
+
+  import {
+    pStrand,
+    aPatterns, aPatHelp
+  } from './globals.js'
 
   import {
     userSetPatternID,
@@ -29,7 +33,6 @@
   */
 
   let open = false;
-  let pattext = 'bla bla bla .s ldf ;lsjd f;lsjd f;lsjd ;lfsj d;lfsj;ldfjsldf'; // TODO
 
 </script>
 
@@ -44,24 +47,24 @@
         bind:items={$aPatterns}
       />
     </div>
-    <!--
-    <Button style="margin-left:20px;"
-      size="small"
-      kind="ghost"
-      hasIconOnly icon={Help32}
-      iconDescription="Pattern description"
-      tooltipPosition="right"
-      on:click={()=>open=true}
-    />
-    <Modal
-      bind:open
-      passiveModal
-      modalHeading="Pattern XX"
-      on:close
-      >
-      <p>{pattext}</p>
-    </Modal>
-    -->
+    {#if ($pStrand.patternID > 0) }
+      <Button style="margin-left:20px;"
+        size="small"
+        kind="ghost"
+        hasIconOnly icon={Help32}
+        iconDescription="Pattern description"
+        tooltipPosition="right"
+        on:click={()=>open=true}
+      />
+      <Modal
+        bind:open
+        passiveModal
+        modalHeading={$aPatterns[$pStrand.patternID].text}
+        on:close
+        >
+        <p>{$aPatHelp[$pStrand.patternID]}</p>
+      </Modal>
+    {/if}
   </Row>
 
   <Row style="margin-top: 7px;">

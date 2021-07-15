@@ -46,6 +46,7 @@
         on:click={dosave}
         >Save
       </Button>
+      <!--
       <Button
         style="margin-right:13px;"
         size="small"
@@ -54,6 +55,7 @@
         on:click={dosend}
         >Send
       </Button>
+      -->
       <Button
         style="margin-right:13px;"
         size="small"

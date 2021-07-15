@@ -216,4 +216,7 @@ export const clearAllTracks = () =>
   let sid = get(idStrand);
   get(aStrands)[sid].tactives = 1;
   get(aStrands)[sid].tracks = makeNewTracks();
+
+  get(dStrands)[sid].tactives = 1;
+  get(dStrands)[sid].tracks = makeNewTracks();
 }

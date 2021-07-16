@@ -20,16 +20,8 @@
   let isMute = false;
 
   $: {
-    if (layer == 0) // controls for a track
-    {
-      isSolo = $pStrand.tracks[track].solo;
-      isMute = $pStrand.tracks[track].mute;
-    }
-    else // for one of the predraw layers (layer > 1)
-    {
-      isSolo = $pStrand.tracks[track].layers[layer].solo;
-      isMute = $pStrand.tracks[track].layers[layer].mute;
-    }
+    isSolo = $pStrand.tracks[track].layers[layer].solo;
+    isMute = $pStrand.tracks[track].layers[layer].mute;
   }
 
   function rebuild()
@@ -52,30 +44,30 @@
     {
       if (isSolo)
       {
-        $pStrand.tracks[track].solo = true;
+        $pStrand.tracks[track].layers[0].solo = true;
 
         for (let i = 0; i < $nTracks; ++i)
         {
           if (i != track)
           {
-            $pStrand.tracks[i].solo = false;
-            $pStrand.tracks[i].mute = true;
+            $pStrand.tracks[i].layers[0].solo = false;
+            $pStrand.tracks[i].layers[0].mute = true;
           }
           else
           {
-            $pStrand.tracks[i].mute = false;
+            $pStrand.tracks[i].layers[0].mute = false;
           }
         }
       }
       else
       {
-        $pStrand.tracks[track].solo = false;
+        $pStrand.tracks[track].layers[0].solo = false;
 
         for (let i = 0; i < $nTracks; ++i)
         {
           if (i != track)
           {
-            $pStrand.tracks[i].mute = false;
+            $pStrand.tracks[i].layers[0].mute = false;
           }
         }
       }
@@ -124,29 +116,23 @@
   const domute = () =>
   {
     isMute = !isMute;
+    $pStrand.tracks[track].layers[layer].mute = isMute;
 
     // turning off mute for a track/layer that is not on Solo
     // turns off the Solo for any other track/layer
-    if (layer == 0)
+    if (!isMute)
     {
-      $pStrand.tracks[track].mute = isMute;
-
-      if (!isMute)
+      if (layer == 0)
       {
         for (let i = 0; i < $nTracks; ++i)
         {
           if (i != track)
           {
-            $pStrand.tracks[i].solo = false;
+            $pStrand.tracks[i].layers[0].solo = false;
           }
         }
       }
-    }
-    else
-    {
-      $pStrand.tracks[track].layers[layer].mute = isMute;
-
-      if (!isMute)
+      else
       {
         for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
         {

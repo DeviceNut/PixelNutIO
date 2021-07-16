@@ -15,10 +15,8 @@ const oneLayer =
   pluginIndex     : 0,      // effect plugin index, not value (0=none)
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
-  //////////////////////////// only used for filter layers:
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
-  ////////////////////////////
 
   trigDoManual    : false,  // true if can trigger manually from Main Panel
   trigDoLayer     : false,  // true if can trigger from other layer:
@@ -60,9 +58,6 @@ const drawProps =
 
 const oneTrack =
 {
-  solo            : false,  // true if currently solo
-  mute            : false,  // true if currently mute
-
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track
   drawProps       : {},     // drawing properties for first layer
@@ -75,6 +70,7 @@ const oneStrand =
   patternID       : 0,      // current pattern index
   patternStr      : '',     // current pattern string
   backupStr       : '',     // reverts to know good after bad edit
+  patternName     : '',     // name of the current pattern
   
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw

@@ -27,11 +27,13 @@ import {
 import {
   nTracks, tLayers,
   pStrand, dStrands, idStrand,
+  aEffectsDraw,
+  aEffectsFilter,
 } from './globals.js';
 
 import {
   pluginBit_FILTER,
-  presetsFindEffect
+  presetsFindEffect,
 } from './presets.js';
 
 import {
@@ -117,6 +119,7 @@ export const parsePattern = (cmdstr) =>
       case cmdStr_Effect:
       {
         let firstone = ((track < 0) || (layer < 0));
+        let plugbits;
 
         let obj = presetsFindEffect(val);
         if (obj == undefined)
@@ -133,6 +136,8 @@ export const parsePattern = (cmdstr) =>
             return false;
           }
 
+          plugbits = get(aEffectsFilter)[obj.index].bits;
+
           makeLayerCmdStr(track, layer);
 
           if (get(pStrand).tactives >= get(tLayers))
@@ -146,6 +151,8 @@ export const parsePattern = (cmdstr) =>
         }
         else // drawing effect
         {
+          plugbits = get(aEffectsDraw)[obj.index].bits;
+
           if (!firstone) makeLayerCmdStr(track, layer);
 
           if (get(pStrand).tactives >= get(nTracks))
@@ -176,6 +183,10 @@ export const parsePattern = (cmdstr) =>
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
+
+        get(pStrand).tracks[track].layers[layer].pluginBits = plugbits;
+        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = plugbits;
+    
         break;
       }
       default: // ignore if no draw effect

@@ -24,6 +24,7 @@
 
   // if device has a saved pattern:
   // set pStrand.patternID = index of saved pattern;
+  // else set to first one (Rainbow Ripple)
 </script>
 
 <Header {appname}/>

@@ -10,11 +10,15 @@
 
   import {
     pStrand,
-    aPatterns, aPatHelp
+    aPatterns,
+    aPatternsHelp,
+    mainEnabled
   } from './globals.js'
 
   import {
     userSetPatternID,
+    userClearPattern,
+    userSavePattern,
     userSetForce,
     userSendTrigger
   } from "./cmduser.js";
@@ -33,6 +37,9 @@
   */
 
   let open = false;
+
+  const doclear = () => { userClearPattern(); }
+  const dosave = () => { userSavePattern(); }
 
 </script>
 
@@ -62,10 +69,23 @@
         modalHeading={$aPatterns[$pStrand.patternID].text}
         on:close
         >
-        {#each $aPatHelp[$pStrand.patternID] as s,n}
+        {#each $aPatternsHelp[$pStrand.patternID] as s,n}
           <p>{s}</p><br>
         {/each}
       </Modal>
+    {:else}
+      <button
+        class="button button-pattern"
+        on:click={doclear}
+        disabled={$pStrand.patternStr == ''}
+        >Clear
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={dosave}
+        disabled={$pStrand.patternStr == ''}
+        >Save
+      </button>
     {/if}
   </Row>
 
@@ -79,11 +99,17 @@
             max={MAX_FORCE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
-          />
+            disabled={!$mainEnabled}
+            />
         </Column>
         <Column>
           <div style="margin: 10px 0 10px 0;">
-            <button on:click={userSendTrigger} class="button">Trigger</button>
+            <button
+              class="button button-trigger"
+              on:click={userSendTrigger}
+              disabled={!$mainEnabled}
+              >Trigger
+            </button>
           </div>
         </Column>
       </Row>
@@ -93,16 +119,27 @@
 
 <style>
   .button {
-    float: left;
+    float:left;
     padding: 5px;
-    margin-top: 3px;
+    width: 60px;
     border-radius: 5%;
     color: white;
     border: 1px solid #bbbcbb;
     background-color:#555655;
   }
+  .button-pattern {
+    margin: 5px 0 0 25px;
+    height: 35px;
+  }
+  .button-trigger {
+    margin-top: 3px;
+  }
   .button:hover {
     cursor: pointer;
     background-color:#444544;
+  }
+  button:disabled,button[disabled] {
+    pointer-events: none;
+    opacity: 0.35;
   }
 </style>

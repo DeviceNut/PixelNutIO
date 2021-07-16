@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
-  aPatterns, aPatHelp,
+  aPatterns, aPatternsHelp,
   aEffectsDraw, aEffectsFilter
 } from './globals.js';
 
@@ -26,7 +26,7 @@ export const presetsInit = () =>
     { id: '14', text: 'MashUp',             cmd:  'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
   ]);
 
-  aPatHelp.set([
+  aPatternsHelp.set([
     [""],
     [
       "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",

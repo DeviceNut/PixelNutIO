@@ -24,10 +24,12 @@ export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
 export let aPatterns      = writable([]);     // list of all patterns
-export let aPatHelp       = writable([]);     // list of all pattern help strings
+export let aPatternsHelp       = writable([]);     // list of all pattern help strings
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffectsFilter = writable([]);     // list of all filter effects
 
+export let modeCustom     = writable(false);  // true if displaying custom panel
+export let mainEnabled    = writable(false);  // true to enable main panel controls
 export let bitsOverride   = writable(0);      // OR'ed override bits from all layers
 
 export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)

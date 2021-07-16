@@ -28,7 +28,8 @@ import {
 import {
   nStrands, idStrand, pStrand,
   aStrands, eStrands, dStrands,
-  aPatterns, aEffectsDraw, aEffectsFilter
+  aPatterns, aEffectsDraw, aEffectsFilter,
+  modeCustom, mainEnabled
 } from './globals.js';
 
 import {
@@ -51,7 +52,7 @@ import { parsePattern } from './cmdparse.js';
 
 ///////////////////////////////////////////////////////////
 
-export const sendCmd = (cmdstr) =>
+function sendCmd(cmdstr)
 {
   const sid = get(idStrand);
   let didone = false;
@@ -77,12 +78,17 @@ export const sendEntireCmdStr = () =>
   sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternStr));
 }
 
+function sendCmdCheck(cmdstr)
+{
+  if (get(mainEnabled)) sendCmd(cmdstr);
+}
+
 // send command (and optional value) to entire strand
 function sendStrandCmd(cmdstr, cmdval)
 {
   if (cmdval != undefined)
-       sendCmd(cmdstr.concat(cmdval));
-  else sendCmd(cmdstr);
+        sendCmdCheck(cmdstr.concat(cmdval));
+  else sendCmdCheck(cmdstr);
 }
 
 // send command (and optional value) to specific layer
@@ -95,10 +101,10 @@ function sendLayerCmd(id, cmdstr, cmdval)
   //let str = `${cmdStr_AddrLayer}${id} `;
   //str = str.concat(`${cmdstr} `);
   //str = str.concat(`${cmdStr_AddrLayer}`);
-  //sendCmd(str);
+  //sendCmdCheck(str);
 
   // Note: effective only within a command string
-  sendCmd(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
+  sendCmdCheck(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
 }
 
 function updateLayerVals(track, layer)
@@ -208,7 +214,7 @@ export const userStrandSelect = (combine) =>
   }
 }
 
-// Commands from PanelMain:
+// Pattern Commands from PanelMain and PanelCustom: 
 
 // user just selected pattern from list (id is set)
 // assume that the current pattern has been cleared
@@ -223,12 +229,50 @@ export const userSetPatternID = () =>
     {
       copyStrand();
       sendEntireCmdStr();
+
+      get(pStrand).patternName = get(aPatterns)[get(pStrand).patternID].text;
+
+      if (get(modeCustom)) get(pStrand).patternID = 0;
     }
     // software bug: all pre-builts are valid
     else console.error('Parse Failed: ', cmdstr);
   }
-  else clearAllTracks(); // clears entire strand to defaults
 }
+
+// user just edited pattern string - DISABLED FIXME
+export const userSetPatternStr = () =>
+{
+  let cmdstr = get(pStrand).patternStr;
+
+  clearAllTracks(); // clears entire strand to defaults
+
+  if (parsePattern(cmdstr)) // sets vars for current strand
+  {
+    copyStrand();
+    sendEntireCmdStr();
+  }
+  else get(pStrand).patternStr = get(pStrand).backupStr;
+}
+
+export const userClearPattern = () =>
+{
+  clearAllTracks();
+  copyStrand();
+
+  sendCmd(cmdStr_Clear);
+  makeEntireCmdStr();
+
+  modeCustom.set(false);
+  get(pStrand).patternName = '';
+}
+
+export const userSavePattern = () =>
+{
+  let cmdstr = get(pStrand).patternStr;
+
+}
+
+// Commands from PanelMain:
 
 export const userSetBright = (track) =>
 {
@@ -359,39 +403,7 @@ export const userSetForce = () =>
 
 export const userSendTrigger = () =>
 {
-  sendCmd(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
-}
-
-// Commands from PanelCustom:
-
-export const userSavePattern = () =>
-{
-  let cmdstr = get(pStrand).patternStr;
-
-}
-
-// user just edited pattern string - DISABLED FIXME?
-export const userSetPatternStr = () =>
-{
-  let cmdstr = get(pStrand).patternStr;
-
-  clearAllTracks(); // clears entire strand to defaults
-
-  if (parsePattern(cmdstr)) // sets vars for current strand
-  {
-    copyStrand();
-    sendEntireCmdStr();
-  }
-  else get(pStrand).patternStr = get(pStrand).backupStr;
-}
-
-export const userClearPattern = () =>
-{
-  clearAllTracks();
-  copyStrand();
-
-  sendCmd(cmdStr_Clear);
-  makeEntireCmdStr();
+  sendCmdCheck(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
 }
 
 // Commands from ControlsDrawing:

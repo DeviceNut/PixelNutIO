@@ -30,6 +30,7 @@ import {
   aEffectsDraw,
   aEffectsFilter,
   bitsOverride,
+  mainEnabled,
   refreshCmdStr
 } from './globals.js';
   
@@ -116,6 +117,8 @@ export const makeEntireCmdStr = () =>
     let track = strand.tracks[i];
     let drawplugin = false;
 
+    let ismute = false; // DEBUG
+
     // must have effect and not be mute be enabled
 
     for (let j = 0; j < track.lactives; ++j)
@@ -126,22 +129,29 @@ export const makeEntireCmdStr = () =>
       // (note that draw layer does not have mute)
       if (j == 0)
       {
-        drawplugin = (layer.pluginIndex > 0);
+        drawplugin = (layer.pluginIndex > 0) && !layer.mute;
 
         if (drawplugin)
         {
           bits |= makeOrideBits(strand, i);
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
         }
+        else ismute = true; // DEBUG
       }
       else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
 
-      console.log(`  ${i}:${j}: ${layer.cmdstr}`)
+      else ismute = true; // DEBUG
+      console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
   }
 
-  if (cmdstr != '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
+  if (cmdstr != '')
+  {
+    cmdstr = cmdstr.concat(`${cmdStr_Go}`);
+    mainEnabled.set(true);
+  }
+  else mainEnabled.set(false);
 
   get(pStrand).patternStr = cmdstr;
   get(pStrand).backupStr = cmdstr;

@@ -1,13 +1,21 @@
 <script>
 
-  import { nStrands } from './globals.js';
+  import { nStrands, pStrand, modeCustom } from './globals.js';
   import MultiStrands from "./MultiStrands.svelte"
   import PanelMain from "./PanelMain.svelte"
   import PanelCustom from "./PanelCustom.svelte";
 
-  let doshow = false;
   let pstr = '';
-  $: pstr = (doshow ? "^" : "Customizer");
+  $: pstr = ($modeCustom ? "^" : "Customizer");
+
+  const toggleshow = () =>
+  {
+    $modeCustom = !$modeCustom;
+    if ($modeCustom)
+    {
+      $pStrand.patternID = 0;
+    }
+  }
 
 </script>
 
@@ -21,12 +29,12 @@
   <PanelMain/>
   <div class="divider"></div>
 
-  <div class:outline={doshow} style="margin-top: 7px;">
-    <div class="bdiv" class:select={doshow} on:click={()=>{doshow = !doshow}} >
+  <div class:outline={$modeCustom} style="margin-top: 7px;">
+    <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
       <span class="btext" >{pstr}</span>
     </div>
   
-    {#if doshow }
+    {#if $modeCustom }
       <PanelCustom/>
     {/if}
   </div>

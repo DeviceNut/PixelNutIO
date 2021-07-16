@@ -2,16 +2,23 @@
 
   import {
     Row,
-    Dropdown, Checkbox
+    Dropdown,
+    Checkbox
   } from "carbon-components-svelte";
+
+  import {
+    DRAW_LAYER
+  } from "./pixelnut.js";
 
   import {
     pStrand,
     aEffectsDraw,
-    bitsEffects
+    aEffDrawDesc
   } from './globals.js';
 
   import {
+    pluginBit_COLOR,
+    pluginBit_COUNT,
     pluginBit_DELAY,
     pluginBit_DIRECTION,
     pluginBit_TRIGGER
@@ -60,7 +67,7 @@
   let dotrigger = true;
   const settrigger = () =>
   {
-    $pStrand.tracks[track].layers[0].trigTypeStr = (dotrigger ? 'once' : 'none');
+    $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
   }
 
   const setmanual = () => { userSetTrigManual(track); }
@@ -73,11 +80,11 @@
     <Dropdown
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[0].pluginIndex}
+      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
       bind:items={$aEffectsDraw}
     />
   </div>
-  {#if ((track != 0) && ($pStrand.tracks[track].layers[0].pluginIndex != 0)) }
+  {#if ((track != 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0)) }
     <div style="margin-top: 7px; margin-left: 50px;">
     <Checkbox labelText="Pixel Overwrite"
       on:check={setOwrite}
@@ -87,7 +94,13 @@
   {/if}
 </Row>
 
-{#if ($pStrand.tracks[track].layers[0].pluginIndex != 0) }
+<Row style="margin: 15px 0 10px 0; padding: 5px; color: #888988; background-color: #333433;">
+  <span>
+    {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
+  </span>
+</Row>
+
+{#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0) }
 
   <SliderVal name='Bright'
     onchange={setBright}
@@ -97,7 +110,7 @@
   <SliderVal name='Delay&nbsp;'
     onchange={setDelay}
     bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-    disabled={!($bitsEffects & pluginBit_DELAY)}
+    disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DELAY)}
   />
 
   <SlidersPropsLocal {track} />
@@ -116,11 +129,11 @@
     <Checkbox labelText="Reverse Direction"
       on:check={setDirect}
       bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
-      disabled={!($bitsEffects & pluginBit_DIRECTION)}
+      disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DIRECTION)}
     />
   </Row>
 
-  {#if ($pStrand.tracks[track].layers[0].pluginBits & pluginBit_TRIGGER) }
+  {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER) }
     <ControlsTrigger {track} />
   {:else}
     <div style="margin-top: 8px; padding: 5px 0 5px 5px; background-color: #222322;">
@@ -135,7 +148,7 @@
         <Checkbox labelText="Allow manual trigger"
           style="padding: 3px;"
           on:check={setmanual}
-          bind:checked={$pStrand.tracks[track].layers[0].trigDoManual}
+          bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigDoManual}
         />
       </Row>
     </div>

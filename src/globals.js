@@ -24,9 +24,11 @@ export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
 export let aPatterns      = writable([]);     // list of all patterns
-export let aPatternsHelp  = writable([]);     // list of all pattern help strings
+export let aPatternsDesc  = writable([]);     // list of all pattern help strings
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
+export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions
 export let aEffectsFilter = writable([]);     // list of all filter effects
+export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 
 export let modeCustom     = writable(false);  // true if displaying custom panel
 export let mainEnabled    = writable(false);  // true to enable main panel controls

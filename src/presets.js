@@ -1,9 +1,12 @@
 import { get } from 'svelte/store';
 
 import {
-  aLinksText,
-  aPatterns, aPatternsHelp,
-  aEffectsDraw, aEffectsFilter
+  aPatterns,
+  aPatternsDesc,
+  aEffectsDraw,
+  aEffDrawDesc,
+  aEffectsFilter,
+  aEffFilterDesc
 } from './globals.js';
 
 export const presetsInit = () =>
@@ -27,7 +30,7 @@ export const presetsInit = () =>
     { id: '14', text: 'MashUp',             cmd:  'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
   ]);
 
-  aPatternsHelp.set([
+  aPatternsDesc.set([
     [""],
     [
       "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
@@ -98,56 +101,106 @@ export const presetsInit = () =>
   aEffectsDraw.set([
     { id: '-1', bits: 0x00, text: '<none>' },
     { id: '0',  bits: 0x01, text: 'Draw All' },
-    { id: '1',  bits: 0x01, text: 'Draw Push' },
-    { id: '2',  bits: 0x01, text: 'Draw Step' },
-    { id: '10', bits: 0x01, text: 'Light Wave' },
-    { id: '20', bits: 0xFD, text: 'Comet Heads' },
-    { id: '30', bits: 0x01, text: 'Ferris Wheel' },
-    { id: '40', bits: 0x01, text: 'Block Scanner' },
-    { id: '50', bits: 0x01, text: 'Twinkle' },
-    { id: '51', bits: 0x01, text: 'Blinky' },
-    { id: '52', bits: 0x01, text: 'Noise' },
+    { id: '1',  bits: 0x7D, text: 'Draw Push' },
+    { id: '2',  bits: 0x4D, text: 'Draw Step' },
+    { id: '10', bits: 0x0F, text: 'Light Wave' },
+    { id: '20', bits: 0x7F, text: 'Comet Heads' },
+    { id: '30', bits: 0x0F, text: 'Ferris Wheel' },
+    { id: '40', bits: 0x47, text: 'Block Scanner' },
+    { id: '50', bits: 0x07, text: 'Twinkle' },
+    { id: '51', bits: 0x07, text: 'Blinky' },
+    { id: '52', bits: 0x07, text: 'Noise' },
+  ]);
+
+  aEffDrawDesc.set([
+    "",
+    "Draws all pixels with current color/brightness.",
+
+    "Draws one pixel at a time with current color/brightness, inserting at the head. " +
+    "Triggering causes a new cycle to begin. If the force is 0 then the cycle is not repeated. ",
+
+    "Draws one pixel at a time with current color/brightness, appending at the tail.",
+
+    "Light waves (brighness changes) in the current color that fluctuate (sine wave). " +
+    "The count property sets the wave frequency.",
+
+    "Creates \"comets\": bright head with a fading tail in the current color that moves. " +
+    "The count property determines its length, and triggering creates a new one.",
+
+    "Draws evenly spaced pixels using the current color, shifting them down one pixel " +
+    "at a time, creating a \"ferris wheel\" effect. " +
+    "The count property determines the space between the \"spokes\" of the wheel.",
+
+    "Draws a block of pixels with the current color back and forth. " +
+    "The count property sets the length of the block.",
+
+    "Scales pixel brightness levels up and down individually, using current color. ", +
+    "The count property determines the total number of pixels affected.",
+
+    "Blinks on and off random pixels using current color/brightness. " +
+    "The count property determines the number of pixels changed each step.",
+
+    "Sets randomly chosen pixels with current color but random brightness. " +
+    "The count property determines the number of pixels changed each step."
   ]);
 
   aEffectsFilter.set([
     { id: '-1',  bits: 0x00, text: '<none>' },
-    { id: '100', bits: 0x33, text: 'Hue Set' },
-    { id: '101', bits: 0x03, text: 'Hue Rotate' },
-    { id: '110', bits: 0x03, text: 'Color Meld' },
-    { id: '111', bits: 0x13, text: 'Color Modify' },
-    { id: '112', bits: 0x03, text: 'Color Random' },
-    { id: '120', bits: 0x03, text: 'Count Set' },
-    { id: '121', bits: 0x03, text: 'Count Surge' },
-    { id: '122', bits: 0x03, text: 'Count Wave' },
-    { id: '130', bits: 0x03, text: 'Delay Set' },
-    { id: '131', bits: 0x03, text: 'Delay Surge' },
-    { id: '132', bits: 0x03, text: 'Delay Wave' },
-    { id: '141', bits: 0x03, text: 'Bright Surge' },
-    { id: '142', bits: 0x03, text: 'Bright Wave' },
-    { id: '150', bits: 0x03, text: 'Window Expander' },
-    { id: '160', bits: 0x03, text: 'Flip Direction' },
+    { id: '100', bits: 0x31, text: 'Hue Set' },
+    { id: '101', bits: 0x31, text: 'Hue Rotate' },
+    { id: '110', bits: 0x50, text: 'Color Meld' },
+    { id: '111', bits: 0x30, text: 'Color Modify' },
+    { id: '112', bits: 0x00, text: 'Color Random' },
+    { id: '120', bits: 0x30, text: 'Count Set' },
+    { id: '121', bits: 0x30, text: 'Count Surge' },
+    { id: '122', bits: 0x32, text: 'Count Wave' },
+    { id: '130', bits: 0x30, text: 'Delay Set' },
+    { id: '131', bits: 0x34, text: 'Delay Surge' },
+    { id: '132', bits: 0x34, text: 'Delay Wave' },
+    { id: '141', bits: 0x30, text: 'Bright Surge' },
+    { id: '142', bits: 0x30, text: 'Bright Wave' },
+    { id: '150', bits: 0x42, text: 'Window Expander' },
+    { id: '160', bits: 0x10, text: 'Flip Direction' },
   ]);
 }
 
-export const pluginBit_PRESENT     = 0x01;   // effect is present (not used)
-export const pluginBit_FILTER      = 0x02;   // is filter, not drawing, effect
-export const pluginBit_DELAY       = 0x04;   // changing delay changes effect
-export const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
-export const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
-export const pluginBit_TRIGFORCE   = 0x20;   // trigger force is used in effect
-// are these useful in any way???
-export const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
-export const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
+aEffFilterDesc.set([
+  "",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+  "This is a description of the effect.",
+]);
+
+export const pluginBit_COLOR       = 0x01;  // changing color changes effect
+export const pluginBit_COUNT       = 0x02;  // changing count changes effect
+export const pluginBit_DELAY       = 0x04;  // changing delay has an effect
+export const pluginBit_DIRECTION   = 0x08;  // changing direction changes effect
+export const pluginBit_TRIGGER     = 0x10;  // triggering changes the effect
+export const pluginBit_TRIGFORCE   = 0x20;  // trigger force is (TRIGGER must be set)
+export const pluginBit_SENDFORCE   = 0x40;  // sends force to other plugins
+                                            // (can be set without TRIGGER/TRIGFORCE)
 
 export const presetsFindEffect = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())
     if (f.id == plugnum)
-      return { index:i, bits:f.bits };
+      return { filter:false, index:i, bits:f.bits };
 
   for (const [i, f] of get(aEffectsFilter).entries())
     if (f.id == plugnum)
-      return { index:i, bits:f.bits };
+      return { filter:true, index:i, bits:f.bits };
 
   return undefined;
 }

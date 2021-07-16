@@ -16,7 +16,7 @@
   import {
     pStrand,
     aPatterns,
-    aPatternsHelp,
+    aPatternsDesc,
     mainEnabled,
     bitsEffects
   } from './globals.js'
@@ -75,7 +75,7 @@
         modalHeading={$aPatterns[$pStrand.patternID].text}
         on:close
         >
-        {#each $aPatternsHelp[$pStrand.patternID] as s,n}
+        {#each $aPatternsDesc[$pStrand.patternID] as s,n}
           <p>{s}</p><br>
         {/each}
       </Modal>

@@ -1,5 +1,9 @@
 <script>
  
+ import {
+    DRAW_LAYER
+  } from "./pixelnut.js";
+
   import {
     pStrand,
     nTracks, tLayers
@@ -44,30 +48,30 @@
     {
       if (isSolo)
       {
-        $pStrand.tracks[track].layers[0].solo = true;
+        $pStrand.tracks[track].layers[DRAW_LAYER].solo = true;
 
         for (let i = 0; i < $nTracks; ++i)
         {
           if (i != track)
           {
-            $pStrand.tracks[i].layers[0].solo = false;
-            $pStrand.tracks[i].layers[0].mute = true;
+            $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
+            $pStrand.tracks[i].layers[DRAW_LAYER].mute = true;
           }
           else
           {
-            $pStrand.tracks[i].layers[0].mute = false;
+            $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
           }
         }
       }
       else
       {
-        $pStrand.tracks[track].layers[0].solo = false;
+        $pStrand.tracks[track].layers[DRAW_LAYER].solo = false;
 
         for (let i = 0; i < $nTracks; ++i)
         {
           if (i != track)
           {
-            $pStrand.tracks[i].layers[0].mute = false;
+            $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
           }
         }
       }
@@ -128,7 +132,7 @@
         {
           if (i != track)
           {
-            $pStrand.tracks[i].layers[0].solo = false;
+            $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
           }
         }
       }

@@ -1,7 +1,22 @@
 <script>
 
-  import { pStrand, maxPixels, mainEnabled } from './globals.js';
-  import { userSetBright, userSetDelay, userSetRotate } from "./cmduser.js"
+  import {
+    pStrand,
+    maxPixels,
+    mainEnabled,
+    bitsEffects
+  } from './globals.js';
+
+  import {
+    pluginBit_DELAY
+  } from './presets.js';
+
+  import {
+    userSetBright,
+    userSetDelay,
+    userSetRotate
+  } from "./cmduser.js"
+
   import SliderVal from "./SliderVal.svelte"
 
 </script>
@@ -15,8 +30,8 @@
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
-  disabled={!$mainEnabled}
-/>
+  disabled={!$mainEnabled && !($bitsEffects & pluginBit_DELAY)}
+  />
 
 <SliderVal name='Rotate'
   onchange={userSetRotate}

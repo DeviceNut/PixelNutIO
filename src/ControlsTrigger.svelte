@@ -2,11 +2,13 @@
 
   import {
     Checkbox,
-    RadioButtonGroup, RadioButton,
+    RadioButton,
+    RadioButtonGroup
   } from "carbon-components-svelte";
 
   import {
-    nTracks, tLayers,
+    nTracks,
+    tLayers,
     pStrand
   } from './globals.js'
 
@@ -131,7 +133,7 @@
     </div>
   </div>
 
-  <p style="margin-top: 12px;">Inernal Triggering:</p>
+  <p style="margin-top: 12px;">Internal Triggering:</p>
   <div style="margin-top: 8px; padding: 5px 0 13px 5px; background-color: #222322;">
     <RadioButtonGroup
       labelPosition="left"

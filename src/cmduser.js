@@ -425,14 +425,14 @@ export const userSendTrigger = () =>
 
 export const userSetDrawEffect = (track) =>
 {
-  let pindex = get(pStrand).tracks[track].layers[0].pluginIndex;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex != pindex)
+  let pindex = get(pStrand).tracks[track].layers[DRAW_LAYER].pluginIndex;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex != pindex)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginIndex = pindex;
+    get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex = pindex;
 
     let bits = get(aEffectsDraw)[pindex].bits;
-    get(pStrand).tracks[track].layers[0].pluginBits = bits;
-    //get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = bits;
+    get(pStrand).tracks[track].layers[DRAW_LAYER].pluginBits = bits;
+    //get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
 
     updateLayerVals(track, DRAW_LAYER);
 

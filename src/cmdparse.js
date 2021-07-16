@@ -32,7 +32,6 @@ import {
 } from './globals.js';
 
 import {
-  pluginBit_FILTER,
   presetsFindEffect,
 } from './presets.js';
 
@@ -87,6 +86,7 @@ export const parsePattern = (cmdstr) =>
   let layer = -1;
   let start = 0;
   let finish = 100;
+  let trackbits = 0;
 
   const cmds = cmdstr.toUpperCase().split(/\s+/); // remove all spaces
   //console.log('parse: ', cmds);
@@ -119,7 +119,6 @@ export const parsePattern = (cmdstr) =>
       case cmdStr_Effect:
       {
         let firstone = ((track < 0) || (layer < 0));
-        let plugbits;
 
         let obj = presetsFindEffect(val);
         if (obj == undefined)
@@ -128,15 +127,13 @@ export const parsePattern = (cmdstr) =>
           return false;
         }
 
-        if (obj.bits & pluginBit_FILTER)
+        if (obj.filter)
         {
           if (firstone)
           {
             console.error('Must have draw effect before filter effect');
             return false;
           }
-
-          plugbits = get(aEffectsFilter)[obj.index].bits;
 
           makeLayerCmdStr(track, layer);
 
@@ -148,17 +145,27 @@ export const parsePattern = (cmdstr) =>
           get(pStrand).tracks[track].lactives++;
 
           ++layer;
+
+          let layerbits = get(aEffectsFilter)[obj.index].bits;
+          trackbits |= layerbits;
+
+          get(pStrand).tracks[track].layers[layer].pluginBits = layerbits;
+          //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = layerbits;
         }
         else // drawing effect
         {
-          plugbits = get(aEffectsDraw)[obj.index].bits;
-
-          if (!firstone) makeLayerCmdStr(track, layer);
-
           if (get(pStrand).tactives >= get(nTracks))
           {
             console.error('Too many tracks');
             return false;
+          }
+
+          if (!firstone)
+          {
+            makeLayerCmdStr(track, layer);
+            
+            get(pStrand).tracks[track].layers[0].pluginBits = trackbits;
+            //get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = trackbits;
           }
 
           // there is always at least one track
@@ -179,14 +186,12 @@ export const parsePattern = (cmdstr) =>
             start = 0;
             finish = 100;
           }
+
+          trackbits = get(aEffectsDraw)[obj.index].bits;
         }
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
-
-        get(pStrand).tracks[track].layers[layer].pluginBits = plugbits;
-        //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = plugbits;
-    
         break;
       }
       default: // ignore if no draw effect

@@ -6,14 +6,21 @@
   } from "carbon-components-svelte";
 
   import {
-  overBits_DegreeHue,
-  overBits_PcentWhite,
-  overBits_PcentCount,
+    DRAW_LAYER,
+    overBits_DegreeHue,
+    overBits_PcentWhite,
+    overBits_PcentCount,
   } from './pixelnut.js';
 
   import {
+    pluginBit_COLOR,
+    pluginBit_COUNT
+  } from "./presets.js";
+
+  import {
     pStrand,
-    bitsOverride
+    bitsOverride,
+    bitsEffects
   } from './globals.js';
 
   import {
@@ -39,20 +46,26 @@
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
-      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_DegreeHue)}
+      disabled={!$pStrand.doOverride ||
+                !($bitsOverride & overBits_DegreeHue) ||
+                !($bitsEffects & pluginBit_COLOR)}
       max={359}
     />
 
     <SliderVal name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
-      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_PcentWhite)}
+      disabled={!$pStrand.doOverride ||
+                !($bitsOverride & overBits_PcentWhite) ||
+                !($bitsEffects & pluginBit_COLOR)}
     />
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
-      disabled={!$pStrand.doOverride || !($bitsOverride & overBits_PcentCount)}
+      disabled={!$pStrand.doOverride ||
+                !($bitsOverride & overBits_PcentCount) ||
+                !($bitsEffects & pluginBit_COUNT)}
     />
 
   </Column>

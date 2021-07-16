@@ -29,8 +29,9 @@ import {
   pStrand,
   aEffectsDraw,
   aEffectsFilter,
-  bitsOverride,
   mainEnabled,
+  bitsOverride,
+  bitsEffects,
   refreshCmdStr
 } from './globals.js';
   
@@ -52,18 +53,6 @@ export const makeOrideBits = (p, track) =>
   return bits;
 }
   
-// sets global 'bitsOverride' from examining all tracks
-export const makeStrandOverrides = () =>
-{
-  let bits = 0;
-  let strand = get(pStrand);
-
-  for (let i = 0; i < strand.tactives; ++i)
-    bits |= makeOrideBits(strand, i);
-
-  bitsOverride.set(bits);
-}
-
 // convert track,layer to device layerID
 export const convTrackLayerToID = (track, layer) =>
 {
@@ -109,7 +98,8 @@ export const makeEntireCmdStr = () =>
 {
   // combine all layers into single string
   let cmdstr = '';
-  let bits = 0;
+  let ridebits = 0;
+  let plugbits = 0;
 
   let strand = get(pStrand);
   for (let i = 0; i < strand.tactives; ++i)
@@ -133,13 +123,17 @@ export const makeEntireCmdStr = () =>
 
         if (drawplugin)
         {
-          bits |= makeOrideBits(strand, i);
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+          ridebits |= makeOrideBits(strand, i);
+          plugbits |= layer.pluginBits;
         }
         else ismute = true; // DEBUG
       }
       else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
-          cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+      {
+        cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+        plugbits |= layer.pluginBits;
+      }
 
       else ismute = true; // DEBUG
       console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
@@ -156,7 +150,8 @@ export const makeEntireCmdStr = () =>
   get(pStrand).patternStr = cmdstr;
   get(pStrand).backupStr = cmdstr;
 
-  bitsOverride.set(bits);
+  bitsOverride.set(ridebits);
+  bitsEffects.set(plugbits);
 
   refreshCmdStr.set(true); // hack to force refresh
 }

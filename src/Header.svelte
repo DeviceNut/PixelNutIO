@@ -1,10 +1,11 @@
 <script>
 
-  import { TextInput } from "carbon-components-svelte";
-
+  import { TextInput, Modal } from "carbon-components-svelte";
   import { userSetDevName, userSendPause } from "./cmduser.js"
 
   export let appname;
+
+  const goback = () => { history.back() }
 
   let isPaused = false;
   let textPause = '';
@@ -15,21 +16,20 @@
     userSendPause(isPaused = !isPaused);
   }
 
-  const goback = () => { history.back() }
-  const goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
+  let open = false;
+  //const goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
+  const golinks = () =>  { open = !open; }
 
-  const dohelp = () =>
+  const dodocs = () =>
   {
-    console.log('Show Help Page');
-    // TODO open model with context sensitive help message
+    console.log('Show Docs Page'); // TODO
   }
 
-  //<p class="title">{appname}</p>
 </script>
 
 <div class="header">
-  <button on:click={goback} class="button left" >&lt;&lt; Back</button>
-  <button on:click={goweb} class="button left2" >Website</button>
+  <button on:click={goback} class="button left" >&lt;&lt; Devices</button>
+  <button on:click={dopause} class="button left" >{textPause}</button>
 
   <div class="title">
     <TextInput
@@ -38,9 +38,20 @@
       bind:value={appname}
     />
   </div>
-  <button on:click={dohelp} class="button rite" >Help</button>
-  <button on:click={dopause} class="button rite" >{textPause}</button>
+  <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
+  <button on:click={golinks} class="button rite" >Links</button>
 </div>
+
+<Modal
+  bind:open
+  passiveModal
+  modalHeading={"Links to Code and Websites"}
+  on:close
+  >
+  <p>Text for links paragraph 1.</p><br>
+  <p>Text for links paragraph 2.</p><br>
+  <p>Visit our website <a href="https://www.devicenut.com">here</a>.</p>
+</Modal>
 
 <style>
   .header {

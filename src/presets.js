@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  aLinksText,
   aPatterns, aPatternsHelp,
   aEffectsDraw, aEffectsFilter
 } from './globals.js';
@@ -110,7 +111,7 @@ export const presetsInit = () =>
 
   aEffectsFilter.set([
     { id: '-1',  bits: 0x00, text: '<none>' },
-    { id: '100', bits: 0x03, text: 'Hue Set' },
+    { id: '100', bits: 0x33, text: 'Hue Set' },
     { id: '101', bits: 0x03, text: 'Hue Rotate' },
     { id: '110', bits: 0x03, text: 'Color Meld' },
     { id: '111', bits: 0x13, text: 'Color Modify' },
@@ -128,12 +129,13 @@ export const presetsInit = () =>
   ]);
 }
 
-export const pluginBit_PRESENT     = 0x01;   // effect is present
+export const pluginBit_PRESENT     = 0x01;   // effect is present (not used)
 export const pluginBit_FILTER      = 0x02;   // is filter, not drawing, effect
 export const pluginBit_DELAY       = 0x04;   // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x08;   // changing direction changes effect
 export const pluginBit_TRIGGER     = 0x10;   // triggering changes the effect
 export const pluginBit_TRIGFORCE   = 0x20;   // trigger force is used in effect
+// are these useful in any way???
 export const pluginBit_NEGFORCE    = 0x40;   // negative trigger force is used
 export const pluginBit_SENDFORCE   = 0x80;   // sends trigger force to other plugins
 

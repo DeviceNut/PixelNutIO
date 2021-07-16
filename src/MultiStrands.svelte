@@ -24,7 +24,7 @@
       />
     {/each}
 
-    <Checkbox labelText="Combine"
+    <Checkbox labelText="Duplicate"
       on:check={checkowrite}
     />
   </Row>

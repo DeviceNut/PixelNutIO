@@ -24,7 +24,6 @@
   </div>
 </Row>
 
-{#if (($pStrand.tracks[track].layers[0].pluginIndex     != 0) &&
-      ($pStrand.tracks[track].layers[layer].pluginIndex != 0)) }
+{#if ($pStrand.tracks[track].layers[layer].pluginIndex != 0) }
   <ControlsTrigger {track} {layer} />
 {/if}

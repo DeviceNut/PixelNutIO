@@ -7,16 +7,25 @@
 
   import {
     pStrand,
-    aEffectsDraw
+    aEffectsDraw,
+    bitsEffects
   } from './globals.js';
 
-  import { pluginBit_TRIGGER } from './presets.js';
+  import {
+    pluginBit_DELAY,
+    pluginBit_DIRECTION,
+    pluginBit_TRIGGER
+  } from './presets.js';
 
   import {
     userSetDrawEffect,
-    userSetBright, userSetDelay,
-    userSetStart, userSetFinish,
-    userSetOwrite, userSetDirect
+    userSetBright,
+    userSetDelay,
+    userSetStart,
+    userSetFinish,
+    userSetOwrite,
+    userSetDirect,
+    userSetTrigManual
   } from "./cmduser.js"
 
   import ControlsTrigger from './ControlsTrigger.svelte'
@@ -47,6 +56,15 @@
       $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
     }
   }
+
+  let dotrigger = true;
+  const settrigger = () =>
+  {
+    $pStrand.tracks[track].layers[0].trigTypeStr = (dotrigger ? 'once' : 'none');
+  }
+
+  const setmanual = () => { userSetTrigManual(track); }
+
 </script>
 
 <Row style="margin: 3px 0 5px 0;">
@@ -79,6 +97,7 @@
   <SliderVal name='Delay&nbsp;'
     onchange={setDelay}
     bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
+    disabled={!($bitsEffects & pluginBit_DELAY)}
   />
 
   <SlidersPropsLocal {track} />
@@ -97,11 +116,29 @@
     <Checkbox labelText="Reverse Direction"
       on:check={setDirect}
       bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+      disabled={!($bitsEffects & pluginBit_DIRECTION)}
     />
   </Row>
 
-{/if}
+  {#if ($pStrand.tracks[track].layers[0].pluginBits & pluginBit_TRIGGER) }
+    <ControlsTrigger {track} />
+  {:else}
+    <div style="margin-top: 8px; padding: 5px 0 5px 5px; background-color: #222322;">
+      <Row style="margin:0;">
+        <Checkbox labelText="Trigger once at start"
+          style="padding: 3px;"
+          on:check={setmanual}
+          bind:checked={dotrigger}
+        />
+      </Row>
+      <Row style="margin:0;">
+        <Checkbox labelText="Allow manual trigger"
+          style="padding: 3px;"
+          on:check={setmanual}
+          bind:checked={$pStrand.tracks[track].layers[0].trigDoManual}
+        />
+      </Row>
+    </div>
+  {/if}
 
-{#if ($pStrand.tracks[track].layers[0].pluginBits & pluginBit_TRIGGER) }
-  <ControlsTrigger {track} layer={0} />
 {/if}

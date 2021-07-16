@@ -69,7 +69,6 @@ function sendCmd(cmdstr)
     }
   }
 
-  // check if must return to current strand
   if (didone) writeDevice(cmdStr_AddrStrand.concat(sid));
 }
 
@@ -123,8 +122,24 @@ export const userSetDevName = () =>
 
 export const userSendPause = (enable) =>
 {
-  if (enable) sendCmd(cmdStr_Pause);
-  else        sendCmd(cmdStr_Resume);
+  const sid = get(idStrand);
+  let didone = false;
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (enable)
+    {
+      writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Pause));
+      didone = true;
+    }
+    else
+    {
+      writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Resume));
+      didone = true;
+    }
+  }
+
+  if (didone) writeDevice(cmdStr_AddrStrand.concat(sid));
 }
 
 // Commands from Strand Selector
@@ -406,7 +421,7 @@ export const userSendTrigger = () =>
   sendCmdCheck(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
 }
 
-// Commands from ControlsDrawing:
+// Commands from ControlsDraw:
 
 export const userSetDrawEffect = (track) =>
 {
@@ -417,7 +432,7 @@ export const userSetDrawEffect = (track) =>
 
     let bits = get(aEffectsDraw)[pindex].bits;
     get(pStrand).tracks[track].layers[0].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = bits;
+    //get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = bits;
 
     updateLayerVals(track, DRAW_LAYER);
 
@@ -529,7 +544,7 @@ export const userSetFilterEffect = (track, layer) =>
 
     let bits = get(aEffectsFilter)[pindex].bits;
     get(pStrand).tracks[track].layers[layer].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
+    //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
     updateLayerVals(track, layer);
 
@@ -542,6 +557,8 @@ export const userSetTrigManual = (track, layer) =>
 {
   // TODO: if not new firmware then must send
   //       entire command string if turning off
+
+  if (layer == undefined) layer = 0;
 
   let doman = get(pStrand).tracks[track].layers[layer].trigDoManual;
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual != doman)

@@ -13,7 +13,7 @@
   // remove event parameter from call
   let dochange = () => { onchange(); }
 
-  // on:click doesn't always fire !!
+  // on:click doesn't always fire ??
 
   let maxLabel;
   $: maxLabel = dolabels ? max : ' ';

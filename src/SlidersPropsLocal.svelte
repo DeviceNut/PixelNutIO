@@ -1,8 +1,10 @@
 <script>
 
   import { Row, Column, Checkbox } from "carbon-components-svelte";
+
   import { pStrand } from './globals.js';
   import { userSetProps, userSetOverrides } from "./cmduser.js"
+
   import SliderVal from "./SliderVal.svelte"
 
   export let track = 0;
@@ -35,8 +37,8 @@
     />
   </Column>
 
-  <!-- not sure why, but this prevents Override checkboxes from 
-       moving to separate lines when viewport >1584 !!!
+  <!-- not sure why, but this min-width prevents Override checkboxes
+       from moving to separate lines when viewport >1584 !!!
   -->
   <Column style="min-width:100px">
 

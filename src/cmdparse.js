@@ -185,7 +185,7 @@ export const parsePattern = (cmdstr) =>
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
 
         get(pStrand).tracks[track].layers[layer].pluginBits = plugbits;
-        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = plugbits;
+        //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = plugbits;
     
         break;
       }

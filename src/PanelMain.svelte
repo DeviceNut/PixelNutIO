@@ -9,10 +9,16 @@
   import { MAX_FORCE } from "./pixelnut.js";
 
   import {
+    pluginBit_TRIGGER,
+    pluginBit_TRIGFORCE
+  } from "./presets.js";
+
+  import {
     pStrand,
     aPatterns,
     aPatternsHelp,
-    mainEnabled
+    mainEnabled,
+    bitsEffects
   } from './globals.js'
 
   import {
@@ -99,7 +105,7 @@
             max={MAX_FORCE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
-            disabled={!$mainEnabled}
+            disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
         <Column>
@@ -107,7 +113,7 @@
             <button
               class="button button-trigger"
               on:click={userSendTrigger}
-              disabled={!$mainEnabled}
+              disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
               >Trigger
             </button>
           </div>

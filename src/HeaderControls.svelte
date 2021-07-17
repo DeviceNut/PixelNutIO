@@ -1,9 +1,9 @@
 <script>
 
-  import { TextInput, Modal } from "carbon-components-svelte";
+  import { Modal } from "carbon-components-svelte";
   import { userSetDevName, userSendPause } from "./cmduser.js"
 
-  export let appname;
+  export let devname;
 
   const goback = () => { history.back() }
 
@@ -30,14 +30,12 @@
 <div class="header">
   <button on:click={goback} class="button left" >&lt;&lt; Devices</button>
   <button on:click={dopause} class="button left" >{textPause}</button>
-
-  <div class="title">
-    <TextInput
-      size="sm"
-      on:change={userSetDevName}
-      bind:value={appname}
-    />
-  </div>
+  <input
+    class="title"
+    size=32 maxlength=32
+    on:change={userSetDevName}
+    bind:value={devname}
+  />
   <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
   <button on:click={golinks} class="button rite" >Links</button>
 </div>
@@ -57,17 +55,17 @@
   .header {
     padding: 2px 0 8px 0;
     height: 44px;
+    text-align: center;
     background-color:#333433;
   }
   .title {
-    position: absolute;
-    margin-left: 50%;
-    margin-right: -50%;
-    margin-top: 21px;
-    transform: translate(-50%, -50%);
+    margin: 3px 10px 0 10px;
+    padding: 3px;
     font-style:italic;
     font-family:'Trebuchet MS';
-    font-size:1.7em;
+    font-size:1.2em;
+    color: #33aa66;
+    background-color:#555655;
   }
   .button {
     float: left;
@@ -81,10 +79,6 @@
   .button.left {
     float: left;
     margin-left: 10px;
-  }
-  .button.left2 {
-    float: left;
-    margin-left: 15px;
   }
   .button.rite {
     float: right;

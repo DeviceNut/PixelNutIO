@@ -113,14 +113,14 @@
       />
       <input type="number"
         style="margin-left: 5px;"
-        min="1" max={$nTracks}
+        min=1 max={$nTracks}
         on:change={settnums}
         bind:value={$pStrand.tracks[track].layers[layer].trigTrackNum}
         disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
       />
       <input type="number"
         style="margin-left: 5px;"
-        min="1" max={$tLayers}
+        min=1 max={$tLayers}
         on:change={settnums}
         bind:value={$pStrand.tracks[track].layers[layer].trigLayerNum}
         disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
@@ -144,7 +144,7 @@
       <div style="margin-top:12px; ">
         <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
         <input type="number"
-          min="1" max="9999"
+          min=1 max=9999
           on:change={setcount}
           bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
           disabled={disable_repcount}
@@ -159,7 +159,7 @@
       <div style="margin-top:8px; ">
         <span style="margin-right:8px">Minimum Time:&nbsp;</span>
         <input type="number"
-          min="1" max="9999"
+          min=1 max=9999
           on:change={setdmin}
           bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
           disabled={disable_ttype}
@@ -168,7 +168,7 @@
       <div style="margin-top:8px; ">
         <span style="margin-right:8px">Random Period:</span>
         <input type="number"
-          min="0" max="9999"
+          min=0 max=9999
           on:change={setdrange}
           bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
           disabled={disable_ttype}

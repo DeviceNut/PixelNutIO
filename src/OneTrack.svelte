@@ -13,9 +13,12 @@
   let tstate = '';
   $: tstate = (isopen ? 'block' : 'none');
 
+  let bgc = '';
+  $: bgc = isopen ? '#222522' : '#111311'
+
 </script>
 
-<Row style="margin-top:7px; background-color:#111211;">
+<Row style="margin-top:7px; background-color:{bgc}">
   <Column>
     <Revealer bind:isopen name='Track' num={track+1} />
   </Column>

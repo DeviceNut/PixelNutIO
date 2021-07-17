@@ -5,10 +5,9 @@
   import { presetsInit } from './presets.js';
   import { storePatternInit } from './userstore.js';
 
-  import Header from "./Header.svelte"
   import PageControls from "./PageControls.svelte"
 
-  let appname = 'PixelNut!';
+  let devname = 'PixelNut!';
 
   // obtained from the device:
   let max_strands = 4;      // number present
@@ -26,5 +25,4 @@
 
 </script>
 
-<Header {appname}/>
-<PageControls/>
+<PageControls {devname}/>

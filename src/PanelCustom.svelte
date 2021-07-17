@@ -1,67 +1,77 @@
 <script>
+  import MediaQuery from "svelte-media-query";
+  import { Grid } from "carbon-components-svelte";
+  import { pStrand } from './globals.js';
+  import TrackCols from "./TrackCols.svelte"
 
-  import {
-    Grid,
-    Row,
-    TextInput
-  } from "carbon-components-svelte";
+  /* DISABLED: user editing pattern
+    import { userEditPattern } from './cmduser.js';
+    import PatternString from "./PatternString.svelte"
 
-  import {
-    pStrand,
-    refreshCmdStr
-  } from './globals.js';
+    <div style="margin-left:5px; margin-right:5px;">
+      <PatternString/>
+    </div>
+  */
 
-  //TODO: import { userEditPattern } from './cmduser.js';
+/*
+  {#if ($pStrand.tactives <= 1) }
+    <div class="panel col1">
+      <div style="margin:0 20px 0 20px;">
+        {#each Array($pStrand.tactives) as _,track}
+          <OneTrack {track} />
+        {/each}
+      </div>
+      <div style="margin: 10px 0 5px 0;">
+        <div style="margin:0 auto; text-align:center;">
+          <ButtonsAddDel track={-1}/>
+        </div>
+      </div>
+    </div>
+  {:else}
 
-  import OneTrack from "./OneTrack.svelte"
-  import ButtonsAddDel from "./ButtonsAddDel.svelte";
+        <div class="panel col1">
+          <div style="margin:0 25px 0 25px;">
+            {#each Array($pStrand.tactives) as _,track}
+              <OneTrack {track} />
+            {/each}
+          </div>
+          <div style="margin: 10px 0 5px 0;">
+            <div style="margin:0 auto; text-align:center;">
+              <ButtonsAddDel track={-1}/>
+            </div>
+          </div>
+        </div>
 
-  // FIXME: hack to force updating display of command string
-  // after change the value of sliders, for some reason?!
-  $: {
-    if ($refreshCmdStr)
-    {
-      $pStrand.patternStr = $pStrand.patternStr;
-      $refreshCmdStr = false;
-    }
-  } 
-
+<style>
+  .panel {
+    margin: 0 auto;
+    border: 2px solid #333433;
+    background-color: black;
+  }
+  .col1 {
+    min-width:550px;
+    max-width:550px;
+  }
+</style>
+*/
 </script>
 
 <Grid>
 
-  <div style="margin: 12px 0 15px 0;">
-    <div style="margin-bottom:5px;">
-      <span style="margin-right:7px; font-size: .9em;">
-        Command String
-      </span>
-      {#if ($pStrand.patternName != '')}
-        <span style="float:right; margin-right:7px; font-size: .9em;">
-          Original Pattern: "{$pStrand.patternName}"
-        </span>
+    <MediaQuery query="(max-width: 1100px)" let:matches>
+      {#if matches}
+        <TrackCols numcols={1} />
       {/if}
-    </div>
-    <!--
-    <TextInput
-      size="sm" disabled
-      on:change={userEditPattern}
-      bind:value={$pStrand.patternStr}
-    />
-    -->
-    <TextInput
-      size="sm" disabled
-      bind:value={$pStrand.patternStr}
-    />
-  </div>
-
-  <div style="background-color: #444544;">
-    {#each Array($pStrand.tactives) as _,track}
-      <OneTrack {track} />
-    {/each}
-  </div>
-
-  <Row style="margin-top: 10px;">
-    <ButtonsAddDel track={-1}/>
-  </Row>
+    </MediaQuery>
+    <MediaQuery query="(min-width: 1101px) and (max-width: 1700px)" let:matches>
+      {#if matches }
+        <TrackCols numcols={($pStrand.tactives < 2) ? ($pStrand.tactives) : 2} />
+      {/if}
+    </MediaQuery>
+    <MediaQuery query="(min-width: 1701px)" let:matches>
+      {#if matches }
+        <TrackCols numcols={($pStrand.tactives < 3) ? ($pStrand.tactives) : 3} />
+      {/if}
+    </MediaQuery>
 
 </Grid>

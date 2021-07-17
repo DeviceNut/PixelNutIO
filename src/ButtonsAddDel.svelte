@@ -64,8 +64,7 @@
 
 <style>
   .button {
-    float:left;
-    margin: 2px 15px 0 0;
+    margin: 2px 2px 0 0;
     padding: 2px;
     width: 50px;
     border-radius: 5%;

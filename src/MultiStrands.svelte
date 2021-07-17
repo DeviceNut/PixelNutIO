@@ -12,7 +12,7 @@
 </script>
 
 <Grid>
-  <Row>
+  <Row style="margin-top: 7px;">
     <p style="margin-right:17px;">Strands:</p>
 
     {#each $aStrands as _,n}

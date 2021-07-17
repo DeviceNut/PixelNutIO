@@ -171,7 +171,7 @@
 </Grid>
 
 <Modal
-passiveModal
+  passiveModal
   modalHeading={heading}
   bind:open={openHelp}
   on:close

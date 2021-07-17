@@ -12,11 +12,11 @@
   let isopen = true;
 
   let bgc = '';
-  $: bgc = isopen ? 'inherit' : 'black'
+  $: bgc = isopen ? '#222522' : '#111311'
 
 </script>
 
-<Row style="background-color: {bgc}">
+<Row style="margin-right:0; margin-top: 5px; background-color:{bgc}">
   <Column>
     <Revealer bind:isopen name='Layer' num={layer+1} />
   </Column>

@@ -114,7 +114,7 @@ export const presetsInit = () =>
 
   aEffDrawDesc.set([
     "",
-    "Draws all pixels with current color/brightness.",
+    "Draws all pixels with the current color.",
 
     "Draws one pixel at a time with current color/brightness, inserting at the head. " +
     "Triggering causes a new cycle to begin. If the force is 0 then the cycle is not repeated. ",

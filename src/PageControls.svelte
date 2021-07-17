@@ -29,21 +29,18 @@
 </script>
 
 <main>
-  <div style="min-width:630px;">
+  <HeaderControls {devname}/>
 
-    <HeaderControls {devname}/>
+  <div class="panel">
+    {#if ($nStrands > 1) }
+      <MultiStrands/>
+      <div class="divider"></div>
+    {/if}
 
-    <div class="panel">
-      {#if ($nStrands > 1) }
-        <MultiStrands/>
-        <div class="divider"></div>
-      {/if}
+    <PanelMain/>
 
-      <PanelMain/>
-
-      <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
-        <span class="btext" >{pstr}</span>
-      </div>
+    <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
+      <span class="btext" >{pstr}</span>
     </div>
   </div>
 

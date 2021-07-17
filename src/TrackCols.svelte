@@ -1,13 +1,7 @@
 <script>
 
-  import {
-    Row,
-    Column
-  } from "carbon-components-svelte";
-
-  import {
-    pStrand
-  } from './globals.js';
+  import { Row, Column } from "carbon-components-svelte";
+  import { pStrand } from './globals.js';
 
   import OneTrack from "./OneTrack.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";

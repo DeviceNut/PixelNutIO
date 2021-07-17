@@ -40,8 +40,7 @@
 </script>
 
 <Row style="margin-top: 15px; margin-bottom: 10px;">
-  <!-- max-wdith prevents putting Checkbox on separate line >670px for some reason -->
-  <Column style="background-color: {bgc}; margin-left: 13px; max-width:350px">
+  <Column style="background-color: {bgc}; margin-left: 13px;">
 
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}

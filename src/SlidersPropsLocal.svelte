@@ -34,8 +34,8 @@
 </script>
 
 <Row style="margin-top: 10px; margin-bottom: 5px;">
-  <Column>
 
+  <Column>
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
@@ -59,12 +59,8 @@
     />
   </Column>
 
-  <!-- not sure why, but this min-width prevents Override checkboxes
-       from moving to separate lines when viewport >1584 !!!
-  -->
-  <Column style="min-width:100px">
-
-  <div style="margin-top: 8px;"></div>
+  <Column>
+    <div style="margin-top: 8px;"></div>
     <Checkbox labelText="Override"
       on:check={setovers}
       bind:checked={$pStrand.tracks[track].drawProps.overHue}

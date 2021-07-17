@@ -14,6 +14,7 @@ const oneLayer =
 {
   pluginIndex     : 0,      // effect plugin index, not value (0=none)
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
+                            // (all filter layers OR'ed with drawing layer)
 
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
@@ -66,11 +67,12 @@ const oneTrack =
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
+  isCustom        : false,  // true if this is a custom pattern
 
-  patternID       : 0,      // current pattern index
-  patternStr      : '',     // current pattern string
-  backupStr       : '',     // reverts to know good after bad edit
+  patternID       : '0',    // str ID of the current pattern
   patternName     : '',     // name of the current pattern
+  patternStr      : '',     // current pattern command string
+  //backupStr       : '',     // reverts to know good after bad edit
   
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
@@ -116,7 +118,7 @@ function makeNewStrand(s)
   return strand;
 }
 
-export const patternsInit = () =>
+export const strandsInit = () =>
 {
   const sid = get(idStrand);
   let slist = [];
@@ -145,7 +147,7 @@ export const patternsInit = () =>
 
 // copy all top level values from current strand
 // to all the other currently selected strands
-export const copyStrandTop = () =>
+export const strandCopyTop = () =>
 {
   const sid = get(idStrand);
   const ps = get(pStrand);
@@ -157,9 +159,10 @@ export const copyStrandTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.patternID   = ps.patternID;
+        strand.patternName = ps.patternName;
         strand.patternStr  = ps.patternStr;
-        strand.backupStr   = ps.backupStr;
+        //strand.backupStr   = ps.backupStr;
+
         strand.pcentBright = ps.pcentBright;
         strand.msecsDelay  = ps.msecsDelay;
         strand.firstPixel  = ps.firstPixel;
@@ -176,7 +179,7 @@ export const copyStrandTop = () =>
 
 // copy values in entire layer from current strand
 // to all the other currently selected strands
-export const copyStrandLayer = (track, layer) =>
+export const strandCopyLayer = (track, layer) =>
 {
   const sid = get(idStrand);
   const props = get(pStrand).tracks[track].drawProps;
@@ -199,17 +202,17 @@ export const copyStrandLayer = (track, layer) =>
 }
 
 // copy all values for current strand to all other selected ones
-export const copyStrand = () =>
+export const strandCopyAll = () =>
 {
-  copyStrandTop();
+  strandCopyTop();
 
   for (let track = 0; track < get(pStrand).tactives; ++track)
     for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
-      copyStrandLayer(track, layer);
+      strandCopyLayer(track, layer);
 }
 
 // clears all values for all tracks in the current strand
-export const clearAllTracks = () =>
+export const strandClearTracks = () =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tactives = 1;

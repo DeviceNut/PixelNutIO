@@ -360,7 +360,10 @@ export const parsePattern = (cmdstr) =>
             break;
           }
           case cmdStr_Go: break; // no-op?
+
+          default: console.error(`Unknown cmd: ${ch}`); break;
         }
+        else console.error(`Ignoring: ${cmd}`);
       }
     }
   }

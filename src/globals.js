@@ -23,8 +23,11 @@ export let maxPixels      = writable(0);      // max pixel count across strands
 export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
-export let aPatterns      = writable([]);     // list of all patterns
-export let aPatternsDesc  = writable([]);     // list of all pattern help strings
+export let aBuiltinPats   = writable([]);     // list of all built-in patterns
+export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
+export let aCustomPats    = writable([]);     // list of all saved custom patterns
+export let aCustomDesc    = writable([]);     //  and list of help strings for them
+
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions
 export let aEffectsFilter = writable([]);     // list of all filter effects

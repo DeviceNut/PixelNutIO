@@ -1,8 +1,9 @@
 <script>
 
   import { globalsInit } from './globals.js';
+  import { strandsInit } from './strands.js';
   import { presetsInit } from './presets.js';
-  import { patternsInit } from './patterns.js';
+  import { storePatternInit } from './userstore.js';
 
   import Header from "./Header.svelte"
   import PageControls from "./PageControls.svelte"
@@ -19,12 +20,10 @@
     max_pixels.push(300);
 
   globalsInit(max_strands, max_tracks, max_layers, max_pixels);
+  strandsInit();
   presetsInit();
-  patternsInit();
+  storePatternInit();
 
-  // if device has a saved pattern:
-  // set pStrand.patternID = index of saved pattern;
-  // else set to first one (Rainbow Ripple)
 </script>
 
 <Header {appname}/>

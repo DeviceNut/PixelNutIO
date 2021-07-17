@@ -1,14 +1,23 @@
 <script>
 
-  import { Grid, Row, TextInput } from "carbon-components-svelte";
-  import { pStrand, refreshCmdStr } from './globals.js'
-  import { userSetPatternStr } from './cmduser.js';
+  import {
+    Grid,
+    Row,
+    TextInput
+  } from "carbon-components-svelte";
+
+  import {
+    pStrand,
+    refreshCmdStr
+  } from './globals.js';
+
+  //TODO: import { userEditPattern } from './cmduser.js';
 
   import OneTrack from "./OneTrack.svelte"
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
 
-  // hack to force updating display of command string
-  // after change the value of sliders, for some reason FIXME?
+  // FIXME: hack to force updating display of command string
+  // after change the value of sliders, for some reason?!
   $: {
     if ($refreshCmdStr)
     {
@@ -16,8 +25,6 @@
       $refreshCmdStr = false;
     }
   } 
-
-  // FIXME: enable editing command string below
 
 </script>
 
@@ -30,13 +37,19 @@
       </span>
       {#if ($pStrand.patternName != '')}
         <span style="float:right; margin-right:7px; font-size: .9em;">
-          Original Pattern: {$pStrand.patternName}
+          Original Pattern: "{$pStrand.patternName}"
         </span>
       {/if}
     </div>
+    <!--
     <TextInput
       size="sm" disabled
-      on:change={userSetPatternStr}
+      on:change={userEditPattern}
+      bind:value={$pStrand.patternStr}
+    />
+    -->
+    <TextInput
+      size="sm" disabled
       bind:value={$pStrand.patternStr}
     />
   </div>

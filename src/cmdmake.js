@@ -148,7 +148,7 @@ export const makeEntireCmdStr = () =>
   else mainEnabled.set(false);
 
   get(pStrand).patternStr = cmdstr;
-  get(pStrand).backupStr = cmdstr;
+  //get(pStrand).backupStr = cmdstr;
 
   bitsOverride.set(ridebits);
   bitsEffects.set(plugbits);

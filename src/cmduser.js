@@ -26,26 +26,33 @@ import {
 } from './pixelnut.js';
 
 import {
-  nStrands, idStrand, pStrand,
-  aStrands, eStrands, dStrands,
-  aPatterns, aEffectsDraw, aEffectsFilter,
-  modeCustom, mainEnabled
+  nStrands,
+  idStrand,
+  pStrand,
+  aStrands,
+  eStrands,
+  dStrands,
+  aBuiltinPats,
+  aCustomPats,
+  aEffectsDraw,
+  aEffectsFilter,
+  modeCustom,
+  mainEnabled
 } from './globals.js';
 
 import {
-  clearAllTracks,
-  copyStrand,
-  copyStrandTop,
-  copyStrandLayer,
-
-} from './patterns.js'
+  strandClearTracks,
+  strandCopyAll,
+  strandCopyTop,
+  strandCopyLayer
+} from './strands.js';
 
 import {
   convTrackLayerToID,
   makeOrideBits,
   makeLayerCmdStr,
   makeEntireCmdStr
-} from './cmdmake.js'
+} from './cmdmake.js';
 
 import { writeDevice } from './device.js'
 import { parsePattern } from './cmdparse.js';
@@ -109,7 +116,7 @@ function sendLayerCmd(id, cmdstr, cmdval)
 function updateLayerVals(track, layer)
 {
   makeLayerCmdStr(track, layer);
-  copyStrandLayer(track, layer);
+  strandCopyLayer(track, layer);
   makeEntireCmdStr();
 }
 
@@ -195,7 +202,7 @@ export const userStrandSelect = (combine) =>
       else if (nowon && combine && (s != cur))
       {
         get(eStrands)[cur] = true;
-        copyStrand();
+        strandCopyAll();
 
         // mirror current strand by sending entire current command to newly selected strand
         writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternStr));
@@ -229,50 +236,42 @@ export const userStrandSelect = (combine) =>
   }
 }
 
-// Pattern Commands from PanelMain and PanelCustom: 
+// Pattern Commands from PanelMain: 
 
-// user just selected pattern from list (id is set)
-// assume that the current pattern has been cleared
-export const userSetPatternID = () =>
+// user just selected pattern from list
+export const userSetPattern = () =>
 {
-  let cmdstr = get(aPatterns)[get(pStrand).patternID].cmd;
-  if (cmdstr != '')
+  let id = parseInt( get(pStrand).patternID );
+  let name = '';
+  let cmdstr = '';
+
+  if (id > 0)
   {
-    clearAllTracks(); // clears entire strand to defaults
+    --id; // zero-base this
+    let len = get(aBuiltinPats).length;
+    name = (id < len) ? get(aBuiltinPats)[id].text : get(aCustomPats)[id-len].text;
+    cmdstr = (id < len) ? get(aBuiltinPats)[id].cmd : get(aCustomPats)[id-len].cmd;
+
+    strandClearTracks(); // clears entire strand to defaults
 
     if (parsePattern(cmdstr)) // sets vars for current strand
     {
-      copyStrand();
+      strandCopyAll();
       sendEntireCmdStr();
-
-      get(pStrand).patternName = get(aPatterns)[get(pStrand).patternID].text;
-
-      if (get(modeCustom)) get(pStrand).patternID = 0;
+  
+      get(pStrand).patternName = name;
+  
+      if (get(modeCustom)) get(pStrand).patternID = '0';
     }
     // software bug: all pre-builts are valid
     else console.error('Parse Failed: ', cmdstr);
   }
 }
 
-// user just edited pattern string - DISABLED FIXME
-export const userSetPatternStr = () =>
-{
-  let cmdstr = get(pStrand).patternStr;
-
-  clearAllTracks(); // clears entire strand to defaults
-
-  if (parsePattern(cmdstr)) // sets vars for current strand
-  {
-    copyStrand();
-    sendEntireCmdStr();
-  }
-  else get(pStrand).patternStr = get(pStrand).backupStr;
-}
-
 export const userClearPattern = () =>
 {
-  clearAllTracks();
-  copyStrand();
+  strandClearTracks();
+  strandCopyAll();
 
   sendCmd(cmdStr_Clear);
   makeEntireCmdStr();
@@ -281,11 +280,24 @@ export const userClearPattern = () =>
   get(pStrand).patternName = '';
 }
 
-export const userSavePattern = () =>
+// Pattern Commands from PanelCustom: 
+
+/*
+// user just edited pattern string - DISABLED FIXME
+export const userEditPattern = () =>
 {
   let cmdstr = get(pStrand).patternStr;
 
+  strandClearTracks(); // clears entire strand to defaults
+
+  if (parsePattern(cmdstr)) // sets vars for current strand
+  {
+    strandCopyAll();
+    sendEntireCmdStr();
+  }
+  else get(pStrand).patternStr = get(pStrand).backupStr;
 }
+*/
 
 // Commands from PanelMain:
 
@@ -298,7 +310,7 @@ export const userSetBright = (track) =>
     {
       get(dStrands)[get(idStrand)].pcentBright = bright;
 
-      copyStrandTop();
+      strandCopyTop();
       sendStrandCmd(cmdStr_SetBright, bright);
     }
   }
@@ -326,7 +338,7 @@ export const userSetDelay = (track) =>
     {
       get(dStrands)[get(idStrand)].msecsDelay = delay;
 
-      copyStrandTop();
+      strandCopyTop();
       sendStrandCmd(cmdStr_SetDelay, delay);
     }
   }
@@ -352,7 +364,7 @@ export const userSetRotate = () =>
   {
     get(dStrands)[get(idStrand)].firstPixel = firstp;
 
-    copyStrandTop();
+    strandCopyTop();
     sendStrandCmd(cmdStr_SetFirst, firstp);
   }
 }
@@ -385,7 +397,7 @@ export const userSetProps = (track) =>
       get(dStrands)[get(idStrand)].pcentWhite = white;
       get(dStrands)[get(idStrand)].pcentCount = count;
 
-      copyStrandTop();
+      strandCopyTop();
       sendStrandCmd(cmdStr_SetProps, `${hue} ${white} ${count}`);
     }
   }

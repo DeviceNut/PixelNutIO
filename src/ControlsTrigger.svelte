@@ -92,11 +92,6 @@
   const setftype  = () => { userSetForceType(track, layer); }
   const setfvalue = () => { userSetForceValue(track, layer); }
 
-  // BUG: RadioButton on:click doesn't work?!
-  // also on:click for RadioButtonGroup happens twice?
-  // and when it does 'selected' hasn't changed yet
-  // solution: use on:change with RadioButtonGroup
-
 </script>
 
 {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }

@@ -9,8 +9,6 @@
   const checkenables = () => { userStrandSelect(combine); }
   const checkowrite  = () => { userStrandCombine(combine = !combine); }
 
-  // BUG in CheckBox: first box is lower vertically than the others !!!
-
 </script>
 
 <Grid>

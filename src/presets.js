@@ -1,37 +1,37 @@
 import { get } from 'svelte/store';
 
 import {
-  aPatterns,
-  aPatternsDesc,
+  aBuiltinPats,
+  aBuiltinDesc,
   aEffectsDraw,
   aEffDrawDesc,
   aEffectsFilter,
   aEffFilterDesc
 } from './globals.js';
 
+///////////////////////////////////////////////////////////
+
 export const presetsInit = () =>
 {
-  aPatterns.set([
-    { id: '-1', text: '<custom>',           cmd:  '' },
-    { id: '0',  text: 'Rainbow Ripple',     cmd:  'E2 D20 T E101 F1000 I T G' },
-    { id: '1',  text: 'Rainbow Roll',       cmd:  'E1 D20 F1 I T E101 F1000 I T G' },
-    { id: '2',  text: 'Light Waves',        cmd:  'E10 D60 T E101 T E120 F250 I T G' },
-    { id: '3',  text: 'Color Twinkles',     cmd:  'E0 B50 W20 H232 D10 Q3 T E142 F250 I E50 B80 W80 D10 T G' },
-    { id: '4',  text: 'Twinkle Comets',     cmd:  'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 T6 E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
-    { id: '5',  text: 'Comet Party',        cmd:  'E20 W25 C25 D30 Q7 I T E101 F100 T E20 U0 W25 C25 D20 Q7 I T E101 F200 T G' },
-    { id: '6',  text: 'Scanner Mix',        cmd:  'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 T5 G' },
-    { id: '7',  text: 'Ferris Wheel',       cmd:  'E30 C20 D60 Q7 T E160 I E111 F O3 T7 G' },
-    { id: '8',  text: 'Expanding Noise',    cmd:  'E52 W35 C25 D60 Q3 T E150 I E120 I G' },
-    { id: '9',  text: 'Crazy Blinks',       cmd:  'E51 C10 D60 Q4 T E112 T E131 F1 I T G' },
-    { id: '10', text: 'Blink Surges',       cmd:  'E51 C10 D60 T E112 T E131 F1000 I T G' },
-    { id: '11', text: 'Bright Swells',      cmd:  'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
-    { id: '12', text: 'Color Melts',        cmd:  'E0 H30 D30 T E110 F600 I T E111 A1 G' },
-    { id: '13', text: 'Holiday',            cmd:  'E50 B60 H0 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I T20 O10 G' },
-    { id: '14', text: 'MashUp',             cmd:  'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
+  aBuiltinPats.set([
+    { id: '1',  text: 'Rainbow Ripple',     cmd: 'E2 D20 T E101 F1000 I T G' },
+    { id: '2',  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
+    { id: '3',  text: 'Light Waves',        cmd: 'E10 D60 T E101 T E120 F250 I T G' },
+    { id: '4',  text: 'Color Twinkles',     cmd: 'E0 B50 W20 H232 D10 Q3 T E142 F250 I E50 B80 W80 D10 T G' },
+    { id: '5',  text: 'Twinkle Comets',     cmd: 'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 T6 E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
+    { id: '6',  text: 'Comet Party',        cmd: 'E20 W25 C25 D30 Q7 I T E101 F100 T E20 U0 W25 C25 D20 Q7 I T E101 F200 T G' },
+    { id: '7',  text: 'Scanner Mix',        cmd: 'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 T5 G' },
+    { id: '8',  text: 'Ferris Wheel',       cmd: 'E30 C20 D60 Q7 T E160 I E111 F O3 T7 G' },
+    { id: '9',  text: 'Expanding Noise',    cmd: 'E52 W35 C25 D60 Q3 T E150 I E120 I G' },
+    { id: '10', text: 'Crazy Blinks',       cmd: 'E51 C10 D60 Q4 T E112 T E131 F1 I T G' },
+    { id: '11', text: 'Blink Surges',       cmd: 'E51 C10 D60 T E112 T E131 F1000 I T G' },
+    { id: '12', text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
+    { id: '13', text: 'Color Melts',        cmd: 'E0 H30 D30 T E110 F600 I T E111 A1 G' },
+    { id: '14', text: 'Holiday',            cmd: 'E50 B60 H0 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I T20 O10 G' },
+    { id: '15', text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
   ]);
 
-  aPatternsDesc.set([
-    [""],
+  aBuiltinDesc.set([
     [
       "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
       "The Force applied changes the amount of color change per pixel. At maximum Force the entire spectrum is displayed again."

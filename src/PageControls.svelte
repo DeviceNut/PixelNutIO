@@ -1,6 +1,11 @@
 <script>
 
-  import { nStrands, pStrand, modeCustom } from './globals.js';
+  import {
+    nStrands,
+    pStrand,
+    modeCustom
+  } from './globals.js';
+
   import MultiStrands from "./MultiStrands.svelte"
   import PanelMain from "./PanelMain.svelte"
   import PanelCustom from "./PanelCustom.svelte";

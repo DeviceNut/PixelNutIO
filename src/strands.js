@@ -16,6 +16,7 @@ const oneLayer =
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
                             // (all filter layers OR'ed with drawing layer)
 
+  open            : true,   // true if displayed
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
@@ -59,6 +60,7 @@ const drawProps =
 
 const oneTrack =
 {
+  open            : true,   // true if displayed
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track
   drawProps       : {},     // drawing properties for first layer

@@ -1,9 +1,9 @@
 import { get } from 'svelte/store';
 
 import {
-  overBits_DegreeHue   ,
-  overBits_PcentWhite  ,
-  overBits_PcentCount  ,
+  overBit_DegreeHue   ,
+  overBit_PcentWhite  ,
+  overBit_PcentCount  ,
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
   cmdStr_Effect        ,
@@ -252,12 +252,12 @@ export const parsePattern = (cmdstr) =>
           {
             if (!isNaN(val)) // ignore if no value
             {
-              get(pStrand).tracks[track].drawProps.overHue   = (val & overBits_DegreeHue);
-              get(pStrand).tracks[track].drawProps.overWhite = (val & overBits_PcentWhite);
-              get(pStrand).tracks[track].drawProps.overCount = (val & overBits_PcentCount);
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue   = (val & overBits_DegreeHue);
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = (val & overBits_PcentWhite);
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = (val & overBits_PcentCount);
+              get(pStrand).tracks[track].drawProps.overHue   = (val & overBit_DegreeHue);
+              get(pStrand).tracks[track].drawProps.overWhite = (val & overBit_PcentWhite);
+              get(pStrand).tracks[track].drawProps.overCount = (val & overBit_PcentCount);
+              get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue   = (val & overBit_DegreeHue);
+              get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = (val & overBit_PcentWhite);
+              get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = (val & overBit_PcentCount);
             }
             break;
           }

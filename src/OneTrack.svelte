@@ -9,18 +9,17 @@
 
   export let track;
 
-  let isopen = true;
   let tstate = '';
-  $: tstate = (isopen ? 'block' : 'none');
+  $: tstate = $pStrand.tracks[track].open ? 'block' : 'none';
 
   let bgc = '';
-  $: bgc = isopen ? '#222522' : '#111311'
+  $: bgc = $pStrand.tracks[track].open ? '#222522' : '#111311'
 
 </script>
 
 <Row style="margin-top:7px; background-color:{bgc}">
   <Column>
-    <Revealer bind:isopen name='Track' num={track+1} />
+    <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
   <Column>
     <ButtonsSoloMute {track} layer={0} />

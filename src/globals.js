@@ -35,8 +35,8 @@ export let aEffFilterDesc = writable([]);     // list of all filter effect descr
 
 export let modeCustom     = writable(false);  // true if displaying custom panel
 export let mainEnabled    = writable(false);  // true to enable main panel controls
-export let bitsOverride   = writable(0);      // OR'ed override bits from all layers
-export let bitsEffects    = writable(0);      // OR'ed effect bits from all layers
+export let bitsOverride   = writable(0);      // OR'ed overrides from all track layers
+export let bitsEffects    = writable(0);      // OR'ed effect bits from all track layers
 
 export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
 

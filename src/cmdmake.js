@@ -1,10 +1,11 @@
 import { get } from 'svelte/store';
 
 import {
+  DRAW_LAYER,
   MAX_FORCE,
-  overBits_DegreeHue   ,
-  overBits_PcentWhite  ,
-  overBits_PcentCount    ,
+  overBit_DegreeHue    ,
+  overBit_PcentWhite   ,
+  overBit_PcentCount   ,
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
   cmdStr_Effect        ,
@@ -42,13 +43,13 @@ export const makeOrideBits = (p, track) =>
   let bits = 0;
 
   if (p.tracks[track].drawProps.overHue)
-    bits |= overBits_DegreeHue;
+    bits |= overBit_DegreeHue;
 
   if (p.tracks[track].drawProps.overWhite)
-    bits |= overBits_PcentWhite;
+    bits |= overBit_PcentWhite;
 
   if (p.tracks[track].drawProps.overCount)
-    bits |= overBits_PcentCount;
+    bits |= overBit_PcentCount;
 
   return bits;
 }
@@ -106,6 +107,7 @@ export const makeEntireCmdStr = () =>
   {
     let track = strand.tracks[i];
     let drawplugin = false;
+    let tplugbits = 0;
 
     let ismute = false; // DEBUG
 
@@ -117,15 +119,19 @@ export const makeEntireCmdStr = () =>
 
       // must have effect and not be mute to get output
       // (note that draw layer does not have mute)
-      if (j == 0)
+      if (j == DRAW_LAYER)
       {
         drawplugin = (layer.pluginIndex > 0) && !layer.mute;
+
+        // must reset drawing bits to base effect bits before add in other layers
+        layer.pluginBits = get(aEffectsDraw)[layer.pluginIndex].bits;
 
         if (drawplugin)
         {
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
           ridebits |= makeOrideBits(strand, i);
           plugbits |= layer.pluginBits;
+          tplugbits |= layer.pluginBits;
         }
         else ismute = true; // DEBUG
       }
@@ -133,11 +139,15 @@ export const makeEntireCmdStr = () =>
       {
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
         plugbits |= layer.pluginBits;
+        tplugbits |= layer.pluginBits;
       }
 
       else ismute = true; // DEBUG
       console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
+
+    // drawing plugin bits includes bits from all layers
+    track.layers[DRAW_LAYER].pluginBits = tplugbits;
   }
 
   if (cmdstr != '')
@@ -152,6 +162,7 @@ export const makeEntireCmdStr = () =>
 
   bitsOverride.set(ridebits);
   bitsEffects.set(plugbits);
+  console.log(`pluginbits=${plugbits.toString(16)}`);
 
   refreshCmdStr.set(true); // hack to force refresh
 }

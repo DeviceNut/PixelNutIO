@@ -34,7 +34,7 @@
   </div>
 </Row>
 
-<Row style="margin: 15px 0 10px 0; padding: 5px; background-color: #333433;">
+<Row style="margin: 15px 0 10px 0; padding: 5px; color: #888988; background-color: #333433;">
   <span>
     {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
   </span>

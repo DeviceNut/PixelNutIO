@@ -2,9 +2,9 @@ export const DRAW_LAYER           = 0;      // drawing layer is always first lay
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_FORCE            = 1000;   // maximum force value
 
-export const overBits_DegreeHue   = 1;      // overwrite degreeHue
-export const overBits_PcentWhite  = 2;      // overwrite pcentWhite
-export const overBits_PcentCount  = 4;      // overwrite pcentCount
+export const overBit_DegreeHue    = 1;      // overwrite degreeHue
+export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
+export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
 export const cmdStr_GetInfo       = "?";
 export const cmdStr_GetSegments   = "?S";

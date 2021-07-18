@@ -17,11 +17,11 @@
   } from './globals.js';
 
   import {
-    pluginBit_COLOR,
-    pluginBit_COUNT,
     pluginBit_DELAY,
     pluginBit_DIRECTION,
-    pluginBit_TRIGGER
+    pluginBit_TRIGGER,
+    pluginBit_ORIDE_DELAY,
+    pluginBit_ORIDE_DIR
   } from './presets.js';
 
   import {
@@ -110,7 +110,8 @@
   <SliderVal name='Delay&nbsp;'
     onchange={setDelay}
     bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-    disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DELAY)}
+    disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DELAY) ||
+               ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DELAY)}
   />
 
   <SlidersPropsLocal {track} />
@@ -129,7 +130,8 @@
     <Checkbox labelText="Reverse Direction"
       on:check={setDirect}
       bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
-      disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DIRECTION)}
+      disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DIRECTION) ||
+                 ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DIR)}
     />
   </Row>
 

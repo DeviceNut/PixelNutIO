@@ -3,9 +3,9 @@
   import CaretUp32 from "carbon-icons-svelte/lib/CaretUp32";
   import CaretDown32 from "carbon-icons-svelte/lib/CaretDown32";
 
-  export let name = '';
-  export let num = 0;
-  export let isopen = false;
+  export let name;
+  export let num;
+  export let isopen;
 
 </script>
 

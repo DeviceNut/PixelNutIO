@@ -7,14 +7,17 @@
 
   import {
     DRAW_LAYER,
-    overBits_DegreeHue,
-    overBits_PcentWhite,
-    overBits_PcentCount,
+    overBit_DegreeHue,
+    overBit_PcentWhite,
+    overBit_PcentCount,
   } from './pixelnut.js';
 
   import {
     pluginBit_COLOR,
-    pluginBit_COUNT
+    pluginBit_COUNT,
+    pluginBit_ORIDE_HUE,
+    pluginBit_ORIDE_WHITE,
+    pluginBit_ORIDE_COUNT
   } from "./presets.js";
 
   import {
@@ -45,26 +48,29 @@
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
-      disabled={!$pStrand.doOverride ||
-                !($bitsOverride & overBits_DegreeHue) ||
-                !($bitsEffects & pluginBit_COLOR)}
+      disabled={!$pStrand.doOverride                  ||
+                !($bitsOverride & overBit_DegreeHue)  ||
+                !($bitsEffects  & pluginBit_COLOR)    ||
+                 ($bitsEffects  & pluginBit_ORIDE_HUE)}
       max={359}
     />
 
     <SliderVal name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
-      disabled={!$pStrand.doOverride ||
-                !($bitsOverride & overBits_PcentWhite) ||
-                !($bitsEffects & pluginBit_COLOR)}
+      disabled={!$pStrand.doOverride                  ||
+                !($bitsOverride & overBit_PcentWhite) ||
+                !($bitsEffects  & pluginBit_COLOR)    ||
+                 ($bitsEffects  & pluginBit_ORIDE_WHITE)}
     />
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
-      disabled={!$pStrand.doOverride ||
-                !($bitsOverride & overBits_PcentCount) ||
-                !($bitsEffects & pluginBit_COUNT)}
+      disabled={!$pStrand.doOverride                  ||
+                !($bitsOverride & overBit_PcentCount) ||
+                !($bitsEffects  & pluginBit_COUNT)    ||
+                 ($bitsEffects  & pluginBit_ORIDE_COUNT)}
     />
 
   </Column>

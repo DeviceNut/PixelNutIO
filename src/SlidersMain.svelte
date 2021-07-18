@@ -30,7 +30,7 @@
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
-  disabled={!$mainEnabled && !($bitsEffects & pluginBit_DELAY)}
+  disabled={!$mainEnabled || !($bitsEffects & pluginBit_DELAY)}
   />
 
 <SliderVal name='Rotate'

@@ -2,21 +2,17 @@
 
   import { Slider } from "carbon-components-svelte";
 
-  export let name = "";
+  export let name;
   export let min = 0;
   export let max = 100;
   export let cur = 0;
   export let disabled = undefined;
-  export let dolabels = false;
   export let onchange;
 
   // remove event parameter from call
   let dochange = () => { onchange(); }
 
   // on:click doesn't always fire ??
-
-  let maxLabel;
-  $: maxLabel = dolabels ? max : ' ';
 
 </script>
 
@@ -26,6 +22,6 @@
   bind:value={cur}
   minLabel={name}
   on:change={dochange}
-  {maxLabel}
+  maxLabel=' '
   hideTextInput
 />

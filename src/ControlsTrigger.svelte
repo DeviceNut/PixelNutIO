@@ -96,104 +96,111 @@
 
 {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
 
-  <p style="margin-top:3px;">External Triggering:</p>
-  <div style="margin-top:8px; padding:5px 0 10px 5px; background-color: #222322;">
+  <div style="margin:10px -10px 10px -15px; padding-top:2px; background-color:#333433;"/>
 
-    <Checkbox labelText="Allow manual trigger"
-      style="padding: 3px;"
-      on:check={setmanual}
-      bind:checked={$pStrand.tracks[track].layers[layer].trigDoManual}
-    />
+  <div style="margin-left:-10px; margin-right:-10px;">
+    <p style="margin-top:3px; font-size:.9em;">External Triggering:</p>
+    <div style="margin-top:5px; padding:5px; background-color:#222322;">
 
-    <div style="margin-bottom: 7px; padding: 3px;">
-      <Checkbox labelText="Trigger from Track/Layer:"
-        style="display:inline-block;"
-        on:check={setlayer}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigDoLayer}
+      <Checkbox labelText="Allow manual trigger"
+        style="padding: 3px;"
+        on:check={setmanual}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigDoManual}
       />
-      <input type="number"
-        style="margin-left: 5px;"
-        min=1 max={$nTracks}
-        on:change={settnums}
-        bind:value={$pStrand.tracks[track].layers[layer].trigTrackNum}
-        disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
-      />
-      <input type="number"
-        style="margin-left: 5px;"
-        min=1 max={$tLayers}
-        on:change={settnums}
-        bind:value={$pStrand.tracks[track].layers[layer].trigLayerNum}
-        disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
-      />
-    </div>
-  </div>
 
-  <p>Internal Triggering:</p>
-  <div style="margin-top:5px; padding:5px 0 10px 5px; background-color: #222322;">
-    <RadioButtonGroup
-      labelPosition="left"
-      on:change={settype}
-      bind:selected={$pStrand.tracks[track].layers[layer].trigTypeStr}
-      >
-      <RadioButton labelText="None" value="none" />
-      <RadioButton labelText="Once" value="once" />
-      <RadioButton labelText="Auto" value="auto" />
-    </RadioButtonGroup>
-
-    <div style="margin: 0 15px 0 15px; opacity: {opc};">
-      <div style="margin-top:12px; ">
-        <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
-        <input type="number"
-          min=1 max=9999
-          on:change={setcount}
-          bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
-          disabled={disable_repcount}
+      <div style="margin-bottom: 7px; padding: 3px;">
+        <Checkbox labelText="Trigger from Track/Layer:"
+          style="display:inline-block;"
+          on:check={setlayer}
+          bind:checked={$pStrand.tracks[track].layers[layer].trigDoLayer}
         />
-        <Checkbox labelText="Forever"
-          style="display:inline-block; margin-left: 5px;"
-          on:check={setrandom}
-          bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-          disabled={disable_ttype}
+        <input type="number"
+          style="margin-left: 5px;"
+          min=1 max={$nTracks}
+          on:change={settnums}
+          bind:value={$pStrand.tracks[track].layers[layer].trigTrackNum}
+          disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
         />
-      </div>
-      <div style="margin-top:8px; ">
-        <span style="margin-right:8px">Minimum Time:&nbsp;</span>
         <input type="number"
-          min=1 max=9999
-          on:change={setdmin}
-          bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
-          disabled={disable_ttype}
-        />&nbsp;&nbsp;secs
-      </div>
-      <div style="margin-top:8px; ">
-        <span style="margin-right:8px">Random Period:</span>
-        <input type="number"
-          min=0 max=9999
-          on:change={setdrange}
-          bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
-          disabled={disable_ttype}
-        />&nbsp;&nbsp;secs
+          style="margin-left: 5px;"
+          min=1 max={$tLayers}
+          on:change={settnums}
+          bind:value={$pStrand.tracks[track].layers[layer].trigLayerNum}
+          disabled={!$pStrand.tracks[track].layers[layer].trigDoLayer}
+        />
       </div>
     </div>
   </div>
 
-{/if}
+  <div style="margin-left:-10px; margin-right:-10px;">
+    <p style="margin-top:3px; font-size:.9em;">Internal Triggering:</p>
+    <div style="margin-top:5px; padding:5px; background-color:#222322;">
+      <RadioButtonGroup
+        labelPosition="left"
+        on:change={settype}
+        bind:selected={$pStrand.tracks[track].layers[layer].trigTypeStr}
+        >
+        <RadioButton labelText="None" value="none" />
+        <RadioButton labelText="Once" value="once" />
+        <RadioButton labelText="Auto" value="auto" />
+      </RadioButtonGroup>
 
-{#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
-
-  <p style="margin-top:10px;">Trigger Force:</p>
-  <div style="margin-top:8px; padding:5px 0 5px 5px; background-color: #222322;">
-
-    <Checkbox labelText="Random Value"
-      on:check={setftype}
-      bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
-    />
-    <SliderVal name='Fixed Value:'
-      max={MAX_FORCE}
-      onchange={setfvalue}
-      bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
-      disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
-    />
+      <div style="margin:0 15px 0 15px; opacity:{opc};">
+        <div style="margin-top:12px; ">
+          <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+          <input type="number"
+            min=1 max=9999
+            on:change={setcount}
+            bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
+            disabled={disable_repcount}
+          />
+          <Checkbox labelText="Forever"
+            style="display:inline-block; margin-left:5px;"
+            on:check={setrandom}
+            bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+            disabled={disable_ttype}
+          />
+        </div>
+        <div style="margin-top:8px; ">
+          <span style="margin-right:8px">Minimum Time:&nbsp;</span>
+          <input type="number"
+            min=1 max=9999
+            on:change={setdmin}
+            bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
+            disabled={disable_ttype}
+          />&nbsp;&nbsp;secs
+        </div>
+        <div style="margin-top:8px; ">
+          <span style="margin-right:8px">Random Period:</span>
+          <input type="number"
+            min=0 max=9999
+            on:change={setdrange}
+            bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
+            disabled={disable_ttype}
+          />&nbsp;&nbsp;secs
+        </div>
+      </div>
+    </div>
   </div>
+
+  {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
+
+    <div style="margin-left:-10px; margin-right:-10px;">
+      <p style="margin-top:3px; font-size:.9em;">Trigger Force:</p>
+      <div style="margin-top:5px; padding:5px; background-color:#222322;">
+
+        <Checkbox labelText="Random"
+          on:check={setftype}
+          bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
+        />
+        <SliderVal name='Fixed:'
+          max={MAX_FORCE}
+          onchange={setfvalue}
+          bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
+          disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
+        />
+      </div>
+    </div>
+  {/if}
 
 {/if}

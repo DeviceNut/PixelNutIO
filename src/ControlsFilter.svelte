@@ -1,5 +1,7 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
+
   import {
     Row,
     Dropdown
@@ -22,22 +24,32 @@
 
 </script>
 
-<Row style="margin: 3px 0 5px 0;">
-  <p style="margin: 7px 12px 0 0;">Filter Effect:</p>
-  <div style="background-color: #333433;">
-    <Dropdown
-      type="inline"
-      on:select={seteffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
-      bind:items={$aEffectsFilter}
-    />
-  </div>
+<MediaQuery query="(max-width: 450px)" let:matches>
+  {#if matches}
+    <Row>
+      <p style="font-size:.9em;">Filter Effect:</p>
+    </Row>
+  {/if}
+</MediaQuery>
+<Row>
+  <MediaQuery query="(min-width: 451px)" let:matches>
+    {#if matches}
+      <p style="font-size:.9em; margin:10px 12px 0 0;">Draw Effect:</p>
+    {/if}
+  </MediaQuery>
+  <Dropdown
+    style="background-color: #333433;"
+    type="inline"
+    on:select={seteffect}
+    bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
+    bind:items={$aEffectsFilter}
+  />
 </Row>
 
-<Row style="margin: 15px 0 10px 0; padding: 5px; color: #888988; background-color: #333433;">
-  <span>
+<Row style="margin-top:7px; margin-right:-10px; padding:5px; color:#888988; background-color:#333433;">
+  <p style="font-size:.9em;">
     {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
-  </span>
+  </p>
 </Row>
 
 {#if ($pStrand.tracks[track].layers[layer].pluginIndex != 0) }

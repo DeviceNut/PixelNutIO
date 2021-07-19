@@ -27,7 +27,7 @@
 </Row>
 <Row>
   {#if $pStrand.tracks[track].layers[layer].open }
-    <Column style="padding-top:10px; padding-bottom:15px; background-color: #111211;">
+    <Column style="padding-top:10px; background-color: #111211;">
       {#if (layer == 0) }
         <ControlsDraw {track} />
       {:else}

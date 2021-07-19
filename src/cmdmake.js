@@ -162,7 +162,7 @@ export const makeEntireCmdStr = () =>
 
   bitsOverride.set(ridebits);
   bitsEffects.set(plugbits);
-  console.log(`pluginbits=${plugbits.toString(16)}`);
+  //console.log(`pluginbits=${plugbits.toString(16)}`);
 
   refreshCmdStr.set(true); // hack to force refresh
 }

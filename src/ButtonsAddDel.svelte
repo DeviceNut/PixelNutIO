@@ -46,12 +46,16 @@
       let n = --($pStrand.tactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
+
+      // TODO: strandClearTrack($pStrand.tactives)
     }
     else
     {
       let n = --($pStrand.tracks[track].lactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
+
+      // TODO: strandClearLayer($pStrand.tracks[track].lactives)
     }
 
     makeEntireCmdStr();

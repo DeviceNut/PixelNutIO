@@ -134,7 +134,7 @@ export const presetsInit = () =>
     "Draws a block of pixels with the current color back and forth. " +
     "The count property sets the length of the block.",
 
-    "Scales pixel brightness levels up and down individually, using current color. ", +
+    "Scales pixel brightness levels up and down individually, using current color. " +
     "The count property determines total number of pixels affected.",
 
     "Blinks on and off random pixels using current color/brightness. " +

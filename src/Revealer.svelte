@@ -11,19 +11,18 @@
 
 <span style="cursor:pointer;" on:click={()=>{isopen = !isopen}}>
   {#if isopen }
-    <CaretUp32 style="float:left; margin: 3px 0 0 -15px;"/>
+    <CaretUp32 style="float:left; margin:3px 0 0 -15px;"/>
   {:else}
-    <CaretDown32 style="float:left; margin: 0 0 3px -15px;"/>
+    <CaretDown32 style="float:left; margin:0 0 3px -15px;"/>
   {/if}
   <button class="button"> {name} {num} </button>
 </span>
 
 <style>
   .button {
-    margin: 0 0 0 8px;
     padding: 5px;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 1.1em;
     border: none;
     color: white;
     background-color: inherit;

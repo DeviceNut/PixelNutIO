@@ -33,15 +33,12 @@
 
   <div class="panel">
 
-    <!--FIXME
-
-      {#if ($nStrands > 1) }
+    {#if ($nStrands > 1) }
       <MultiStrands/>
       <div class="divider"></div>
     {/if}
 
     <PanelMain/>
-    -->
 
     <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
       <span class="btext" >{pstr}</span>
@@ -78,7 +75,6 @@
     cursor: pointer;
   }
   .btext {
-    font-size: 1em;
     color: white;
   }
   .select {

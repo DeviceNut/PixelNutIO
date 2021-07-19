@@ -65,6 +65,7 @@
     />
   </Column>
 
+  <!-- FIXME
   <Column>
     <div style="margin-top: 8px;"></div>
     <Checkbox labelText="Override"
@@ -88,5 +89,6 @@
                  ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_COUNT)}
     />
   </Column>
+  -->
 
 </Row>

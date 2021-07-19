@@ -32,12 +32,16 @@
   <HeaderControls {devname}/>
 
   <div class="panel">
-    {#if ($nStrands > 1) }
+
+    <!--FIXME
+
+      {#if ($nStrands > 1) }
       <MultiStrands/>
       <div class="divider"></div>
     {/if}
 
     <PanelMain/>
+    -->
 
     <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
       <span class="btext" >{pstr}</span>
@@ -54,6 +58,7 @@
   main {
     margin: 0 auto;
     padding: 5px;
+    min-width: 320px;
   }
   .panel {
     margin: 0 auto;

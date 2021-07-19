@@ -1,5 +1,7 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
+
   import {
     Grid,
     Row,
@@ -94,7 +96,7 @@
 </script>
 
 <Grid>
-  <Row style="margin-top: 10px;">
+  <Row style="margin-top: 5px;">
     <Select 
       bind:selected={$pStrand.patternID}
       on:change={userSetPattern}

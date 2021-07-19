@@ -1,6 +1,6 @@
 <script>
 
-  import { Row, Column } from "carbon-components-svelte";
+  import { Grid, Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
 
   import OneTrack from "./OneTrack.svelte"
@@ -11,9 +11,9 @@
 </script>
 
 <div class="panel" class:col1={numcols == 1} class:col2={numcols == 2}>
-  <div style="margin:0 25px 0 25px;">
+  <Grid>
     <Row>
-      <Column style="margin-right: 5px;">
+      <Column>
         {#each Array($pStrand.tactives) as _,track}
           {#if ((track % numcols) == 0) }
             <OneTrack {track} />
@@ -21,7 +21,7 @@
         {/each}
       </Column>
       {#if (numcols > 1) }
-        <Column style="margin-left: 5px; margin-right: 5px;">
+        <Column style="margin-left: 5px;">
           {#each Array($pStrand.tactives) as _,track}
             {#if ((track % numcols) == 1) }
               <OneTrack {track} />
@@ -39,12 +39,12 @@
         </Column>
       {/if}
     </Row>
-  </div>
-  <div style="margin: 10px 0 5px 0;">
-    <div style="margin:0 auto; text-align:center;">
-      <ButtonsAddDel track={-1}/>
+    <div style="margin:10px 0 5px 0;">
+      <div style="margin:0 auto; text-align:center;">
+        <ButtonsAddDel track={-1}/>
+      </div>
     </div>
-  </div>
+  </Grid>
 </div>
 
 <style>
@@ -54,7 +54,7 @@
     background-color: black;
   }
   .col1 {
-    min-width:550px;
+    /* min-width:320px; FIXME*/
     max-width:550px;
   }
   .col2 {

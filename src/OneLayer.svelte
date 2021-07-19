@@ -15,7 +15,7 @@
 
 </script>
 
-<Row style="margin-right:0; margin-top: 5px; background-color:{bgc}">
+<Row style="margin-top:7px; background-color:{bgc}">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
   </Column>
@@ -27,7 +27,7 @@
 </Row>
 <Row>
   {#if $pStrand.tracks[track].layers[layer].open }
-    <Column style="margin-right: 15px; padding-top: 10px; padding-bottom: 15px; background-color: #111211;">
+    <Column style="padding-top:10px; padding-bottom:15px; background-color: #111211;">
       {#if (layer == 0) }
         <ControlsDraw {track} />
       {:else}

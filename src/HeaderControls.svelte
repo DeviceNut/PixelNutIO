@@ -1,5 +1,6 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
   import { Modal } from "carbon-components-svelte";
   import { userSetDevName, userSendPause } from "./cmduser.js"
 
@@ -27,18 +28,40 @@
 
 </script>
 
-<div class="header">
-  <button on:click={goback} class="button left" >&lt;&lt; Devices</button>
-  <button on:click={dopause} class="button left" >{textPause}</button>
-  <input
-    class="title"
-    size=32 maxlength=32
-    on:change={userSetDevName}
-    bind:value={devname}
-  />
-  <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
-  <button on:click={golinks} class="button rite" >Links</button>
-</div>
+<MediaQuery query="(max-width: 650px)" let:matches>
+  {#if matches}
+    <div class="header">
+      <input
+        class="title"
+        size=32 maxlength=32
+        on:change={userSetDevName}
+        bind:value={devname}
+      />
+    </div>
+    <div class="header2">
+      <button on:click={goback}  class="button left" >&lt;&lt; Devices</button>
+      <button on:click={dopause} class="button left" >{textPause}</button>
+      <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
+      <button on:click={golinks} class="button rite" >Links</button>
+    </div>
+  {/if}
+</MediaQuery>
+<MediaQuery query="(min-width: 650px)" let:matches>
+  {#if matches }
+    <div class="header">
+      <button on:click={goback} class="button left" >&lt;&lt; Devices</button>
+      <button on:click={dopause} class="button left" >{textPause}</button>
+      <input
+        class="title"
+        size=32 maxlength=32
+        on:change={userSetDevName}
+        bind:value={devname}
+      />
+      <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
+      <button on:click={golinks} class="button rite" >Links</button>
+    </div>
+  {/if}
+</MediaQuery>
 
 <Modal
   bind:open
@@ -53,13 +76,16 @@
 
 <style>
   .header {
-    padding: 2px 0 8px 0;
-    height: 44px;
+    padding: 2px 0 10px 0;
     text-align: center;
     background-color:#333433;
   }
+  .header2 {
+    height: 45px;
+    background-color:#333433;
+  }
   .title {
-    margin: 3px 10px 0 10px;
+    margin: 5px 10px 0 10px;
     padding: 3px;
     font-style:italic;
     font-family:'Trebuchet MS';
@@ -82,7 +108,7 @@
   }
   .button.rite {
     float: right;
-    margin-right: 15px;
+    margin-right: 10px;
   }
   .button:hover {
     cursor: pointer;

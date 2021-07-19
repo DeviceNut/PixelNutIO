@@ -27,12 +27,12 @@
 </Row>
 <div style="display:{tstate};">
   {#each Array($pStrand.tracks[track].lactives) as _,layer}
-    <div style="margin-left:20px; display:{tstate};">
+    <div style="margin-left:13px; display:{tstate};">
       <OneLayer {track} {layer} />
     </div>
   {/each}
   <Row>
-    <Column style="margin: 3px 0 4px 5px;">
+    <Column style="margin:7px 0 4px -2px;">
       <ButtonsAddDel {track}/>
     </Column>
   </Row>

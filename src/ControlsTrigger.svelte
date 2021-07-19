@@ -96,8 +96,8 @@
 
 {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
 
-  <p style="margin-top: 12px;">External Triggering:</p>
-  <div style="margin-top: 8px; padding: 5px 0 13px 5px; background-color: #222322;">
+  <p style="margin-top:3px;">External Triggering:</p>
+  <div style="margin-top:8px; padding:5px 0 10px 5px; background-color: #222322;">
 
     <Checkbox labelText="Allow manual trigger"
       style="padding: 3px;"
@@ -128,8 +128,8 @@
     </div>
   </div>
 
-  <p style="margin-top: 12px;">Internal Triggering:</p>
-  <div style="margin-top: 8px; padding: 5px 0 13px 5px; background-color: #222322;">
+  <p>Internal Triggering:</p>
+  <div style="margin-top:5px; padding:5px 0 10px 5px; background-color: #222322;">
     <RadioButtonGroup
       labelPosition="left"
       on:change={settype}
@@ -181,8 +181,8 @@
 
 {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
 
-  <p style="margin-top: 13px;">Trigger Force:</p>
-  <div style="margin-top: 8px; padding: 5px 0 5px 5px; background-color: #222322;">
+  <p style="margin-top:10px;">Trigger Force:</p>
+  <div style="margin-top:8px; padding:5px 0 5px 5px; background-color: #222322;">
 
     <Checkbox labelText="Random Value"
       on:check={setftype}

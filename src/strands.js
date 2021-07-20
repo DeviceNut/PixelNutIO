@@ -99,10 +99,7 @@ function makeOneTrack()
   track.drawProps = {...drawProps};
 
   for (let j = 0; j < get(tLayers); ++j)
-  {
-    let layer = {...oneLayer};
-    layers.push(layer);
-  }
+    layers.push( {...oneLayer} );
 
   track.layers = layers;
 
@@ -234,20 +231,16 @@ export const strandClearAllTracks = (track) =>
 export const strandClearTrack = (track) =>
 {
   let sid = get(idStrand);
-  let newtrack = makeOneTrack();
-
-  get(aStrands)[sid].tracks[track] = newtrack;
-  get(dStrands)[sid].tracks[track] = newtrack;
+  get(aStrands)[sid].tracks.splice(track, 1, makeOneTrack());
+  get(dStrands)[sid].tracks.splice(track, 1, makeOneTrack());
 }
 
 // clears all values for a track layer in the current strand
 export const strandClearLayer = (track, layer) =>
 {
   let sid = get(idStrand);
-  let newlayer = {...oneLayer};
-
-  get(aStrands)[sid].tracks[track].layers[layer] = newlayer;
-  get(dStrands)[sid].tracks[track].layers[layer] = newlayer;
+  get(aStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
+  get(dStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
 }
 
 // swaps specified track for the one below in the current strand

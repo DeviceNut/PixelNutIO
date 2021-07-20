@@ -96,7 +96,7 @@
 </script>
 
 <Grid>
-  <Row style="margin-top: 5px;">
+  <Row style="margin-top:5px;">
     <Select 
       bind:selected={$pStrand.patternID}
       on:change={userSetPattern}
@@ -144,12 +144,12 @@
     {/if}
   </Row>
 
-  <Row style="margin-top: 7px;">
-    <Column style="margin-left: -15px;">
+  <Row style="margin-top:7px;">
+    <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
       <Row>
-        <Column style="margin-top: 10px; max-width:300px">
+        <Column>
           <SliderVal name='Force'
             max={MAX_FORCE}
             onchange={userSetForce}
@@ -157,15 +157,13 @@
             disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
-        <Column>
-          <div style="margin: 10px 0 10px 0;">
-            <button
-              class="button"
-              on:click={userSendTrigger}
-              disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
-              >Trigger
-            </button>
-          </div>
+        <Column style="margin-top:5px;">
+          <button
+            class="button"
+            on:click={userSendTrigger}
+            disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
+            >Trigger
+          </button>
         </Column>
       </Row>
     </Column>

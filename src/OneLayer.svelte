@@ -16,7 +16,7 @@
 
 </script>
 
-<Row style="margin-top:7px; background-color:{bgc}">
+<Row style="margin-left:-15px; margin-top:7px; background-color:{bgc}">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
   </Column>
@@ -25,7 +25,7 @@
     <ButtonsSoloMute {track} {layer} />
   {/if}
 </Row>
-<Row>
+<Row style="margin-left:-15px;">
   {#if $pStrand.tracks[track].layers[layer].open }
     <Column style="padding-top:10px; background-color: #111211;">
       {#if (layer == 0) }

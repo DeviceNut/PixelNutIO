@@ -1,5 +1,7 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
+
   import {
     Row, Column,
     Checkbox
@@ -42,9 +44,9 @@
 
 </script>
 
-<Row style="margin-top: 15px; margin-bottom: 10px;">
-  <Column style="background-color: {bgc}; margin-left: 13px;">
+<Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color:{bgc};">
 
+  <Column style="margin-left:-10px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
@@ -54,7 +56,6 @@
                  ($bitsEffects  & pluginBit_ORIDE_HUE)}
       max={359}
     />
-
     <SliderVal name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
@@ -63,7 +64,6 @@
                 !($bitsEffects  & pluginBit_COLOR)    ||
                  ($bitsEffects  & pluginBit_ORIDE_WHITE)}
     />
-
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
@@ -72,13 +72,31 @@
                 !($bitsEffects  & pluginBit_COUNT)    ||
                  ($bitsEffects  & pluginBit_ORIDE_COUNT)}
     />
+  </Column>
 
-  </Column>
-  <Column>
-    <Checkbox labelText="Override"
-      on:check={docheck}
-      bind:checked={$pStrand.doOverride}
-      disabled={$bitsOverride == 0}
-    />
-  </Column>
+  <MediaQuery query="(max-width:500px)" let:matches>
+    {#if matches}
+      <Row style="margin:5px 0 3px 2px;">
+        <Column>
+          <Checkbox labelText="Override Properties"
+            on:check={docheck}
+            bind:checked={$pStrand.doOverride}
+            disabled={$bitsOverride == 0}
+          />
+        </Column>
+      </Row>
+    {/if}
+  </MediaQuery>
+  <MediaQuery query="(min-width:501px)" let:matches>
+    {#if matches}
+      <Column>
+        <Checkbox labelText="Override"
+          on:check={docheck}
+          bind:checked={$pStrand.doOverride}
+          disabled={$bitsOverride == 0}
+        />
+      </Column>
+    {/if}
+  </MediaQuery>
+
 </Row>

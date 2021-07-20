@@ -3,9 +3,10 @@
   import { Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
   import Revealer from "./Revealer.svelte";
-  import ButtonsSoloMute from "./ButtonsSoloMute.svelte"
-  import ControlsDraw from "./ControlsDraw.svelte"
-  import ControlsFilter from "./ControlsFilter.svelte"
+  import ButtonsDnUp from './ButtonsDnUp.svelte';
+  import ButtonsSoloMute from './ButtonsSoloMute.svelte';
+  import ControlsDraw from './ControlsDraw.svelte';
+  import ControlsFilter from './ControlsFilter.svelte';
 
   export let track;
   export let layer;
@@ -19,11 +20,10 @@
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
   </Column>
-  <Column>
-    {#if (layer != 0) }
-      <ButtonsSoloMute {track} {layer} />
-    {/if}
-  </Column>
+  {#if (layer != 0) }
+    <ButtonsDnUp {track} {layer} />
+    <ButtonsSoloMute {track} {layer} />
+  {/if}
 </Row>
 <Row>
   {#if $pStrand.tracks[track].layers[layer].open }

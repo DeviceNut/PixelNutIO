@@ -3,9 +3,10 @@
   import { Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
   import Revealer from "./Revealer.svelte";
+  import ButtonsDnUp from './ButtonsDnUp.svelte';
   import ButtonsSoloMute from "./ButtonsSoloMute.svelte";
   import ButtonsAddDel from "./ButtonsAddDel.svelte";
-  import OneLayer from "./OneLayer.svelte"
+  import OneLayer from "./OneLayer.svelte";
 
   export let track;
 
@@ -15,15 +16,19 @@
   let bgc = '';
   $: bgc = $pStrand.tracks[track].open ? '#222522' : '#111311'
 
+/*
+  <Column>
+    <ButtonsDnUp {track} layer={0} />
+  </Column>
+*/
 </script>
 
 <Row style="margin-top:7px; background-color:{bgc}">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
-  <Column>
-    <ButtonsSoloMute {track} layer={0} />
-  </Column>
+  <ButtonsDnUp {track} layer={0} />
+  <ButtonsSoloMute {track} layer={0} />
 </Row>
 <div style="display:{tstate};">
   {#each Array($pStrand.tracks[track].lactives) as _,layer}
@@ -32,7 +37,7 @@
     </div>
   {/each}
   <Row>
-    <Column style="margin:7px 0 4px -2px;">
+    <Column style="margin:7px 0 7px -1px;">
       <ButtonsAddDel {track}/>
     </Column>
   </Row>

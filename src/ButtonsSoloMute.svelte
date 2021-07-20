@@ -1,6 +1,6 @@
 <script>
  
- import {
+  import {
     DRAW_LAYER
   } from "./pixelnut.js";
 
@@ -14,6 +14,11 @@
     makeLayerCmdStr,
     makeEntireCmdStr
   } from './cmdmake.js'
+
+  import {
+    strandSwapTracks,
+    strandSwapLayers
+  } from './strands.js'
 
   import { sendEntireCmdStr } from './cmduser.js';
 
@@ -153,13 +158,13 @@
 
 </script>
 
-<button on:click={domute} class="button" class:select={isMute}>Mute</button>
-<button on:click={dosolo} class="button" class:select={isSolo}>Solo</button>
+<button class="button" class:select={isMute} on:click={domute} >Mute</button>
+<button class="button" class:select={isSolo} on:click={dosolo} >Solo</button>
 
 <style>
   .button {
     float:right;
-    margin: 2px 15px 0 0;
+    margin: 3px 5px 0 0;
     padding: 4px;
     width: 40px;
     border-radius: 5%;

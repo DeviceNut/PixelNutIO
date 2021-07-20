@@ -234,12 +234,47 @@ export const strandClearAllTracks = (track) =>
 export const strandClearTrack = (track) =>
 {
   let sid = get(idStrand);
-  get(aStrands)[sid].tracks[track] = makeOneTrack();
+  let newtrack = makeOneTrack();
+
+  get(aStrands)[sid].tracks[track] = newtrack;
+  get(dStrands)[sid].tracks[track] = newtrack;
 }
 
 // clears all values for a track layer in the current strand
 export const strandClearLayer = (track, layer) =>
 {
   let sid = get(idStrand);
-  get(aStrands)[sid].tracks[track].layers[layer] = {...oneLayer};
+  let newlayer = {...oneLayer};
+
+  get(aStrands)[sid].tracks[track].layers[layer] = newlayer;
+  get(dStrands)[sid].tracks[track].layers[layer] = newlayer;
 }
+
+// swaps specified track for the one below in the current strand
+export const strandSwapTracks = (track) =>
+{
+  let sid = get(idStrand);
+  let track1 = get(aStrands)[sid].tracks[track];
+  let track2 = get(aStrands)[sid].tracks[track-1];
+
+  get(aStrands)[sid].tracks[track-1] = track1;
+  get(aStrands)[sid].tracks[track] = track2;
+
+  get(dStrands)[sid].tracks[track-1] = track1;
+  get(dStrands)[sid].tracks[track] = track2;
+}
+
+// swaps specified track layer for the one below in the current strand
+export const strandSwapLayers = (track, layer) =>
+{
+  let sid = get(idStrand);
+  let layer1 = get(aStrands)[sid].tracks[track].layers[layer];
+  let layer2 = get(aStrands)[sid].tracks[track].layers[layer-1];
+
+  get(aStrands)[sid].tracks[track].layers[layer] = layer2;
+  get(aStrands)[sid].tracks[track].layers[layer-1] = layer1;
+
+  get(dStrands)[sid].tracks[track].layers[layer] = layer2;
+  get(dStrands)[sid].tracks[track].layers[layer-1] = layer1;
+}
+

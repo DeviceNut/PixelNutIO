@@ -73,8 +73,8 @@
 
 </script>
 
-<button disabled={add_disabled} on:click={doadd} class="button" >+Add</button>
-<button disabled={del_disabled} on:click={dodel} class="button" >-Del</button>
+<button class="button" disabled={add_disabled} on:click={doadd} >+Add</button>
+<button class="button" disabled={del_disabled} on:click={dodel} >-Del</button>
 
 <style>
   .button {

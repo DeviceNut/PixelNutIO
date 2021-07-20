@@ -67,11 +67,8 @@
     }
   }
 
-  let dotrigger = true;
-  const settrigger = () =>
-  {
-    $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
-  }
+  let dotrigger;
+  $: $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
 
   const setmanual = () => { userSetTrigManual(track); }
 
@@ -127,7 +124,7 @@
         onchange={setDelay}
         bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
         disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DELAY) ||
-                  ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DELAY)}
+                   ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DELAY)}
       />
     </Row>
     <Row>
@@ -155,7 +152,7 @@
     </Row>
 
     {#if ($aEffectsDraw[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex].bits & pluginBit_TRIGGER) }
-      <ControlsTrigger {track} />
+      <ControlsTrigger {track} pbits={$aEffectsDraw[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex].bits} />
     {:else}
       <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px; background-color:#222322;">
         <Row style="margin:0;">
@@ -176,4 +173,3 @@
     {/if}
   {/if}
 </div>
-

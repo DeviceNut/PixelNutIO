@@ -100,9 +100,10 @@ export const makeEntireCmdStr = () =>
   // combine all layers into single string
   let cmdstr = '';
   let ridebits = 0;
-  let plugbits = 0;
+  let splugbits = 0;
 
   let strand = get(pStrand);
+
   for (let i = 0; i < strand.tactives; ++i)
   {
     let track = strand.tracks[i];
@@ -125,20 +126,20 @@ export const makeEntireCmdStr = () =>
 
         // must reset drawing bits to base effect bits before add in other layers
         layer.pluginBits = get(aEffectsDraw)[layer.pluginIndex].bits;
+        tplugbits = layer.pluginBits;
 
         if (drawplugin)
         {
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
           ridebits |= makeOrideBits(strand, i);
-          plugbits |= layer.pluginBits;
-          tplugbits |= layer.pluginBits;
+          splugbits |= layer.pluginBits;
         }
         else ismute = true; // DEBUG
       }
       else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
       {
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
-        plugbits |= layer.pluginBits;
+        splugbits |= layer.pluginBits;
         tplugbits |= layer.pluginBits;
       }
 
@@ -161,8 +162,8 @@ export const makeEntireCmdStr = () =>
   //get(pStrand).backupStr = cmdstr;
 
   bitsOverride.set(ridebits);
-  bitsEffects.set(plugbits);
-  //console.log(`pluginbits=${plugbits.toString(16)}`);
+  bitsEffects.set(splugbits);
+  //console.log(`pluginbits=${splugbits.toString(16)}`);
 
   refreshCmdStr.set(true); // hack to force refresh
 }

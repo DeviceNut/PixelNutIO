@@ -33,6 +33,7 @@
     }
   }
 
+  // TODO: move code to cmduser.js
   const doadd = () =>
   {
     if (istrack)
@@ -65,7 +66,7 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      strandClearLayer($pStrand.tactives-1, $pStrand.tracks[track].lactives)
+      strandClearLayer(track, $pStrand.tracks[track].lactives)
     }
 
     makeEntireCmdStr();

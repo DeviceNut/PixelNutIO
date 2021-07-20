@@ -53,5 +53,5 @@
 </Row>
 
 {#if ($pStrand.tracks[track].layers[layer].pluginIndex != 0) }
-  <ControlsTrigger {track} {layer} />
+  <ControlsTrigger {track} {layer} pbits={$pStrand.tracks[track].layers[layer].pluginBits} />
 {/if}

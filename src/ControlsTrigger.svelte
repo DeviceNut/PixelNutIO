@@ -39,6 +39,7 @@
 
   export let track;
   export let layer = DRAW_LAYER;
+  export let pbits;
 
   const setmanual = () => { userSetTrigManual(track, layer); }
   const setlayer  = () => { userSetTrigLayer(track, layer); }
@@ -94,7 +95,7 @@
 
 </script>
 
-{#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
+{#if (pbits & pluginBit_TRIGGER) }
 
   <div style="margin:10px -10px 10px -15px; padding-top:2px; background-color:#333433;"/>
 
@@ -183,7 +184,7 @@
     </div>
   </div>
 
-  {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
+  {#if (pbits & pluginBit_TRIGFORCE) }
 
     <div style="margin-left:-10px; margin-right:-10px;">
       <p style="margin-top:3px; font-size:.9em;">Trigger Force:</p>

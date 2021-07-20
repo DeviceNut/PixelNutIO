@@ -41,7 +41,7 @@ import {
 } from './globals.js';
 
 import {
-  strandClearTracks,
+  strandClearAllTracks,
   strandCopyAll,
   strandCopyTop,
   strandCopyLayer
@@ -252,7 +252,7 @@ export const userSetPattern = () =>
     name = (id < len) ? get(aBuiltinPats)[id].text : get(aCustomPats)[id-len].text;
     cmdstr = (id < len) ? get(aBuiltinPats)[id].cmd : get(aCustomPats)[id-len].cmd;
 
-    strandClearTracks(); // clears entire strand to defaults
+    strandClearAllTracks();
 
     if (parsePattern(cmdstr)) // sets vars for current strand
     {
@@ -270,7 +270,7 @@ export const userSetPattern = () =>
 
 export const userClearPattern = () =>
 {
-  strandClearTracks();
+  strandClearAllTracks();
   strandCopyAll();
 
   sendCmd(cmdStr_Clear);
@@ -288,7 +288,7 @@ export const userEditPattern = () =>
 {
   let cmdstr = get(pStrand).patternStr;
 
-  strandClearTracks(); // clears entire strand to defaults
+  strandClearAllTracks();
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {

@@ -1,6 +1,16 @@
 <script>
  
-  import { pStrand, nTracks, tLayers } from './globals.js';
+  import {
+    pStrand,
+    nTracks,
+    tLayers
+  } from './globals.js';
+
+  import {
+    strandClearTrack,
+    strandClearLayer
+  } from './strands.js';
+
   import { makeEntireCmdStr } from './cmdmake.js';
 
   export let track;
@@ -47,7 +57,7 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      // TODO: strandClearTrack($pStrand.tactives)
+      strandClearTrack($pStrand.tactives)
     }
     else
     {
@@ -55,7 +65,7 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      // TODO: strandClearLayer($pStrand.tracks[track].lactives)
+      strandClearLayer($pStrand.tactives-1, $pStrand.tracks[track].lactives)
     }
 
     makeEntireCmdStr();

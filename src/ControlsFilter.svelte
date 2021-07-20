@@ -24,7 +24,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 450px)" let:matches>
+<MediaQuery query="(max-width: 400px)" let:matches>
   {#if matches}
     <Row>
       <p style="font-size:.9em;">Filter Effect:</p>
@@ -32,9 +32,9 @@
   {/if}
 </MediaQuery>
 <Row>
-  <MediaQuery query="(min-width: 451px)" let:matches>
+  <MediaQuery query="(min-width: 401px)" let:matches>
     {#if matches}
-      <p style="font-size:.9em; margin:10px 12px 0 0;">Draw Effect:</p>
+      <p style="font-size:.9em; margin:10px 12px 0 0;">Filter Effect:</p>
     {/if}
   </MediaQuery>
   <Dropdown

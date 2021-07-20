@@ -78,7 +78,7 @@
 </script>
 
 <div style="padding-left:5px;">
-  <MediaQuery query="(max-width: 500px)" let:matches>
+  <MediaQuery query="(max-width: 400px)" let:matches>
     {#if matches}
       <Row>
         <p style="font-size:.9em;">Draw Effect:</p>
@@ -86,7 +86,7 @@
     {/if}
   </MediaQuery>
   <Row>
-    <MediaQuery query="(min-width: 501px)" let:matches>
+    <MediaQuery query="(min-width: 401px)" let:matches>
       {#if matches}
         <p style="font-size:.9em; margin:10px 12px 0 0;">Draw Effect:</p>
       {/if}

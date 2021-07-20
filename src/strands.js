@@ -91,24 +91,30 @@ const oneStrand =
   tracks          : [],     // list of 'oneTrack's for this strand
 }
 
+function makeOneTrack()
+{
+  let track = {...oneTrack};
+  let layers = [];
+
+  track.drawProps = {...drawProps};
+
+  for (let j = 0; j < get(tLayers); ++j)
+  {
+    let layer = {...oneLayer};
+    layers.push(layer);
+  }
+
+  track.layers = layers;
+
+  return track;
+}
+
 function makeNewTracks(s)
 {
   let tracks = [];
+
   for (let i = 0; i < get(nTracks); ++i)
-  {
-    let track = {...oneTrack};
-    track.drawProps = {...drawProps};
-
-    let layers = [];
-    for (let j = 0; j < get(tLayers); ++j)
-    {
-      let layer = {...oneLayer};
-      layers.push(layer);
-    }
-
-    track.layers = layers;
-    tracks.push(track);
-  }
+    tracks.push( makeOneTrack() );
 
   return tracks;
 }
@@ -214,7 +220,7 @@ export const strandCopyAll = () =>
 }
 
 // clears all values for all tracks in the current strand
-export const strandClearTracks = () =>
+export const strandClearAllTracks = (track) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tactives = 1;
@@ -222,4 +228,18 @@ export const strandClearTracks = () =>
 
   get(dStrands)[sid].tactives = 1;
   get(dStrands)[sid].tracks = makeNewTracks();
+}
+
+// clears all values for a track in the current strand
+export const strandClearTrack = (track) =>
+{
+  let sid = get(idStrand);
+  get(aStrands)[sid].tracks[track] = makeOneTrack();
+}
+
+// clears all values for a track layer in the current strand
+export const strandClearLayer = (track, layer) =>
+{
+  let sid = get(idStrand);
+  get(aStrands)[sid].tracks[track].layers[layer] = {...oneLayer};
 }

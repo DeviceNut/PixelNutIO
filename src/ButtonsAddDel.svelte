@@ -33,7 +33,6 @@
     }
   }
 
-  // TODO: move code to cmduser.js
   const doadd = () =>
   {
     if (istrack)

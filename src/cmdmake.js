@@ -17,8 +17,8 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigLayer     ,
-  cmdStr_TrigManual    ,
+  cmdStr_TrigFromLayer     ,
+  cmdStr_TrigFromMain    ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
@@ -32,8 +32,7 @@ import {
   aEffectsFilter,
   mainEnabled,
   bitsOverride,
-  bitsEffects,
-  refreshCmdStr
+  bitsEffects
 } from './globals.js';
   
 ///////////////////////////////////////////////////////////
@@ -124,15 +123,12 @@ export const makeEntireCmdStr = () =>
       {
         drawplugin = (layer.pluginIndex > 0) && !layer.mute;
 
-        // must reset drawing bits to base effect bits before add in other layers
-        layer.pluginBits = get(aEffectsDraw)[layer.pluginIndex].bits;
-        tplugbits = layer.pluginBits;
-
         if (drawplugin)
         {
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
           ridebits |= makeOrideBits(strand, i);
           splugbits |= layer.pluginBits;
+          tplugbits |= layer.pluginBits;
         }
         else ismute = true; // DEBUG
       }
@@ -147,8 +143,8 @@ export const makeEntireCmdStr = () =>
       console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
 
-    // drawing plugin bits includes bits from all layers
-    track.layers[DRAW_LAYER].pluginBits = tplugbits;
+    // track plugin bits includes bits from all layers
+    track.trackBits = tplugbits;
   }
 
   if (cmdstr != '')
@@ -165,9 +161,8 @@ export const makeEntireCmdStr = () =>
   bitsEffects.set(splugbits);
   //console.log(`pluginbits=${splugbits.toString(16)}`);
 
-  //refreshCmdStr.set(true); // hack to force refresh
   pStrand.set(get(pStrand)); // triggers update
-;}
+}
 
 // create partial command string for one layer in a track,
 export const makeLayerCmdStr = (track, layer) =>
@@ -230,15 +225,15 @@ export const makeLayerCmdStr = (track, layer) =>
 
   if (plugvalue >= 0)
   {
-    if (player.trigDoManual)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigManual} `);
+    if (player.trigFromMain)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
     if (player.trigDoLayer)
     {
       let tracknum = player.trigTrackNum;
       let layernum = player.trigLayerNum;
       let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-      cmdstr = cmdstr.concat(`${cmdStr_TrigLayer}${tlayer} `);
+      cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
     }
 
     if (player.forceRandom)

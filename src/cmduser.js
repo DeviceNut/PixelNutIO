@@ -17,8 +17,8 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigLayer     ,
-  cmdStr_TrigManual    ,
+  cmdStr_TrigFromLayer     ,
+  cmdStr_TrigFromMain    ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
@@ -448,7 +448,7 @@ export const userSetDrawEffect = (track) =>
 
     let bits = get(aEffectsDraw)[pindex].bits;
     get(pStrand).tracks[track].layers[DRAW_LAYER].pluginBits = bits;
-    //get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
 
     updateLayerVals(track, DRAW_LAYER);
 
@@ -560,7 +560,7 @@ export const userSetFilterEffect = (track, layer) =>
 
     let bits = get(aEffectsFilter)[pindex].bits;
     get(pStrand).tracks[track].layers[layer].pluginBits = bits;
-    //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
     updateLayerVals(track, layer);
 
@@ -576,15 +576,15 @@ export const userSetTrigManual = (track, layer) =>
 
   if (layer == undefined) layer = 0;
 
-  let doman = get(pStrand).tracks[track].layers[layer].trigDoManual;
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual != doman)
+  let doman = get(pStrand).tracks[track].layers[layer].trigFromMain;
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain != doman)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual = doman;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = doman;
 
     updateLayerVals(track, layer);
 
     let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigManual, (doman ? undefined : 0));
+    sendLayerCmd(layerid, cmdStr_TrigFromMain, (doman ? undefined : 0));
     // don't need to send value if enabling (1 is default)
   }
 }
@@ -605,7 +605,7 @@ export const userSetTrigLayer = (track, layer) =>
     updateLayerVals(track, layer);
 
     let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
+    sendLayerCmd(layerid, cmdStr_TrigFromLayer, tlayer);
   }
 }
 
@@ -625,7 +625,7 @@ export const userSetTrigNums = (track, layer) =>
 
     let layerid = convTrackLayerToID(track, layer);
     let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-    sendLayerCmd(layerid, cmdStr_TrigLayer, tlayer);
+    sendLayerCmd(layerid, cmdStr_TrigFromLayer, tlayer);
   }
 }
 

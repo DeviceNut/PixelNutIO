@@ -118,18 +118,22 @@ export const presetsInit = () =>
     "Draws all pixels with the current color.",
 
     "Draws one pixel at a time with current color/brightness, inserting at the head. " +
-    "Triggering causes a new cycle to begin. If force is 0 then cycle is not repeated. ",
+    "Triggering causes a new cycle to begin. If force is 0 then cycle is not repeated. " +
+    "Can trigger other effects.",
 
-    "Draws one pixel at a time with current color/brightness, appending at the tail.",
+    "Draws one pixel at a time with current color/brightness, appending at the tail. " +
+    "Can trigger other effects.",
 
     "Light waves (brighness changes) in the current color that fluctuate (sine wave). " +
     "The count property sets the wave frequency.",
 
     "Creates a bright head with a fading tail in the current color that moves. " +
-    "The count property determines its length, and triggering creates a new one.",
+    "The count property determines its length, and triggering creates a new one. " +
+    "Can trigger other effects.",
 
     "Draws evenly spaced pixels using the current color, shifting them down one pixel " +
-    "at a time. The count property determines amount of space between them.",
+    "at a time. The count property determines amount of space between them. " +
+    "Can trigger other effects.",
 
     "Draws a block of pixels with the current color back and forth. " +
     "The count property sets the length of the block.",
@@ -173,7 +177,8 @@ aEffFilterDesc.set([
   "Rotates color hue around color wheel on each drawing step (whiteness unaffected). " +
   "Amount of change each time determined by trigger force.",
 
-  "Smoothly melds from current color (hue/white) into another whenever color values are changed.",
+  "Smoothly melds from current color (hue/white) into another whenever color values are changed. " +
+  "Can trigger other effects.",
 
   "Rotates color hue and whiteness on each trigger, with the force determining how much change is made.",
 
@@ -185,7 +190,8 @@ aEffFilterDesc.set([
   "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
   "Modulates pixel count property with a cosine function. The wave height is half the maximum. " +
-  "The trigger force determines the number of steps in the wave: larger forces for quicker changes.",
+  "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+  "Can trigger other effects.",
 
   "Directly sets delay time property from the force value on every trigger. Increased force reduces the delay; " +
   "at maximum force the delay is minimal; a force of 0 means a maximum delay.",
@@ -194,16 +200,19 @@ aEffFilterDesc.set([
   "The original value (when triggered the first time) must be greater than the minimum to have any effect.",
 
   "Modulates delay time property with a cosine function, down to its minimum and back. The trigger force " +
-  "determines the number of steps in the wave: larger forces for quicker changes.",
+  "determines the number of steps in the wave: larger forces for quicker changes. " +
+  "Can trigger other effects.",
 
   "Increases brightness property using the trigger force, then decreases it in even steps back to its original value. " +
   "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
   "Modulates brightness property with a cosine function. The wave height is a third of the maximum. " +
-  "The trigger force determines the number of steps in the wave: larger forces for quicker changes.",
+  "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+  "Can trigger other effects.",
 
   "Expands/contracts the drawing window continuously, centered on the middle of the strand. " +
-  "The pixel count property determines the size of the window on every step.",
+  "The pixel count property determines the size of the window on every step. " +
+  "Can trigger other effects.",
 
   "Toggles the drawing direction property on each trigger.",
 ]);

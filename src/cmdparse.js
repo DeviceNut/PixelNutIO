@@ -15,8 +15,8 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigLayer     ,
-  cmdStr_TrigManual    ,
+  cmdStr_TrigFromLayer     ,
+  cmdStr_TrigFromMain    ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
@@ -119,6 +119,7 @@ export const parsePattern = (cmdstr) =>
       case cmdStr_Effect:
       {
         let firstone = ((track < 0) || (layer < 0));
+        let layerbits;
 
         let obj = presetsFindEffect(val);
         if (obj == undefined)
@@ -146,11 +147,8 @@ export const parsePattern = (cmdstr) =>
 
           ++layer;
 
-          let layerbits = get(aEffectsFilter)[obj.index].bits;
+          layerbits = get(aEffectsFilter)[obj.index].bits;
           trackbits |= layerbits;
-
-          get(pStrand).tracks[track].layers[layer].pluginBits = layerbits;
-          //get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = layerbits;
         }
         else // drawing effect
         {
@@ -164,8 +162,8 @@ export const parsePattern = (cmdstr) =>
           {
             makeLayerCmdStr(track, layer);
             
-            get(pStrand).tracks[track].layers[0].pluginBits = trackbits;
-            //get(dStrands)[get(idStrand)].tracks[track].layers[0].pluginBits = trackbits;
+            get(pStrand).tracks[track].trackBits = trackbits;
+            get(dStrands)[get(idStrand)].tracks[track].trackBits = trackbits;
           }
 
           // there is always at least one track
@@ -173,7 +171,7 @@ export const parsePattern = (cmdstr) =>
           if (track >= 0) get(pStrand).tactives++;
 
           ++track;
-          layer = 0;
+          layer = 0; // DRAW_LAYER
 
           if (start > finish)
           {
@@ -187,11 +185,19 @@ export const parsePattern = (cmdstr) =>
             finish = 100;
           }
 
-          trackbits = get(aEffectsDraw)[obj.index].bits;
+          layerbits = get(aEffectsDraw)[obj.index].bits;
+          trackbits = layerbits;
+
+          // if don't find a 'T' then disable triggering
+          get(pStrand).tracks[track].layers[0].trigTypeStr = 'none';
+          get(dStrands)[get(idStrand)].tracks[track].layers[0].trigTypeStr = 'none';
         }
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
+
+        get(pStrand).tracks[track].layers[layer].pluginBits = layerbits;
+        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = layerbits;
         break;
       }
       default: // ignore if no draw effect
@@ -281,14 +287,14 @@ export const parsePattern = (cmdstr) =>
             }
             break;
           }
-          case cmdStr_TrigManual:
+          case cmdStr_TrigFromMain:
           {
             let doman = (isNaN(val)) ? true : valueToBool(val);
-            get(pStrand).tracks[track].layers[layer].trigDoManual = doman;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoManual = doman;
+            get(pStrand).tracks[track].layers[layer].trigFromMain = doman;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = doman;
             break;
           }
-          case cmdStr_TrigLayer:
+          case cmdStr_TrigFromLayer:
           {
             let tlayer = (isNaN(val)) ? 0 : valueToTrackLayer(val);
 

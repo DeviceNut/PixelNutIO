@@ -48,8 +48,8 @@ export const cmdStr_PcentCount    = "C";    // percent of draw length
 export const cmdStr_OrideBits     = "Q";    // property override bits
 export const cmdStr_Direction     = "U";    // 0=down, 1=up (default)
 export const cmdStr_OwritePixs    = "V";    // 0=OR, 1=overwrite pixels
-export const cmdStr_TrigLayer     = "A";    // layer index that will trigger this one
-export const cmdStr_TrigManual    = "I";    // none (sets manual triggerring)
+export const cmdStr_TrigFromLayer = "A";    // layer index that will trigger this one
+export const cmdStr_TrigFromMain  = "I";    // none (sets triggerring from main controls)
 export const cmdStr_TrigForce     = "F";    // force used in triggering (no value if random)
 export const cmdStr_TrigCount     = "N";    // trigger count (none or 0 means forever)
 export const cmdStr_TrigMinTime   = "O";    // min time before next auto trigger (secs)

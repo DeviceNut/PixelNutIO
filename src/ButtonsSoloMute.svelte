@@ -15,11 +15,6 @@
     makeEntireCmdStr
   } from './cmdmake.js'
 
-  import {
-    strandSwapTracks,
-    strandSwapLayers
-  } from './strands.js'
-
   import { sendEntireCmdStr } from './cmduser.js';
 
   export let track;

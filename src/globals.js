@@ -32,13 +32,12 @@ export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions
 export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
+export let aTriggers      = writable([]);     // list of track/layers that cause triggers
 
 export let modeCustom     = writable(false);  // true if displaying custom panel
 export let mainEnabled    = writable(false);  // true to enable main panel controls
 export let bitsOverride   = writable(0);      // OR'ed overrides from all track layers
 export let bitsEffects    = writable(0);      // OR'ed effect bits from all track layers
-
-//export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
 
 export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
 {

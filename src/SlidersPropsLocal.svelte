@@ -45,8 +45,8 @@
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
-                !($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                 ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_HUE)}
+                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
       max={359}
     />
 
@@ -54,16 +54,16 @@
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.pcentWhite}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overWhite) ||
-                !($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                 ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_WHITE)}
+                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
     />
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.pcentCount}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overCount) ||
-                !($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COUNT) ||
-                 ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_COUNT)}
+                !($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
     />
   </Column>
 
@@ -74,22 +74,22 @@
         <Checkbox labelText="Override"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overHue}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_HUE)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
         />
         <div style="margin-top:8px;"></div>
         <Checkbox labelText="Override"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_WHITE)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
         />
         <div style="margin-top:8px;"></div>
         <Checkbox labelText="Override"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overCount}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COUNT) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_COUNT)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
         />
       </Column>
     {/if}
@@ -103,20 +103,20 @@
         <Checkbox labelText="Overide Hue"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overHue}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_HUE)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
         />
         <Checkbox labelText="Overide White"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_WHITE)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
         />
         <Checkbox labelText="Overide Count"
           on:check={setovers}
           bind:checked={$pStrand.tracks[track].drawProps.overCount}
-          disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_COUNT) ||
-                     ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_COUNT)}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
         />
       </Column>
     </Row>

@@ -9,7 +9,8 @@
   import {
     nTracks,
     tLayers,
-    pStrand
+    pStrand,
+    aTriggers
   } from './globals.js'
 
   import {
@@ -39,7 +40,6 @@
 
   export let track;
   export let layer = DRAW_LAYER;
-  export let pbits;
 
   const setmanual = () => { userSetTrigManual(track, layer); }
   const setlayer  = () => { userSetTrigLayer(track, layer); }
@@ -67,8 +67,8 @@
     if (resend) userSetTrigLayer(track, layer);
   }
 
-  let opc = '';
-  let disable_ttype = false;
+  let opc;
+  let disable_ttype;
   $: {
     if ($pStrand.tracks[track].layers[layer].trigTypeStr == "auto")
     {
@@ -82,7 +82,7 @@
     }
   }
 
-  let disable_repcount = false;
+  let disable_repcount;
   $: disable_repcount = (disable_ttype || $pStrand.tracks[track].layers[layer].trigDoRepeat);
 
   const settype   = () => { userSetTrigType(track, layer); }
@@ -93,9 +93,24 @@
   const setftype  = () => { userSetForceType(track, layer); }
   const setfvalue = () => { userSetForceValue(track, layer); }
 
+  // create list of track/layers that cause triggers
+  /*
+  $: {
+    for (let track = 0; track < get(pStrand).tactives; ++track)
+    {
+      for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
+      {
+        let bits = 0;
+        let index = $pStrand.tracks[track].layers[layer].pluginIndex;
+        if (layer == 0)
+            bits = 
+      }
+    }
+  }
+  */
 </script>
 
-{#if (pbits & pluginBit_TRIGGER) }
+{#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
 
   <div style="margin:10px -10px 10px -15px; padding-top:2px; background-color:#333433;"/>
 
@@ -103,10 +118,10 @@
     <p style="margin-top:3px; font-size:.9em;">External Triggering:</p>
     <div style="margin-top:5px; padding:5px; background-color:#222322;">
 
-      <Checkbox labelText="Allow manual trigger"
+      <Checkbox labelText="Trigger from main controls"
         style="padding: 3px;"
         on:check={setmanual}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigDoManual}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
       />
 
       <div style="margin-bottom: 7px; padding: 3px;">
@@ -147,7 +162,7 @@
       </RadioButtonGroup>
 
       <div style="margin:0 15px 0 15px; opacity:{opc};">
-        <div style="margin-top:12px; ">
+        <div style="margin-top:12px;">
           <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
           <input type="number"
             min=1 max=9999
@@ -181,15 +196,11 @@
           />&nbsp;&nbsp;secs
         </div>
       </div>
-    </div>
-  </div>
 
-  {#if (pbits & pluginBit_TRIGFORCE) }
+      {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
 
-    <div style="margin-left:-10px; margin-right:-10px;">
-      <p style="margin-top:3px; font-size:.9em;">Trigger Force:</p>
-      <div style="margin-top:5px; padding:5px; background-color:#222322;">
-
+      <div style="margin-top:10px; padding-top:1px; background-color:#333433;"/>
+        <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
         <Checkbox labelText="Random"
           on:check={setftype}
           bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
@@ -200,8 +211,8 @@
           bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
           disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
         />
-      </div>
+      {/if}
     </div>
-  {/if}
+  </div>
 
 {/if}

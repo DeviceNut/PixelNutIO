@@ -68,7 +68,13 @@
   }
 
   let dotrigger;
-  $: $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
+  $: {
+    if (($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0) &&
+        !($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER))
+    {
+      $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
+    }
+  }
 
   const setmanual = () => { userSetTrigManual(track); }
 
@@ -96,8 +102,8 @@
       bind:items={$aEffectsDraw}
     />
     {#if ((track != 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0)) }
-      <div style="margin-top:7px; margin-left: 40px;">
-        <Checkbox labelText="Pixel Overwrite"
+      <div style="margin-top:7px; margin-left:30px;">
+        <Checkbox labelText="Overwrite"
           on:check={setOwrite}
           bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
         />
@@ -123,8 +129,8 @@
       <SliderVal name='Delay&nbsp;'
         onchange={setDelay}
         bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-        disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DELAY) ||
-                   ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DELAY)}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
+                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
       />
     </Row>
     <Row>
@@ -146,13 +152,13 @@
       <Checkbox labelText="Reverse Direction"
         on:check={setDirect}
         bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
-        disabled={!($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_DIRECTION) ||
-                   ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_ORIDE_DIR)}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
+                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
       />
     </Row>
 
-    {#if ($aEffectsDraw[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex].bits & pluginBit_TRIGGER) }
-      <ControlsTrigger {track} pbits={$aEffectsDraw[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex].bits} />
+    {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER) }
+      <ControlsTrigger {track} />
     {:else}
       <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px; background-color:#222322;">
         <Row style="margin:0;">
@@ -163,10 +169,10 @@
           />
         </Row>
         <Row style="margin:0;">
-          <Checkbox labelText="Allow manual trigger"
+          <Checkbox labelText="Trigger from main controls"
             style="padding: 3px;"
             on:check={setmanual}
-            bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigDoManual}
+            bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigFromMain}
           />
         </Row>
       </div>

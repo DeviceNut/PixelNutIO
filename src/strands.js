@@ -14,13 +14,12 @@ const oneLayer =
 {
   pluginIndex     : 0,      // effect plugin index, not value (0=none)
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
-                            // (all filter layers OR'ed with drawing layer)
 
   open            : true,   // true if displayed
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigDoManual    : false,  // true if can trigger manually from Main Panel
+  trigFromMain    : false,  // true if can trigger manually from Main Panel
   trigDoLayer     : false,  // true if can trigger from other layer:
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
@@ -61,6 +60,8 @@ const drawProps =
 const oneTrack =
 {
   open            : true,   // true if displayed
+  trackBits       : 0x00,   // all filter layers OR'ed with drawing layer
+
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track
   drawProps       : {},     // drawing properties for first layer

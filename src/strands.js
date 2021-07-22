@@ -197,7 +197,7 @@ export const strandCopyLayer = (track, layer) =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.tracks[track].layers[layer] = {...player};
+        strand.tracks[track].layers.splice(layer, 1, {...player});
 
         if (layer == 0)
           strand.tracks[track].drawProps = {...props};

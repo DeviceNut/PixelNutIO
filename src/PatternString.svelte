@@ -1,12 +1,8 @@
 <script>
-  import {
-    TextInput
-  } from "carbon-components-svelte";
 
-  import {
-    pStrand,
-    refreshCmdStr
-  } from './globals.js';
+/*
+  import { TextInput } from "carbon-components-svelte";
+  import { pStrand, refreshCmdStr } from './globals.js';
 
   //TODO: import { userEditPattern } from './cmduser.js';
 
@@ -19,9 +15,10 @@
       $refreshCmdStr = false;
     }
   } 
-
+*/
 </script>
 
+<!--
 <div style="padding: 7px 0 5px 0; font-size: .9em;">
   <span>Custom Pattern:</span>
   {#if ($pStrand.patternName != '')}
@@ -31,14 +28,10 @@
   {/if}
 </div>
 
-<!--
 <TextInput
   size="sm" disabled
   on:change={userEditPattern}
   bind:value={$pStrand.patternStr}
 />
+
 -->
-<TextInput
-  size="sm" disabled
-  bind:value={$pStrand.patternStr}
-/>

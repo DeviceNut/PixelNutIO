@@ -170,7 +170,7 @@ export const userStrandCombine = (combine) =>
       }
     }
 
-    aStrands.set(get(aStrands)); // triggers update
+    pStrand.set(get(pStrand)); // triggers update
   }
 }
 
@@ -249,8 +249,9 @@ export const userSetPattern = () =>
   {
     --id; // zero-base this
     let len = get(aBuiltinPats).length;
-    name = (id < len) ? get(aBuiltinPats)[id].text : get(aCustomPats)[id-len].text;
-    cmdstr = (id < len) ? get(aBuiltinPats)[id].cmd : get(aCustomPats)[id-len].cmd;
+    let iscustom = (id >= len);
+    name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
+    cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
 
     strandClearAllTracks();
 
@@ -260,6 +261,7 @@ export const userSetPattern = () =>
       sendEntireCmdStr();
   
       get(pStrand).patternName = name;
+      get(pStrand).isCustom = iscustom;
   
       if (get(modeCustom)) get(pStrand).patternID = '0';
     }
@@ -278,6 +280,8 @@ export const userClearPattern = () =>
 
   modeCustom.set(false);
   get(pStrand).patternName = '';
+
+  pStrand.set(get(pStrand)); // triggers update
 }
 
 // Pattern Commands from PanelCustom: 

@@ -38,7 +38,7 @@ export let mainEnabled    = writable(false);  // true to enable main panel contr
 export let bitsOverride   = writable(0);      // OR'ed overrides from all track layers
 export let bitsEffects    = writable(0);      // OR'ed effect bits from all track layers
 
-export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
+//export let refreshCmdStr  = writable(false);  // true to refresh command string (HACK)
 
 export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
 {

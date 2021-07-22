@@ -96,53 +96,104 @@
 </script>
 
 <Grid>
-  <Row style="margin-top:5px;">
-    <Select 
-      bind:selected={$pStrand.patternID}
-      on:change={userSetPattern}
-    >
-      <SelectItem value={"0"} text={"<custom>"} />
-      {#if ($aCustomPats.length > 0) }
-        <SelectItemGroup label="Saved Patterns">
-          {#each $aCustomPats as pat}
+  <Row>
+    <Column style="margin-left:-7px;">
+      <Select 
+        bind:selected={$pStrand.patternID}
+        on:change={userSetPattern}
+      >
+        <SelectItem value={"0"} text={"<custom>"} />
+        {#if ($aCustomPats.length > 0) }
+          <SelectItemGroup label="Saved Patterns">
+            {#each $aCustomPats as pat}
+              <SelectItem value={pat.id} text={pat.text} />
+            {/each}
+          </SelectItemGroup>
+        {/if}
+        <SelectItemGroup label="Built-in Patterns">
+          {#each $aBuiltinPats as pat}
             <SelectItem value={pat.id} text={pat.text} />
           {/each}
         </SelectItemGroup>
+      </Select>
+    </Column>
+    <MediaQuery query="(min-width:501px)" let:matches>
+      {#if matches}
+        <Column style="margin-top:10px;">
+          <div style="margin:0 auto; text-align:center;">
+            {#if ($pStrand.patternID > 0) }
+              <button
+                class="button button-help"
+                on:click={dohelp}
+                >?
+              </button>
+              {#if $pStrand.isCustom}
+                <button
+                  class="button button-pattern"
+                  on:click={doremove}
+                  >Remove
+                </button>
+              {/if}
+            {:else}
+              <button
+                class="button button-pattern"
+                on:click={doclear}
+                disabled={$pStrand.patternStr == ''}
+                >Clear
+              </button>
+              <button
+                class="button button-pattern"
+                on:click={saveDialog}
+                disabled={$pStrand.patternStr == ''}
+                >Save
+              </button>
+            {/if}
+          </div>
+        </Column>
       {/if}
-      <SelectItemGroup label="Built-in Patterns">
-        {#each $aBuiltinPats as pat}
-          <SelectItem value={pat.id} text={pat.text} />
-        {/each}
-      </SelectItemGroup>
-    </Select>
-    {#if ($pStrand.patternID > 0) }
-      <button
-        class="button-help"
-        on:click={dohelp}
-        >?
-      </button>
-      {#if $pStrand.isCustom}
+    </MediaQuery>
+    <MediaQuery query="(max-width:500px)" let:matches>
+    {#if matches && ($pStrand.patternID > 0) }
+      <Column style="margin-top:10px;">
         <button
-          class="button button-pattern"
-          on:click={doremove}
-          >Remove
+          class="button button-help"
+          on:click={dohelp}
+          >?
         </button>
-      {/if}
-    {:else}
-      <button
-        class="button button-pattern"
-        on:click={doclear}
-        disabled={$pStrand.patternStr == ''}
-        >Clear
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={saveDialog}
-        disabled={$pStrand.patternStr == ''}
-        >Save
-      </button>
+      </Column>
     {/if}
+  </MediaQuery>
   </Row>
+  <MediaQuery query="(max-width:500px)" let:matches>
+    {#if matches}
+      <Row style="margin-top:10px;">
+        <Column style="margin-left:30px;">
+          {#if ($pStrand.patternID > 0) }
+            {#if $pStrand.isCustom}
+              <button
+                class="button button-pattern"
+                on:click={doremove}
+                >Remove
+              </button>
+            {/if}
+          {:else}
+            <button
+              class="button button-pattern"
+              on:click={doclear}
+              disabled={$pStrand.patternStr == ''}
+              >Clear
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={saveDialog}
+              disabled={$pStrand.patternStr == ''}
+              >Save
+            </button>
+          {/if}
+        </Column>
+      </Row>
+    {/if}
+  </MediaQuery>
 
   <Row style="margin-top:7px;">
     <Column style="margin-left:-5px;">
@@ -157,7 +208,25 @@
             disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
-        <Column style="margin-top:5px;">
+        <MediaQuery query="(min-width:501px)" let:matches>
+          {#if matches}
+            <Column style="margin-top:5px;">
+              <button
+                class="button"
+                on:click={userSendTrigger}
+                disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
+                >Trigger
+              </button>
+            </Column>
+          {/if}
+        </MediaQuery>
+      </Row>
+    </Column>
+  </Row>
+  <MediaQuery query="(max-width:500px)" let:matches>
+    {#if matches}
+      <Row style="margin-top:5px;">
+        <Column style="margin-left:-5px;">
           <button
             class="button"
             on:click={userSendTrigger}
@@ -166,8 +235,9 @@
           </button>
         </Column>
       </Row>
-    </Column>
-  </Row>
+    {/if}
+  </MediaQuery>
+
 </Grid>
 
 <Modal
@@ -204,26 +274,21 @@
 
 <style>
   .button {
-    padding: 5px;
-    width: 60px;
+    padding: 3px;
     height: 35px;
-    border-radius: 5%;
-    color: white;
-    border: 1px solid #bbbcbb;
-    background-color:#555655;
-  }
-  .button-help {
-    padding: 5px;
-    width: 35px;
-    height: 35px;
-    margin: 7px 150px 0 0;
-    border-radius: 75%;
     color: white;
     border: 2px solid #bbbcbb;
     background-color:#555655;
   }
+  .button-help {
+    float:left;
+    width: 35px;
+    border-radius: 75%;
+  }
   .button-pattern {
-    margin: 7px 35px 0 0;
+    width: 60px;
+    margin-right:15px;
+    border-radius: 5%;
   }
   .button:hover, .button-help:hover {
     cursor: pointer;

@@ -165,8 +165,9 @@ export const makeEntireCmdStr = () =>
   bitsEffects.set(splugbits);
   //console.log(`pluginbits=${splugbits.toString(16)}`);
 
-  refreshCmdStr.set(true); // hack to force refresh
-}
+  //refreshCmdStr.set(true); // hack to force refresh
+  pStrand.set(get(pStrand)); // triggers update
+;}
 
 // create partial command string for one layer in a track,
 export const makeLayerCmdStr = (track, layer) =>

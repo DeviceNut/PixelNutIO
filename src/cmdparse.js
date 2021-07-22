@@ -36,7 +36,6 @@ import {
 } from './presets.js';
 
 import {
-  getTrackLayerFromID,
   makeLayerCmdStr,
   makeEntireCmdStr
 } from './cmdmake.js';
@@ -71,10 +70,20 @@ function valueToPositive(value)
 
 function valueToTrackLayer(value)
 {
-  if (isNaN(value))
-    return {track:0, layer:0};
+  if (isNaN(value)) return {track:0, layer:0};
 
-  return getTrackLayerFromID(value);
+  let track = 0;
+
+  for (let i = 0; i < get(pStrand).tactives; ++i)
+  {
+    if (value < get(pStrand).tracks[i].lactives)
+      break;
+
+    value -= get(pStrand).tracks[i].lactives;
+    ++track;
+  }
+
+  return { track:track, layer:value };
 }
 
 // parse the given pattern command string
@@ -189,7 +198,9 @@ export const parsePattern = (cmdstr) =>
           trackbits = layerbits;
 
           // if don't find a 'T' then disable triggering
+          get(pStrand).tracks[track].layers[0].trigAutoStart = false;
           get(pStrand).tracks[track].layers[0].trigTypeStr = 'none';
+          get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[0].trigTypeStr = 'none';
         }
 
@@ -363,6 +374,9 @@ export const parsePattern = (cmdstr) =>
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'auto';
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = range;
             }
+
+            get(pStrand).tracks[track].layers[layer].trigAutoStart = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = true;
             break;
           }
           case cmdStr_Go: break; // no-op?

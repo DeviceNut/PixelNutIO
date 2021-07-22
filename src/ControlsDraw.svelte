@@ -35,6 +35,7 @@
     userSetFinish,
     userSetOwrite,
     userSetDirect,
+    userSetTrigStart,
     userSetTrigMain
   } from "./cmduser.js"
 
@@ -67,14 +68,8 @@
     }
   }
 
-  let dotrigger;
-  $: dotrigger = ($pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr != 'none');
-  const autostart = () =>
-  {
-    $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
-  }
-
-  const setmain = () => { userSetTrigMain(track); }
+  const autoStart = () => { userSetTrigStart(track); }
+  const setMain   = () => { userSetTrigMain(track); }
 
 </script>
 
@@ -162,17 +157,19 @@
         <Row style="margin:0;">
           <Checkbox labelText="Trigger once at start"
             style="padding: 3px;"
-            on:check={autostart}
-            bind:checked={dotrigger}
+            on:check={autoStart}
+            bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigAutoStart}
           />
         </Row>
-        <Row style="margin:0;">
-          <Checkbox labelText="Trigger from main controls"
-            style="padding: 3px;"
-            on:check={setmain}
-            bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigFromMain}
-          />
-        </Row>
+        {#if !$pStrand.tracks[track].layers[DRAW_LAYER].trigAutoStart }
+          <Row style="margin:0;">
+            <Checkbox labelText="Trigger from main controls"
+              style="padding: 3px;"
+              on:check={setMain}
+              bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigFromMain}
+            />
+          </Row>
+        {/if}
       </div>
     {/if}
   {/if}

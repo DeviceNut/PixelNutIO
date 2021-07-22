@@ -37,25 +37,27 @@ import {
   aEffectsDraw,
   aEffectsFilter,
   modeCustom,
-  mainEnabled
+  mainEnabled,
+  aTriggers
 } from './globals.js';
 
-import {
-  pluginBit_TRIGGER
-} from './presets.js';
+import { pluginBit_SENDFORCE } from './presets.js';
 
 import {
-  strandClearAllTracks,
+  strandClearAll,
   strandCopyAll,
   strandCopyTop,
-  strandCopyLayer
+  strandCopyLayer,
+  strandCopyTracks
 } from './strands.js';
 
 import {
   convTrackLayerToID,
   makeOrideBits,
   makeLayerCmdStr,
-  makeEntireCmdStr
+  makeEntireCmdStr,
+  makeTrackCmdStrs,
+  makeTrigSourceList
 } from './cmdmake.js';
 
 import { writeDevice } from './device.js'
@@ -124,11 +126,69 @@ function updateLayerVals(track, layer)
   makeEntireCmdStr();
 }
 
+// must be called after any changes to the number
+// or position of tracks, layers, or effect settings
+export const updateTriggerLayers = () =>
+{
+  makeTrigSourceList();
+
+  let strand = get(pStrand);
+  let atrigs = get(aTriggers);
+
+  // update index into trigger source list for all enabled layers
+  for (let track = 0; track < strand.tactives; ++track)
+  {
+    for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
+    {
+      if (strand.tracks[track].layers[layer].trigDoLayer)
+      {
+        let found = false;
+        let tnum = strand.tracks[track].layers[layer].trigTrackNum;
+        let lnum = strand.tracks[track].layers[layer].trigLayerNum;
+
+        for (const [i, item] of atrigs.entries())
+        {
+          if (item.id > 0) // not placeholder entry
+          {
+            if ((item.tnum == tnum) && (item.lnum == lnum))
+            {
+              found = true;
+              strand.tracks[track].layers[layer].trigListDex = i;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = i;
+
+              //console.log('updated: ', track, layer, tnum, lnum, i, item);
+            }
+          }
+        }
+
+        if (!found)
+        {
+          console.log('disabling trigger (track,layer): ', track, layer);
+
+          strand.tracks[track].layers[layer].trigDoLayer = false;
+          strand.tracks[track].layers[layer].trigListDex = 0;
+
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = 0;
+        }
+      }
+    }
+  }
+
+  // rebuild all tracks to account for possible
+  // changes in the trigger source layers
+  for (let i = 0; i <= strand.tactives; ++i)
+    makeTrackCmdStrs(i);
+
+  strandCopyTracks();
+  makeEntireCmdStr();
+}
+
 // Commands from Header:
 
 export const userSetDevName = () =>
 {
-  console.log('set device name');
+  console.log('set device name'); // TODO
 }
 
 export const userSendPause = (enable) =>
@@ -258,7 +318,7 @@ export const userSetPattern = () =>
     name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
     cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
 
-    strandClearAllTracks();
+    strandClearAll();
 
     if (parsePattern(cmdstr)) // sets vars for current strand
     {
@@ -277,8 +337,7 @@ export const userSetPattern = () =>
 
 export const userClearPattern = () =>
 {
-  strandClearAllTracks();
-  strandCopyAll();
+  strandClearAll();
 
   sendCmd(cmdStr_Clear);
   makeEntireCmdStr();
@@ -297,7 +356,7 @@ export const userEditPattern = () =>
 {
   let cmdstr = get(pStrand).patternStr;
 
-  strandClearAllTracks();
+  strandClearAll();
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {
@@ -459,10 +518,7 @@ export const userSetDrawEffect = (track) =>
     strand.tracks[track].layers[DRAW_LAYER].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
 
-    // set default to once if setting manually
-    strand.tracks[track].layers[DRAW_LAYER].trigTypeStr = 'once';
-
-    updateLayerVals(track, DRAW_LAYER);
+    updateTriggerLayers();
 
     // must resend entire command when an effect is changed
     sendEntireCmdStr();
@@ -569,6 +625,21 @@ export const userSetDirect = (track) =>
   }
 }
 
+export const userSetTrigStart = (track, layer) =>
+{
+  if (layer == undefined) layer = 0;
+
+  let dostart = get(pStrand).tracks[track].layers[layer].trigAutoStart;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart != dostart)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart = dostart;
+
+    get(pStrand).tracks[track].layers[layer].trigTypeStr = (dostart ? 'once' : 'none');
+    userSetTrigType(track, layer);
+  }
+}
+
 export const userSetTrigMain = (track, layer) =>
 {
   // TODO: if not new firmware then must send
@@ -576,16 +647,16 @@ export const userSetTrigMain = (track, layer) =>
 
   if (layer == undefined) layer = 0;
 
-  let doman = get(pStrand).tracks[track].layers[layer].trigFromMain;
+  let domain = get(pStrand).tracks[track].layers[layer].trigFromMain;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain != doman)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain != domain)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = doman;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = domain;
 
     updateLayerVals(track, layer);
 
     let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigFromMain, (doman ? undefined : 0));
+    sendLayerCmd(layerid, cmdStr_TrigFromMain, (domain ? undefined : 0));
     // don't need to send value if enabling (1 is default)
   }
 }
@@ -605,10 +676,8 @@ export const userSetFilterEffect = (track, layer) =>
     strand.tracks[track].layers[layer].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
-    // set default to once if setting manually
-    strand.tracks[track].layers[layer].trigTypeStr = 'once';
-
-    updateLayerVals(track, layer);
+    console.log('setfilter: ', pindex, bits);
+    updateTriggerLayers();
 
     // must resend entire command when an effect is changed
     sendEntireCmdStr();

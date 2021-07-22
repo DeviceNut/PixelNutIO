@@ -11,7 +11,10 @@
     strandClearLayer
   } from './strands.js';
 
-  import { makeEntireCmdStr } from './cmdmake.js';
+  import {
+    sendEntireCmdStr,
+    updateTriggerLayers
+  } from './cmduser.js';
 
   export let track;
 
@@ -33,6 +36,9 @@
     }
   }
 
+  // Note: adding track to end doesn't affect
+  // any of the existing trigger track/layer numbers
+  // (not until select an effect for first layer)
   const doadd = () =>
   {
     if (istrack)
@@ -68,7 +74,9 @@
       strandClearLayer(track, $pStrand.tracks[track].lactives)
     }
 
-    makeEntireCmdStr();
+    updateTriggerLayers(); // update trigger sources and rebuild cmdstrs
+
+    sendEntireCmdStr();
   }
 
 </script>

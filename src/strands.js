@@ -19,11 +19,15 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigFromMain    : false,  // true if can trigger manually from Main Panel
+  trigAutoStart   : true,   // true to auto start effect, if not then:
+  trigFromMain    : false,  // true if can trigger from main controls
+
   trigDoLayer     : false,  // true if can trigger from other layer:
+  trigListDex     : 0,      //  index into list of possible source layers
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
-  trigTypeStr     : 'none', // or 'once', or if 'auto' (auto triggering), then:
+
+  trigTypeStr     : 'once', // or 'once', or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
   trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
@@ -207,18 +211,31 @@ export const strandCopyLayer = (track, layer) =>
   }
 }
 
+// copy values in entire track from current strand
+// to all the other currently selected strands
+export const strandCopyTrack = (track) =>
+{
+  for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
+    strandCopyLayer(track, layer);
+}
+
+// copy values in all tracks from current strand
+// to all the other currently selected strands
+export const strandCopyTracks = () =>
+{
+  for (let track = 0; track < get(pStrand).tactives; ++track)
+    strandCopyTrack(track);
+}
+
 // copy all values for current strand to all other selected ones
 export const strandCopyAll = () =>
 {
   strandCopyTop();
-
-  for (let track = 0; track < get(pStrand).tactives; ++track)
-    for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
-      strandCopyLayer(track, layer);
+  strandCopyTracks();
 }
 
 // clears all values for all tracks in the current strand
-export const strandClearAllTracks = (track) =>
+export const strandClearAll = (track) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tactives = 1;
@@ -226,48 +243,64 @@ export const strandClearAllTracks = (track) =>
 
   get(dStrands)[sid].tactives = 1;
   get(dStrands)[sid].tracks = makeNewTracks();
+
+  strandCopyAll();
 }
 
 // clears all values for a track in the current strand
+// and copies it to all other selected strands
 export const strandClearTrack = (track) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tracks.splice(track, 1, makeOneTrack());
   get(dStrands)[sid].tracks.splice(track, 1, makeOneTrack());
+
+  strandCopyTrack(track);
 }
 
 // clears all values for a track layer in the current strand
+// and copies it to all other selected strands
 export const strandClearLayer = (track, layer) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
   get(dStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
+
+  strandCopyLayer(track, layer);
 }
 
 // swaps specified track for the one below in the current strand
+// and copies both tracks to all other selected strands
 export const strandSwapTracks = (track) =>
 {
   let sid = get(idStrand);
-  let track1 = get(aStrands)[sid].tracks[track];
-  let track2 = get(aStrands)[sid].tracks[track-1];
+  let track1 = get(aStrands)[sid].tracks[track-1];
+  let track2 = get(aStrands)[sid].tracks[track];
 
-  get(aStrands)[sid].tracks[track-1] = track1;
-  get(aStrands)[sid].tracks[track] = track2;
+  get(aStrands)[sid].tracks[track-1] = track2;
+  get(aStrands)[sid].tracks[track] = track1;
 
-  get(dStrands)[sid].tracks[track-1] = track1;
-  get(dStrands)[sid].tracks[track] = track2;
+  get(dStrands)[sid].tracks[track-1] = track2;
+  get(dStrands)[sid].tracks[track] = track1;
+
+  strandCopyTrack(track-1);
+  strandCopyTrack(track);
 }
 
 // swaps specified track layer for the one below in the current strand
+// and copies both layers to all other selected strands
 export const strandSwapLayers = (track, layer) =>
 {
   let sid = get(idStrand);
-  let layer1 = get(aStrands)[sid].tracks[track].layers[layer];
-  let layer2 = get(aStrands)[sid].tracks[track].layers[layer-1];
+  let layer1 = get(aStrands)[sid].tracks[track].layers[layer-1];
+  let layer2 = get(aStrands)[sid].tracks[track].layers[layer];
 
-  get(aStrands)[sid].tracks[track].layers[layer] = layer2;
-  get(aStrands)[sid].tracks[track].layers[layer-1] = layer1;
+  get(aStrands)[sid].tracks[track].layers[layer-1] = layer2;
+  get(aStrands)[sid].tracks[track].layers[layer] = layer1;
 
-  get(dStrands)[sid].tracks[track].layers[layer] = layer2;
-  get(dStrands)[sid].tracks[track].layers[layer-1] = layer1;
+  get(dStrands)[sid].tracks[track].layers[layer-1] = layer2;
+  get(dStrands)[sid].tracks[track].layers[layer] = layer1;
+
+  strandCopyLayer(track, layer-1);
+  strandCopyLayer(track, layer);
 }

@@ -43,6 +43,11 @@
   let bgc = '';
   $: bgc = $pStrand.doOverride ? '#222322' : '#111211'
 
+/* FIXME
+($bitsEffects  & pluginBit_ORIDE_HUE)
+($bitsEffects  & pluginBit_ORIDE_WHITE)
+($bitsEffects  & pluginBit_ORIDE_COUNT)
+*/
 </script>
 
 <Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color:{bgc};">
@@ -53,8 +58,7 @@
       bind:cur={$pStrand.degreeHue}
       disabled={!$pStrand.doOverride                  ||
                 !($bitsOverride & overBit_DegreeHue)  ||
-                !($bitsEffects  & pluginBit_COLOR)    ||
-                 ($bitsEffects  & pluginBit_ORIDE_HUE)}
+                !($bitsEffects  & pluginBit_COLOR)}
       max={359}
     />
     <SliderVal name='White&nbsp;'
@@ -62,16 +66,14 @@
       bind:cur={$pStrand.pcentWhite}
       disabled={!$pStrand.doOverride                  ||
                 !($bitsOverride & overBit_PcentWhite) ||
-                !($bitsEffects  & pluginBit_COLOR)    ||
-                 ($bitsEffects  & pluginBit_ORIDE_WHITE)}
+                !($bitsEffects  & pluginBit_COLOR)}
     />
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
       disabled={!$pStrand.doOverride                  ||
                 !($bitsOverride & overBit_PcentCount) ||
-                !($bitsEffects  & pluginBit_COUNT)    ||
-                 ($bitsEffects  & pluginBit_ORIDE_COUNT)}
+                !($bitsEffects  & pluginBit_COUNT)}
     />
   </Column>
 

@@ -32,9 +32,12 @@ import {
   aEffectsFilter,
   mainEnabled,
   bitsOverride,
-  bitsEffects
+  bitsEffects,
+  aTriggers,
 } from './globals.js';
   
+import { pluginBit_SENDFORCE } from './presets.js';
+
 ///////////////////////////////////////////////////////////
 
 export const makeOrideBits = (p, track) =>
@@ -73,24 +76,8 @@ export const convTrackLayerToID = (track, layer) =>
     layer = get(pStrand).tracks[track].lactives-1;
   }
 
+  //console.log('conv: ', track, layer, ' => ', layerid+layer);
   return layerid + layer;
-}
-
-// convert device layerID to track,layer object
-export const getTrackLayerFromID = (layerid) =>
-{
-  let track = 0;
-
-  for (let i = 0; i < get(pStrand).tactives; ++i)
-  {
-    if (layerid < get(pStrand).tracks[i].lactives)
-      break;
-
-    layerid -= get(pStrand).tracks[i].lactives;
-    ++track;
-  }
-
-  return { track:track, layer:layerid };
 }
 
 // combine all layer cmds into command output string
@@ -163,18 +150,17 @@ export const makeEntireCmdStr = () =>
   pStrand.set(get(pStrand)); // triggers update
 }
 
-// create partial command string for one layer in a track,
+// create partial command string for one layer in a track
 export const makeLayerCmdStr = (track, layer) =>
 {
   let player = get(pStrand).tracks[track].layers[layer];
   let cmdstr = '';
-  let plugvalue;
 
-  if (layer == 0) // drawing layer
+  if (player.pluginIndex > 0)
   {
-    plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
-    if (plugvalue >= 0)
+    if (layer == 0) // drawing layer
     {
+      let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
       let start = pdraw.pcentStart;
       let finish = pdraw.pcentFinish;
@@ -215,15 +201,12 @@ export const makeLayerCmdStr = (track, layer) =>
       if (bits != 0)
         cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
     }
-  }
-  else
-  {
-    plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
-    if (plugvalue >= 0) cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
-  }
+    else
+    {
+      let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
+      cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+    }
 
-  if (plugvalue >= 0)
-  {
     if (player.trigFromMain)
     cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
@@ -266,4 +249,31 @@ export const makeTrackCmdStrs = (track) =>
   let ptrack = get(pStrand).tracks[track];
   for (let i = 0; i < ptrack.lactives; ++i)
     makeLayerCmdStr(track, i);
+}
+
+export const makeTrigSourceList = () =>
+{
+  let strand = get(pStrand);
+  let items = [];
+  let count = 0;
+
+  // create list of track/layers that send triggers
+  for (let track = 0; track < strand.tactives; ++track)
+  {
+    for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
+    {
+      if (strand.tracks[track].layers[layer].pluginBits & pluginBit_SENDFORCE)
+      {
+        let index = strand.tracks[track].layers[layer].pluginIndex;
+        let name = (layer == 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
+
+        ++count;
+        items.push({ id: `${count}`, tnum:track+1, lnum:layer+1, 
+                     text: `Track(${track+1}) Layer(${layer+1}) - ${name}` });
+      } 
+    }
+  }
+  if (count == 0) items.push({ id: 0, text: 'none'});
+
+  aTriggers.set(items);
 }

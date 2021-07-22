@@ -1,49 +1,110 @@
 <script>
  
-  import { pStrand } from './globals.js';
- 
   import {
-    makeTrackCmdStrs,
-    makeLayerCmdStr,
-    makeEntireCmdStr
-  } from './cmdmake.js'
-
+    pStrand,
+    dStrands,
+    idStrand
+   } from './globals.js';
+ 
   import {
     strandSwapTracks,
     strandSwapLayers
   } from './strands.js'
 
-  import { sendEntireCmdStr } from './cmduser.js';
+  import {
+    sendEntireCmdStr,
+    updateTriggerLayers
+  } from './cmduser.js';
 
   export let track;
   export let layer;
 
-  function rebuild()
+  function checkTrigTrack(tupper)
   {
-    if (layer == 0) makeTrackCmdStrs(track);
-    else            makeLayerCmdStr(track, layer);
+    let found = false;
 
-    makeEntireCmdStr();
-    sendEntireCmdStr();
+    // check if moved tracks were used for any trigger track
+    for (let i = 0; i < $pStrand.tactives; ++i)
+    {
+      for (let j = 0; j < $pStrand.tracks[i].lactives; ++j)
+      {
+        if ($pStrand.tracks[i].layers[j].trigDoLayer)
+        {
+          let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
+
+          if (tnum == tupper+1)
+          {
+            $pStrand.tracks[i].layers[j].trigTrackNum = tupper;
+            found = true;
+          }
+          else if (tnum == tupper)
+          {
+            $pStrand.tracks[i].layers[j].trigTrackNum = tupper+1;
+            found = true;
+          }
+        } 
+      }
+    }
+
+    strandSwapTracks(tupper);
+
+    if (found) updateTriggerLayers();
   }
- 
+
+  function checkTrigLayer(lupper)
+  {
+    let found = false;
+
+    // check if moved track layers were used for any trigger track layer
+    for (let i = 0; i < $pStrand.tactives; ++i)
+    {
+      for (let j = 0; j < $pStrand.tracks[i].lactives; ++j)
+      {
+        if ($pStrand.tracks[i].layers[j].trigDoLayer)
+        {
+          let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
+          let lnum = $pStrand.tracks[i].layers[j].trigLayerNum;
+
+          if ((tnum == track+1) && (lnum == lupper+1))
+          {
+            $pStrand.tracks[i].layers[j].trigLayerNum = lupper;
+            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper;
+            found = true;
+          }
+          else if ((tnum == track+1) && (lnum == lupper))
+          {
+            $pStrand.tracks[i].layers[j].trigLayerNum = lupper+1;
+            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper+1;
+            found = true;
+          }
+        } 
+      }
+    }
+
+    strandSwapLayers(track, lupper);
+
+    if (found) updateTriggerLayers();
+  }
+
   const moveup = () =>
   {
     if (layer == 0)
-        strandSwapTracks(track+1);
-    else strandSwapLayers(track, layer+1);
+         checkTrigTrack(track+1);
+    else checkTrigLayer(layer+1);
 
-    rebuild();
+    sendEntireCmdStr();
+
     $pStrand = $pStrand; // refresh screen
   }
 
   const movedn = () =>
   {
     if (layer == 0)
-         strandSwapTracks(track);
-    else strandSwapLayers(track, layer);
+         checkTrigTrack(track);
+    else checkTrigLayer(layer);
 
-    rebuild();
+    sendEntireCmdStr();
+
     $pStrand = $pStrand; // refresh screen
   }
  

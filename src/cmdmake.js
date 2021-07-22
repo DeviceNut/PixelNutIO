@@ -17,8 +17,8 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigFromLayer     ,
-  cmdStr_TrigFromMain    ,
+  cmdStr_TrigFromLayer ,
+  cmdStr_TrigFromMain  ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
@@ -100,7 +100,6 @@ export const makeEntireCmdStr = () =>
   let cmdstr = '';
   let ridebits = 0;
   let splugbits = 0;
-
   let strand = get(pStrand);
 
   for (let i = 0; i < strand.tactives; ++i)

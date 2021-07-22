@@ -7,6 +7,11 @@
   } from "carbon-components-svelte";
 
   import {
+    DRAW_LAYER,
+    MAX_FORCE
+  } from "./pixelnut.js";
+
+  import {
     nTracks,
     tLayers,
     pStrand,
@@ -14,17 +19,12 @@
   } from './globals.js'
 
   import {
-    DRAW_LAYER,
-    MAX_FORCE
-  } from "./pixelnut.js";
-
-  import {
     pluginBit_TRIGGER,
     pluginBit_TRIGFORCE
   } from './presets.js';
 
   import {
-    userSetTrigManual,
+    userSetTrigMain,
     userSetTrigLayer,
     userSetTrigNums,
     userSetTrigType,
@@ -41,9 +41,9 @@
   export let track;
   export let layer = DRAW_LAYER;
 
-  const setmanual = () => { userSetTrigManual(track, layer); }
-  const setlayer  = () => { userSetTrigLayer(track, layer); }
-  const settnums  = () => { userSetTrigNums(track, layer); }
+  const setmain  = () => { userSetTrigMain(track, layer); }
+  const setlayer = () => { userSetTrigLayer(track, layer); }
+  const settnums = () => { userSetTrigNums(track, layer); }
 
   $: {
     let tracknum = $pStrand.tracks[track].layers[layer].trigTrackNum;
@@ -120,7 +120,7 @@
 
       <Checkbox labelText="Trigger from main controls"
         style="padding: 3px;"
-        on:check={setmanual}
+        on:check={setmain}
         bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
       />
 

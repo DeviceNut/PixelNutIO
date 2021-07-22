@@ -35,7 +35,7 @@
     userSetFinish,
     userSetOwrite,
     userSetDirect,
-    userSetTrigManual
+    userSetTrigMain
   } from "./cmduser.js"
 
   import ControlsTrigger from './ControlsTrigger.svelte'
@@ -68,15 +68,13 @@
   }
 
   let dotrigger;
-  $: {
-    if (($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0) &&
-        !($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER))
-    {
-      $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
-    }
+  $: dotrigger = ($pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr != 'none');
+  const autostart = () =>
+  {
+    $pStrand.tracks[track].layers[DRAW_LAYER].trigTypeStr = (dotrigger ? 'once' : 'none');
   }
 
-  const setmanual = () => { userSetTrigManual(track); }
+  const setmain = () => { userSetTrigMain(track); }
 
 </script>
 
@@ -164,14 +162,14 @@
         <Row style="margin:0;">
           <Checkbox labelText="Trigger once at start"
             style="padding: 3px;"
-            on:check={setmanual}
+            on:check={autostart}
             bind:checked={dotrigger}
           />
         </Row>
         <Row style="margin:0;">
           <Checkbox labelText="Trigger from main controls"
             style="padding: 3px;"
-            on:check={setmanual}
+            on:check={setmain}
             bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigFromMain}
           />
         </Row>

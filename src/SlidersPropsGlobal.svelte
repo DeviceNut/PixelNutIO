@@ -3,7 +3,8 @@
   import MediaQuery from "svelte-media-query";
 
   import {
-    Row, Column,
+    Row,
+    Column,
     Checkbox
   } from "carbon-components-svelte";
 

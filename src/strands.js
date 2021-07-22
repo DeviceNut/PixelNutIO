@@ -23,7 +23,7 @@ const oneLayer =
   trigDoLayer     : false,  // true if can trigger from other layer:
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
-  trigTypeStr     : 'once', // or 'none', or if 'auto' (auto triggering), then:
+  trigTypeStr     : 'none', // or 'once', or if 'auto' (auto triggering), then:
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
   trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
@@ -271,4 +271,3 @@ export const strandSwapLayers = (track, layer) =>
   get(dStrands)[sid].tracks[track].layers[layer] = layer2;
   get(dStrands)[sid].tracks[track].layers[layer-1] = layer1;
 }
-

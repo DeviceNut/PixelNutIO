@@ -31,7 +31,7 @@
 
   import SliderVal from "./SliderVal.svelte"
 
-  export let track = 0;
+  export let track;
   
   const setprops = () => { userSetProps(track); }
   const setovers = () => { userSetOverrides(track); }

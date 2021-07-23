@@ -2,9 +2,7 @@
 
   import {
     pStrand,
-    maxPixels,
-    mainEnabled,
-    bitsEffects
+    maxPixels
   } from './globals.js';
 
   import {
@@ -24,13 +22,14 @@
 <SliderVal name='Bright'
   onchange={userSetBright}
   bind:cur={$pStrand.pcentBright}
-  disabled={!$mainEnabled}
+  disabled={$pStrand.patternCmds == ''}
 />
 
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
-  disabled={!$mainEnabled || !($bitsEffects & pluginBit_DELAY)}
+  disabled={($pStrand.patternCmds == '') ||
+            !($pStrand.bitsEffects & pluginBit_DELAY)}
   />
 
 <SliderVal name='Rotate'
@@ -38,5 +37,5 @@
   bind:cur={$pStrand.firstPixel}
   min={1}
   max={$maxPixels}
-  disabled={!$mainEnabled}
+  disabled={$pStrand.patternCmds == ''}
 />

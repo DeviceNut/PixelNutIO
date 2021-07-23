@@ -23,11 +23,7 @@
     pluginBit_ORIDE_COUNT
   } from "./presets.js";
 
-  import {
-    pStrand,
-    bitsOverride,
-    bitsEffects
-  } from './globals.js';
+  import { pStrand } from './globals.js';
 
   import {
     userSetOverMode,
@@ -44,9 +40,9 @@
   $: bgc = $pStrand.doOverride ? '#222322' : '#111211'
 
 /* FIXME
-($bitsEffects  & pluginBit_ORIDE_HUE)
-($bitsEffects  & pluginBit_ORIDE_WHITE)
-($bitsEffects  & pluginBit_ORIDE_COUNT)
+($pStrand.bitsEffects  & pluginBit_ORIDE_HUE)
+($pStrand.bitsEffects  & pluginBit_ORIDE_WHITE)
+($pStrand.bitsEffects  & pluginBit_ORIDE_COUNT)
 */
 </script>
 
@@ -57,23 +53,23 @@
       onchange={setprops}
       bind:cur={$pStrand.degreeHue}
       disabled={!$pStrand.doOverride                  ||
-                !($bitsOverride & overBit_DegreeHue)  ||
-                !($bitsEffects  & pluginBit_COLOR)}
+                !($pStrand.bitsOverride & overBit_DegreeHue)  ||
+                !($pStrand.bitsEffects  & pluginBit_COLOR)}
       max={359}
     />
     <SliderVal name='White&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentWhite}
       disabled={!$pStrand.doOverride                  ||
-                !($bitsOverride & overBit_PcentWhite) ||
-                !($bitsEffects  & pluginBit_COLOR)}
+                !($pStrand.bitsOverride & overBit_PcentWhite) ||
+                !($pStrand.bitsEffects  & pluginBit_COLOR)}
     />
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.pcentCount}
       disabled={!$pStrand.doOverride                  ||
-                !($bitsOverride & overBit_PcentCount) ||
-                !($bitsEffects  & pluginBit_COUNT)}
+                !($pStrand.bitsOverride & overBit_PcentCount) ||
+                !($pStrand.bitsEffects  & pluginBit_COUNT)}
     />
   </Column>
 
@@ -84,7 +80,7 @@
           <Checkbox labelText="Override Properties"
             on:check={docheck}
             bind:checked={$pStrand.doOverride}
-            disabled={$bitsOverride == 0}
+            disabled={$pStrand.bitsOverride == 0}
           />
         </Column>
       </Row>
@@ -96,7 +92,7 @@
         <Checkbox labelText="Override"
           on:check={docheck}
           bind:checked={$pStrand.doOverride}
-          disabled={$bitsOverride == 0}
+          disabled={$pStrand.bitsOverride == 0}
         />
       </Column>
     {/if}

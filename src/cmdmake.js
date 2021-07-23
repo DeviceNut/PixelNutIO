@@ -30,10 +30,7 @@ import {
   pStrand,
   aEffectsDraw,
   aEffectsFilter,
-  mainEnabled,
-  bitsOverride,
-  bitsEffects,
-  aTriggers,
+  aTriggers
 } from './globals.js';
   
 import { pluginBit_SENDFORCE } from './presets.js';
@@ -147,19 +144,16 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
-  if (cmdstr != '')
-  {
-    cmdstr = cmdstr.concat(`${cmdStr_Go}`);
-    mainEnabled.set(true);
-  }
-  else mainEnabled.set(false);
+  if (cmdstr != '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).patternCmds = cmdstr;
   //get(pStrand).backupCmds = cmdstr;
 
-  bitsOverride.set(ridebits);
-  bitsEffects.set(splugbits);
-  //console.log(`pluginbits=${splugbits.toString(16)}`);
+  get(pStrand).bitsOverride = ridebits;
+  get(pStrand).bitsEffects = splugbits;
+
+  //console.log(`oridebits=${ridebits.toString(16)}`);
+  //console.log(`splugbits=${splugbits.toString(16)}`);
 
   pStrand.set(get(pStrand)); // triggers update
 }

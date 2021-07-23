@@ -34,11 +34,6 @@ export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 export let aTriggers      = writable([]);     // list of track/layers that cause triggers
 
-export let modeCustom     = writable(false);  // true if displaying custom panel
-export let mainEnabled    = writable(false);  // true to enable main panel controls
-export let bitsOverride   = writable(0);      // OR'ed overrides from all track layers
-export let bitsEffects    = writable(0);      // OR'ed effect bits from all track layers
-
 export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
 {
   nStrands.set(max_strands);

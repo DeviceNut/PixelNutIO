@@ -30,9 +30,7 @@
     aBuiltinPats,
     aBuiltinDesc,
     aCustomPats,
-    aCustomDesc,
-    mainEnabled,
-    bitsEffects
+    aCustomDesc
   } from './globals.js';
 ;
   import {
@@ -139,7 +137,7 @@
                 on:click={dohelp}
                 >?
               </button>
-              {#if $pStrand.isCustom}
+              {#if $pStrand.haveCustom}
                 <button
                   class="button button-pattern"
                   on:click={() => {openRemove=true;}}
@@ -181,7 +179,7 @@
       <Row style="margin-top:10px;">
         <Column style="margin-left:30px;">
           {#if ($pStrand.patternID > 0) }
-            {#if $pStrand.isCustom}
+            {#if $pStrand.haveCustom}
               <button
                 class="button button-pattern"
                 on:click={() => {openRemove=true;}}
@@ -217,7 +215,8 @@
             max={MAX_FORCE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
-            disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGFORCE)}
+            disabled={($pStrand.patternCmds == '') ||
+                     !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
         <MediaQuery query="(min-width:501px)" let:matches>
@@ -226,7 +225,8 @@
               <button
                 class="button"
                 on:click={userSendTrigger}
-                disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
+                disabled={($pStrand.patternCmds == '') ||
+                         !($pStrand.bitsEffects & pluginBit_TRIGGER)}
                 >Trigger
               </button>
             </Column>
@@ -242,7 +242,8 @@
           <button
             class="button"
             on:click={userSendTrigger}
-            disabled={!$mainEnabled || !($bitsEffects & pluginBit_TRIGGER)}
+            disabled={($pStrand.patternCmds == '') ||
+                     !($pStrand.bitsEffects & pluginBit_TRIGGER)}
             >Trigger
           </button>
         </Column>

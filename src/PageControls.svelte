@@ -2,8 +2,7 @@
 
   import {
     nStrands,
-    pStrand,
-    modeCustom
+    pStrand
   } from './globals.js';
 
   import HeaderControls from "./HeaderControls.svelte"
@@ -14,12 +13,12 @@
   export let devname;
 
   let pstr = '';
-  $: pstr = ($modeCustom ? "^" : "Customizer");
+  $: pstr = ($pStrand.showCustom ? "^" : "Customizer");
 
   const toggleshow = () =>
   {
-    $modeCustom = !$modeCustom;
-    if ($modeCustom)
+    $pStrand.showCustom = !$pStrand.showCustom;
+    if ($pStrand.showCustom)
     {
       // force the pattern selector to say "custom" while in custom mode
       $pStrand.patternID = 0;
@@ -40,12 +39,12 @@
 
     <PanelMain/>
 
-    <div class="bdiv" class:select={$modeCustom} on:click={toggleshow} >
+    <div class="bdiv" class:select={$pStrand.showCustom} on:click={toggleshow} >
       <span class="btext" >{pstr}</span>
     </div>
   </div>
 
-  {#if $modeCustom }
+  {#if $pStrand.showCustom }
     <PanelCustom/>
   {/if}
 

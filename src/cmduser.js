@@ -36,8 +36,6 @@ import {
   aCustomPats,
   aEffectsDraw,
   aEffectsFilter,
-  modeCustom,
-  mainEnabled,
   aTriggers
 } from './globals.js';
 
@@ -92,7 +90,8 @@ export const sendEntireCmdStr = () =>
 
 function sendCmdCheck(cmdstr)
 {
-  if (get(mainEnabled)) sendCmd(cmdstr);
+  if (get(pStrand).patternCmds != '')
+    sendCmd(cmdstr);
 }
 
 // send command (and optional value) to entire strand
@@ -326,9 +325,10 @@ export const userSetPattern = () =>
       sendEntireCmdStr();
   
       strand.patternName = name;
-      strand.isCustom = iscustom;
+      strand.haveCustom = iscustom;
   
-      if (get(modeCustom)) strand.patternID = 0;
+      if (strand.showCustom)
+        strand.patternID = 0;
     }
     // software bug: all pre-builts are valid
     else console.error('Parse Failed: ', cmdstr);
@@ -342,7 +342,7 @@ export const userClearPattern = () =>
   sendCmd(cmdStr_Clear);
   makeEntireCmdStr();
 
-  modeCustom.set(false);
+  get(pStrand).showCustom = false;
   get(pStrand).patternName = '';
 
   pStrand.set(get(pStrand)); // triggers update

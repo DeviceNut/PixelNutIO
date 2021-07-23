@@ -74,13 +74,17 @@ const oneTrack =
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
-  isCustom        : false,  // true if this is a custom pattern
+  showCustom      : false,  // true if displaying custom panel
+  haveCustom        : false,  // true if this is a custom pattern
 
   patternID       : 0,      // index of the current pattern
   patternName     : '',     // name of the current pattern
   patternCmds     : '',     // current pattern command string
   //backupCmds     : '',     // reverts to know good after bad edit
-  
+
+  bitsOverride    : 0x00,   // OR'ed overrides from all track layers
+  bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
+
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
   firstPixel      : 1,      // determines pixel to start drawing from
@@ -169,18 +173,23 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.patternName = ps.patternName;
+        strand.showCustom   = ps.showCustom;
+        strand.haveCustom     = ps.haveCustom;
+        strand.patternID    = ps.patternID;
+        strand.patternName  = ps.patternName;
         strand.patternCmds  = ps.patternCmds;
-        //strand.backupCmds   = ps.backupCmds;
+        //strand.backupCmds  = ps.backupCmds;
+        strand.bitsOverride = ps.bitsOverride;
+        strand.bitsEffects  = ps.bitsEffects;
 
-        strand.pcentBright = ps.pcentBright;
-        strand.msecsDelay  = ps.msecsDelay;
-        strand.firstPixel  = ps.firstPixel;
-        strand.doOverride  = ps.doOverride;
-        strand.degreeHue   = ps.degreeHue;
-        strand.pcentWhite  = ps.pcentWhite;
-        strand.pcentCount  = ps.pcentCount;
-        strand.forceValue  = ps.forceValue;
+        strand.pcentBright  = ps.pcentBright;
+        strand.msecsDelay   = ps.msecsDelay;
+        strand.firstPixel   = ps.firstPixel;
+        strand.doOverride   = ps.doOverride;
+        strand.degreeHue    = ps.degreeHue;
+        strand.pcentWhite   = ps.pcentWhite;
+        strand.pcentCount   = ps.pcentCount;
+        strand.forceValue   = ps.forceValue;
       }
       get(eStrands)[s] = strand.selected;
     }

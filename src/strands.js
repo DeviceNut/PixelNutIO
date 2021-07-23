@@ -76,10 +76,10 @@ const oneStrand =
   selected        : false,  // true if selected for modification
   isCustom        : false,  // true if this is a custom pattern
 
-  patternID       : '0',    // str ID of the current pattern
+  patternID       : 0,      // index of the current pattern
   patternName     : '',     // name of the current pattern
-  patternStr      : '',     // current pattern command string
-  //backupStr       : '',     // reverts to know good after bad edit
+  patternCmds     : '',     // current pattern command string
+  //backupCmds     : '',     // reverts to know good after bad edit
   
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
@@ -170,8 +170,8 @@ export const strandCopyTop = () =>
       if (strand.selected)
       {
         strand.patternName = ps.patternName;
-        strand.patternStr  = ps.patternStr;
-        //strand.backupStr   = ps.backupStr;
+        strand.patternCmds  = ps.patternCmds;
+        //strand.backupCmds   = ps.backupCmds;
 
         strand.pcentBright = ps.pcentBright;
         strand.msecsDelay  = ps.msecsDelay;
@@ -213,18 +213,48 @@ export const strandCopyLayer = (track, layer) =>
 
 // copy values in entire track from current strand
 // to all the other currently selected strands
-export const strandCopyTrack = (track) =>
+export const strandCopyTrack = (track, doall) =>
 {
-  for (let layer = 0; layer < get(pStrand).tracks[track].lactives; ++layer)
-    strandCopyLayer(track, layer);
+  const sid = get(idStrand);
+  const props = get(pStrand).tracks[track].drawProps;
+  const lactives = get(pStrand).tracks[track].lactives;
+  const trackbits = get(pStrand).tracks[track].trackBits;
+  const isopen = get(pStrand).tracks[track].open;
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (s != sid)
+    {
+      const strand = get(aStrands)[s];
+      if (strand.selected)
+      {
+        if (doall && !track) strand.tactives = get(pStrand).tactives;
+
+        const ptrack = strand.tracks[track];
+
+        ptrack.open = isopen;
+        ptrack.trackBits = trackbits;
+        ptrack.lactives = lactives;
+        ptrack.drawProps = {...props};
+
+        for (let layer = 0; layer < lactives; ++layer)
+        {
+          const player = get(pStrand).tracks[track].layers[layer];
+          ptrack.layers.splice(layer, 1, {...player});
+        }
+      }
+    }
+  }
 }
 
 // copy values in all tracks from current strand
 // to all the other currently selected strands
 export const strandCopyTracks = () =>
 {
-  for (let track = 0; track < get(pStrand).tactives; ++track)
-    strandCopyTrack(track);
+  const tactives = get(pStrand).tactives;
+
+  for (let track = 0; track < tactives; ++track)
+    strandCopyTrack(track, true);
 }
 
 // copy all values for current strand to all other selected ones
@@ -232,6 +262,7 @@ export const strandCopyAll = () =>
 {
   strandCopyTop();
   strandCopyTracks();
+  //console.log(get(aStrands));
 }
 
 // clears all values for all tracks in the current strand

@@ -20,8 +20,8 @@
   export let track;
   export let layer;
 
-  let isSolo = false;
-  let isMute = false;
+  let isSolo;
+  let isMute;
 
   $: {
     isSolo = $pStrand.tracks[track].layers[layer].solo;

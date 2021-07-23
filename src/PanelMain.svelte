@@ -14,7 +14,8 @@
     FormGroup,
     TextInput,
     TextArea,
-    Button
+    Button,
+    ButtonSet
   } from "carbon-components-svelte";
 
   import { MAX_FORCE } from "./pixelnut.js";
@@ -35,6 +36,7 @@
   } from './globals.js';
 ;
   import {
+    storePatternInit,
     storePatternSave,
     storePatternRemove
   } from "./userstore.js";
@@ -50,7 +52,6 @@
   import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
   import SliderVal from "./SliderVal.svelte"
 
-  let openHelp = false;
   let heading, helpstrs;
   $: {
     let id = $pStrand.patternID;
@@ -75,22 +76,33 @@
       helpstrs = [];
     }
   }
+
+  let openHelp = false;
   const dohelp   = () => { openHelp = !openHelp; }
+
   const doclear  = () => { userClearPattern(); }
 
   let openSave = false;
-  const saveDialog   = () => { openSave = !openSave; }
-
   let savename, savedesc;
   const dosave = () =>
   {
-    storePatternSave(savename, savedesc);
+    storePatternSave(savename, savedesc, $pStrand.patternCmds);
+    storePatternInit();
+
+    savename = savedesc = '';
     openSave = false;
   }
 
+  let openRemove = false;
   const doremove = () =>
   {
-    storePatternRemove();
+    storePatternRemove($pStrand.patternName);
+    storePatternInit();
+
+    userClearPattern();
+    $pStrand.patternID = 0;
+
+    openRemove = false;
   }
 
 </script>
@@ -130,7 +142,7 @@
               {#if $pStrand.isCustom}
                 <button
                   class="button button-pattern"
-                  on:click={doremove}
+                  on:click={() => {openRemove=true;}}
                   >Remove
                 </button>
               {/if}
@@ -138,13 +150,13 @@
               <button
                 class="button button-pattern"
                 on:click={doclear}
-                disabled={$pStrand.patternStr == ''}
+                disabled={$pStrand.patternCmds == ''}
                 >Clear
               </button>
               <button
                 class="button button-pattern"
-                on:click={saveDialog}
-                disabled={$pStrand.patternStr == ''}
+                on:click={() => { openSave = !openSave; }}
+                disabled={$pStrand.patternCmds == ''}
                 >Save
               </button>
             {/if}
@@ -172,7 +184,7 @@
             {#if $pStrand.isCustom}
               <button
                 class="button button-pattern"
-                on:click={doremove}
+                on:click={() => {openRemove=true;}}
                 >Remove
               </button>
             {/if}
@@ -180,13 +192,13 @@
             <button
               class="button button-pattern"
               on:click={doclear}
-              disabled={$pStrand.patternStr == ''}
+              disabled={$pStrand.patternCmds == ''}
               >Clear
             </button>
             <button
               class="button button-pattern"
-              on:click={saveDialog}
-              disabled={$pStrand.patternStr == ''}
+              on:click={() => { openSave = !openSave; }}
+              disabled={$pStrand.patternCmds == ''}
               >Save
             </button>
           {/if}
@@ -268,8 +280,22 @@
         bind:value={savedesc}
       />
     </FormGroup>
-    <Button type="submit">Submit</Button>
+    <ButtonSet>
+      <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
+      <Button type="submit">Submit</Button>
+    </ButtonSet>
   </Form>
+</Modal>
+<Modal
+  passiveModal
+  modalHeading={`Remove Current Pattern?`}
+  bind:open={openRemove}
+  on:close
+  >
+  <ButtonSet>
+    <Button kind="secondary" on:click={() => {openRemove = false;}}>Cancel</Button>
+    <Button on:click={doremove}>Remove</Button>
+  </ButtonSet>
 </Modal>
 
 <style>

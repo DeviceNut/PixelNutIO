@@ -7,73 +7,102 @@ import {
   aCustomDesc
 } from './globals.js';
 
-const SavePatternKey      = "PixelNut-Patterns";
-const SavePatternKeyCmd   = "PixelNut-Names-";
-const SavePatternKeyDesc  = "PixelNut-Descs-";
+const SavePatternSeparator  = ',';
+const SavePatternNames      = "PixelNut-Names";
+const SavePatternKeyCmd     = "PixelNut-Cmds-";
+const SavePatternKeyDesc    = "PixelNut-Desc-";
 
 ///////////////////////////////////////////////////////////
 
 export const storePatternInit = () =>
 {
   // if device has a saved pattern:
-  // retrieve command and search for built-in
+  // retrieve command and search for built-ins
   // else set to first one (Rainbow Ripple)
 
-  const names = localStorage.getItem(SavePatternKey);
+  let lpats = [];
+  let ldesc = [];
+
+  const names = localStorage.getItem(SavePatternNames);
   if ((names != null) && (names != ''))
   {
-    let lpats = [];
-    let ldesc = [];
-    let list = names.split(',');
+    let nlist = names.split(SavePatternSeparator);
     let bcount = get(aBuiltinPats).length;
 
-    console.log('list=', list);
+    //console.log('nlist=', nlist);
 
-    let obj = { id: `${++bcount}`, text: 'Purple Please', cmd: 'E0 H270 T G' };
-    lpats.push(obj);
-    ldesc.push(["Just a simple solid purple color."]);
-
-    for (const text of list)
+    for (const text of nlist)
     {
       if (text == '') continue;
       let cmd = localStorage.getItem(SavePatternKeyCmd+text);
       let adesc = localStorage.getItem(SavePatternKeyDesc+text);
-      console.log('cmd=', cmd);
-      console.log('adesc=', adesc);
+
+      //console.log('cmd=', cmd);
+      //console.log('adesc=', adesc);
 
       if (cmd != '')
       {
-        obj = { id: `${++bcount}`, text: text, cmd: cmd };
+        const obj = { id:`${++bcount}`, text:text, cmd:cmd };
         lpats.push(obj);
 
         let dlist = [adesc];
-        console.log('dlist=', dlist);
         ldesc.push(dlist);
+
+        //console.log('dlist=', dlist);
       }
     }
-  
-    aCustomPats.set(lpats);
-    aCustomDesc.set(ldesc);
   }
+  
+  aCustomPats.set(lpats);
+  aCustomDesc.set(ldesc);
 }
 
-export const storePatternSave = (text, desc) =>
+export const storePatternSave = (name, desc, cmds) =>
 {
-  console.log(`saving: ${text}:${desc}`);
+  if (name && desc && cmds)
+  {
+    //console.log(`saving: ${name}:${desc}`);
 
-  let names = localStorage.getItem(SavePatternKey);
-  if (names == null) names = '';
-  else if (names != '') names = names.concat(',');
-  names = names.concat(text);
-  console.log('names=', names);
-  localStorage.setItem(SavePatternKey, names);
-
-  let cmd = get(pStrand).patternStr;
-  localStorage.setItem(SavePatternKeyCmd+text, cmd);
-  localStorage.setItem(SavePatternKeyDesc+text, desc);
+    let names = localStorage.getItem(SavePatternNames);
+    if (names == null) names = '';
+    else if (names != '') names = names.concat(SavePatternSeparator);
+    names = names.concat(name);
+  
+    //console.log('names=', names);
+  
+    localStorage.setItem(SavePatternNames, names);
+    localStorage.setItem(SavePatternKeyCmd+name, cmds);
+    localStorage.setItem(SavePatternKeyDesc+name, desc);
+  }
 }
 
 export const storePatternRemove = (name) =>
 {
-  console.log(`removing: ${name}`);
+  let found = false;
+
+  let names = localStorage.getItem(SavePatternNames);
+  if (names == null) names = '';
+
+  if (names != '')
+  {
+    let nlist = names.split(SavePatternSeparator);
+    for (const [i, n] of nlist.entries())
+    {
+      if (n === name)
+      {
+        //console.log(`removing: ${name}`);
+
+        nlist.splice(i, 1);
+        const str = nlist.join(SavePatternSeparator);
+        localStorage.setItem(SavePatternNames, str);
+        localStorage.removeItem(SavePatternKeyCmd+name);
+        localStorage.removeItem(SavePatternKeyDesc+name);
+
+        found = true;
+        break;
+      }
+    }
+  }
+
+  if (!found) console.error(`Failed to remove pattern: ${name}`);
 }

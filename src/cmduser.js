@@ -87,7 +87,7 @@ function sendCmd(cmdstr)
 
 export const sendEntireCmdStr = () =>
 {
-  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternStr));
+  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternCmds));
 }
 
 function sendCmdCheck(cmdstr)
@@ -132,7 +132,7 @@ export const updateTriggerLayers = () =>
 {
   makeTrigSourceList();
 
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let atrigs = get(aTriggers);
 
   // update index into trigger source list for all enabled layers
@@ -234,7 +234,7 @@ export const userStrandCombine = (combine) =>
       }
     }
 
-    pStrand.set(get(pStrand)); // triggers update
+    aStrands.set(get(aStrands)); // triggers update
   }
 }
 
@@ -269,7 +269,7 @@ export const userStrandSelect = (combine) =>
         strandCopyAll();
 
         // mirror current strand by sending entire current command to newly selected strand
-        writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternStr));
+        writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternCmds));
       }
       else if (!nowon && combine && (s == cur))
       {
@@ -305,7 +305,7 @@ export const userStrandSelect = (combine) =>
 // user just selected pattern from list
 export const userSetPattern = () =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let id = parseInt( strand.patternID );
   let name = '';
   let cmdstr = '';
@@ -328,7 +328,7 @@ export const userSetPattern = () =>
       strand.patternName = name;
       strand.isCustom = iscustom;
   
-      if (get(modeCustom)) strand.patternID = '0';
+      if (get(modeCustom)) strand.patternID = 0;
     }
     // software bug: all pre-builts are valid
     else console.error('Parse Failed: ', cmdstr);
@@ -354,7 +354,7 @@ export const userClearPattern = () =>
 // user just edited pattern string - DISABLED FIXME
 export const userEditPattern = () =>
 {
-  let cmdstr = get(pStrand).patternStr;
+  let cmdstr = get(pStrand).patternCmds;
 
   strandClearAll();
 
@@ -363,7 +363,7 @@ export const userEditPattern = () =>
     strandCopyAll();
     sendEntireCmdStr();
   }
-  else get(pStrand).patternStr = get(pStrand).backupStr;
+  else get(pStrand).patternCmds = get(pStrand).backupCmds;
 }
 */
 
@@ -451,7 +451,7 @@ export const userSetOverMode = () =>
 
 export const userSetProps = (track) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
 
   if (track == undefined)
   {
@@ -507,7 +507,7 @@ export const userSendTrigger = () =>
 
 export const userSetDrawEffect = (track) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let pindex = strand.tracks[track].layers[DRAW_LAYER].pluginIndex;
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex != pindex)
@@ -527,7 +527,7 @@ export const userSetDrawEffect = (track) =>
 
 export const userSetOverrides = (track) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let bits = makeOrideBits(strand, track);
 
   if (makeOrideBits(get(dStrands)[get(idStrand)], track) != bits)
@@ -545,7 +545,7 @@ export const userSetOverrides = (track) =>
 
 export const userSetStart = (track) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let start = strand.tracks[track].drawProps.pcentStart;
 
   if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart != start)
@@ -571,7 +571,7 @@ export const userSetStart = (track) =>
 
 export const userSetFinish = (track) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let finish = strand.tracks[track].drawProps.pcentFinish;
 
   if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish != finish)
@@ -665,7 +665,7 @@ export const userSetTrigMain = (track, layer) =>
 
 export const userSetFilterEffect = (track, layer) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let pindex = strand.tracks[track].layers[layer].pluginIndex;
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex != pindex)
@@ -676,7 +676,7 @@ export const userSetFilterEffect = (track, layer) =>
     strand.tracks[track].layers[layer].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
-    console.log('setfilter: ', pindex, bits);
+    //console.log('setfilter: ', pindex, bits);
     updateTriggerLayers();
 
     // must resend entire command when an effect is changed
@@ -686,7 +686,7 @@ export const userSetFilterEffect = (track, layer) =>
 
 export const userSetTrigLayer = (track, layer) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let dolayer = strand.tracks[track].layers[layer].trigDoLayer;
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer != dolayer)
@@ -709,7 +709,7 @@ export const userSetTrigLayer = (track, layer) =>
 // if this is called then dolayer has already been enabled
 export const userSetTrigNums = (track, layer) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let tracknum = strand.tracks[track].layers[layer].trigTrackNum;
   let layernum = strand.tracks[track].layers[layer].trigLayerNum;
 
@@ -730,7 +730,7 @@ export const userSetTrigNums = (track, layer) =>
 // must recreate entire command string if no-triggering is chosen
 export const userSetTrigType = (track, layer) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let valstr = strand.tracks[track].layers[layer].trigTypeStr;
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr != valstr)
@@ -767,7 +767,7 @@ export const userSetTrigType = (track, layer) =>
 
 export const userSetTrigRandom = (track, layer) =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let dorep = strand.tracks[track].layers[layer].trigDoRepeat;
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat != dorep)

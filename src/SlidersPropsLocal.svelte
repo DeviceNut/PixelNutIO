@@ -45,8 +45,8 @@
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
-                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+               !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
       max={359}
     />
 
@@ -54,16 +54,16 @@
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.pcentWhite}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overWhite) ||
-                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
+               !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
     />
 
     <SliderVal name='Count&nbsp;'
       onchange={setprops}
       bind:cur={$pStrand.tracks[track].drawProps.pcentCount}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overCount) ||
-                !($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
-                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
+               !($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
     />
   </Column>
 

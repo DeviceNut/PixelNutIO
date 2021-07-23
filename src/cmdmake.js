@@ -60,24 +60,38 @@ export const makeOrideBits = (p, track) =>
 export const convTrackLayerToID = (track, layer) =>
 {
   let layerid = 0;
+  let strand = get(pStrand);
 
-  if (track >= get(pStrand).tactives)
+  if (track >= strand.tactives)
   {
     console.error(`No track=${track+1}`);
     track = get(pStrand).tactives-1;
   }
 
-  for (let i = 0; i < track; ++i)
-    layerid += get(pStrand).tracks[i].lactives;
-
-  if (layer >= get(pStrand).tracks[track].lactives)
+  if (layer >= strand.tracks[track].lactives)
   {
     console.error(`No layer=${layer+1}`);
-    layer = get(pStrand).tracks[track].lactives-1;
+    layer = strand.tracks[track].lactives-1;
   }
 
-  //console.log('conv: ', track, layer, ' => ', layerid+layer);
-  return layerid + layer;
+  for (let i = 0; i < track; ++i)
+  {
+    for (let j = 0; j < strand.tracks[i].lactives; ++j)
+    {
+      if ((strand.tracks[i].layers[j].pluginIndex > 0) &&
+          !strand.tracks[i].layers[j].mute)
+        ++layerid
+    }
+  }
+  for (let j = 0; j < layer; ++j)
+  {
+    if ((strand.tracks[track].layers[j].pluginIndex > 0) &&
+        !strand.tracks[track].layers[j].mute)
+      ++layerid
+  }
+
+  //console.log('conv: ', track, layer, ' => ', layerid);
+  return layerid;
 }
 
 // combine all layer cmds into command output string
@@ -108,13 +122,13 @@ export const makeEntireCmdStr = () =>
       if (j == DRAW_LAYER)
       {
         drawplugin = (layer.pluginIndex > 0) && !layer.mute;
+        tplugbits |= layer.pluginBits;
 
         if (drawplugin)
         {
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
           ridebits |= makeOrideBits(strand, i);
           splugbits |= layer.pluginBits;
-          tplugbits |= layer.pluginBits;
         }
         else ismute = true; // DEBUG
       }
@@ -140,8 +154,8 @@ export const makeEntireCmdStr = () =>
   }
   else mainEnabled.set(false);
 
-  get(pStrand).patternStr = cmdstr;
-  //get(pStrand).backupStr = cmdstr;
+  get(pStrand).patternCmds = cmdstr;
+  //get(pStrand).backupCmds = cmdstr;
 
   bitsOverride.set(ridebits);
   bitsEffects.set(splugbits);

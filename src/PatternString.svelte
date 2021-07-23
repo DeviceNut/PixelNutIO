@@ -11,7 +11,7 @@
   $: {
     if ($refreshCmdStr)
     {
-      $pStrand.patternStr = $pStrand.patternStr;
+      $pStrand.patternCmds = $pStrand.patternCmds;
       $refreshCmdStr = false;
     }
   } 
@@ -31,7 +31,7 @@
 <TextInput
   size="sm" disabled
   on:change={userEditPattern}
-  bind:value={$pStrand.patternStr}
+  bind:value={$pStrand.patternCmds}
 />
 
 -->

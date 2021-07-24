@@ -89,12 +89,12 @@
     <div style="margin-top:5px; padding:5px; background-color:#222322;">
 
       <Checkbox labelText="Trigger from main controls"
-        style="padding: 3px;"
+        style="padding:3px;"
         on:check={setMain}
         bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
       />
 
-      <div style="margin-bottom: 7px; padding: 3px;">
+      <div style="margin-bottom:7px; padding:3px;">
         <Checkbox labelText="Trigger from Track/Layer"
           style="display:inline-block;"
           on:check={setEnable}

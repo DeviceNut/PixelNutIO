@@ -174,7 +174,7 @@ export const strandCopyTop = () =>
       if (strand.selected)
       {
         strand.showCustom   = ps.showCustom;
-        strand.haveCustom     = ps.haveCustom;
+        strand.haveCustom   = ps.haveCustom;
         strand.patternID    = ps.patternID;
         strand.patternName  = ps.patternName;
         strand.patternCmds  = ps.patternCmds;

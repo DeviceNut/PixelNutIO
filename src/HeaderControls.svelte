@@ -2,9 +2,13 @@
 
   import MediaQuery from "svelte-media-query";
   import { Modal } from "carbon-components-svelte";
-  import { userSetDevName, userSendPause } from "./cmduser.js"
 
-  export let devname;
+  import { deviceName } from './globals.js';
+
+  import {
+    userSetDevName,
+    userSendPause
+  } from "./cmduser.js"
 
   const goback = () => { history.back() }
 
@@ -12,18 +16,20 @@
   let textPause = '';
   $: textPause = (isPaused ? 'Resume' : 'Pause');
 
-  const dopause = () =>
+  const dopause = () => { userSendPause(isPaused = !isPaused); }
+
+  let openlinks = false;
+  const dolinks = () =>
   {
-    userSendPause(isPaused = !isPaused);
+    console.log('Show Links Modal'); // TODO
+    openlinks = !openlinks;
   }
 
-  let open = false;
-  //const goweb = () =>  { window.open("https://www.devicenut.com", "_blank"); }
-  const golinks = () =>  { open = !open; }
-
+  let opendocs = false;
   const dodocs = () =>
   {
     console.log('Show Docs Page'); // TODO
+    opendocs = !opendocs;
   }
 
 </script>
@@ -35,14 +41,14 @@
         class="title"
         size=32 maxlength=32
         on:change={userSetDevName}
-        bind:value={devname}
+        bind:value={$deviceName}
       />
     </div>
     <div class="header2">
       <button on:click={goback}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
-      <button on:click={golinks} class="button rite" >Links</button>
+      <button on:click={dolinks} class="button rite" >Links</button>
     </div>
   {/if}
 </MediaQuery>
@@ -55,16 +61,16 @@
         class="title"
         size=32 maxlength=32
         on:change={userSetDevName}
-        bind:value={devname}
+        bind:value={$deviceName}
       />
       <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
-      <button on:click={golinks} class="button rite" >Links</button>
+      <button on:click={dolinks} class="button rite" >Links</button>
     </div>
   {/if}
 </MediaQuery>
 
 <Modal
-  bind:open
+  bind:openlinks
   passiveModal
   modalHeading={"Links to Code and Websites"}
   on:close

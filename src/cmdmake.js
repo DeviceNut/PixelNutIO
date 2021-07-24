@@ -137,7 +137,7 @@ export const makeEntireCmdStr = () =>
       }
 
       else ismute = true; // DEBUG
-      console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
+      //console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
 
     // track plugin bits includes bits from all layers

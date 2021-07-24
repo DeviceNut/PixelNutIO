@@ -10,8 +10,6 @@
   import PanelMain from "./PanelMain.svelte"
   import PanelCustom from "./PanelCustom.svelte";
 
-  export let devname;
-
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customizer");
 
@@ -28,7 +26,7 @@
 </script>
 
 <main>
-  <HeaderControls {devname}/>
+  <HeaderControls/>
 
   <div class="panel">
 

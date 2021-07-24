@@ -3,6 +3,7 @@ import { get } from 'svelte/store';
 import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
+  cmdStr_DeviceName    ,
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
@@ -26,6 +27,8 @@ import {
 } from './pixelnut.js';
 
 import {
+  defDeviceName,
+  deviceName,
   nStrands,
   idStrand,
   pStrand,
@@ -162,7 +165,7 @@ export const updateTriggerLayers = () =>
 
         if (!found)
         {
-          console.log('disabling trigger (track,layer): ', track, layer);
+          //console.log('disabling trigger (track,layer): ', track, layer);
 
           strand.tracks[track].layers[layer].trigDoLayer = false;
           strand.tracks[track].layers[layer].trigListDex = 0;
@@ -187,7 +190,10 @@ export const updateTriggerLayers = () =>
 
 export const userSetDevName = () =>
 {
-  console.log('set device name'); // TODO
+  let name = get(deviceName);
+  // TODO disallow some chars for device name
+  if (name == '') deviceName.set(defDeviceName);
+  else writeDevice(cmdStr_DeviceName.concat(name));
 }
 
 export const userSendPause = (enable) =>

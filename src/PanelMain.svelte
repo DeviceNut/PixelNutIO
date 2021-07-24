@@ -15,7 +15,8 @@
     TextInput,
     TextArea,
     Button,
-    ButtonSet
+    ButtonSet,
+    Checkbox
   } from "carbon-components-svelte";
 
   import { MAX_FORCE } from "./pixelnut.js";
@@ -50,6 +51,29 @@
   import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
   import SliderVal from "./SliderVal.svelte"
 
+  function copyToClipboard()
+  {
+    let textArea = document.createElement("textarea");
+
+    textArea.value = $pStrand.patternCmds;
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try
+    {
+      let ok = document.execCommand('copy');
+      if (!ok) console.error('Failed copying pattern string clipboard');
+    }
+    catch (err)
+    {
+      console.error('Failed copying clipboard: ', err);
+    }
+
+    document.body.removeChild(textArea);
+  }
+
   let heading, helpstrs;
   $: {
     let id = $pStrand.patternID;
@@ -82,10 +106,18 @@
 
   let openSave = false;
   let savename, savedesc;
+  let copyclip = false;
+
   const dosave = () =>
   {
     storePatternSave(savename, savedesc, $pStrand.patternCmds);
     storePatternInit();
+
+    if (copyclip)
+    {
+      copyToClipboard();
+      copyclip = false;
+    }
 
     savename = savedesc = '';
     openSave = false;
@@ -281,6 +313,10 @@
         bind:value={savedesc}
       />
     </FormGroup>
+    <Checkbox labelText="Copy command string to clipboard"
+      style="margin-top:-7px; margin-bottom:17px;"
+      bind:checked={copyclip}
+    />
     <ButtonSet>
       <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
       <Button type="submit">Submit</Button>

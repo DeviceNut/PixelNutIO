@@ -33,12 +33,12 @@
         {
           let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
 
-          if (tnum == tupper+1)
+          if (tnum === tupper+1)
           {
             $pStrand.tracks[i].layers[j].trigTrackNum = tupper;
             found = true;
           }
-          else if (tnum == tupper)
+          else if (tnum === tupper)
           {
             $pStrand.tracks[i].layers[j].trigTrackNum = tupper+1;
             found = true;
@@ -66,13 +66,13 @@
           let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
           let lnum = $pStrand.tracks[i].layers[j].trigLayerNum;
 
-          if ((tnum == track+1) && (lnum == lupper+1))
+          if ((tnum === track+1) && (lnum === lupper+1))
           {
             $pStrand.tracks[i].layers[j].trigLayerNum = lupper;
             $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper;
             found = true;
           }
-          else if ((tnum == track+1) && (lnum == lupper))
+          else if ((tnum === track+1) && (lnum === lupper))
           {
             $pStrand.tracks[i].layers[j].trigLayerNum = lupper+1;
             $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper+1;
@@ -89,7 +89,7 @@
 
   const moveup = () =>
   {
-    if (layer == 0)
+    if (layer === 0)
          checkTrigTrack(track+1);
     else checkTrigLayer(layer+1);
 
@@ -103,7 +103,7 @@
 
   const movedn = () =>
   {
-    if (layer == 0)
+    if (layer === 0)
          checkTrigTrack(track);
     else checkTrigLayer(layer);
 
@@ -117,13 +117,13 @@
  
 </script>
  
-{#if (layer == 0)}
+{#if (layer === 0)}
   {#if (track > 0)}
   <button class="button" on:click={movedn} >Dn</button>
   {/if}
   <button class="button" on:click={moveup} disabled={track+1 >= $pStrand.tactives} >Up</button>
 {:else}
-{#if (layer > 1)}
+  {#if (layer > 1)}
   <button class="button" on:click={movedn} >Dn</button>
   {/if}
   <button class="button" on:click={moveup} disabled={layer+1 >= $pStrand.tracks[track].lactives} >Up</button>

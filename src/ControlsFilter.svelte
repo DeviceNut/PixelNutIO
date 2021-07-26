@@ -52,6 +52,6 @@
   </p>
 </Row>
 
-{#if ($pStrand.tracks[track].layers[layer].pluginIndex != 0) }
+{#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
   <ControlsTrigger {track} {layer} />
 {/if}

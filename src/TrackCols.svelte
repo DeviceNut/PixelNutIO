@@ -10,12 +10,12 @@
 
 </script>
 
-<div class="panel" class:col1={numcols == 1} class:col2={numcols == 2}>
+<div class="panel" class:col1={numcols === 1} class:col2={numcols === 2}>
   <Grid>
     <Row>
       <Column>
         {#each Array($pStrand.tactives) as _,track}
-          {#if ((track % numcols) == 0) }
+          {#if ((track % numcols) === 0) }
             <OneTrack {track} />
           {/if}
         {/each}
@@ -23,7 +23,7 @@
       {#if (numcols > 1) }
         <Column style="margin-left: 5px;">
           {#each Array($pStrand.tactives) as _,track}
-            {#if ((track % numcols) == 1) }
+            {#if ((track % numcols) === 1) }
               <OneTrack {track} />
             {/if}
           {/each}
@@ -32,7 +32,7 @@
       {#if (numcols > 2) }
         <Column style="margin-left: 5px;">
           {#each Array($pStrand.tactives) as _,track}
-            {#if ((track % numcols) == 2) }
+            {#if ((track % numcols) === 2) }
               <OneTrack {track} />
             {/if}
           {/each}

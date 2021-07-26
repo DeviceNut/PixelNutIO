@@ -180,13 +180,13 @@
               <button
                 class="button button-pattern"
                 on:click={doclear}
-                disabled={$pStrand.patternCmds == ''}
+                disabled={$pStrand.patternCmds === ''}
                 >Clear
               </button>
               <button
                 class="button button-pattern"
                 on:click={() => { openSave = !openSave; }}
-                disabled={$pStrand.patternCmds == ''}
+                disabled={$pStrand.patternCmds === ''}
                 >Save
               </button>
             {/if}
@@ -222,13 +222,13 @@
             <button
               class="button button-pattern"
               on:click={doclear}
-              disabled={$pStrand.patternCmds == ''}
+              disabled={$pStrand.patternCmds === ''}
               >Clear
             </button>
             <button
               class="button button-pattern"
               on:click={() => { openSave = !openSave; }}
-              disabled={$pStrand.patternCmds == ''}
+              disabled={$pStrand.patternCmds === ''}
               >Save
             </button>
           {/if}
@@ -247,7 +247,7 @@
             max={MAX_FORCE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
-            disabled={($pStrand.patternCmds == '') ||
+            disabled={($pStrand.patternCmds === '') ||
                      !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
@@ -257,7 +257,7 @@
               <button
                 class="button"
                 on:click={userSendTrigger}
-                disabled={($pStrand.patternCmds == '') ||
+                disabled={($pStrand.patternCmds === '') ||
                          !($pStrand.bitsEffects & pluginBit_TRIGGER)}
                 >Trigger
               </button>
@@ -274,7 +274,7 @@
           <button
             class="button"
             on:click={userSendTrigger}
-            disabled={($pStrand.patternCmds == '') ||
+            disabled={($pStrand.patternCmds === '') ||
                      !($pStrand.bitsEffects & pluginBit_TRIGGER)}
             >Trigger
           </button>

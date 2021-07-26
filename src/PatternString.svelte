@@ -21,7 +21,7 @@
 <!--
 <div style="padding: 7px 0 5px 0; font-size: .9em;">
   <span>Custom Pattern:</span>
-  {#if ($pStrand.patternName != '')}
+  {#if ($pStrand.patternName !== '')}
     <span style="float:right;">
       Original Pattern: "{$pStrand.patternName}"
     </span>

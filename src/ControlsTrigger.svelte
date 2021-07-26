@@ -124,7 +124,7 @@
         <RadioButton labelText="Auto" value="auto" />
       </RadioButtonGroup>
 
-      {#if ($pStrand.tracks[track].layers[layer].trigTypeStr == "auto") }
+      {#if ($pStrand.tracks[track].layers[layer].trigTypeStr === "auto") }
         <div style="margin:12px 15px 0 15px;">
           <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
           <input type="number"

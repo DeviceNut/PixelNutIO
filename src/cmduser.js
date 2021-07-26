@@ -76,7 +76,7 @@ function sendCmd(cmdstr)
 
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if ((s != sid) && get(aStrands)[s].selected)
+    if ((s !== sid) && get(aStrands)[s].selected)
     {
       writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdstr));
       didone = true;
@@ -93,14 +93,14 @@ export const sendEntireCmdStr = () =>
 
 function sendCmdCheck(cmdstr)
 {
-  if (get(pStrand).patternCmds != '')
+  if (get(pStrand).patternCmds !== '')
     sendCmd(cmdstr);
 }
 
 // send command (and optional value) to entire strand
 function sendStrandCmd(cmdstr, cmdval)
 {
-  if (cmdval != undefined)
+  if (cmdval !== undefined)
         sendCmdCheck(cmdstr.concat(cmdval));
   else sendCmdCheck(cmdstr);
 }
@@ -108,7 +108,7 @@ function sendStrandCmd(cmdstr, cmdval)
 // send command (and optional value) to specific layer
 function sendLayerCmd(id, cmdstr, cmdval)
 {
-  if (cmdval != undefined)
+  if (cmdval !== undefined)
     cmdstr = cmdstr.concat(cmdval);
 
   // don't need to set back to top-of-stack?
@@ -164,7 +164,7 @@ export const updateTriggerLayers = () =>
         {
           if (item.id > 0) // not placeholder entry
           {
-            if ((item.tnum == tnum) && (item.lnum == lnum))
+            if ((item.tnum === tnum) && (item.lnum === lnum))
             {
               found = true;
               strand.tracks[track].layers[layer].trigListDex = i;
@@ -196,7 +196,7 @@ export const userSetDevName = () =>
 {
   let name = get(deviceName);
   // TODO disallow some chars for device name
-  if (name == '') deviceName.set(defDeviceName);
+  if (name === '') deviceName.set(defDeviceName);
   else writeDevice(cmdStr_DeviceName.concat(name));
 }
 
@@ -231,7 +231,7 @@ export const userStrandCombine = (combine) =>
     // must disable all but the current one
     for (let i = 0; i < get(nStrands); ++i)
     {
-      if (i == get(idStrand))
+      if (i === get(idStrand))
       {
         get(aStrands)[i].selected = true;
         get(eStrands)[i] = true;
@@ -262,9 +262,9 @@ export const userStrandSelect = (combine) =>
     let wason = get(eStrands)[s];
     let nowon = get(aStrands)[s].selected;
 
-    if (wason != nowon)
+    if (wason !== nowon)
     {
-      if (nowon && !combine && (s != cur))
+      if (nowon && !combine && (s !== cur))
       {
         // user selected a different strand
         get(aStrands)[cur].selected = false;
@@ -272,7 +272,7 @@ export const userStrandSelect = (combine) =>
         get(eStrands)[cur] = false;
         get(eStrands)[s] = true;
       }
-      else if (nowon && combine && (s != cur))
+      else if (nowon && combine && (s !== cur))
       {
         get(eStrands)[cur] = true;
         strandCopyAll();
@@ -280,7 +280,7 @@ export const userStrandSelect = (combine) =>
         // mirror current strand by sending entire current command to newly selected strand
         writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternCmds));
       }
-      else if (!nowon && combine && (s == cur))
+      else if (!nowon && combine && (s === cur))
       {
         // disabled the current strand, so set to first enabled one
         for (let ss = 0; ss < get(nStrands); ++ss)
@@ -293,7 +293,7 @@ export const userStrandSelect = (combine) =>
         }
         get(eStrands)[s] = false;
       }
-      else if (nowon && (s == cur))
+      else if (nowon && (s === cur))
       {
         // must resend entire command string
         // after having all strands disabled
@@ -381,10 +381,10 @@ export const userEditPattern = () =>
 
 export const userSetBright = (track) =>
 {
-  if (track == undefined)
+  if (track === undefined)
   {
     let bright = get(pStrand).pcentBright;
-    if (get(dStrands)[get(idStrand)].pcentBright != bright)
+    if (get(dStrands)[get(idStrand)].pcentBright !== bright)
     {
       get(dStrands)[get(idStrand)].pcentBright = bright;
 
@@ -395,7 +395,7 @@ export const userSetBright = (track) =>
   else
   {
     let bright = get(pStrand).tracks[track].drawProps.pcentBright;
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright != bright)
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright !== bright)
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
 
@@ -409,10 +409,10 @@ export const userSetBright = (track) =>
 
 export const userSetDelay = (track) =>
 {
-  if (track == undefined)
+  if (track === undefined)
   {
     let delay = get(pStrand).msecsDelay;
-    if (get(dStrands)[get(idStrand)].msecsDelay != delay)
+    if (get(dStrands)[get(idStrand)].msecsDelay !== delay)
     {
       get(dStrands)[get(idStrand)].msecsDelay = delay;
 
@@ -423,7 +423,7 @@ export const userSetDelay = (track) =>
   else
   {
     let delay = get(pStrand).tracks[track].drawProps.msecsDelay;
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay != delay)
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay !== delay)
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
 
@@ -438,7 +438,7 @@ export const userSetDelay = (track) =>
 export const userSetRotate = () =>
 {
   let firstp = get(pStrand).firstPixel;
-  if (get(dStrands)[get(idStrand)].firstPixel != firstp)
+  if (get(dStrands)[get(idStrand)].firstPixel !== firstp)
   {
     get(dStrands)[get(idStrand)].firstPixel = firstp;
 
@@ -450,7 +450,7 @@ export const userSetRotate = () =>
 export const userSetOverMode = () =>
 {
   let oride = get(pStrand).doOverride;
-  if (get(dStrands)[get(idStrand)].doOverride != oride)
+  if (get(dStrands)[get(idStrand)].doOverride !== oride)
   {
     get(dStrands)[get(idStrand)].doOverride = oride;
 
@@ -463,15 +463,15 @@ export const userSetProps = (track) =>
 {
   const strand = get(pStrand);
 
-  if (track == undefined)
+  if (track === undefined)
   {
     let hue   = strand.degreeHue;
     let white = strand.pcentWhite;
     let count = strand.pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].degreeHue  != hue)   ||
-        (get(dStrands)[get(idStrand)].pcentWhite != white) ||
-        (get(dStrands)[get(idStrand)].pcentCount != count))
+    if ((get(dStrands)[get(idStrand)].degreeHue  !== hue)   ||
+        (get(dStrands)[get(idStrand)].pcentWhite !== white) ||
+        (get(dStrands)[get(idStrand)].pcentCount !== count))
     {
       get(dStrands)[get(idStrand)].degreeHue  = hue;
       get(dStrands)[get(idStrand)].pcentWhite = white;
@@ -487,9 +487,9 @@ export const userSetProps = (track) =>
     let white = strand.tracks[track].drawProps.pcentWhite;
     let count = strand.tracks[track].drawProps.pcentCount;
 
-    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  != hue)   ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite != white) ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount != count))
+    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  !== hue)   ||
+        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite !== white) ||
+        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount !== count))
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  = hue;
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
@@ -520,7 +520,7 @@ export const userSetDrawEffect = (track) =>
   const strand = get(pStrand);
   let pindex = strand.tracks[track].layers[DRAW_LAYER].pluginIndex;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex != pindex)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex !== pindex)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex = pindex;
 
@@ -542,7 +542,7 @@ export const userSetOverrides = (track) =>
   const strand = get(pStrand);
   let bits = makeOrideBits(strand, track);
 
-  if (makeOrideBits(get(dStrands)[get(idStrand)], track) != bits)
+  if (makeOrideBits(get(dStrands)[get(idStrand)], track) !== bits)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue   = strand.tracks[track].drawProps.overHue;
     get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = strand.tracks[track].drawProps.overWhite;
@@ -560,7 +560,7 @@ export const userSetStart = (track) =>
   const strand = get(pStrand);
   let start = strand.tracks[track].drawProps.pcentStart;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart != start)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart !== start)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart = start;
 
@@ -586,7 +586,7 @@ export const userSetFinish = (track) =>
   const strand = get(pStrand);
   let finish = strand.tracks[track].drawProps.pcentFinish;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish != finish)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish !== finish)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish = finish;
 
@@ -611,7 +611,7 @@ export const userSetOwrite = (track) =>
 {
   let orval = get(pStrand).tracks[track].drawProps.orPixelVals;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals != orval)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals !== orval)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = orval;
 
@@ -626,7 +626,7 @@ export const userSetDirect = (track) =>
 {
   let rdir = get(pStrand).tracks[track].drawProps.reverseDir;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir != rdir)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
 
@@ -639,11 +639,11 @@ export const userSetDirect = (track) =>
 
 export const userSetTrigStart = (track, layer) =>
 {
-  if (layer == undefined) layer = 0;
+  if (layer === undefined) layer = 0;
 
   let dostart = get(pStrand).tracks[track].layers[layer].trigAutoStart;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart != dostart)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart !== dostart)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart = dostart;
 
@@ -657,11 +657,11 @@ export const userSetTrigMain = (track, layer) =>
   // TODO: if not new firmware then must send
   //       entire command string if turning off
 
-  if (layer == undefined) layer = 0;
+  if (layer === undefined) layer = 0;
 
   let domain = get(pStrand).tracks[track].layers[layer].trigFromMain;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain != domain)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain !== domain)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = domain;
 
@@ -680,7 +680,7 @@ export const userSetFilterEffect = (track, layer) =>
   const strand = get(pStrand);
   let pindex = strand.tracks[track].layers[layer].pluginIndex;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex != pindex)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
 
@@ -703,7 +703,7 @@ export const userSetTrigLayer = (track, layer) =>
   const strand = get(pStrand);
   let dolayer = strand.tracks[track].layers[layer].trigDoLayer;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer != dolayer)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer !== dolayer)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = dolayer;
 
@@ -727,8 +727,8 @@ export const userSetTrigNums = (track, layer) =>
   let tracknum = strand.tracks[track].layers[layer].trigTrackNum;
   let layernum = strand.tracks[track].layers[layer].trigLayerNum;
 
-  if ((get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum != tracknum) ||
-      (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum != layernum))
+  if ((get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum !== tracknum) ||
+      (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum !== layernum))
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tracknum;
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = layernum;
@@ -747,25 +747,25 @@ export const userSetTrigType = (track, layer) =>
   const strand = get(pStrand);
   let valstr = strand.tracks[track].layers[layer].trigTypeStr;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr != valstr)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr !== valstr)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = valstr;
 
-    if (valstr == 'none')
+    if (valstr === 'none')
     {
       updateLayerVals(track, layer);
 
       // must resend entire command to remove trigger
       sendEntireCmdStr();
     }
-    else if (valstr == 'once')
+    else if (valstr === 'once')
     {
       updateLayerVals(track, layer);
 
       let layerid = convTrackLayerToID(track, layer);
       sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for 'once' type
     }
-    else if (valstr == 'auto')
+    else if (valstr === 'auto')
     {
       if (!userSetTrigDrange(track, layer))
       {
@@ -784,7 +784,7 @@ export const userSetTrigRandom = (track, layer) =>
   const strand = get(pStrand);
   let dorep = strand.tracks[track].layers[layer].trigDoRepeat;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat != dorep)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat !== dorep)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = dorep;
 
@@ -811,7 +811,7 @@ export const userSetTrigCount = (track, layer) =>
 {
   let count = get(pStrand).tracks[track].layers[layer].trigRepCount;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount != count)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount !== count)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
 
@@ -828,7 +828,7 @@ export const userSetTrigDmin = (track, layer) =>
 {
   let dmin = get(pStrand).tracks[track].layers[layer].trigDelayMin;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin != dmin)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin !== dmin)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = dmin;
 
@@ -844,7 +844,7 @@ export const userSetTrigDrange = (track, layer) =>
 {
   let dmax = get(pStrand).tracks[track].layers[layer].trigDelayRange;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange != dmax)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange !== dmax)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = dmax;
 
@@ -862,7 +862,7 @@ export const userSetForceType = (track, layer) =>
 {
   let isrand = get(pStrand).tracks[track].layers[layer].forceRandom;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom != isrand)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom !== isrand)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom = isrand;
 
@@ -883,7 +883,7 @@ export const userSetForceValue = (track, layer) =>
 {
   let force = get(pStrand).tracks[track].layers[layer].forceValue;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue != force)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue !== force)
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue = force;
 

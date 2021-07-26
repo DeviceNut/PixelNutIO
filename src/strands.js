@@ -141,7 +141,7 @@ export const strandsInit = () =>
   for (let s = 0; s < get(nStrands); ++s)
   {
     const strand = makeNewStrand(s);
-    const select = (s == sid) ? true : false;
+    const select = (s === sid) ? true : false;
     strand.selected = select;
     slist.push(strand);
     elist.push(select);
@@ -168,7 +168,7 @@ export const strandCopyTop = () =>
 
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if (s != sid)
+    if (s !== sid)
     {
       const strand = get(aStrands)[s];
       if (strand.selected)
@@ -206,14 +206,14 @@ export const strandCopyLayer = (track, layer) =>
 
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if (s != sid)
+    if (s !== sid)
     {
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
         strand.tracks[track].layers.splice(layer, 1, {...player});
 
-        if (layer == 0)
+        if (layer === 0)
           strand.tracks[track].drawProps = {...props};
       }
     }
@@ -232,7 +232,7 @@ export const strandCopyTrack = (track, doall) =>
 
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if (s != sid)
+    if (s !== sid)
     {
       const strand = get(aStrands)[s];
       if (strand.selected)

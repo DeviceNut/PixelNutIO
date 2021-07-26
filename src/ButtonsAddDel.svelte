@@ -19,7 +19,7 @@
 
   export let track;
 
-  let istrack = (track == -1);
+  let istrack = (track === -1);
 
   let add_disabled;
   let del_disabled;

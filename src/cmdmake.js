@@ -116,7 +116,7 @@ export const makeEntireCmdStr = () =>
 
       // must have effect and not be mute to get output
       // (note that draw layer does not have mute)
-      if (j == DRAW_LAYER)
+      if (j === DRAW_LAYER)
       {
         drawplugin = (layer.pluginIndex > 0) && !layer.mute;
         tplugbits |= layer.pluginBits;
@@ -144,7 +144,7 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
-  if (cmdstr != '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
+  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).patternCmds = cmdstr;
   //get(pStrand).backupCmds = cmdstr;
@@ -166,17 +166,17 @@ export const makeLayerCmdStr = (track, layer) =>
 
   if (player.pluginIndex > 0)
   {
-    if (layer == 0) // drawing layer
+    if (layer === 0) // drawing layer
     {
       let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
       let start = pdraw.pcentStart;
       let finish = pdraw.pcentFinish;
 
-      if (start != 0)
+      if (start !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentStart}${start} `);
 
-      if (finish != 100)
+      if (finish !== 100)
       {
         let length = finish - start;
         cmdstr = cmdstr.concat(`${cmdStr_PcentLength}${length} `);
@@ -184,29 +184,29 @@ export const makeLayerCmdStr = (track, layer) =>
 
       cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
 
-      if (pdraw.reverseDir != false)
+      if (pdraw.reverseDir !== false)
         cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
 
-      if (pdraw.orPixelVals != false)
+      if (pdraw.orPixelVals !== false)
         cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
 
-      if (pdraw.pcentBright != 100)
+      if (pdraw.pcentBright !== 100)
         cmdstr = cmdstr.concat(`${cmdStr_Bright}${pdraw.pcentBright} `);
 
-      if (pdraw.msecsDelay != 0)
+      if (pdraw.msecsDelay !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_Delay}${pdraw.msecsDelay} `);
 
-      if (pdraw.degreeHue != 0)
+      if (pdraw.degreeHue !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_degreeHue}${pdraw.degreeHue} `);
 
-      if (pdraw.pcentWhite != 0)
+      if (pdraw.pcentWhite !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
 
-      if (pdraw.pcentCount != 0)
+      if (pdraw.pcentCount !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
 
       let bits = makeOrideBits(get(pStrand), track);
-      if (bits != 0)
+      if (bits !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
     }
     else
@@ -229,20 +229,20 @@ export const makeLayerCmdStr = (track, layer) =>
     if (player.forceRandom)
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
 
-    else if (player.forceValue != MAX_FORCE/2) // default
+    else if (player.forceValue !== MAX_FORCE/2) // default
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-    if (player.trigTypeStr == 'auto')
+    if (player.trigTypeStr === 'auto')
     {
       if (!player.trigDoRepeat)
         cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
 
-      if (player.trigDelayMin != 1)
+      if (player.trigDelayMin !== 1)
         cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
 
       cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
     }
-    else if (player.trigTypeStr == 'once')
+    else if (player.trigTypeStr === 'once')
     {
       cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
     }
@@ -273,7 +273,7 @@ export const makeTrigSourceList = () =>
       if (strand.tracks[track].layers[layer].pluginBits & pluginBit_SENDFORCE)
       {
         let index = strand.tracks[track].layers[layer].pluginIndex;
-        let name = (layer == 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
+        let name = (layer === 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
 
         ++count;
         items.push({ id: `${count}`, tnum:track+1, lnum:layer+1, 
@@ -281,7 +281,7 @@ export const makeTrigSourceList = () =>
       } 
     }
   }
-  if (count == 0) items.push({ id: 0, text: 'none'});
+  if (count === 0) items.push({ id: 0, text: 'none'});
 
   aTriggers.set(items);
 }

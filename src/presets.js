@@ -14,21 +14,21 @@ import {
 export const presetsInit = () =>
 {
   aBuiltinPats.set([
-    { id: '1',  text: 'Rainbow Ripple',     cmd: 'E2 D20 T E101 F1000 I T G' },
-    { id: '2',  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
-    { id: '3',  text: 'Light Waves',        cmd: 'E10 D60 T E101 T E120 F250 I T G' },
-    { id: '4',  text: 'Color Twinkles',     cmd: 'E0 B50 W20 H232 D10 Q3 T E142 F250 I E50 B80 W80 D10 T G' },
-    { id: '5',  text: 'Twinkle Comets',     cmd: 'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 T6 E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
-    { id: '6',  text: 'Comet Party',        cmd: 'E20 W25 C25 D30 Q7 I T E101 F100 T E20 U0 W25 C25 D20 Q7 I T E101 F200 T G' },
-    { id: '7',  text: 'Scanner Mix',        cmd: 'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 T5 G' },
-    { id: '8',  text: 'Ferris Wheel',       cmd: 'E30 C20 D60 Q7 T E160 I E111 F O3 T7 G' },
-    { id: '9',  text: 'Expanding Noise',    cmd: 'E52 W35 C25 D60 Q3 T E150 I E120 I G' },
-    { id: '10', text: 'Crazy Blinks',       cmd: 'E51 C10 D60 Q4 T E112 T E131 F1 I T G' },
-    { id: '11', text: 'Blink Surges',       cmd: 'E51 C10 D60 T E112 T E131 F1000 I T G' },
-    { id: '12', text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
-    { id: '13', text: 'Color Melts',        cmd: 'E0 H30 D30 T E110 F600 I T E111 A1 G' },
-    { id: '14', text: 'Holiday',            cmd: 'E50 B60 H0 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I T20 O10 G' },
-    { id: '15', text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
+    { id: 1,  text: 'Rainbow Ripple',     cmd: 'E2 D20 T E101 F1000 I T G' },
+    { id: 2,  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
+    { id: 3,  text: 'Light Waves',        cmd: 'E10 D60 T E101 T E120 F250 I T G' },
+    { id: 4,  text: 'Color Twinkles',     cmd: 'E0 B50 W20 H232 D10 Q3 T E142 F250 I E50 B80 W80 D10 T G' },
+    { id: 5,  text: 'Twinkle Comets',     cmd: 'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 T6 E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
+    { id: 6,  text: 'Comet Party',        cmd: 'E20 W25 C25 D30 Q7 I T E101 F100 T E20 U0 W25 C25 D20 Q7 I T E101 F200 T G' },
+    { id: 7,  text: 'Scanner Mix',        cmd: 'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 T5 G' },
+    { id: 8,  text: 'Ferris Wheel',       cmd: 'E30 C20 D60 Q7 T E160 I E111 F O3 T7 G' },
+    { id: 9,  text: 'Expanding Noise',    cmd: 'E52 W35 C25 D60 Q3 T E150 I E120 I G' },
+    { id: 10, text: 'Crazy Blinks',       cmd: 'E51 C10 D60 Q4 T E112 T E131 F1 I T G' },
+    { id: 11, text: 'Blink Surges',       cmd: 'E51 C10 D60 T E112 T E131 F1000 I T G' },
+    { id: 12, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
+    { id: 13, text: 'Color Melts',        cmd: 'E0 H30 D30 T E110 F600 I T E111 A1 G' },
+    { id: 14, text: 'Holiday',            cmd: 'E50 B60 H0 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I T20 O10 G' },
+    { id: 15, text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 A1 F0 I T G' },
   ]);
 
   aBuiltinDesc.set([
@@ -99,17 +99,17 @@ export const presetsInit = () =>
   ]);
 
   aEffectsDraw.set([
-    { id: '-1', bits: 0x0000, text: '<none>' },
-    { id: '0',  bits: 0x0001, text: 'Draw All' },
-    { id: '1',  bits: 0x007D, text: 'Draw Push' },
-    { id: '2',  bits: 0x004D, text: 'Draw Step' },
-    { id: '10', bits: 0x000F, text: 'Light Wave' },
-    { id: '20', bits: 0x007F, text: 'Comet Heads' },
-    { id: '30', bits: 0x000F, text: 'Ferris Wheel' },
-    { id: '40', bits: 0x0047, text: 'Block Scanner' },
-    { id: '50', bits: 0x0007, text: 'Twinkle' },
-    { id: '51', bits: 0x0007, text: 'Blinky' },
-    { id: '52', bits: 0x0007, text: 'Noise' },
+    { id: -1, bits: 0x0000, text: '<none>' },
+    { id: 0,  bits: 0x0001, text: 'Draw All' },
+    { id: 1,  bits: 0x007D, text: 'Draw Push' },
+    { id: 2,  bits: 0x004D, text: 'Draw Step' },
+    { id: 10, bits: 0x000F, text: 'Light Wave' },
+    { id: 20, bits: 0x007F, text: 'Comet Heads' },
+    { id: 30, bits: 0x000F, text: 'Ferris Wheel' },
+    { id: 40, bits: 0x0047, text: 'Block Scanner' },
+    { id: 50, bits: 0x0007, text: 'Twinkle' },
+    { id: 51, bits: 0x0007, text: 'Blinky' },
+    { id: 52, bits: 0x0007, text: 'Noise' },
   ]);
 
   aEffDrawDesc.set([
@@ -149,22 +149,22 @@ export const presetsInit = () =>
   ]);
 
   aEffectsFilter.set([
-    { id: '-1',  bits: 0x0000, text: '<none>' },
-    { id: '100', bits: 0x0130, text: 'Hue Set' },
-    { id: '101', bits: 0x0031, text: 'Hue Rotate' },
-    { id: '110', bits: 0x0051, text: 'Color Meld' },
-    { id: '111', bits: 0x0030, text: 'Color Modify' },
-    { id: '112', bits: 0x0300, text: 'Color Random' },
-    { id: '120', bits: 0x0430, text: 'Count Set' },
-    { id: '121', bits: 0x0032, text: 'Count Surge' },
-    { id: '122', bits: 0x0072, text: 'Count Wave' },
-    { id: '130', bits: 0x0830, text: 'Delay Set' },
-    { id: '131', bits: 0x0034, text: 'Delay Surge' },
-    { id: '132', bits: 0x0074, text: 'Delay Wave' },
-    { id: '141', bits: 0x0030, text: 'Bright Surge' },
-    { id: '142', bits: 0x0070, text: 'Bright Wave' },
-    { id: '150', bits: 0x0046, text: 'Window Expander' },
-    { id: '160', bits: 0x1010, text: 'Flip Direction' },
+    { id: -1,  bits: 0x0000, text: '<none>' },
+    { id: 100, bits: 0x0130, text: 'Hue Set' },
+    { id: 101, bits: 0x0031, text: 'Hue Rotate' },
+    { id: 110, bits: 0x0051, text: 'Color Meld' },
+    { id: 111, bits: 0x0030, text: 'Color Modify' },
+    { id: 112, bits: 0x0300, text: 'Color Random' },
+    { id: 120, bits: 0x0430, text: 'Count Set' },
+    { id: 121, bits: 0x0032, text: 'Count Surge' },
+    { id: 122, bits: 0x0072, text: 'Count Wave' },
+    { id: 130, bits: 0x0830, text: 'Delay Set' },
+    { id: 131, bits: 0x0034, text: 'Delay Surge' },
+    { id: 132, bits: 0x0074, text: 'Delay Wave' },
+    { id: 141, bits: 0x0030, text: 'Bright Surge' },
+    { id: 142, bits: 0x0070, text: 'Bright Wave' },
+    { id: 150, bits: 0x0046, text: 'Window Expander' },
+    { id: 160, bits: 0x1010, text: 'Flip Direction' },
   ]);
 }
 
@@ -234,11 +234,11 @@ export const pluginBit_ORIDE_DIR   = 0x1000;  // effect overrides direction prop
 export const presetsFindEffect = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())
-    if (f.id == plugnum)
+    if (f.id === plugnum)
       return { filter:false, index:i, bits:f.bits };
 
   for (const [i, f] of get(aEffectsFilter).entries())
-    if (f.id == plugnum)
+    if (f.id === plugnum)
       return { filter:true, index:i, bits:f.bits };
 
   return undefined;

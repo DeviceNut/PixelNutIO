@@ -80,7 +80,7 @@
           <Checkbox labelText="Override Properties"
             on:check={docheck}
             bind:checked={$pStrand.doOverride}
-            disabled={$pStrand.bitsOverride == 0}
+            disabled={$pStrand.bitsOverride === 0}
           />
         </Column>
       </Row>
@@ -92,7 +92,7 @@
         <Checkbox labelText="Override"
           on:check={docheck}
           bind:checked={$pStrand.doOverride}
-          disabled={$pStrand.bitsOverride == 0}
+          disabled={$pStrand.bitsOverride === 0}
         />
       </Column>
     {/if}

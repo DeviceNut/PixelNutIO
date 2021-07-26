@@ -94,7 +94,7 @@
       bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
       bind:items={$aEffectsDraw}
     />
-    {#if ((track != 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0)) }
+    {#if ((track !== 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0)) }
       <div style="margin-top:7px; margin-left:30px;">
         <Checkbox labelText="Overwrite"
           on:check={setOwrite}
@@ -110,7 +110,7 @@
     </p>
   </Row>
 
-  {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex != 0) }
+  {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0) }
 
     <Row>
       <SliderVal name='Bright'

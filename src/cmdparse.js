@@ -102,7 +102,7 @@ export const parsePattern = (cmdstr) =>
 
   for (let cmd of cmds)
   {
-    if (cmd == '') continue;
+    if (cmd === '') continue;
 
     const ch = cmd.substr(0, 1);
     const val = parseInt(cmd.substr(1));
@@ -131,7 +131,7 @@ export const parsePattern = (cmdstr) =>
         let layerbits;
 
         let obj = presetsFindEffect(val);
-        if (obj == undefined)
+        if (obj === undefined)
         {
           console.error(`Unknown effect: #${val}`);
           return false;

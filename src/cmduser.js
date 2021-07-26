@@ -128,6 +128,18 @@ function updateLayerVals(track, layer)
   makeEntireCmdStr();
 }
 
+export const updateAllTracks = () =>
+{
+  // rebuild all tracks to account for changes
+  // to tracks/layers or trigger sources
+
+  for (let i = 0; i <= get(pStrand).tactives; ++i)
+    makeTrackCmdStrs(i);
+
+  strandCopyTracks();
+  makeEntireCmdStr();
+}
+
 // must be called after any changes to the number
 // or position of tracks, layers, or effect settings
 export const updateTriggerLayers = () =>
@@ -176,14 +188,6 @@ export const updateTriggerLayers = () =>
       }
     }
   }
-
-  // rebuild all tracks to account for possible
-  // changes in the trigger source layers
-  for (let i = 0; i <= strand.tactives; ++i)
-    makeTrackCmdStrs(i);
-
-  strandCopyTracks();
-  makeEntireCmdStr();
 }
 
 // Commands from Header:
@@ -526,7 +530,9 @@ export const userSetDrawEffect = (track) =>
 
     updateTriggerLayers();
 
-    // must resend entire command when an effect is changed
+    // must update all tracks and resend entire command
+    // when an effect is changed
+    updateAllTracks();
     sendEntireCmdStr();
   }
 }
@@ -685,7 +691,9 @@ export const userSetFilterEffect = (track, layer) =>
     //console.log('setfilter: ', pindex, bits);
     updateTriggerLayers();
 
-    // must resend entire command when an effect is changed
+    // must update all tracks and resend entire command
+    // when an effect is changed
+    updateAllTracks();
     sendEntireCmdStr();
   }
 }

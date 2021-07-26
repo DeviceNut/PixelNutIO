@@ -13,6 +13,7 @@
 
   import {
     sendEntireCmdStr,
+    updateAllTracks,
     updateTriggerLayers
   } from './cmduser.js';
 
@@ -92,6 +93,9 @@
          checkTrigTrack(track+1);
     else checkTrigLayer(layer+1);
 
+    // must update all tracks and resend entire command
+    // whenever a track/layer is moved
+    updateAllTracks();
     sendEntireCmdStr();
 
     $pStrand = $pStrand; // refresh screen
@@ -103,6 +107,9 @@
          checkTrigTrack(track);
     else checkTrigLayer(layer);
 
+    // must update all tracks and resend entire command
+    // whenever a track/layer is moved
+    updateAllTracks();
     sendEntireCmdStr();
 
     $pStrand = $pStrand; // refresh screen

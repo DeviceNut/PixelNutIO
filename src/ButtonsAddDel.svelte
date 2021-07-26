@@ -13,6 +13,7 @@
 
   import {
     sendEntireCmdStr,
+    updateAllTracks,
     updateTriggerLayers
   } from './cmduser.js';
 
@@ -76,6 +77,9 @@
 
     updateTriggerLayers(); // update trigger sources and rebuild cmdstrs
 
+    // must update all tracks and resend entire command
+    // whenever a track/layer is deleted
+    updateAllTracks();
     sendEntireCmdStr();
   }
 

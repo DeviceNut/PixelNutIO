@@ -144,7 +144,7 @@
         bind:selected={$pStrand.patternID}
         on:change={userSetPattern}
       >
-        <SelectItem value={"0"} text={"<custom>"} />
+        <SelectItem value={0} text={"<custom>"} />
         {#if ($aCustomPats.length > 0) }
           <SelectItemGroup label="Saved Patterns">
             {#each $aCustomPats as pat}

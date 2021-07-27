@@ -17,10 +17,7 @@
 
   import {
     pluginBit_COLOR,
-    pluginBit_COUNT,
-    pluginBit_ORIDE_HUE,
-    pluginBit_ORIDE_WHITE,
-    pluginBit_ORIDE_COUNT
+    pluginBit_COUNT
   } from "./presets.js";
 
   import { pStrand } from './globals.js';
@@ -40,11 +37,6 @@
   $: bgc = $pStrand.doOverride ? '#222' : '#111'
   // cannot use css vars here, and <Row> cannot take a class
 
-/* FIXME
-($pStrand.bitsEffects  & pluginBit_ORIDE_HUE)
-($pStrand.bitsEffects  & pluginBit_ORIDE_WHITE)
-($pStrand.bitsEffects  & pluginBit_ORIDE_COUNT)
-*/
 </script>
 
 <Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color: {bgc};">

@@ -337,6 +337,7 @@ export const userSetPattern = () =>
       strand.patternName = name;
       strand.haveCustom = iscustom;
   
+      // indicate if in custom mode
       if (strand.showCustom)
         strand.patternID = 0;
     }
@@ -347,15 +348,15 @@ export const userSetPattern = () =>
 
 export const userClearPattern = () =>
 {
+  const strand = get(pStrand);
+
   strandClearAll();
 
   sendCmd(cmdStr_Clear);
   makeEntireCmdStr();
 
-  get(pStrand).showCustom = false;
-  get(pStrand).patternName = '';
-
-  pStrand.set(get(pStrand)); // triggers update
+  strand.showCustom = false;
+  strand.patternName = '';
 }
 
 // Pattern Commands from PanelCustom: 

@@ -96,7 +96,6 @@
     padding: 3px;
     color: var(--color-title);
     background-color: var(--bg-color-title);
-    font-style:italic;
     font-family:'Trebuchet MS';
     font-size:1.2em;
   }

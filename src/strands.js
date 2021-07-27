@@ -75,7 +75,7 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
   showCustom      : false,  // true if displaying custom panel
-  haveCustom        : false,  // true if this is a custom pattern
+  haveCustom      : false,  // true if previously created custom pattern
 
   patternID       : 0,      // index of the current pattern
   patternName     : '',     // name of the current pattern

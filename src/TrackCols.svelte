@@ -21,7 +21,7 @@
         {/each}
       </Column>
       {#if (numcols > 1) }
-        <Column style="margin-left: 5px;">
+        <Column style="margin-left:5px;">
           {#each Array($pStrand.tactives) as _,track}
             {#if ((track % numcols) === 1) }
               <OneTrack {track} />
@@ -30,7 +30,7 @@
         </Column>
       {/if}
       {#if (numcols > 2) }
-        <Column style="margin-left: 5px;">
+        <Column style="margin-left:5px;">
           {#each Array($pStrand.tactives) as _,track}
             {#if ((track % numcols) === 2) }
               <OneTrack {track} />
@@ -50,8 +50,8 @@
 <style>
   .panel {
     margin: 0 auto;
-    border: 2px solid #333433;
-    background-color: black;
+    border: 2px solid var(--bg-color-panel-border);
+    background-color: var(--bg-color-panel);
   }
   .col1 {
     /* min-width:320px; FIXME*/

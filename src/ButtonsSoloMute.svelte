@@ -6,7 +6,8 @@
 
   import {
     pStrand,
-    nTracks, tLayers
+    nTracks,
+    tLayers
   } from './globals.js';
 
   import {
@@ -153,27 +154,19 @@
 
 </script>
 
-<button class="button" class:select={isMute} on:click={domute} >Mute</button>
 <button class="button" class:select={isSolo} on:click={dosolo} >Solo</button>
+<button class="button" class:select={isMute} on:click={domute} >Mute</button>
 
 <style>
   .button {
     float:right;
+    width: 40px;
     margin: 3px 5px 0 0;
     padding: 4px;
-    width: 40px;
-    border-radius: 5%;
-    color: white;
-    border: 1px solid #bbbcbb;
-    background-color:#555655;
   }
-  .button:hover {
-    cursor: pointer;
-    background-color:#444544;
-  }
-  .select {
+  .button.select {
     padding: 3px;
-    border: 2px solid rgb(0,100,200);
-    background-color:#222322;
+    border: 2px solid var(--color-border-select);
+    background-color: var(--bg-color-button-select);
   }
 </style>

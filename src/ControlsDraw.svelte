@@ -4,7 +4,6 @@
 
   import {
     Row,
-    Column,
     Dropdown,
     Checkbox,
   } from "carbon-components-svelte";
@@ -88,7 +87,7 @@
       {/if}
     </MediaQuery>
     <Dropdown
-      style="background-color: #333433;"
+    style="background-color: var(--bg-color-dropdown);"
       type="inline"
       on:select={setEffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
@@ -104,7 +103,9 @@
     {/if}
   </Row>
 
-  <Row style="margin-top:7px; margin-right:-10px; padding:5px; color:#888988; background-color:#333433;">
+  <Row style="margin-top:7px; margin-right:-10px; padding:5px;
+              color: var(--color-textbox);
+              background-color: var(--bg-color-textbox);">
     <p style="font-size:.9em;">
       {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
     </p>
@@ -153,7 +154,9 @@
     {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER) }
       <ControlsTrigger {track} />
     {:else}
-      <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px; background-color:#222322;">
+      <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px;
+                  background-color: var(--bg-color-controls-area);">
+
         <Row style="margin:0;">
           <Checkbox labelText="Trigger once at start"
             style="padding: 3px;"
@@ -172,5 +175,6 @@
         {/if}
       </div>
     {/if}
+
   {/if}
 </div>

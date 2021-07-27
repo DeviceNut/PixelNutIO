@@ -50,32 +50,32 @@
 
 <style>
   main {
+    min-width: 320px;
     margin: 0 auto;
     padding: 5px;
-    min-width: 320px;
   }
   .panel {
-    margin: 0 auto;
     max-width: 550px;
-    background-color:black;
+    margin: 0 auto;
+    background-color: var(--bg-color-panel);
   }
   .divider {
-    margin-top: 5px;
+    margin-top:5px;
     padding-top: 2px;
-    background-color:#333433;
+    background-color: var(--bg-color-divider);
   }
   .bdiv {
+    cursor: pointer;
     margin-top:10px;
     padding: 5px;
     text-align: center;
-    background-color:#555655;
-    cursor: pointer;
+    background-color: var(--bg-color-button);
   }
   .btext {
-    color: white;
+    color: var(--color-button);
   }
   .select {
-    margin-top: 10px;
+    margin-top:10px;
     padding: 2px 0 0 0;
   }
 </style>

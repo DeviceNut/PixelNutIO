@@ -37,7 +37,8 @@
   const docheck  = ()=> { userSetOverMode(); }
 
   let bgc = '';
-  $: bgc = $pStrand.doOverride ? '#222322' : '#111211'
+  $: bgc = $pStrand.doOverride ? '#222' : '#111'
+  // cannot use css vars here, and <Row> cannot take a class
 
 /* FIXME
 ($pStrand.bitsEffects  & pluginBit_ORIDE_HUE)
@@ -46,7 +47,7 @@
 */
 </script>
 
-<Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color:{bgc};">
+<Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color: {bgc};">
 
   <Column style="margin-left:-10px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'

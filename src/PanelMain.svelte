@@ -337,11 +337,8 @@
 
 <style>
   .button {
-    padding: 3px;
     height: 35px;
-    color: white;
-    border: 2px solid #bbbcbb;
-    background-color:#555655;
+    padding: 3px;
   }
   .button-help {
     float:left;
@@ -351,14 +348,5 @@
   .button-pattern {
     width: 60px;
     margin-right:15px;
-    border-radius: 5%;
-  }
-  .button:hover, .button-help:hover {
-    cursor: pointer;
-    background-color:#444544;
-  }
-  button:disabled,button[disabled] {
-    pointer-events: none;
-    opacity: 0.35;
   }
 </style>

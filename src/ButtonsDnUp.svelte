@@ -132,21 +132,9 @@
  <style>
    .button {
      float:right;
+     width: 40px;
      margin: 3px 5px 0 0;
      padding: 4px;
-     width: 40px;
-     border-radius: 5%;
-     color: white;
-     border: 1px solid #bbbcbb;
-     background-color:#555655;
    }
-   .button:hover {
-     cursor: pointer;
-     background-color:#444544;
-   }
-   button:disabled,button[disabled] {
-    pointer-events: none;
-    opacity: 0.35;
-  }
  </style>
  

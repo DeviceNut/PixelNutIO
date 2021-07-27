@@ -21,10 +21,8 @@
 <style>
   .button {
     padding: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    border: none;
-    color: white;
     background-color: inherit;
+    border: none;
+    font-size: 1.1em;
   }
 </style>

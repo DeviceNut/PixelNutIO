@@ -52,10 +52,11 @@
     </div>
   {/if}
 </MediaQuery>
+<!-- BUG? if use 651 here it disappears at that boundary !! -->
 <MediaQuery query="(min-width: 650px)" let:matches>
   {#if matches }
     <div class="header">
-      <button on:click={goback} class="button left" >&lt;&lt; Devices</button>
+      <button on:click={goback}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <input
         class="title"
@@ -84,40 +85,31 @@
   .header {
     padding: 2px 0 10px 0;
     text-align: center;
-    background-color:#333433;
+    background-color: var(--bg-color-header);
   }
   .header2 {
     height: 45px;
-    background-color:#333433;
+    background-color: var(--bg-color-header);
   }
   .title {
     margin: 5px 10px 0 10px;
     padding: 3px;
+    color: var(--color-title);
+    background-color: var(--bg-color-title);
     font-style:italic;
     font-family:'Trebuchet MS';
     font-size:1.2em;
-    color: #33aa66;
-    background-color:#555655;
   }
   .button {
-    float: left;
+    margin-top:3px;
     padding: 7px;
-    margin-top: 3px;
-    border-radius: 5%;
-    color: white;
-    border: 1px solid #bbbcbb;
-    background-color:#555655;
   }
   .button.left {
     float: left;
-    margin-left: 10px;
+    margin-left:10px;
   }
   .button.rite {
     float: right;
     margin-right: 10px;
-  }
-  .button:hover {
-    cursor: pointer;
-    background-color:#444544;
   }
 </style>

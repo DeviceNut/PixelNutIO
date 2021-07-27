@@ -12,11 +12,12 @@
   export let layer;
 
   let bgc;
-  $: bgc = $pStrand.tracks[track].layers[layer].open ? '#222522' : '#111311'
+  $: bgc = $pStrand.tracks[track].layers[layer].open ? '#222522' : '#111'
+  // cannot use css vars here, and <Row> cannot take a class
 
 </script>
 
-<Row style="margin-left:-15px; margin-top:7px; background-color:{bgc}">
+<Row style="margin-left:-15px; margin-top:7px; background-color: {bgc};">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
   </Column>
@@ -27,7 +28,7 @@
 </Row>
 <Row style="margin-left:-15px;">
   {#if $pStrand.tracks[track].layers[layer].open }
-    <Column style="padding-top:10px; background-color: #111211;">
+    <Column style="padding-top:10px; background-color: var(--bg-color-tracklayer-area);">
       {#if (layer === 0) }
         <ControlsDraw {track} />
       {:else}

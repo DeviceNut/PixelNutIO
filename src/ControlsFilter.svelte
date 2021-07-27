@@ -24,34 +24,39 @@
 
 </script>
 
-<MediaQuery query="(max-width: 400px)" let:matches>
-  {#if matches}
-    <Row>
-      <p style="font-size:.9em;">Filter Effect:</p>
-    </Row>
-  {/if}
-</MediaQuery>
-<Row>
-  <MediaQuery query="(min-width: 401px)" let:matches>
+<div style="padding-left:5px;">
+  <MediaQuery query="(max-width: 400px)" let:matches>
     {#if matches}
-      <p style="font-size:.9em; margin:10px 12px 0 0;">Filter Effect:</p>
+      <Row>
+        <p style="font-size:.9em;">Filter Effect:</p>
+      </Row>
     {/if}
   </MediaQuery>
-  <Dropdown
-    style="background-color: #333433;"
-    type="inline"
-    on:select={seteffect}
-    bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
-    bind:items={$aEffectsFilter}
-  />
-</Row>
+  <Row>
+    <MediaQuery query="(min-width: 401px)" let:matches>
+      {#if matches}
+        <p style="font-size:.9em; margin:10px 12px 0 0;">Filter Effect:</p>
+      {/if}
+    </MediaQuery>
+    <Dropdown
+      style="background-color: var(--bg-color-dropdown);"
+      type="inline"
+      on:select={seteffect}
+      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
+      bind:items={$aEffectsFilter}
+    />
+  </Row>
 
-<Row style="margin-top:7px; margin-right:-10px; padding:5px; color:#888988; background-color:#333433;">
-  <p style="font-size:.9em;">
-    {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
-  </p>
-</Row>
+  <Row style="margin-top:7px; margin-right:-10px; padding:5px;
+              color: var(--color-textbox);
+              background-color: var(--bg-color-textbox);">
 
-{#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
-  <ControlsTrigger {track} {layer} />
-{/if}
+    <p style="font-size:.9em;">
+      {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+    </p>
+  </Row>
+
+  {#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
+    <ControlsTrigger {track} {layer} />
+  {/if}
+</div>

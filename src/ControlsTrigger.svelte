@@ -82,11 +82,13 @@
 
 {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
 
-  <div style="margin:10px -10px 10px -15px; padding-top:2px; background-color:#333433;"/>
+  <div style="margin:10px -10px 10px -15px; padding-top:2px;
+              background-color: var(--bg-color-divider);"/>
 
   <div style="margin-left:-10px; margin-right:-10px;">
     <p style="margin-top:3px; font-size:.9em;">External Triggering:</p>
-    <div style="margin-top:5px; padding:5px; background-color:#222322;">
+    <div style="margin-top:5px; padding:5px;
+                background-color: var(--bg-color-controls-area);">
 
       <Checkbox labelText="Trigger from main controls"
         style="padding:3px;"
@@ -113,7 +115,9 @@
 
   <div style="margin-left:-10px; margin-right:-10px;">
     <p style="margin-top:3px; font-size:.9em;">Internal Triggering:</p>
-    <div style="margin-top:5px; padding:5px; background-color:#222322;">
+    <div style="margin-top:5px; padding:5px;
+                background-color: var(--bg-color-controls-area);">
+
       <RadioButtonGroup
         labelPosition="left"
         on:change={setType}
@@ -159,7 +163,8 @@
 
       {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
 
-      <div style="margin-top:10px; padding-top:1px; background-color:#333433;"/>
+      <div style="margin-top:10px; padding-top:1px; background-color: var(--bg-color-divider);"/>
+
         <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
         <Checkbox labelText="Random"
           on:check={setFtype}
@@ -174,5 +179,4 @@
       {/if}
     </div>
   </div>
-
 {/if}

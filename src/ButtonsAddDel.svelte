@@ -90,20 +90,8 @@
 
 <style>
   .button {
+    width: 50px;
     margin: 2px 2px 0 0;
     padding: 2px;
-    width: 50px;
-    border-radius: 5%;
-    color: white;
-    border: 1px solid #bbbcbb;
-    background-color:#555655;
-  }
-  .button:hover {
-    cursor: pointer;
-    background-color:#444544;
-  }
-  button:disabled,button[disabled] {
-    pointer-events: none;
-    opacity: 0.35;
   }
 </style>

@@ -8,13 +8,7 @@
     Checkbox
   } from "carbon-components-svelte";
 
-  import {
-    DRAW_LAYER
-  } from "./pixelnut.js";
-
-  import {
-    pStrand
-  } from './globals.js';
+  import { pStrand } from './globals.js';
 
   import {
     pluginBit_COLOR,
@@ -38,7 +32,8 @@
 
 </script>
 
-<Row style="margin-top:5px; margin-right:-7px; background-color:#222322;">
+<Row style="margin-top:5px; margin-right:-7px;
+            background-color: var(--bg-color-controls-area);">
 
   <Column style="margin-left:-5px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
@@ -98,7 +93,9 @@
 
 <MediaQuery query="(max-width:500px)" let:matches>
   {#if matches}
-    <Row style="padding-top:3px; margin-right:-7px; background-color:#222322;">
+    <Row style="padding-top:3px; margin-right:-7px;
+                background-color: var(--bg-color-controls-area);">
+
       <Column style="margin-left:-5px;">
         <Checkbox labelText="Overide Hue"
           on:check={setovers}
@@ -119,6 +116,7 @@
                      ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
         />
       </Column>
+
     </Row>
   {/if}
 </MediaQuery>

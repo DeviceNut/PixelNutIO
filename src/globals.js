@@ -10,7 +10,17 @@ import { writable } from 'svelte/store'
 // 5) Tracks/layers can be individually enabled/disabled (except for the first layer of each track)
 //    with the Solo/Mute buttons.
 
+export let titleDevices   = 'PixelNut Devices';
+export let titleHelpDocs  = 'PixelNut Documentation';
+
 export let defDeviceName  = 'PixelNut!';
+
+export const PAGEMODE_DEVICES   = 0;
+export const PAGEMODE_CONTROLS  = 1;
+export const PAGEMODE_HELPDOCS  = 2;
+
+export let curPageMode    = writable(PAGEMODE_DEVICES);
+export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
 export let deviceName     = writable('');     // user defined name of device
 export let nStrands       = writable(0);      // number of physical strands

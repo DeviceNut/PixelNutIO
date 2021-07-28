@@ -5,7 +5,7 @@
     pStrand
   } from './globals.js';
 
-  import HeaderControls from "./HeaderControls.svelte"
+  import ControlsHeader from "./ControlsHeader.svelte"
   import MultiStrands from "./MultiStrands.svelte"
   import PanelMain from "./PanelMain.svelte"
   import PanelCustom from "./PanelCustom.svelte";
@@ -26,7 +26,7 @@
 </script>
 
 <main>
-  <HeaderControls/>
+  <ControlsHeader/>
 
   <div class="panel">
 

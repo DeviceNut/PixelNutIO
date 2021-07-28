@@ -1,16 +1,21 @@
 <script>
 
+  import { get } from 'svelte/store';
   import MediaQuery from "svelte-media-query";
   import { Modal } from "carbon-components-svelte";
 
-  import { deviceName } from './globals.js';
+  import {
+    PAGEMODE_DEVICES,
+    PAGEMODE_HELPDOCS,
+    curPageMode,
+    prevPageMode,
+    deviceName
+   } from './globals.js';
 
   import {
     userSetDevName,
     userSendPause
   } from "./cmduser.js"
-
-  const goback = () => { history.back() }
 
   let isPaused = false;
   let textPause = '';
@@ -19,17 +24,14 @@
   const dopause = () => { userSendPause(isPaused = !isPaused); }
 
   let openlinks = false;
-  const dolinks = () =>
-  {
-    console.log('Show Links Modal'); // TODO
-    openlinks = !openlinks;
-  }
+  const dolinks = () => { openlinks = !openlinks; }
 
-  let opendocs = false;
+  const dodevs = () => { curPageMode.set(PAGEMODE_DEVICES); }
+
   const dodocs = () =>
   {
-    console.log('Show Docs Page'); // TODO
-    opendocs = !opendocs;
+    prevPageMode.set(get(curPageMode));
+    curPageMode.set(PAGEMODE_HELPDOCS);
   }
 
 </script>
@@ -45,7 +47,7 @@
       />
     </div>
     <div class="header2">
-      <button on:click={goback}  class="button left" >&lt;&lt; Devices</button>
+      <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
       <button on:click={dolinks} class="button rite" >Links</button>
@@ -56,7 +58,7 @@
 <MediaQuery query="(min-width: 650px)" let:matches>
   {#if matches }
     <div class="header">
-      <button on:click={goback}  class="button left" >&lt;&lt; Devices</button>
+      <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <input
         class="title"
@@ -71,7 +73,7 @@
 </MediaQuery>
 
 <Modal
-  bind:openlinks
+  bind:open={openlinks}
   passiveModal
   modalHeading={"Links to Code and Websites"}
   on:close
@@ -83,6 +85,7 @@
 
 <style>
   .header {
+    height: 45px;
     padding: 2px 0 10px 0;
     text-align: center;
     background-color: var(--bg-color-header);

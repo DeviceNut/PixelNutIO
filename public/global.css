@@ -6,7 +6,9 @@
 
 	--bg-color-panel: #000;
 	--bg-color-panel-border: #333;
+
 	--bg-color-divider: #333;
+	--bg-color-disabled: #111;
 
 	--bg-color-tracklayer-area: #111;
 	--bg-color-controls-area: #222;
@@ -26,13 +28,13 @@
 	--bg-color-button-select: #222;
 }
 
+/*
 html, body {
 	position: relative;
 	width: 100%;
 	height: 100%;
 }
 
-/*
 body {
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -54,22 +56,16 @@ a:visited {
 label {
 	display: block;
 }
+*/
 
 input, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
+	-webkit-padding: 0.3em 0;
+	padding: 0.3em
 }
 
 input:disabled {
-	color: #ccc;
+	color: var(--bg-color-disabled);
 }
-*/
 
 button {
 	color: var(--color-button);

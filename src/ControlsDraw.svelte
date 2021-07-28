@@ -87,7 +87,6 @@
       {/if}
     </MediaQuery>
     <Dropdown
-    style="background-color: var(--bg-color-dropdown);"
       type="inline"
       on:select={setEffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
@@ -103,7 +102,7 @@
     {/if}
   </Row>
 
-  <Row style="margin-top:7px; margin-right:-10px; padding:5px;
+  <Row style="margin-top:-13px; margin-right:-10px; padding:5px;
               color: var(--color-textbox);
               background-color: var(--bg-color-textbox);">
     <p style="font-size:.9em;">

@@ -197,7 +197,7 @@ export const userSetDevName = () =>
   let name = get(deviceName);
   // TODO disallow some chars for device name
   if (name === '') deviceName.set(defDeviceName);
-  else writeDevice(cmdStr_DeviceName.concat(name));
+  else writeDevice(cmdStr_DeviceName.concat(deviceName));
 }
 
 export const userSendPause = (enable) =>

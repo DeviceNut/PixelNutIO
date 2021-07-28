@@ -1,6 +1,10 @@
 <script>
 
   import {
+    PAGEMODE_DEVICES,
+    PAGEMODE_CONTROLS,
+    PAGEMODE_HELPDOCS,
+    curPageMode,
     defDeviceName,
     globalsInit
   } from './globals.js';
@@ -9,7 +13,9 @@
   import { presetsInit } from './presets.js';
   import { storePatternInit } from './userstore.js';
 
+  import PageDevices from "./PageDevices.svelte"
   import PageControls from "./PageControls.svelte"
+  import PageHelpDocs from "./PageHelpDocs.svelte"
 
   let devname = defDeviceName; // TODO: get from device
 
@@ -27,6 +33,15 @@
   presetsInit();
   storePatternInit();
 
+  curPageMode.set(PAGEMODE_CONTROLS);
+  //curPageMode.set(PAGEMODE_DEVICES);
+
 </script>
 
-<PageControls/>
+{#if ($curPageMode === PAGEMODE_DEVICES)}
+  <PageDevices/>
+{:else if ($curPageMode === PAGEMODE_HELPDOCS)}
+  <PageHelpDocs/>
+{:else}
+  <PageControls/>
+{/if}

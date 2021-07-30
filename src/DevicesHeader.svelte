@@ -31,8 +31,11 @@
     background-color: var(--bg-color-header);
   }
   .title {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    min-width: 175px;
     color: var(--color-title);
-    font-family:'Trebuchet MS';
     font-size:1.5em;
   }
   .button {

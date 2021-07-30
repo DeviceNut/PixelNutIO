@@ -33,15 +33,15 @@
   presetsInit();
   storePatternInit();
 
-  curPageMode.set(PAGEMODE_CONTROLS);
-  //curPageMode.set(PAGEMODE_DEVICES);
+  //curPageMode.set(PAGEMODE_CONTROLS);
+  curPageMode.set(PAGEMODE_DEVICES);
 
 </script>
 
-{#if ($curPageMode === PAGEMODE_DEVICES)}
-  <PageDevices/>
-{:else if ($curPageMode === PAGEMODE_HELPDOCS)}
+{#if ($curPageMode === PAGEMODE_HELPDOCS)}
   <PageHelpDocs/>
-{:else}
+{:else if ($curPageMode === PAGEMODE_CONTROLS)}
   <PageControls/>
+{:else}
+  <PageDevices/>
 {/if}

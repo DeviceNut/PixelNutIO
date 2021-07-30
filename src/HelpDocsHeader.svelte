@@ -6,11 +6,16 @@
 
   import {
     titleHelpDocs,
+    PAGEMODE_DEVICES,
+    PAGEMODE_CONTROLS,
     curPageMode,
     prevPageMode
   } from './globals.js';
 
   export let menuOpen;
+
+  let prevPage;
+  $: prevPage = get(prevPageMode) == PAGEMODE_DEVICES ? "Devices" : "Controls";
 
   const goback = () => { curPageMode.set(get(prevPageMode)); }
 
@@ -25,7 +30,7 @@
 
   <span class="title">{titleHelpDocs}</span>
 
-  <button on:click={goback} class="button" >Controls &gt;&gt;</button>
+  <button on:click={goback} class="button" >{prevPage} &gt;&gt;</button>
 </div>
 
 <style>
@@ -35,10 +40,12 @@
     background-color: var(--bg-color-header);
   }
   .title {
-    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    min-width: 250px;
     margin-top: 7px;
     color: var(--color-title);
-    font-family:'Trebuchet MS';
     font-size:1.5em;
   }
   .button {

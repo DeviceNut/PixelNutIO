@@ -11,7 +11,7 @@ import { writable } from 'svelte/store'
 //    with the Solo/Mute buttons.
 
 export let titleDevices   = 'PixelNut Devices';
-export let titleHelpDocs  = 'PixelNut Documentation';
+export let titleHelpDocs  = 'PixelNut Docs';
 
 export let defDeviceName  = 'PixelNut!';
 

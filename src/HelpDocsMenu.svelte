@@ -44,12 +44,13 @@
       children: [{ id: 15, text: "IBM API Connect", disabled: true }],
     },
   ];
-</script>
 
-<style>
-  div {
-    margin-top: var(--cds-spacing-05);
-  }</style>
+/*
+<div>Active node id: {activeId}</div>
+<div>Selected ids: {JSON.stringify(selectedIds)}</div>
+<div>Expanded ids: {JSON.stringify(expandedIds)}</div>
+*/
+</script>
 
 <TreeView
   labelText="Cloud Products"
@@ -61,7 +62,3 @@
   on:toggle={({ detail }) => console.log('toggle', detail)}
   on:focus={({ detail }) => console.log('focus', detail)}
 />
-
-<div>Active node id: {activeId}</div>
-<div>Selected ids: {JSON.stringify(selectedIds)}</div>
-<div>Expanded ids: {JSON.stringify(expandedIds)}</div>

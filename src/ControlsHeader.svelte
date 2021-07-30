@@ -99,7 +99,6 @@
     padding: 3px;
     color: var(--color-title);
     background-color: var(--bg-color-title);
-    font-family:'Trebuchet MS';
     font-size:1.2em;
   }
   .button {

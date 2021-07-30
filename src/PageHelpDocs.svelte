@@ -14,7 +14,11 @@
 
   let helptext = 'a;sdljf;asldjkf;alsdjkf;sldfsdfs';
 
-/*
+</script>
+
+<main>
+  <HelpDocsHeader menuOpen />
+
   <Grid>
     <Row>
       <Column>
@@ -27,21 +31,12 @@
       </Column>
     </Row>
   </Grid>
-*/
-</script>
-
-<main>
-  <HelpDocsHeader menuOpen />
-
-  <HelpDocsMenu/>
 
 </main>
 
 <style>
   main {
     min-width: 320px;
-    margin: 0 auto;
-    padding: 5px;
   }
   .panel {
     max-width: 550px;

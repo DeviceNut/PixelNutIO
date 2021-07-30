@@ -139,7 +139,7 @@
 
 <Grid>
   <Row>
-    <Column style="margin-left:-7px;">
+    <Column style="margin-left:-7px; max-width:250px;">
       <Select 
         bind:selected={$pStrand.patternID}
         on:change={userSetPattern}

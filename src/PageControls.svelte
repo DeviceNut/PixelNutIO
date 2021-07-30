@@ -51,8 +51,6 @@
 <style>
   main {
     min-width: 320px;
-    margin: 0 auto;
-    padding: 5px;
   }
   .panel {
     max-width: 550px;

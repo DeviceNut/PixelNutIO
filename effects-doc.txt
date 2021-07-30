@@ -1,0 +1,20 @@
+Ferris Wheel:
+  "Draws evenly spaced pixels using the current color, shifting them down one pixel " +
+  "at a time, creating a \"ferris wheel\" effect. " +
+  "The count property determines the space between the \"spokes\" of the wheel.",
+
+HueSet:
+  "Directly sets the color hue once from the force value when triggered (whiteness uneffected). " +
+  "As the force increases the color hue changes from red->green->blue->red.",
+
+HueRotate:
+  "Rotates the color hue around the color wheel on each drawing step (whiteness is unaffected). " +
+  "The amount of change that is made each time is determined by the trigger force. A zero force " +
+  "makes no change, and at maximum force the number of steps it takes to rotate through the entire " +
+  "color wheel is the number of pixels in the strand.",
+
+CountSurge:
+  "Increasing force increases the pixel count property, which then slowly reverts " +
+  "back to the base value, which is set from the orginal value when first triggered. " +
+  " The number of steps it takes is 10 * the distance from the base value to the new " +
+  "value determined by the force when triggered.",

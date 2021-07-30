@@ -1,0 +1,19 @@
+Carbon Components:
+1) ToolTips: sliders knob bleeds through "whiting out" the text
+2) CheckBox: first box is lower vertically than the others
+3) RadioButton: on:click doesn't work?
+4) RadioButtonGroup: on:click happens twice?
+    and when it does 'selected' hasn't changed yet
+    solution: use on:change with RadioButtonGroup
+5) Select: using "inline" produces white background with white text (invisible)
+6) Cannot use 'class' on components, but can use 'style'.
+7) <SelectItem value={"0"} is broken!?
+
+Svelte Issues:
+1) Must surround statements with '$var' with {} in else clause (compiles to multiple statements).
+   Perhaps these should be added automatically by the compiler?
+2) $var in HTML vs var.get/get(var) in .js, why not preprocess .js and use $var there too?
+3) Can get into infinite callback crash by changing $var inside if with $var.
+4) Should be able to use CSS variables in .js code.
+
+

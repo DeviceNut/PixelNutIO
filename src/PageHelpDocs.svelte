@@ -1,11 +1,11 @@
 <script>
 
   import {
-      Grid,
-      Row,
-      Column,
-      TextArea
-    } from "carbon-components-svelte";
+    Grid,
+    Row,
+    Column,
+    TextArea
+  } from "carbon-components-svelte";
   
   import HelpDocsHeader from "./HelpDocsHeader.svelte"
   import HelpDocsMenu from "./HelpDocsMenu.svelte"
@@ -37,16 +37,6 @@
 <style>
   main {
     min-width: 320px;
-  }
-  .panel {
-    max-width: 550px;
-    margin: 0 auto;
-    background-color: var(--bg-color-panel);
-  }
-  .divider {
-    margin-top:5px;
-    padding-top:5px;
-    background-color: var(--bg-color-divider);
   }
 </style>
   

@@ -28,7 +28,7 @@
       {/if}
     </div>
 
-    <p class="active">Active Devices:</p>
+    <p class="active">Available Devices:</p>
 
     <div class="listbox">
       {#each devlist as device }

@@ -59,3 +59,90 @@ export const cmdStr_Go            = "G";    // causes all effects to be displaye
 // ++ these affect all tracks in the strand
 // ** these take effect only when plugin is created
 ///////////////////////////////////////////////////////////////////////
+
+export const strandInfo =
+{
+                      // fixed capabilities:
+  pixels: 0,          // number of pixels
+  layers: 0,          // max possible layers
+  tracks: 0,          // max possible tracks
+                      // current state:
+  bright: 0,          // brightness percent
+  delay: 0,           // delay milliseconds
+  pattern: ''         // pattern string
+};
+
+export const deviceInfo =
+{
+  name: '',           // used as topic to talk to device
+  tstamp: 0,          // timestamp(secs) of last notify
+  active: false,      // true if recently received notify
+  report:             // reported capabilities & state
+  {
+    strands: 0,       // pixel strand count (>= 1)
+    maxlen: 0,        // max length for cmds/patterns
+    info: [],         // list of 'strandInfo'
+  }
+};
+
+function curTimeSecs()
+{
+  return Math.floor(Date.now() / 1000); // convert to seconds
+}
+
+function FindDevice(devlist, name)
+{
+  for (const device of devlist)
+    if (device.name === name)
+      return device;
+
+  return null;
+}
+
+function ParseReply(device, reply)
+{
+  let line, strs, strand;
+
+  line = reply[0];
+  reply.shift();
+
+  strs = line.split(' ');
+  if (strs.length < 2) return false;
+
+  device.report.strands = strs[0];
+  device.report.maxlen = strs[1];
+
+  if (device.report.strands < 1) return false;
+  if (reply.length !== (device.report.strands * 2))
+    return false;
+
+  strandlist = [];
+
+  for (var i = 0; i < device.report.strands; ++i)
+  {
+    line = reply[0];
+    reply.shift();
+
+    strs = line.split(' ');
+    if (strs.length < 5) return false;
+
+    strand = {...strandInfo};
+    strand.pixels = strs[0];
+    strand.layers = strs[1];
+    strand.tracks = strs[2];
+    strand.bright = strs[3];
+    strand.delay  = strs[4];
+
+    strand.pattern = reply[0];
+    reply.shift();
+
+    strandlist.push(strand);
+  }
+
+  device.active = true;
+  device.tstamp = curTimeSecs();
+  device.report.info = strandlist.slice(0);
+
+  return true;
+}
+

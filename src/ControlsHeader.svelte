@@ -9,7 +9,8 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    deviceName
+    deviceList,
+    iCurDevice
    } from './globals.js';
 
   import {
@@ -43,7 +44,7 @@
         class="title"
         size=32 maxlength=32
         on:change={userSetDevName}
-        bind:value={$deviceName}
+        bind:value={$deviceList[$iCurDevice].name}
       />
     </div>
     <div class="header2">
@@ -64,7 +65,7 @@
         class="title"
         size=32 maxlength=32
         on:change={userSetDevName}
-        bind:value={$deviceName}
+        bind:value={$deviceList[$iCurDevice].name}
       />
       <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
       <button on:click={dolinks} class="button rite" >Links</button>

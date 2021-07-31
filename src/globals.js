@@ -10,8 +10,8 @@ import { writable } from 'svelte/store'
 // 5) Tracks/layers can be individually enabled/disabled (except for the first layer of each track)
 //    with the Solo/Mute buttons.
 
-export let titleDevices   = 'PixelNut Devices';
-export let titleHelpDocs  = 'PixelNut Docs';
+export let titleDevices   = 'PixelNut! Devices';
+export let titleHelpDocs  = 'PixelNut! Docs';
 
 export let defDeviceName  = 'PixelNut!';
 
@@ -22,7 +22,9 @@ export const PAGEMODE_HELPDOCS  = 2;
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let deviceName     = writable('');     // user defined name of device
+export let deviceList     = writable([]);     // list of discovered devices
+export let iCurDevice     = writable(0);      // index to current device
+
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
@@ -47,10 +49,8 @@ export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 export let aTriggers      = writable([]);     // list of track/layers that cause triggers
 
-export let globalsInit = (devname, max_strands, max_tracks, max_layers, max_pixels) =>
+export let globalsInit = (max_strands, max_tracks, max_layers, max_pixels) =>
 {
-  deviceName.set(devname);
-
   nStrands.set(max_strands);
   nTracks.set(max_tracks);
   tLayers.set(max_layers/max_tracks);

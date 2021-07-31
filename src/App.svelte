@@ -9,6 +9,7 @@
     globalsInit
   } from './globals.js';
 
+  import { mqttConnect } from './mqtt.js';
   import { strandsInit } from './strands.js';
   import { presetsInit } from './presets.js';
   import { storePatternInit } from './userstore.js';
@@ -16,8 +17,6 @@
   import PageDevices from "./PageDevices.svelte"
   import PageControls from "./PageControls.svelte"
   import PageHelpDocs from "./PageHelpDocs.svelte"
-
-  let devname = defDeviceName; // TODO: get from device
 
   // obtained from the device:
   let max_strands = 4;      // number present
@@ -28,12 +27,12 @@
   for (let i = 0; i < max_strands; ++i)
     max_pixels.push(300);
 
-  globalsInit(devname, max_strands, max_tracks, max_layers, max_pixels);
+  globalsInit(max_strands, max_tracks, max_layers, max_pixels);
   strandsInit();
   presetsInit();
   storePatternInit();
+  mqttConnect();
 
-  //curPageMode.set(PAGEMODE_CONTROLS);
   curPageMode.set(PAGEMODE_DEVICES);
 
 </script>

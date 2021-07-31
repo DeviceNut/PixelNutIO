@@ -28,7 +28,8 @@ import {
 
 import {
   defDeviceName,
-  deviceName,
+  deviceList,
+  iCurDevice,
   nStrands,
   idStrand,
   pStrand,
@@ -194,10 +195,10 @@ export const updateTriggerLayers = () =>
 
 export const userSetDevName = () =>
 {
-  let name = get(deviceName);
+  let name = get(deviceList)[get(iCurDevice)].name;
   // TODO disallow some chars for device name
-  if (name === '') deviceName.set(defDeviceName);
-  else writeDevice(cmdStr_DeviceName.concat(deviceName));
+  if (name === '') name = defDeviceName;
+  else writeDevice(cmdStr_DeviceName.concat(name));
 }
 
 export const userSendPause = (enable) =>

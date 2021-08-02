@@ -14,6 +14,7 @@ export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
 
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
+export let startConnect   = writable(true);   // true to start scanning on devices page
 
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable({});     // "points" to current device

@@ -3,7 +3,7 @@
   import { get } from 'svelte/store';
   import { Loading } from "carbon-components-svelte";
 
-  import { deviceList } from './globals.js';
+  import { startConnect, deviceList } from './globals.js';
   import { mqttConnect } from './mqtt.js';
 
   import DevicesHeader from "./DevicesHeader.svelte"
@@ -27,7 +27,11 @@
     docheck();
   }
 
-  doscan(); // start connection process immediately
+  if (get(startConnect))
+  {
+    doscan(); // start connection process immediately
+    startConnect.set(false); // only first time
+  }
 
 </script>
 

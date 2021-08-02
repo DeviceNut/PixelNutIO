@@ -11,7 +11,7 @@
   }
 
   const doctrls = () => {
-    console.log(`Connect to device ${device.name}`);
+    console.log(`Connect to: "${device.name}"`);
     strandsDeviceSetup(device);
     curPageMode.set(PAGEMODE_CONTROLS);
   }

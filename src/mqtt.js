@@ -117,6 +117,7 @@ export const mqttConnect = () =>
 
 export const mqttSend = (msg) =>
 {
+  console.log('>>', msg);
   let topic = topicBaseName + 'Music Room';
   let message = new Paho.Message(msg);
   message.destinationName = topic;

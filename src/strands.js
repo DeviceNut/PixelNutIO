@@ -3,10 +3,22 @@ import { get } from 'svelte/store';
 import {
   nStrands, idStrand, pStrand,
   eStrands, aStrands, dStrands,
-  nTracks, tLayers
+  nTracks, tLayers,
+  curDevice
 } from './globals.js';
 
+import { parsePattern } from './cmdparse.js';
 import { MAX_FORCE } from "./pixelnut.js"
+
+// 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
+// 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
+// 3) The device's pixel engine keeps a stack of layers indexed by a layer id, the value
+//    of which is used for assigning trigger targets, and since that depends on the number
+//    of active tracks/layers, it needs to be re-calculated each time a pattern is generated.
+// 4) Active tracks/layers are the ones displayed that can be modified. The user can change
+//    these with the Add/Del buttons, up to the limits of the device.
+// 5) Tracks/layers can be individually enabled/disabled (except for the first layer of each track)
+//    with the Solo/Mute buttons.
 
 ///////////////////////////////////////////////////////////
 
@@ -88,6 +100,7 @@ const oneStrand =
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
   firstPixel      : 1,      // determines pixel to start drawing from
+  directUp        : 1,      // 0 to draw in reverse direction // TODO
 
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
@@ -95,6 +108,7 @@ const oneStrand =
   pcentCount      : 0,      // percent of pixels affected in range
 
   forceValue      : MAX_FORCE/2, // force value for triggering
+  numPixels       : 0,      // number of pixels in this strand
 
   tactives        : 1,      // current number of active tracks (>=1)
   tracks          : [],     // list of 'oneTrack's for this strand
@@ -130,33 +144,6 @@ function makeNewStrand(s)
   let strand = {...oneStrand};
   strand.tracks = makeNewTracks();
   return strand;
-}
-
-export const strandsInit = () =>
-{
-  const sid = get(idStrand);
-  let slist = [];
-  let elist = [];
-
-  for (let s = 0; s < get(nStrands); ++s)
-  {
-    const strand = makeNewStrand(s);
-    const select = (s === sid) ? true : false;
-    strand.selected = select;
-    slist.push(strand);
-    elist.push(select);
-  }
-
-  aStrands.set(slist);
-  eStrands.set(elist);
-  pStrand.set(slist[sid]);
-
-  // make duplicate object to keep shadow values
-  slist = [];
-  for (let s = 0; s < get(nStrands); ++s)
-    slist.push(makeNewStrand(s));
-
-  dStrands.set(slist);
 }
 
 // copy all top level values from current strand
@@ -343,4 +330,52 @@ export const strandSwapLayers = (track, layer) =>
 
   strandCopyLayer(track, layer-1);
   strandCopyLayer(track, layer);
+}
+
+export let strandsDeviceSetup = (device) =>
+{
+  //console.log(device);
+
+  let scount = device.report.scount;
+
+  nStrands.set(scount);
+  nTracks.set(device.report.mintracks);
+  tLayers.set(device.report.minlayers/device.report.mintracks);
+  curDevice.set(device);
+
+  const sid = 0;
+  let slist = [];
+  let elist = [];
+
+  idStrand.set(0); // start with first strand
+
+  for (let i = 0; i < scount; ++i)
+  {
+    const strand = makeNewStrand(i);
+    const select = (i === sid) ? true : false;
+
+    strand.selected = select;
+    strand.pcentBright = device.report.strands[i].bright;
+    strand.msecsDelay  = device.report.strands[i].delay;
+    strand.firstPixel  = device.report.strands[i].first;
+    strand.directUp    = device.report.strands[i].direct;
+    strand.numPixels   = device.report.strands[i].pixels;
+
+    slist.push(strand);
+    elist.push(select);
+  }
+
+  aStrands.set(slist);
+  eStrands.set(elist);
+  pStrand.set(slist[sid]);
+
+  // make duplicate object to keep shadow values
+  slist = [];
+  for (let i = 0; i < scount; ++i)
+    slist.push(makeNewStrand(i));
+
+  dStrands.set(slist);
+
+  for (let i = 0; i < scount; ++i)
+    parsePattern(device.report.strands[i].pattern)
 }

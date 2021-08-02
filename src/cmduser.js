@@ -61,10 +61,16 @@ import {
   makeTrigSourceList
 } from './cmdmake.js';
 
-import { writeDevice } from './device.js'
 import { parsePattern } from './cmdparse.js';
+import { mqttSend } from './mqtt.js';
 
 ///////////////////////////////////////////////////////////
+
+function sendDevice(cmdstr)
+{
+  console.log('>>', cmdstr);
+  mqttSend(cmdstr);
+}
 
 function sendCmd(cmdstr)
 {
@@ -72,18 +78,18 @@ function sendCmd(cmdstr)
   let didone = false;
 
   if (get(pStrand).selected)
-    writeDevice(cmdstr); // send to current strand
+    sendDevice(cmdstr); // send to current strand
 
   for (let s = 0; s < get(nStrands); ++s)
   {
     if ((s !== sid) && get(aStrands)[s].selected)
     {
-      writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdstr));
+      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdstr));
       didone = true;
     }
   }
 
-  if (didone) writeDevice(cmdStr_AddrStrand.concat(sid));
+  if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
 }
 
 export const sendEntireCmdStr = () =>
@@ -197,7 +203,7 @@ export const userSetDevName = () =>
   let name = get(curDevice).name;
   // TODO disallow some chars for device name
   if (name === '') name = defDeviceName;
-  else writeDevice(cmdStr_DeviceName.concat(name));
+  else sendDevice(cmdStr_DeviceName.concat(name));
 }
 
 export const userSendPause = (enable) =>
@@ -209,17 +215,17 @@ export const userSendPause = (enable) =>
   {
     if (enable)
     {
-      writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Pause));
+      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Pause));
       didone = true;
     }
     else
     {
-      writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Resume));
+      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Resume));
       didone = true;
     }
   }
 
-  if (didone) writeDevice(cmdStr_AddrStrand.concat(sid));
+  if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
 }
 
 // Commands from Strand Selector
@@ -251,7 +257,7 @@ function switchStrands(s)
 {
   idStrand.set(s);
   pStrand.set(get(aStrands)[s]);
-  writeDevice(cmdStr_AddrStrand.concat(s));
+  sendDevice(cmdStr_AddrStrand.concat(s));
 }
 
 export const userStrandSelect = (combine) =>
@@ -278,7 +284,7 @@ export const userStrandSelect = (combine) =>
         strandCopyAll();
 
         // mirror current strand by sending entire current command to newly selected strand
-        writeDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternCmds));
+        sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternCmds));
       }
       else if (!nowon && combine && (s === cur))
       {
@@ -341,8 +347,7 @@ export const userSetPattern = () =>
       if (strand.showCustom)
         strand.patternID = 0;
     }
-    // software bug: all pre-builts are valid
-    else console.error('Parse Failed: ', cmdstr);
+    // else software bug: all pre-builts are valid
   }
 }
 

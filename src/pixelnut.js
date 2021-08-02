@@ -68,6 +68,8 @@ export const strandState =
   pixels: 0,          // number of pixels
   bright: 0,          // brightness percent
   delay: 0,           // delay milliseconds
+  first: 1,           // first pixel to draw (from 1)
+  direct: 0,          // direction flag 0/1
   pattern: ''         // pattern string
 };
 
@@ -202,12 +204,12 @@ export const parseInfo = (device, reply) =>
     device.report.strands.push(strand);
   }
 
-  device.minlayers = minlayers;
-  device.mintracks = mintracks;
+  device.report.minlayers = minlayers;
+  device.report.mintracks = mintracks;
   device.tstamp = curTimeSecs();
   device.ready = true;
 
-  console.log(`Device ready: ${device.name}`)
+  console.log(`Device ready: "${device.name}"`)
   deviceList.set(get(deviceList)); // trigger UI update
 
   return true;

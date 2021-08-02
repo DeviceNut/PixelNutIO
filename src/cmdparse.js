@@ -21,7 +21,8 @@ import {
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
   cmdStr_TriggerRange  ,
-  cmdStr_Go            
+  cmdStr_Clear         ,
+  cmdStr_Go
   } from './pixelnut.js';
 
 import {
@@ -39,6 +40,8 @@ import {
   makeLayerCmdStr,
   makeEntireCmdStr
 } from './cmdmake.js';
+
+import { strandClearAll } from './strands.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -109,6 +112,11 @@ export const parsePattern = (cmdstr) =>
 
     switch (ch)
     {
+      case cmdStr_Clear:
+      {
+        strandClearAll();
+        break;
+      }
       case cmdStr_PcentStart:
       {
         if (!isNaN(val)) // ignore if no value
@@ -211,9 +219,14 @@ export const parsePattern = (cmdstr) =>
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = layerbits;
         break;
       }
-      default: // ignore if no draw effect
+      default: // must have draw effect for these commands:
       {
-        if ((track >= 0) && (layer >= 0)) switch (ch)
+        if ((track < 0) || (layer < 0))
+        {
+          console.error(`Must define draw effect before: ${cmd}`);
+          return false;
+        }
+        else switch (ch)
         {
           case cmdStr_Bright:
           {
@@ -381,9 +394,12 @@ export const parsePattern = (cmdstr) =>
           }
           case cmdStr_Go: break; // no-op?
 
-          default: console.error(`Unknown cmd: ${ch}`); break;
+          default:
+          {
+            console.error(`Unknown command: ${ch}`); break;
+            return false;
+          }
         }
-        else console.error(`Ignoring: ${cmd}`);
       }
     }
   }

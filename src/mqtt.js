@@ -82,7 +82,10 @@ function onReply(msg)
   {
     info.shift();
     if (!parseInfo(device, info))
-      console.error(`Reply parse failed: "${name}"`);
+    {
+      console.error(`Bad parameters for: "${name}"`);
+      // TODO 
+    }
   }
   else console.error(`No device found: "${name}"`);
 }
@@ -117,7 +120,6 @@ export const mqttConnect = () =>
 
 export const mqttSend = (msg) =>
 {
-  console.log('>>', msg);
   let topic = topicBaseName + 'Music Room';
   let message = new Paho.Message(msg);
   message.destinationName = topic;

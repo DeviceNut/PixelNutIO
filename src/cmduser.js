@@ -92,6 +92,7 @@ function sendCmd(cmdstr)
   if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
 }
 
+let primed = false;
 export const sendEntireCmdStr = () =>
 {
   sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternCmds));
@@ -107,7 +108,7 @@ function sendCmdCheck(cmdstr)
 function sendStrandCmd(cmdstr, cmdval)
 {
   if (cmdval !== undefined)
-        sendCmdCheck(cmdstr.concat(cmdval));
+       sendCmdCheck(cmdstr.concat(cmdval));
   else sendCmdCheck(cmdstr);
 }
 
@@ -321,17 +322,18 @@ export const userStrandSelect = (combine) =>
 export const userSetPattern = () =>
 {
   const strand = get(pStrand);
-  let id = parseInt( strand.patternID );
-  let name = '';
-  let cmdstr = '';
+  let id = strand.patternID;
 
-  if (id > 0)
+  // ignore if <custom> or already on that one
+  if ((id > 0) && (get(dStrands)[get(idStrand)].patternID !== id))
   {
+    get(dStrands)[get(idStrand)].patternID = id;
+
     --id; // zero-base this
     let len = get(aBuiltinPats).length;
     let iscustom = (id >= len);
-    name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
-    cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
+    let name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
+    let cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
 
     strandClearAll();
 
@@ -396,6 +398,8 @@ export const userSetBright = (track) =>
 
       strandCopyTop();
       sendStrandCmd(cmdStr_SetBright, bright);
+
+      primed = true;
     }
   }
   else

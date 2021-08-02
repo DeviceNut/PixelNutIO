@@ -9,6 +9,9 @@ export const PAGEMODE_DEVICES   = 0;
 export const PAGEMODE_CONTROLS  = 1;
 export const PAGEMODE_HELPDOCS  = 2;
 
+export const MIN_TRACKS         = 4;    // minimum tracks for built-in patterns
+export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
+
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 

@@ -7,7 +7,7 @@ Carbon Components:
     solution: use on:change with RadioButtonGroup
 5) Select: using "inline" produces white background with white text (invisible)
 6) Cannot use 'class' on components, but can use 'style'.
-7) <SelectItem value={"0"} is broken!?
+7) <SelectItem value={"0"} is broken!? And onchange fires with every change to the Sliders!!!
 
 Svelte Issues:
 1) Must surround statements with '$var' with {} in else clause (compiles to multiple statements).

@@ -6,11 +6,10 @@
   export let device;
 
   let showinfo = false;
-  const moreinfo = () => {
-    showinfo = !showinfo;
-  }
+  const moreinfo = () => { showinfo = !showinfo; }
 
-  const doctrls = () => {
+  const doctrls = () =>
+  {
     console.log(`Connect to: "${device.name}"`);
     strandsDeviceSetup(device);
     curPageMode.set(PAGEMODE_CONTROLS);

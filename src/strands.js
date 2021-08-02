@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  MIN_TRACK_LAYERS,
   nStrands, idStrand, pStrand,
   eStrands, aStrands, dStrands,
   nTracks, tLayers,
@@ -338,9 +339,19 @@ export let strandsDeviceSetup = (device) =>
 
   let scount = device.report.scount;
 
+  let numtracks = device.report.maxtracks;
+  let maxlayers = device.report.maxlayers;
+  let tracklayers = maxlayers / numtracks;
+
+  if (tracklayers < MIN_TRACK_LAYERS)
+  {
+    tracklayers = MIN_TRACK_LAYERS;
+    numtracks = maxlayers / tracklayers;
+  }
+
   nStrands.set(scount);
-  nTracks.set(device.report.mintracks);
-  tLayers.set(device.report.minlayers/device.report.mintracks);
+  nTracks.set(numtracks);
+  tLayers.set(tracklayers);
   curDevice.set(device);
 
   const sid = 0;

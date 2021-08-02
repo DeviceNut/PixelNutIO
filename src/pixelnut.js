@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { deviceList } from './globals.js';
+import { MIN_TRACKS, MIN_TRACK_LAYERS, deviceList } from './globals.js';
 
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
@@ -174,8 +174,8 @@ export const parseInfo = (device, reply) =>
 
   device.report.strands = [];
 
-  let mintracks = 32;
-  let minlayers = 32;
+  let maxtracks = 0;
+  let maxlayers = 0;
 
   for (var i = 0; i < device.report.scount; ++i)
   {
@@ -187,16 +187,13 @@ export const parseInfo = (device, reply) =>
 
     strand = {...strandState};
     strand.pixels = strs[0];
-    let layers = strs[1];
-    let tracks = strs[2];
+
+    // FIXME not per-strand
+    maxlayers = strs[1];
+    maxtracks = strs[2];
+
     strand.bright = strs[3];
     strand.delay  = strs[4];
-
-    if (minlayers > layers)
-        minlayers = layers;
-
-    if (mintracks > tracks)
-        mintracks = tracks;
 
     strand.pattern = reply[0];
     reply.shift();
@@ -204,8 +201,21 @@ export const parseInfo = (device, reply) =>
     device.report.strands.push(strand);
   }
 
-  device.report.minlayers = minlayers;
-  device.report.mintracks = mintracks;
+  if (maxtracks < MIN_TRACKS)
+  {
+    console.error('Not enough tracks');
+    return false;
+  }
+
+  if (maxlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
+  {
+    console.error('Not enough layers');
+    return false;
+  }
+
+  device.report.maxlayers = maxlayers;
+  device.report.maxtracks = maxtracks;
+
   device.tstamp = curTimeSecs();
   device.ready = true;
 

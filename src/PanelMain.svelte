@@ -135,14 +135,21 @@
     openRemove = false;
   }
 
+  // BUG: this fires on *every* change to <Slider> or <input>?
+  const doselect = () =>
+  {
+    //console.log('ID=', $pStrand.patternID);
+    userSetPattern();
+  }
+
 </script>
 
 <Grid>
   <Row>
     <Column style="margin-left:-7px; max-width:250px;">
-      <Select 
+      <Select
         bind:selected={$pStrand.patternID}
-        on:change={userSetPattern}
+        on:change={doselect}
       >
         <SelectItem value={0} text={"<custom>"} />
         {#if ($aCustomPats.length > 0) }

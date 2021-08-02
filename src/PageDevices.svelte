@@ -1,16 +1,33 @@
 <script>
 
+  import { get } from 'svelte/store';
   import { Loading } from "carbon-components-svelte";
+
+  import { deviceList } from './globals.js';
+  import { mqttConnect } from './mqtt.js';
+
   import DevicesHeader from "./DevicesHeader.svelte"
   import ScanDevice from "./ScanDevice.svelte"
 
-  export let devlist = [ '1', '2' ];
-
+  let MSECS_CHECK_TIMEOUT = 800;
   let scanning = false;
-  const doscan = () => {
-    scanning = true;
-    setTimeout(() => {  scanning = false; }, 3000);
+
+  const docheck = () =>
+  {
+    // wait until get at least one device before stop spinner
+    if (get(deviceList).length > 0) scanning = false;
+
+    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
   }
+
+  const doscan = () =>
+  {
+    scanning = true;
+    mqttConnect();
+    docheck();
+  }
+
+  doscan(); // start connection process immediately
 
 </script>
 
@@ -24,17 +41,19 @@
         <div style="padding-top:30px;"></div>
         <Loading style="margin-left:42%;" withOverlay={false} />
       {:else}
-        <button on:click={doscan} class="button" >Rescan</button>
+        <button on:click={doscan} class="button" >Clear and Rescan</button>
       {/if}
     </div>
 
     <p class="active">Available Devices:</p>
 
     <div class="listbox">
-      {#each devlist as device }
-      <div class="listitem">
-        <ScanDevice {device} />
-      </div>
+      {#each $deviceList as device }
+        {#if device.ready }
+          <div class="listitem">
+            <ScanDevice {device} />
+          </div>
+        {/if}
       {/each}
     </div>
 

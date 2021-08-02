@@ -35,7 +35,7 @@
   } from './globals.js';
 ;
   import {
-    storePatternInit,
+    storePatternsInit,
     storePatternSave,
     storePatternRemove
   } from "./userstore.js";
@@ -111,7 +111,7 @@
   const dosave = () =>
   {
     storePatternSave(savename, savedesc, $pStrand.patternCmds);
-    storePatternInit();
+    storePatternsInit();
 
     if (copyclip)
     {
@@ -127,7 +127,7 @@
   const doremove = () =>
   {
     storePatternRemove($pStrand.patternName);
-    storePatternInit();
+    storePatternsInit();
 
     userClearPattern();
     $pStrand.patternID = 0;

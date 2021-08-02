@@ -1,13 +1,7 @@
 <script>
 
-  import {
-    pStrand,
-    maxPixels
-  } from './globals.js';
-
-  import {
-    pluginBit_DELAY
-  } from './presets.js';
+  import { pStrand } from './globals.js';
+  import { pluginBit_DELAY } from './presets.js';
 
   import {
     userSetBright,
@@ -36,6 +30,6 @@
   onchange={userSetRotate}
   bind:cur={$pStrand.firstPixel}
   min={1}
-  max={$maxPixels}
+  max={$pStrand.numPixels}
   disabled={$pStrand.patternCmds === ''}
 />

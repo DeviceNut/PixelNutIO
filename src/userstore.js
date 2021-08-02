@@ -13,9 +13,9 @@ const SavePatternKeyDesc    = "PixelNut-Desc-";
 
 ///////////////////////////////////////////////////////////
 
-export const storePatternInit = () =>
+export const storePatternsInit = () =>
 {
-  // if device has a saved pattern:
+  // if user has saved patterns:
   // retrieve command and search for built-ins
   // else set to first one (Rainbow Ripple)
 

@@ -1,31 +1,31 @@
 <script>
 
   import { PAGEMODE_CONTROLS, curPageMode } from './globals.js';
+  import { strandsDeviceSetup } from './strands.js';
 
   export let device;
-
-  let name = '1234567890123456 ...';
-  let info = 'alsdfl;kjsd flsajd fsdf';
 
   let showinfo = false;
   const moreinfo = () => {
     showinfo = !showinfo;
   }
 
-  const doconnect = () => {
-    console.log('device=', device);
+  const doctrls = () => {
+    console.log(`Connect to device ${device.name}`);
+    strandsDeviceSetup(device);
     curPageMode.set(PAGEMODE_CONTROLS);
   }
 
 </script>
 
 <div class="devbox" class:expand={showinfo}>
-  <div    on:click={moreinfo}  class="devname" >{name}</div>
-  <button on:click={doconnect} class="button" >Connect</button>
+  <div    on:click={moreinfo}  class="devname" >{device.name}</div>
+  <button on:click={doctrls} class="button" >Controls</button>
 </div>
 {#if showinfo }
   <div class="infobox">
-    <div class="infotext" >{info}</div>
+    <div class="infotext" >Strands: {device.scount}</div>
+    <div class="infotext" >Pixels: {device.maxpixs}</div>
   </div>
 {/if}
 

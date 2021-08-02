@@ -28,8 +28,7 @@ import {
 
 import {
   defDeviceName,
-  deviceList,
-  iCurDevice,
+  curDevice,
   nStrands,
   idStrand,
   pStrand,
@@ -195,7 +194,7 @@ export const updateTriggerLayers = () =>
 
 export const userSetDevName = () =>
 {
-  let name = get(deviceList)[get(iCurDevice)].name;
+  let name = get(curDevice).name;
   // TODO disallow some chars for device name
   if (name === '') name = defDeviceName;
   else writeDevice(cmdStr_DeviceName.concat(name));

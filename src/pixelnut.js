@@ -1,3 +1,6 @@
+import { get } from 'svelte/store';
+import { deviceList } from './globals.js';
+
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_FORCE            = 1000;   // maximum force value
@@ -6,9 +9,9 @@ export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
 export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
-export const cmdStr_GetInfo       = "?";
-export const cmdStr_GetSegments   = "?S";
-export const cmdStr_GetPatterns   = "?P";
+export const cmdStr_GetInfo       = "?";    // query device information
+export const cmdStr_GetPatterns   = "?P";   // query custom patterns
+export const cmdStr_GetPlugins    = "?G";   // query custom plugins
 
 // Device commands:                   // value is:
 export const cmdStr_DeviceName    = "@";    // name of device
@@ -60,13 +63,9 @@ export const cmdStr_Go            = "G";    // causes all effects to be displaye
 // ** these take effect only when plugin is created
 ///////////////////////////////////////////////////////////////////////
 
-export const strandInfo =
+export const strandState =
 {
-                      // fixed capabilities:
   pixels: 0,          // number of pixels
-  layers: 0,          // max possible layers
-  tracks: 0,          // max possible tracks
-                      // current state:
   bright: 0,          // brightness percent
   delay: 0,           // delay milliseconds
   pattern: ''         // pattern string
@@ -77,29 +76,84 @@ export const deviceInfo =
   name: '',           // used as topic to talk to device
   tstamp: 0,          // timestamp(secs) of last notify
   active: false,      // true if recently received notify
+  ready: false,       // true if received/parsed device info
   report:             // reported capabilities & state
   {
-    strands: 0,       // pixel strand count (>= 1)
+    scount: 0,        // strand count (>= 1)
     maxlen: 0,        // max length for cmds/patterns
-    info: [],         // list of 'strandInfo'
+                      // across all strands:
+    mintracks: 0,     //  min tracks
+    minlayers: 0,     //  min layers
+    strands: [],      // list of 'strandState'
   }
 };
+
+const SECS_NOTIFY_TIMEOUT = 7; // secs since last notify to clear active status
 
 function curTimeSecs()
 {
   return Math.floor(Date.now() / 1000); // convert to seconds
 }
 
-function FindDevice(devlist, name)
+let checker = 0;
+function startcheck()
 {
-  for (const device of devlist)
-    if (device.name === name)
-      return device;
+  let tstamp = curTimeSecs();
+  for (const device of get(deviceList))
+  {
+    //console.log(`Checking: ${device.name}`);
 
-  return null;
+    if (device.active && ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
+    {
+      device.active = false;
+      device.ready = false;
+      console.log(`Device lost: ${device.name}`)
+    }
+  }
+
+  checker = setTimeout(startcheck, (1000 * SECS_NOTIFY_TIMEOUT));
 }
 
-function ParseReply(device, reply)
+export const doConnect = () =>
+{
+  startcheck();
+}
+
+export const doDisconnect = () =>
+{
+  if (checker)
+  {
+    clearTimeout(checker);
+    checker = 0;
+  } 
+  deviceList.set([]);
+}
+
+export const findDevice = (name, doadd=false) =>
+{
+  for (const device of get(deviceList))
+    if (device.name === name)
+    {
+      device.tstamp = curTimeSecs();
+      let isnew = !device.active;
+      if (isnew) device.active = true;
+      return {isnew:isnew, device:device};
+    }
+
+  if (!doadd) return {isnew:false, device:null};
+
+  console.log(`Device added: "${name}"`);
+
+  let device = {...deviceInfo};
+  device.name = name;
+  device.active = true;
+  device.tstamp = curTimeSecs();
+  get(deviceList).push(device);
+
+  return {isnew:true, device:device};
+}
+
+export const parseInfo = (device, reply) =>
 {
   let line, strs, strand;
 
@@ -109,16 +163,19 @@ function ParseReply(device, reply)
   strs = line.split(' ');
   if (strs.length < 2) return false;
 
-  device.report.strands = strs[0];
+  device.report.scount = strs[0];
   device.report.maxlen = strs[1];
 
-  if (device.report.strands < 1) return false;
-  if (reply.length !== (device.report.strands * 2))
+  if (device.report.scount < 1) return false;
+  if (reply.length !== (device.report.scount * 2))
     return false;
 
-  strandlist = [];
+  device.report.strands = [];
 
-  for (var i = 0; i < device.report.strands; ++i)
+  let mintracks = 32;
+  let minlayers = 32;
+
+  for (var i = 0; i < device.report.scount; ++i)
   {
     line = reply[0];
     reply.shift();
@@ -126,23 +183,32 @@ function ParseReply(device, reply)
     strs = line.split(' ');
     if (strs.length < 5) return false;
 
-    strand = {...strandInfo};
+    strand = {...strandState};
     strand.pixels = strs[0];
-    strand.layers = strs[1];
-    strand.tracks = strs[2];
+    let layers = strs[1];
+    let tracks = strs[2];
     strand.bright = strs[3];
     strand.delay  = strs[4];
+
+    if (minlayers > layers)
+        minlayers = layers;
+
+    if (mintracks > tracks)
+        mintracks = tracks;
 
     strand.pattern = reply[0];
     reply.shift();
 
-    strandlist.push(strand);
+    device.report.strands.push(strand);
   }
 
-  device.active = true;
+  device.minlayers = minlayers;
+  device.mintracks = mintracks;
   device.tstamp = curTimeSecs();
-  device.report.info = strandlist.slice(0);
+  device.ready = true;
+
+  console.log(`Device ready: ${device.name}`)
+  deviceList.set(get(deviceList)); // trigger UI update
 
   return true;
 }
-

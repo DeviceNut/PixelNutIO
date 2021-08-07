@@ -83,9 +83,8 @@ export const deviceInfo =
   {
     scount: 0,        // strand count (>= 1)
     maxlen: 0,        // max length for cmds/patterns
-                      // across all strands:
-    mintracks: 0,     //  min tracks
-    minlayers: 0,     //  min layers
+    numtracks: 0,     // number of tracks available
+    numlayers: 0,     // number of layers available
     strands: [],      // list of 'strandState'
   }
 };
@@ -174,8 +173,8 @@ export const parseInfo = (device, reply) =>
 
   device.report.strands = [];
 
-  let maxtracks = 0;
-  let maxlayers = 0;
+  let numtracks = 0;
+  let numlayers = 0;
 
   for (var i = 0; i < device.report.scount; ++i)
   {
@@ -189,8 +188,8 @@ export const parseInfo = (device, reply) =>
     strand.pixels = strs[0];
 
     // FIXME not per-strand
-    maxlayers = strs[1];
-    maxtracks = strs[2];
+    numlayers = strs[1];
+    numtracks = strs[2];
 
     strand.bright = strs[3];
     strand.delay  = strs[4];
@@ -201,20 +200,20 @@ export const parseInfo = (device, reply) =>
     device.report.strands.push(strand);
   }
 
-  if (maxtracks < MIN_TRACKS)
+  if (numtracks < MIN_TRACKS)
   {
     console.error('Not enough tracks');
     return false;
   }
 
-  if (maxlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
+  if (numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
   {
     console.error('Not enough layers');
     return false;
   }
 
-  device.report.maxlayers = maxlayers;
-  device.report.maxtracks = maxtracks;
+  device.report.numlayers = numlayers;
+  device.report.numtracks = numtracks;
 
   device.tstamp = curTimeSecs();
   device.ready = true;

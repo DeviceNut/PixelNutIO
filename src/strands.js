@@ -339,14 +339,14 @@ export let strandsDeviceSetup = (device) =>
 
   let scount = device.report.scount;
 
-  let numtracks = device.report.maxtracks;
-  let maxlayers = device.report.maxlayers;
-  let tracklayers = maxlayers / numtracks;
+  let numtracks = device.report.numtracks;
+  let numlayers = device.report.numlayers;
+  let tracklayers = numlayers / numtracks;
 
   if (tracklayers < MIN_TRACK_LAYERS)
   {
     tracklayers = MIN_TRACK_LAYERS;
-    numtracks = maxlayers / tracklayers;
+    numtracks = numlayers / tracklayers;
   }
 
   nStrands.set(scount);

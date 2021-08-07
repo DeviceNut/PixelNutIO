@@ -23,8 +23,32 @@
 </div>
 {#if showinfo }
   <div class="infobox">
-    <div class="infotext" >Strands: {device.scount}</div>
-    <div class="infotext" >Pixels: {device.maxpixs}</div>
+    <div>
+      <span class="infotext1">Cmdlen={device.report.maxlen}</span>
+      <span class="infotext1">Tracks={device.report.numtracks}</span>
+      <span class="infotext1">Layers={device.report.numlayers}</span>
+    </div>
+    {#each device.report.strands as strand,i }
+      <div style="margin-top:10px;">
+        <span class="strand">Strand: {i+1}</span>
+        <div style="margin-top:5px; margin-left:10px;">
+          <div>
+            <span class="infotext2">Pixels={strand.pixels}</span>
+          </div>
+          <div>
+            <span class="infotext2">Bright={strand.bright}%</span>
+            <span class="infotext2">FirstPos={strand.first}</span>
+          </div>
+          <div>
+            <span class="infotext2">Delay={strand.delay}%</span>
+            <span class="infotext2">Direction={strand.direct ? 'Up' : 'Dn'}</span>
+          </div>
+          <div class="pattern">
+            <span>"{strand.pattern}"</span>
+          </div>
+        </div>          
+      </div>
+    {/each}
   </div>
 {/if}
 
@@ -57,15 +81,29 @@
   .infobox {
     margin: 0 auto;
     width: 300px;
-    height: 100px;
     padding: 10px;
     color: var(--color-devicename);
     background-color: var(--bg-color-dropdown);
     border: 1px solid var(--color-textbox);
     border-top: 0;
     text-align: left;
-    font-size:0.9em;
+    font-size: 0.9em;
   }
-  .infotext {
+  .infotext1 {
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 10px;
+  }
+  .infotext2 {
+    display: inline-block;
+    margin-top: 5px;
+    width: 100px;
+  }
+  .strand {
+    font-style: italic;
+  }
+  .pattern {
+    margin-top: 10px;
+    font-size: 0.8em;
   }
 </style>

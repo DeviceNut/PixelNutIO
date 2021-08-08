@@ -89,7 +89,8 @@ function sendCmd(cmdstr)
   {
     if ((s !== sid) && get(aStrands)[s].selected)
     {
-      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdstr));
+      sendDevice(cmdStr_AddrStrand.concat(s));
+      sendDevice(cmdstr);
       didone = true;
     }
   }
@@ -217,16 +218,18 @@ export const userSendPause = (enable) =>
   const sid = get(idStrand);
   let didone = false;
 
+  if (enable)
+       sendDevice(cmdStr_Pause);
+  else sendDevice(cmdStr_Resume);
+
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if (enable)
+    if ((s !== sid) && get(aStrands)[s].selected)
     {
-      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Pause));
-      didone = true;
-    }
-    else
-    {
-      sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Resume));
+      sendDevice(cmdStr_AddrStrand.concat(s));
+      if (enable)
+           sendDevice(cmdStr_Pause);
+      else sendDevice(cmdStr_Resume);
       didone = true;
     }
   }
@@ -339,8 +342,6 @@ export const userSetPattern = () =>
     let iscustom = (id >= len);
     let name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
     let cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
-
-    console.log('setpattern: ', id, name, cmdstr);
 
     strandClearAll();
 

@@ -9,9 +9,9 @@ import {
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
   cmdStr_Effect        ,
-  cmdStr_Bright        ,
-  cmdStr_Delay         ,
-  cmdStr_degreeHue     ,
+  cmdStr_PcentBright   ,
+  cmdStr_MsecsDelay    ,
+  cmdStr_DegreeHue     ,
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
@@ -191,13 +191,13 @@ export const makeLayerCmdStr = (track, layer) =>
         cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
 
       if (pdraw.pcentBright !== 100)
-        cmdstr = cmdstr.concat(`${cmdStr_Bright}${pdraw.pcentBright} `);
+        cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
 
       if (pdraw.msecsDelay !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_Delay}${pdraw.msecsDelay} `);
+        cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
 
       if (pdraw.degreeHue !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_degreeHue}${pdraw.degreeHue} `);
+        cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
 
       if (pdraw.pcentWhite !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);

@@ -392,6 +392,7 @@ export let strandsDeviceSetup = (device) =>
   {
     if (!parsePattern(device.report.strands[i].pattern))
     {
+      // TODO: user error popup
       userClearPattern();
       break;
     }

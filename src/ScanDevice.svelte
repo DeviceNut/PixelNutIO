@@ -42,15 +42,15 @@
           </div>
           <div>
             <span class="infotext2">Delay={strand.delay}%</span>
-            <span class="infotext2">Hue={strand.xt_hue}</span>
+            <span class="infotext2" class:disprops={!strand.xt_mode}>Hue={strand.xt_hue}</span>
           </div>
           <div>
             <span class="infotext2">FirstPos={strand.first}</span>
-            <span class="infotext2">White={strand.xt_white}%</span>
+            <span class="infotext2" class:disprops={!strand.xt_mode}>White={strand.xt_white}%</span>
           </div>
           <div>
             <span class="infotext2">Direction={strand.direct ? 'Up' : 'Down'}</span>
-            <span class="infotext2">Count={strand.xt_count}%</span>
+            <span class="infotext2" class:disprops={!strand.xt_mode}>Count={strand.xt_count}%</span>
           </div>
           <div class="pattern">
             <span>"{strand.pattern}"</span>
@@ -107,6 +107,9 @@
     display: inline-block;
     margin-top: 5px;
     width: 120px;
+  }
+  .disprops {
+    color: var(--color-text-disabled);
   }
   .strand {
     font-style: italic;

@@ -19,7 +19,9 @@
   } from './presets.js';
 
   import {
-    userSetProps,
+    userSetHue,
+    userSetWhite,
+    userSetCount,
     userSetOverrides
   } from "./cmduser.js"
 
@@ -27,7 +29,10 @@
 
   export let track;
   
-  const setprops = () => { userSetProps(track); }
+  // remove mouse obj from call, and add track parm
+  const sethue   = () => { userSetHue(track); }
+  const setwhite = () => { userSetWhite(track); }
+  const setcount = () => { userSetCount(track); }
   const setovers = () => { userSetOverrides(track); }
 
 </script>
@@ -37,7 +42,7 @@
 
   <Column style="margin-left:-5px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
-      onchange={setprops}
+      onchange={sethue}
       bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
@@ -46,7 +51,7 @@
     />
 
     <SliderVal name='White&nbsp;'
-      onchange={setprops}
+      onchange={setwhite}
       bind:cur={$pStrand.tracks[track].drawProps.pcentWhite}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overWhite) ||
                !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
@@ -54,7 +59,7 @@
     />
 
     <SliderVal name='Count&nbsp;'
-      onchange={setprops}
+      onchange={setcount}
       bind:cur={$pStrand.tracks[track].drawProps.pcentCount}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overCount) ||
                !($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||

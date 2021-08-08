@@ -29,10 +29,6 @@
   
   import SliderVal from "./SliderVal.svelte"
 
-  // setprops is called with mouse event
-  const setprops = ()=> { userSetProps(); }
-  const docheck  = ()=> { userSetOverMode(); }
-
   let bgc = '';
   $: bgc = $pStrand.doOverride ? '#222' : '#111'
   // cannot use css vars here, and <Row> cannot take a class
@@ -43,7 +39,7 @@
 
   <Column style="margin-left:-10px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
-      onchange={setprops}
+      onchange={userSetProps}
       bind:cur={$pStrand.degreeHue}
       disabled={!$pStrand.doOverride                  ||
                 !($pStrand.bitsOverride & overBit_DegreeHue)  ||
@@ -51,14 +47,14 @@
       max={359}
     />
     <SliderVal name='White&nbsp;'
-      onchange={setprops}
+      onchange={userSetProps}
       bind:cur={$pStrand.pcentWhite}
       disabled={!$pStrand.doOverride                  ||
                 !($pStrand.bitsOverride & overBit_PcentWhite) ||
                 !($pStrand.bitsEffects  & pluginBit_COLOR)}
     />
     <SliderVal name='Count&nbsp;'
-      onchange={setprops}
+      onchange={userSetProps}
       bind:cur={$pStrand.pcentCount}
       disabled={!$pStrand.doOverride                  ||
                 !($pStrand.bitsOverride & overBit_PcentCount) ||
@@ -71,7 +67,7 @@
       <Row style="margin:5px 0 3px 2px;">
         <Column>
           <Checkbox labelText="Override Properties"
-            on:check={docheck}
+            on:check={userSetOverMode}
             bind:checked={$pStrand.doOverride}
             disabled={$pStrand.bitsOverride === 0}
           />
@@ -83,7 +79,7 @@
     {#if matches}
       <Column>
         <Checkbox labelText="Override"
-          on:check={docheck}
+          on:check={userSetOverMode}
           bind:checked={$pStrand.doOverride}
           disabled={$pStrand.bitsOverride === 0}
         />

@@ -1,6 +1,7 @@
 <script>
 
   import { pStrand } from './globals.js';
+  import { MAX_BYTE_VALUE } from './pixelnut.js';
   import { pluginBit_DELAY } from './presets.js';
 
   import {
@@ -22,6 +23,7 @@
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
+  max={MAX_BYTE_VALUE}
   disabled={($pStrand.patternCmds === '') ||
             !($pStrand.bitsEffects & pluginBit_DELAY)}
   />

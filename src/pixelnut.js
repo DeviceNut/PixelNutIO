@@ -13,24 +13,24 @@ export const cmdStr_GetInfo       = "?";    // query device information
 export const cmdStr_GetPatterns   = "?P";   // query custom patterns
 export const cmdStr_GetPlugins    = "?G";   // query custom plugins
 
-// Device commands:                   // value is:
+// Device commands:                         // value is:
 export const cmdStr_DeviceName    = "@";    // name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force
 export const cmdStr_Pause         = "[";    // none
 export const cmdStr_Resume        = "]";    // none
 
-// Properties associated with pattern // value is:
-export const cmdStr_SetBright     = "%";    // percent of max ++
-export const cmdStr_SetDelay      = ":";    // msecs of delay ++
-export const cmdStr_SetFirst      = "^";    // first pixel to draw ++
-export const cmdStr_SetProps      = "=";    // hue white count ++
+// Override properties:                     // value is:
+export const cmdStr_OR_Bright     = "%";    // percent of max ++
+export const cmdStr_OR_Delay      = ":";    // msecs of delay ++
+export const cmdStr_OR_Props      = "=";    // hue white count ++
 export const cmdStr_SetXmode      = "_";    // 0=disable 1=enable override ++
+export const cmdStr_SetFirst      = "^";    // first pixel to draw ++
 
-// Determines what is addressed       // value is:
+// Determines what is addressed             // value is:
 export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "M";    // layer index
 
-// Commands that form patterns        // value is:
+// Commands that form patterns              // value is:
 export const cmdStr_Clear         = "P";    // none
 export const cmdStr_PcentStart    = "J";    // percent of pixels **
 export const cmdStr_PcentLength   = "K";    // percent of pixels **
@@ -43,9 +43,9 @@ export const cmdStr_PixFirst      = "Z";    // pixel index ++
 //////////////////////////////////////////////
 
 export const cmdStr_Effect        = "E";    // plugin number
-export const cmdStr_Bright        = "B";    // percent of max
-export const cmdStr_Delay         = "D";    // msecs of delay
-export const cmdStr_degreeHue     = "H";    // hue degree (0..359)
+export const cmdStr_PcentBright   = "B";    // percent of max
+export const cmdStr_MsecsDelay    = "D";    // msecs of delay
+export const cmdStr_DegreeHue     = "H";    // hue degree (0..359)
 export const cmdStr_PcentWhite    = "W";    // percent whiteness
 export const cmdStr_PcentCount    = "C";    // percent of draw length
 export const cmdStr_OrideBits     = "Q";    // property override bits
@@ -61,6 +61,7 @@ export const cmdStr_Go            = "G";    // causes all effects to be displaye
 
 // ++ these affect all tracks in the strand
 // ** these take effect only when plugin is created
+// Note: commands no starting with alpha char must be on separate line
 ///////////////////////////////////////////////////////////////////////
 
 export const strandState =
@@ -212,7 +213,6 @@ export const parseInfo = (device, reply) =>
   for (var i = 0; i < device.report.scount; ++i)
   {
     line = reply[0];
-    console.log('s1=', line);
     reply.shift();
 
     strs = line.split(' ');
@@ -224,14 +224,13 @@ export const parseInfo = (device, reply) =>
 
     strand = {...strandState};
 
-    strand.pixels = strs[0];
-    strand.bright = strs[1];
-    strand.delay  = strs[2];
-    strand.first  = strs[3];
-    strand.direct = strs[4];
+    strand.pixels = parseInt(strs[0]);
+    strand.bright = parseInt(strs[1]);
+    strand.delay  = parseInt(strs[2]);
+    strand.first  = parseInt(strs[3]);
+    strand.direct = parseInt(strs[4]);
 
     line = reply[0];
-    console.log('s2=', line);
     reply.shift();
 
     strs = line.split(' ');
@@ -241,15 +240,17 @@ export const parseInfo = (device, reply) =>
       return false;
     }
 
-    strand.xt_mode  = strs[0];
-    strand.xt_hue   = strs[1];
-    strand.xt_white = strs[2];
-    strand.xt_count = strs[3];
-    strand.force    = strs[4];
-    strand.patnum   = strs[5];
+    strand.xt_mode  = parseInt(strs[0]);
+    strand.xt_hue   = parseInt(strs[1]);
+    strand.xt_white = parseInt(strs[2]);
+    strand.xt_count = parseInt(strs[3]);
+    strand.force    = parseInt(strs[4]);
+    strand.patnum   = parseInt(strs[5]);
 
     strand.pattern = reply[0];
     reply.shift();
+
+    // TODO: search for match with this pattern
 
     device.report.strands.push(strand);
   }

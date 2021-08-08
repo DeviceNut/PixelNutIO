@@ -1,15 +1,15 @@
 import { get } from 'svelte/store';
 
 import {
-  overBit_DegreeHue   ,
-  overBit_PcentWhite  ,
-  overBit_PcentCount  ,
+  overBit_DegreeHue    ,
+  overBit_PcentWhite   ,
+  overBit_PcentCount   ,
   cmdStr_PcentStart    ,
   cmdStr_PcentLength   ,
   cmdStr_Effect        ,
-  cmdStr_Bright        ,
-  cmdStr_Delay         ,
-  cmdStr_degreeHue     ,
+  cmdStr_PcentBright   ,
+  cmdStr_MsecsDelay    ,
+  cmdStr_DegreeHue     ,
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
@@ -228,7 +228,7 @@ export const parsePattern = (cmdstr) =>
         }
         else switch (ch)
         {
-          case cmdStr_Bright:
+          case cmdStr_PcentBright:
           {
             if (!isNaN(val)) // ignore if no value
             {
@@ -238,7 +238,7 @@ export const parsePattern = (cmdstr) =>
             }
             break;
           }
-          case cmdStr_Delay:
+          case cmdStr_MsecsDelay:
           {
             if (!isNaN(val)) // ignore if no value
             {
@@ -248,7 +248,7 @@ export const parsePattern = (cmdstr) =>
             }
             break;
           }
-          case cmdStr_degreeHue:
+          case cmdStr_DegreeHue:
           {
             if (!isNaN(val)) // ignore if no value
             {

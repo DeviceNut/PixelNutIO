@@ -9,12 +9,17 @@ import {
   cmdStr_Resume        ,
   cmdStr_AddrStrand    ,
   cmdStr_AddrLayer     ,
-  cmdStr_SetBright     ,
-  cmdStr_SetDelay      ,
-  cmdStr_SetFirst      ,
-  cmdStr_SetProps      ,
+  cmdStr_OR_Bright     ,
+  cmdStr_OR_Delay      ,
+  cmdStr_OR_Props      ,
   cmdStr_SetXmode      ,
+  cmdStr_SetFirst      ,
   cmdStr_Clear         ,
+  cmdStr_PcentBright   ,
+  cmdStr_MsecsDelay    ,
+  cmdStr_DegreeHue     ,
+  cmdStr_PcentWhite    ,
+  cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
@@ -335,6 +340,8 @@ export const userSetPattern = () =>
     let name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
     let cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
 
+    console.log('setpattern: ', id, name, cmdstr);
+
     strandClearAll();
 
     if (parsePattern(cmdstr)) // sets vars for current strand
@@ -397,7 +404,7 @@ export const userSetBright = (track) =>
       get(dStrands)[get(idStrand)].pcentBright = bright;
 
       strandCopyTop();
-      sendStrandCmd(cmdStr_SetBright, bright);
+      sendStrandCmd(cmdStr_OR_Bright, bright);
 
       primed = true;
     }
@@ -412,7 +419,7 @@ export const userSetBright = (track) =>
       updateLayerVals(track, DRAW_LAYER);
   
       let layerid = convTrackLayerToID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_SetBright, bright);
+      sendLayerCmd(layerid, cmdStr_PcentBright, bright);
     }
   }
 }
@@ -427,7 +434,7 @@ export const userSetDelay = (track) =>
       get(dStrands)[get(idStrand)].msecsDelay = delay;
 
       strandCopyTop();
-      sendStrandCmd(cmdStr_SetDelay, delay);
+      sendStrandCmd(cmdStr_OR_Delay, delay);
     }
   }
   else
@@ -440,7 +447,7 @@ export const userSetDelay = (track) =>
       updateLayerVals(track, DRAW_LAYER);
 
       let layerid = convTrackLayerToID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_SetDelay, delay);
+      sendLayerCmd(layerid, cmdStr_MsecsDelay, delay);
     }
   }
 }
@@ -469,47 +476,69 @@ export const userSetOverMode = () =>
   }
 }
 
-export const userSetProps = (track) =>
+export const userSetProps = () =>
 {
   const strand = get(pStrand);
 
-  if (track === undefined)
+  let hue   = strand.degreeHue;
+  let white = strand.pcentWhite;
+  let count = strand.pcentCount;
+
+  if ((get(dStrands)[get(idStrand)].degreeHue  !== hue)   ||
+      (get(dStrands)[get(idStrand)].pcentWhite !== white) ||
+      (get(dStrands)[get(idStrand)].pcentCount !== count))
   {
-    let hue   = strand.degreeHue;
-    let white = strand.pcentWhite;
-    let count = strand.pcentCount;
+    get(dStrands)[get(idStrand)].degreeHue  = hue;
+    get(dStrands)[get(idStrand)].pcentWhite = white;
+    get(dStrands)[get(idStrand)].pcentCount = count;
 
-    if ((get(dStrands)[get(idStrand)].degreeHue  !== hue)   ||
-        (get(dStrands)[get(idStrand)].pcentWhite !== white) ||
-        (get(dStrands)[get(idStrand)].pcentCount !== count))
-    {
-      get(dStrands)[get(idStrand)].degreeHue  = hue;
-      get(dStrands)[get(idStrand)].pcentWhite = white;
-      get(dStrands)[get(idStrand)].pcentCount = count;
-
-      strandCopyTop();
-      sendStrandCmd(cmdStr_SetProps, `${hue} ${white} ${count}`);
-    }
+    strandCopyTop();
+    sendStrandCmd(cmdStr_OR_Props, `${hue} ${white} ${count}`);
   }
-  else
+}
+
+export const userSetHue = (track) =>
+{
+  let hue = get(pStrand).tracks[track].drawProps.degreeHue;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue !== hue)
   {
-    let hue   = strand.tracks[track].drawProps.degreeHue;
-    let white = strand.tracks[track].drawProps.pcentWhite;
-    let count = strand.tracks[track].drawProps.pcentCount;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
 
-    if ((get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  !== hue)   ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite !== white) ||
-        (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount !== count))
-    {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue  = hue;
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
+    updateLayerVals(track, DRAW_LAYER);
 
-      updateLayerVals(track, DRAW_LAYER);
-  
-      let layerid = convTrackLayerToID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_SetProps, `${hue} ${white} ${count}`);
-    }
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_DegreeHue, `${hue}`);
+  }
+}
+
+export const userSetWhite = (track) =>
+{
+  let white = get(pStrand).tracks[track].drawProps.pcentWhite;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite !== white)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
+
+    updateLayerVals(track, DRAW_LAYER);
+
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_PcentWhite, `${white}`);
+  }
+}
+
+export const userSetCount = (track) =>
+{
+  let count = get(pStrand).tracks[track].drawProps.pcentCount;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount !== count)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
+
+    updateLayerVals(track, DRAW_LAYER);
+
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_PcentCount, `${count}`);
   }
 }
 

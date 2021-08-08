@@ -350,6 +350,7 @@
   .button-help {
     float:left;
     width: 35px;
+    border-width: 2px;
     border-radius: 75%;
   }
   .button-pattern {

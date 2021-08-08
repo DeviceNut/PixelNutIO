@@ -83,7 +83,6 @@ function onReply(msg)
     info.shift();
     if (!parseInfo(device, info))
     {
-      console.error(`Bad parameters for: "${name}"`);
       // TODO 
     }
   }

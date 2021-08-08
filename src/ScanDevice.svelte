@@ -34,14 +34,23 @@
         <div style="margin-top:5px; margin-left:10px;">
           <div>
             <span class="infotext2">Pixels={strand.pixels}</span>
+            <span class="infotext2">Overrides:</span>
           </div>
           <div>
             <span class="infotext2">Bright={strand.bright}%</span>
-            <span class="infotext2">FirstPos={strand.first}</span>
+            <span class="infotext2">Enabled={strand.xt_mode ? 'Yes' : 'No'}</span>
           </div>
           <div>
             <span class="infotext2">Delay={strand.delay}%</span>
-            <span class="infotext2">Direction={strand.direct ? 'Up' : 'Dn'}</span>
+            <span class="infotext2">Hue={strand.xt_hue}</span>
+          </div>
+          <div>
+            <span class="infotext2">FirstPos={strand.first}</span>
+            <span class="infotext2">White={strand.xt_white}%</span>
+          </div>
+          <div>
+            <span class="infotext2">Direction={strand.direct ? 'Up' : 'Down'}</span>
+            <span class="infotext2">Count={strand.xt_count}%</span>
           </div>
           <div class="pattern">
             <span>"{strand.pattern}"</span>
@@ -97,7 +106,7 @@
   .infotext2 {
     display: inline-block;
     margin-top: 5px;
-    width: 100px;
+    width: 120px;
   }
   .strand {
     font-style: italic;

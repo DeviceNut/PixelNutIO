@@ -67,9 +67,18 @@ export const strandState =
 {
   pixels: 0,          // number of pixels
   bright: 0,          // brightness percent
-  delay: 0,           // delay milliseconds
+  delay: 0,           // delay percent
+  force: 0,           // force (0-MAX_FORCE)
   first: 1,           // first pixel to draw (from 1)
   direct: 0,          // direction flag 0/1
+
+                      // extern mode:
+  xt_mode: 0,         //  enabled=1
+  xt_hue: 0,          //  hue property (0-359)
+  xt_white: 0,        //  white property (percent)
+  xt_count: 0,        //  count property (percent)
+
+  patnum: 0,          // pattern number (not used?)
   pattern: ''         // pattern string
 };
 
@@ -162,58 +171,88 @@ export const parseInfo = (device, reply) =>
   reply.shift();
 
   strs = line.split(' ');
-  if (strs.length < 2) return false;
+  if (strs.length < 4)
+  {
+    console.error(`Unexpected parm count (line 2): "${strs.length}"`);
+    return false;
+  }
 
   device.report.scount = strs[0];
   device.report.maxlen = strs[1];
+  device.report.numlayers = strs[2];
+  device.report.numtracks = strs[3];
 
-  if (device.report.scount < 1) return false;
-  if (reply.length !== (device.report.scount * 2))
+  if (device.report.scount < 1)
+  {
+    console.error(`Bad strand count: "${scount}"`);
     return false;
+  }
+
+  if (device.report.numtracks < MIN_TRACKS)
+  {
+    console.error(`Not enough tracks: ${device.report.numtracks}`);
+    return false;
+  }
+
+  if (device.report.numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
+  {
+    console.error(`Not enough tracks: ${device.report.numlayers}`);
+    return false;
+  }
+
+  // 3 parm lines per strand
+  if (reply.length !== (device.report.scount * 3))
+  {
+    console.error(`Unexpected strand line count: "${reply.length}"`);
+    return false;
+  }
 
   device.report.strands = [];
-
-  let numtracks = 0;
-  let numlayers = 0;
 
   for (var i = 0; i < device.report.scount; ++i)
   {
     line = reply[0];
+    console.log('s1=', line);
     reply.shift();
 
     strs = line.split(' ');
-    if (strs.length < 5) return false;
+    if (strs.length < 5)
+    {
+      console.error(`Unexpected parm count (s1): "${strs.length}"`);
+      return false;
+    }
 
     strand = {...strandState};
+
     strand.pixels = strs[0];
+    strand.bright = strs[1];
+    strand.delay  = strs[2];
+    strand.first  = strs[3];
+    strand.direct = strs[4];
 
-    // FIXME not per-strand
-    numlayers = strs[1];
-    numtracks = strs[2];
+    line = reply[0];
+    console.log('s2=', line);
+    reply.shift();
 
-    strand.bright = strs[3];
-    strand.delay  = strs[4];
+    strs = line.split(' ');
+    if (strs.length < 6)
+    {
+      console.error(`Unexpected parm count (s2): "${strs.length}"`);
+      return false;
+    }
+
+    strand.xt_mode  = strs[0];
+    strand.xt_hue   = strs[1];
+    strand.xt_white = strs[2];
+    strand.xt_count = strs[3];
+    strand.force    = strs[4];
+    strand.patnum   = strs[5];
 
     strand.pattern = reply[0];
     reply.shift();
 
     device.report.strands.push(strand);
   }
-
-  if (numtracks < MIN_TRACKS)
-  {
-    console.error('Not enough tracks');
-    return false;
-  }
-
-  if (numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
-  {
-    console.error('Not enough layers');
-    return false;
-  }
-
-  device.report.numlayers = numlayers;
-  device.report.numtracks = numtracks;
 
   device.tstamp = curTimeSecs();
   device.ready = true;

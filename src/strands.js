@@ -8,6 +8,7 @@ import {
   curDevice
 } from './globals.js';
 
+import { userClearPattern } from './cmduser.js';
 import { parsePattern } from './cmdparse.js';
 import { MAX_FORCE } from "./pixelnut.js"
 
@@ -388,5 +389,11 @@ export let strandsDeviceSetup = (device) =>
   dStrands.set(slist);
 
   for (let i = 0; i < scount; ++i)
-    parsePattern(device.report.strands[i].pattern)
+  {
+    if (!parsePattern(device.report.strands[i].pattern))
+    {
+      userClearPattern();
+      break;
+    }
+  }
 }

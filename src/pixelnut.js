@@ -9,15 +9,17 @@ export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
 export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
-export const cmdStr_GetInfo       = "?";    // query device information
-export const cmdStr_GetPatterns   = "?P";   // query custom patterns
-export const cmdStr_GetPlugins    = "?G";   // query custom plugins
+// Query commands:
+export const cmdStr_GetInfo       = "?";    // returns info on device
+export const cmdStr_GetPatterns   = "?P";   // returns info on custom patterns
+export const cmdStr_GetPlugins    = "?G";   // returns info on custom plugins
 
 // Device commands:                         // value is:
 export const cmdStr_DeviceName    = "@";    // name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force
 export const cmdStr_Pause         = "[";    // none
 export const cmdStr_Resume        = "]";    // none
+export const cmdStr_SaveFlash     = ".";    // none (begins/ends saving to flash)
 
 // Override properties:                     // value is:
 export const cmdStr_OR_Bright     = "%";    // percent of max ++

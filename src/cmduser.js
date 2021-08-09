@@ -7,6 +7,7 @@ import {
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
+  cmdStr_SaveFlash     ,
   cmdStr_AddrStrand    ,
   cmdStr_AddrLayer     ,
   cmdStr_OR_Bright     ,
@@ -98,10 +99,12 @@ function sendCmd(cmdstr)
   if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
 }
 
-let primed = false;
 export const sendEntireCmdStr = () =>
 {
+  sendCmd(cmdStr_SaveFlash);
   sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternCmds));
+  sendCmd(cmdStr_SaveFlash);
+  sendCmd('0'); // triggers executing that pattern just stored
 }
 
 function sendCmdCheck(cmdstr)
@@ -293,7 +296,9 @@ export const userStrandSelect = (combine) =>
         strandCopyAll();
 
         // mirror current strand by sending entire current command to newly selected strand
-        sendDevice(cmdStr_AddrStrand.concat(s, ' ', cmdStr_Clear, ' ', get(pStrand).patternCmds));
+        sendDevice(cmdStr_AddrStrand.concat(s));
+        sendEntireCmdStr();
+        sendDevice(cmdStr_AddrStrand.concat(sid));
       }
       else if (!nowon && combine && (s === cur))
       {
@@ -406,8 +411,6 @@ export const userSetBright = (track) =>
 
       strandCopyTop();
       sendStrandCmd(cmdStr_OR_Bright, bright);
-
-      primed = true;
     }
   }
   else
@@ -473,7 +476,23 @@ export const userSetOverMode = () =>
     get(dStrands)[get(idStrand)].doOverride = oride;
 
     sendStrandCmd(cmdStr_SetXmode, oride ? 1 : 0);
-    if (oride) userSetProps();
+    if (!oride) // must resend any props that were overriden
+    {
+      for (let i = 0; i < get(pStrand).tactives; ++i)
+      {
+        let props = get(pStrand).tracks[i].drawProps;
+        let layerid = convTrackLayerToID(i, DRAW_LAYER);
+
+        if (props.overHue)
+          sendLayerCmd(layerid, cmdStr_DegreeHue, `${props.degreeHue}`);
+
+        if (props.overWhite)
+          sendLayerCmd(layerid, cmdStr_PcentWhite, `${props.pcentWhite}`);
+
+        if (props.overCount)
+          sendLayerCmd(layerid, cmdStr_PcentCount, `${props.pcentCount}`);
+      }
+    }
   }
 }
 
@@ -581,17 +600,38 @@ export const userSetOverrides = (track) =>
 {
   const strand = get(pStrand);
   let bits = makeOrideBits(strand, track);
+  let props = strand.tracks[track].drawProps;
 
   if (makeOrideBits(get(dStrands)[get(idStrand)], track) !== bits)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue   = strand.tracks[track].drawProps.overHue;
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = strand.tracks[track].drawProps.overWhite;
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = strand.tracks[track].drawProps.overCount;
-
     updateLayerVals(track, DRAW_LAYER);
   
     let layerid = convTrackLayerToID(track, DRAW_LAYER);
     sendLayerCmd(layerid, cmdStr_OrideBits, bits);
+
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue != props.overHue)
+    {
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue = props.overHue;
+      if (!props.overHue)
+           sendLayerCmd(layerid, cmdStr_DegreeHue, `${props.degreeHue}`);
+      else sendLayerCmd(layerid, cmdStr_DegreeHue, `${strand.degreeHue}`);
+    }
+
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite != props.overWhite)
+    {
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = props.overWhite;
+      if (!props.overWhite)
+           sendLayerCmd(layerid, cmdStr_PcentWhite, `${props.pcentWhite}`);
+      else sendLayerCmd(layerid, cmdStr_PcentWhite, `${strand.pcentWhite}`);
+    }
+
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount != props.overCount)
+    {
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = props.overCount;
+      if (!props.overCount)
+           sendLayerCmd(layerid, cmdStr_PcentCount, `${props.pcentCount}`);
+      else sendLayerCmd(layerid, cmdStr_PcentCount, `${strand.pcentCount}`);
+    }
   }
 }
 

@@ -373,6 +373,11 @@ export let strandsDeviceSetup = (device) =>
     strand.directUp    = device.report.strands[i].direct;
     strand.numPixels   = device.report.strands[i].pixels;
 
+    strand.doOverride  = device.report.strands[i].xt_mode;
+    strand.degreeHue   = device.report.strands[i].xt_hue;
+    strand.pcentWhite  = device.report.strands[i].xt_white;
+    strand.pcentCount  = device.report.strands[i].xt_count;
+
     slist.push(strand);
     elist.push(select);
   }

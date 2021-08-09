@@ -53,7 +53,7 @@
             <span class="infotext2" class:disprops={!strand.xt_mode}>Count={strand.xt_count}%</span>
           </div>
           <div class="pattern">
-            <span>"{strand.pattern}"</span>
+            <span>{strand.pattern}</span>
           </div>
         </div>          
       </div>

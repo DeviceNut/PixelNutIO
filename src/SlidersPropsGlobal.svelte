@@ -13,21 +13,21 @@
     overBit_DegreeHue,
     overBit_PcentWhite,
     overBit_PcentCount,
-  } from './pixelnut.js';
+  } from './pixcmds.js';
 
   import {
     pluginBit_COLOR,
     pluginBit_COUNT
-  } from "./presets.js";
+  } from './presets.js';
 
   import { pStrand } from './globals.js';
 
   import {
     userSetOverMode,
     userSetProps
-  } from "./cmduser.js"
+  } from './cmduser.js'
   
-  import SliderVal from "./SliderVal.svelte"
+  import SliderVal from './SliderVal.svelte';
 
   let bgc = '';
   $: bgc = $pStrand.doOverride ? '#222' : '#111'

@@ -2,11 +2,11 @@
  
   import { Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
-  import Revealer from "./Revealer.svelte";
+  import Revealer from './Revealer.svelte';
   import ButtonsDnUp from './ButtonsDnUp.svelte';
-  import ButtonsSoloMute from "./ButtonsSoloMute.svelte";
-  import ButtonsAddDel from "./ButtonsAddDel.svelte";
-  import OneLayer from "./OneLayer.svelte";
+  import ButtonsSoloMute from './ButtonsSoloMute.svelte';
+  import ButtonsAddDel from './ButtonsAddDel.svelte';
+  import OneLayer from './OneLayer.svelte';
 
   export let track;
 

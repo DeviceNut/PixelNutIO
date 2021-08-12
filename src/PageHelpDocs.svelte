@@ -7,8 +7,8 @@
     TextArea
   } from "carbon-components-svelte";
   
-  import HelpDocsHeader from "./HelpDocsHeader.svelte"
-  import HelpDocsMenu from "./HelpDocsMenu.svelte"
+  import HelpDocsHeader from './HelpDocsHeader.svelte';
+  import HelpDocsMenu from './HelpDocsMenu.svelte';
 
   let menuOpen = true;
 

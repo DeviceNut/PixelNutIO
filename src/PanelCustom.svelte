@@ -2,11 +2,11 @@
 
   import MediaQuery from "svelte-media-query";
   import { pStrand } from './globals.js';
-  import TrackCols from "./TrackCols.svelte"
+  import TrackCols from './TrackCols.svelte';
 
   /* DISABLED: user editing pattern
     import { userEditPattern } from './cmduser.js';
-    import PatternString from "./PatternString.svelte"
+    import PatternString from './PatternString.svelte';
 
     <div style="margin-left:5px; margin-right:5px;">
       <PatternString/>

@@ -23,11 +23,14 @@ import {
   cmdStr_TriggerRange  ,
   cmdStr_Clear         ,
   cmdStr_Go
-  } from './pixelnut.js';
+  } from './pixcmds.js';
 
 import {
-  nTracks, tLayers,
-  pStrand, dStrands, idStrand,
+  nTracks,
+  tLayers,
+  pStrand,
+  dStrands,
+  idStrand,
   aEffectsDraw,
   aEffectsFilter,
 } from './globals.js';

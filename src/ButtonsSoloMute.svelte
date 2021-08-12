@@ -2,7 +2,7 @@
  
   import {
     DRAW_LAYER
-  } from "./pixelnut.js";
+  } from './pixcmds.js';
 
   import {
     pStrand,

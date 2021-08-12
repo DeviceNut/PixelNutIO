@@ -11,7 +11,7 @@
   import {
     DRAW_LAYER,
     MAX_BYTE_VALUE
-  } from "./pixelnut.js";
+  } from './pixcmds.js';
 
   import {
     pStrand,
@@ -37,11 +37,11 @@
     userSetDirect,
     userSetTrigStart,
     userSetTrigMain
-  } from "./cmduser.js"
+  } from './cmduser.js'
 
-  import ControlsTrigger from './ControlsTrigger.svelte'
-  import SlidersPropsLocal from "./SlidersPropsLocal.svelte"
-  import SliderVal from "./SliderVal.svelte"
+  import ControlsTrigger from './ControlsTrigger.svelte';
+  import SlidersPropsLocal from './SlidersPropsLocal.svelte';
+  import SliderVal from './SliderVal.svelte';
 
   export let track;
 

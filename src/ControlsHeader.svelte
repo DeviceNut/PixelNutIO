@@ -15,7 +15,7 @@
   import {
     userSetDevName,
     userSendPause
-  } from "./cmduser.js"
+  } from './cmduser.js'
 
   let isPaused = false;
   let textPause = '';

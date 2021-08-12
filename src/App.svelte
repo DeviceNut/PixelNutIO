@@ -11,9 +11,9 @@
   import { storePatternsInit } from './userstore.js';
   import { presetsInit } from './presets.js';
 
-  import PageDevices from "./PageDevices.svelte"
-  import PageControls from "./PageControls.svelte"
-  import PageHelpDocs from "./PageHelpDocs.svelte"
+  import PageDevices from './PageDevices.svelte';
+  import PageControls from './PageControls.svelte';
+  import PageHelpDocs from './PageHelpDocs.svelte';
 
   mqttBrokerSearch();
   storePatternsInit();

@@ -2,7 +2,7 @@
 
   import { Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
-  import Revealer from "./Revealer.svelte";
+  import Revealer from './Revealer.svelte';
   import ButtonsDnUp from './ButtonsDnUp.svelte';
   import ButtonsSoloMute from './ButtonsSoloMute.svelte';
   import ControlsDraw from './ControlsDraw.svelte';

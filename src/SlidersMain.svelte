@@ -1,16 +1,16 @@
 <script>
 
   import { pStrand } from './globals.js';
-  import { MAX_BYTE_VALUE } from './pixelnut.js';
+  import { MAX_BYTE_VALUE } from './pixcmds.js';
   import { pluginBit_DELAY } from './presets.js';
 
   import {
     userSetBright,
     userSetDelay,
     userSetRotate
-  } from "./cmduser.js"
+  } from './cmduser.js'
 
-  import SliderVal from "./SliderVal.svelte"
+  import SliderVal from './SliderVal.svelte';
 
 </script>
 

@@ -3,8 +3,8 @@
   import { Grid, Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
 
-  import OneTrack from "./OneTrack.svelte"
-  import ButtonsAddDel from "./ButtonsAddDel.svelte";
+  import OneTrack from './OneTrack.svelte';
+  import ButtonsAddDel from './ButtonsAddDel.svelte';
 
   export let numcols;
 

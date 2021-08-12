@@ -13,9 +13,9 @@
     aEffFilterDesc
   } from './globals.js'
 
-  import { userSetFilterEffect } from "./cmduser.js"
+  import { userSetFilterEffect } from './cmduser.js'
 
-  import ControlsTrigger from './ControlsTrigger.svelte'
+  import ControlsTrigger from './ControlsTrigger.svelte';
 
   export let track;
   export let layer;

@@ -19,12 +19,12 @@
     Checkbox
   } from "carbon-components-svelte";
 
-  import { MAX_FORCE } from "./pixelnut.js";
+  import { MAX_FORCE } from './pixcmds.js';
 
   import {
     pluginBit_TRIGGER,
     pluginBit_TRIGFORCE
-  } from "./presets.js";
+  } from './presets.js';
 
   import {
     pStrand,
@@ -38,18 +38,18 @@
     storePatternsInit,
     storePatternSave,
     storePatternRemove
-  } from "./userstore.js";
+  } from './userstore.js';
 
   import {
     userSetPattern,
     userClearPattern,
     userSetForce,
     userSendTrigger
-  } from "./cmduser.js";
+  } from './cmduser.js';
 
-  import SlidersMain from "./SlidersMain.svelte";
-  import SlidersPropsGlobal from "./SlidersPropsGlobal.svelte";
-  import SliderVal from "./SliderVal.svelte"
+  import SlidersMain from './SlidersMain.svelte';
+  import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
+  import SliderVal from './SliderVal.svelte';
 
   function copyToClipboard()
   {

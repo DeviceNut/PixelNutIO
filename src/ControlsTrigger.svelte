@@ -10,7 +10,7 @@
   import {
     DRAW_LAYER,
     MAX_FORCE
-  } from "./pixelnut.js";
+  } from './pixcmds.js';
 
   import {
     pStrand,
@@ -33,11 +33,11 @@
     userSetTrigDrange,
     userSetForceType,
     userSetForceValue
-  } from "./cmduser.js"
+  } from './cmduser.js'
 
   import { makeTrigSourceList } from './cmdmake.js';
 
-  import SliderVal from "./SliderVal.svelte"
+  import SliderVal from './SliderVal.svelte';
 
   export let track;
   export let layer = DRAW_LAYER;

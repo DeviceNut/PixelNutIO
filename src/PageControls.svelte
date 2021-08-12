@@ -5,10 +5,10 @@
     pStrand
   } from './globals.js';
 
-  import ControlsHeader from "./ControlsHeader.svelte"
-  import MultiStrands from "./MultiStrands.svelte"
-  import PanelMain from "./PanelMain.svelte"
-  import PanelCustom from "./PanelCustom.svelte";
+  import ControlsHeader from './ControlsHeader.svelte';
+  import MultiStrands from './MultiStrands.svelte';
+  import PanelMain from './PanelMain.svelte';
+  import PanelCustom from './PanelCustom.svelte';
 
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customizer");

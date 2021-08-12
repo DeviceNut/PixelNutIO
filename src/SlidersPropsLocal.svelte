@@ -23,9 +23,9 @@
     userSetWhite,
     userSetCount,
     userSetOverrides
-  } from "./cmduser.js"
+  } from './cmduser.js'
 
-  import SliderVal from "./SliderVal.svelte"
+  import SliderVal from './SliderVal.svelte';
 
   export let track;
   

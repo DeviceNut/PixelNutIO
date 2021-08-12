@@ -24,7 +24,7 @@ import {
   cmdStr_TrigMinTime   ,
   cmdStr_TriggerRange  ,
   cmdStr_Go            
-  } from './pixelnut.js';
+  } from './pixcmds.js';
 
 import {
   pStrand,
@@ -155,7 +155,7 @@ export const makeEntireCmdStr = () =>
   //console.log(`oridebits=${ridebits.toString(16)}`);
   //console.log(`splugbits=${splugbits.toString(16)}`);
 
-  pStrand.set(get(pStrand)); // triggers update
+  pStrand.set(get(pStrand)); // triggers update // FIXME necessary?
 }
 
 // create partial command string for one layer in a track

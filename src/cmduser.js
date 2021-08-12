@@ -394,7 +394,7 @@ export const userClearPattern = () =>
 // Pattern Commands from PanelCustom: 
 
 /*
-// user just edited pattern string - DISABLED FIXME
+// user just edited pattern string - DISABLED TODO
 export const userEditPattern = () =>
 {
   let cmdstr = get(pStrand).patternCmds;

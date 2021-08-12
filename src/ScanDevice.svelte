@@ -1,5 +1,6 @@
 <script>
 
+  import { Loading } from "carbon-components-svelte";
   import { userDeviceSetup } from './cmduser.js';
 
   export let device;
@@ -17,7 +18,7 @@
     <button on:click={doctrls} class="button" >Controls</button>
   {:else}
     <div class="devscan" >{device.name}</div>
-    <!-- TODO: spinner waiting to become ready -->
+    <Loading style="display:inline-block; margin-left: 20px;" small withOverlay={false} />
   {/if}
 </div>
 {#if showinfo }

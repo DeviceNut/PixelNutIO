@@ -41,6 +41,7 @@ export const deviceInfo =
   name: '',           // used as topic to talk to device
   tstamp: 0,          // timestamp(secs) of last notify
   query: 0,           // state of query commands (QUERY_xxx)
+  failed: false,      // device communication failed
   ready: false,       // true if ready for controlling
                       // (all info retrieved successfully)
   active: false,      // true if being controlled now
@@ -61,7 +62,7 @@ const QUERY_PLUGINS       = 3;  // waiting for plugins info reply
 
 const SECS_NOTIFY_TIMEOUT = 7;  // secs since last notify to clear active status
 
-function deviceStop()
+function deviceStop(device=null)
 {
   let curdev = get(curDevice);
   if (curdev != null)
@@ -71,6 +72,16 @@ function deviceStop()
 
     curdev.active = false;
     curDevice.set(null);
+
+    console.log(`Device stopped: ${curdev.name}`); // DEBUG
+  }
+
+  if (device !== null)
+  {
+    console.log(`Device failed: ${device.name}`); // DEBUG
+
+    device.failed = true;
+    deviceList.set(get(deviceList)); // trigger UI update
   }
 }
 
@@ -91,9 +102,10 @@ function startcheck()
     {
       //console.log(`Checking: ${device.name}`); // DEBUG
   
-      // if device still present but hasn't sent a
-      // notification recently, mark as not present
-      if ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp)
+      // if device hasn't failed already and hasn't sent
+      // a notification recently, mark as not present
+      if (!device.failed &&
+         ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
       {
         console.log(`Device lost: ${device.name}`) // DEBUG
 
@@ -121,9 +133,9 @@ export const onConnection = (enabled) =>
       checker = 0;
     } 
 
-    deviceList.set([]);
-
     deviceStop();
+
+    deviceList.set([]);
   }
 
   isConnected.set(enabled);
@@ -140,8 +152,13 @@ export const onNotification = (msg) =>
   {
     if (device.name === name)
     {
-      device.tstamp = curTimeSecs();
-      return; // update time, done
+      if (device.failed)
+      {
+        // ignore?
+      }
+      else device.tstamp = curTimeSecs();
+
+      return; // don't add this device
     }
   }
 
@@ -151,6 +168,7 @@ export const onNotification = (msg) =>
   device.name = name;
   device.tstamp = curTimeSecs();
   get(deviceList).push(device);
+  deviceList.set(get(deviceList)); // trigger UI update
 
   console.log('Requesting device info...'); // DEBUG
 
@@ -186,13 +204,14 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parseDeviceInfo(device, reply))
         {
-          device.ready = true;
-          console.log(`Device ready: "${device.name}"`) // DEBUG
-          deviceList.set(get(deviceList)); // trigger UI update
+          //device.ready = true;
+          //console.log(`Device ready: "${device.name}"`) // DEBUG
+          //deviceList.set(get(deviceList)); // trigger UI update
 
-          //mqttSend(name, cmdStr_GetPatInfo); TODO
+          mqttSend(name, cmdStr_GetPatInfo);
+          device.query = QUERY_PATTERNS;
         }
-        else deviceStop();
+        else deviceStop(device);
         break;
       }
       case QUERY_PATTERNS: // TODO
@@ -201,8 +220,9 @@ export const onCommandReply = (msg) =>
         if (parsePatternInfo(device, reply))
         {
           mqttSend(name, cmdStr_GetPlugInfo);
+          device.query = QUERY_PLUGINS;
         }
-        else deviceStop();
+        else deviceStop(device);
         break;
       }
       case QUERY_PLUGINS: // TODO
@@ -210,11 +230,12 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parsePluginInfo(device, reply))
         {
-          device.ready = true;
           console.log(`Device ready: "${device.name}"`) // DEBUG
+
+          device.ready = true;
           deviceList.set(get(deviceList)); // trigger UI update
         }
-        else deviceStop();
+        else deviceStop(device);
         break;
       }
       default:

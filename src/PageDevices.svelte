@@ -10,12 +10,12 @@
   import ScanDevice from './ScanDevice.svelte';
 
   let MSECS_CHECK_TIMEOUT = 800;
+  let MSECS_WAIT_CONNECTION = 5000;
   let scanning = false;
-  let connected;
+  let waitcount;
   let title;
 
-  $: connected = get(isConnected);
-  $: title = connected ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
+  $: title = get(isConnected) ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
 
   // when start this page, start "spinner" if:
   // 1) no devices in list
@@ -26,7 +26,11 @@
   const docheck = () =>
   {
     // wait until get at least one device before stop spinner
-    if (get(deviceList).length > 0) scanning = false;
+    if (get(deviceList).length > 0)
+      scanning = false;
+
+    else if ((--waitcount <= 0) && !get(isConnected))
+      scanning = false;
 
     else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
   }
@@ -35,12 +39,13 @@
   {
     scanning = true;
 
-    if (!connected) mqttConnect();
+    if (!get(isConnected)) mqttConnect();
 
+    waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
     docheck();
   }
 
-  if (!connected || (get(deviceList).length < 1))
+  if (!get(isConnected) || (get(deviceList).length < 1))
     doscan();
 
 </script>
@@ -55,7 +60,7 @@
       {#if scanning }
         <Loading style="margin-left:42%;" withOverlay={false} />
       {:else}
-        <button on:click={doscan} class="button" >Reconnect</button>
+        <button on:click={doscan} disabled={$isConnected} class="button" >Reconnect</button>
       {/if}
     </div>
 
@@ -63,9 +68,11 @@
 
     <div class="listbox">
       {#each $deviceList as device }
-        <div class="listitem">
-          <ScanDevice {device} />
-        </div>
+        {#if !device.failed }
+          <div class="listitem">
+            <ScanDevice {device} />
+          </div>
+        {/if}
       {/each}
     </div>
 
@@ -102,7 +109,7 @@
     padding-top: 20px;
   }
   .button {
-    margin-top: 30px;
+    margin-top: 20px;
     padding: 8px;
     font-size:1.15em;
   }

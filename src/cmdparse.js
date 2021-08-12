@@ -104,7 +104,7 @@ export const parsePattern = (cmdstr) =>
   let trackbits = 0;
 
   const cmds = cmdstr.toUpperCase().split(/\s+/); // remove all spaces
-  //console.log('parse: ', cmds);
+  //console.log('parse: ', cmds); // DEBUG
 
   for (let cmd of cmds)
   {

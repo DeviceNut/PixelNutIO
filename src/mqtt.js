@@ -15,7 +15,7 @@ let mqtt = 0;
 
 function onConnect()
 {
-  console.log('MQTT Subscribing...');
+  console.log('MQTT Subscribing...'); // DEBUG
   mqtt.subscribe(topicDevNotify);
   mqtt.subscribe(topicDevReply);
 
@@ -40,7 +40,7 @@ function onFailure(rsp)
 function onMessage(message)
 {
   let msg = message.payloadString;
-  //console.log(`MQTT Topic=${message.topic} Msg=${msg}`);
+  //console.log(`MQTT Topic=${message.topic} Msg=${msg}`); // DEBUG
 
   switch (message.topic)
   {
@@ -56,8 +56,8 @@ function onMessage(message)
 
 export const mqttBrokerSearch = () => // TODO
 {
-  console.log('Searching for MQTT Broker...');
-  console.log(`Found: ${host}:${port}`);
+  console.log('Searching for MQTT Broker...'); // DEBUG
+  console.log(`Found: ${host}:${port}`); // DEBUG
 }
 
 export const mqttConnect = () =>
@@ -67,7 +67,7 @@ export const mqttConnect = () =>
 
   mqtt = new Paho.Client(host, port, 'pixelnut');
 
-  console.log('MQTT Connecting...');
+  console.log('MQTT Connecting...'); // DEBUG
 
   let options = {
     timeout: 1,

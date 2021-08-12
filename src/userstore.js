@@ -28,7 +28,7 @@ export const storePatternsInit = () =>
     let nlist = names.split(SavePatternSeparator);
     let bcount = get(aBuiltinPats).length;
 
-    //console.log('nlist=', nlist);
+    //console.log('nlist=', nlist); // DEBUG
 
     for (const text of nlist)
     {
@@ -36,8 +36,8 @@ export const storePatternsInit = () =>
       let cmd = localStorage.getItem(SavePatternKeyCmd+text);
       let adesc = localStorage.getItem(SavePatternKeyDesc+text);
 
-      //console.log('cmd=', cmd);
-      //console.log('adesc=', adesc);
+      //console.log('cmd=', cmd); // DEBUG
+      //console.log('adesc=', adesc); // DEBUG
 
       if (cmd !== '')
       {
@@ -47,7 +47,7 @@ export const storePatternsInit = () =>
         let dlist = [adesc];
         ldesc.push(dlist);
 
-        //console.log('dlist=', dlist);
+        //console.log('dlist=', dlist); // DEBUG
       }
     }
   }
@@ -60,14 +60,14 @@ export const storePatternSave = (name, desc, cmds) =>
 {
   if (name && desc && cmds)
   {
-    //console.log(`saving: ${name}:${desc}`);
+    //console.log(`saving: ${name}:${desc}`); // DEBUG
 
     let names = localStorage.getItem(SavePatternNames);
     if (names === null) names = '';
     else if (names !== '') names = names.concat(SavePatternSeparator);
     names = names.concat(name);
   
-    //console.log('names=', names);
+    //console.log('names=', names); // DEBUG
   
     localStorage.setItem(SavePatternNames, names);
     localStorage.setItem(SavePatternKeyCmd+name, cmds);
@@ -89,7 +89,7 @@ export const storePatternRemove = (name) =>
     {
       if (n === name)
       {
-        //console.log(`removing: ${name}`);
+        //console.log(`removing: ${name}`); // DEBUG
 
         nlist.splice(i, 1);
         const str = nlist.join(SavePatternSeparator);

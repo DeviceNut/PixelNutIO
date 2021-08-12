@@ -85,7 +85,7 @@ function sendDevice(cmdstr)
     console.warn(`No active device (\"${cmdstr}\"`)
   else
   {
-    console.log('>>', cmdstr); // FIXME
+    console.log('>>', cmdstr); // DEBUG
     mqttSend(device.name, cmdstr);
   }
 }
@@ -198,14 +198,14 @@ export const updateTriggerLayers = () =>
               strand.tracks[track].layers[layer].trigListDex = i;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = i;
 
-              //console.log('updated: ', track, layer, tnum, lnum, i, item);
+              //console.log('updated: ', track, layer, tnum, lnum, i, item); // DEBUG
             }
           }
         }
 
         if (!found)
         {
-          //console.log('disabling trigger (track,layer): ', track, layer);
+          //console.log('disabling trigger (track,layer): ', track, layer); // DEBUG
 
           strand.tracks[track].layers[layer].trigDoLayer = false;
           strand.tracks[track].layers[layer].trigListDex = 0;

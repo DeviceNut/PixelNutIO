@@ -89,13 +89,13 @@ function startcheck()
     let tstamp = curTimeSecs();
     for (const device of curlist)
     {
-      //console.log(`Checking: ${device.name}`);
+      //console.log(`Checking: ${device.name}`); // DEBUG
   
       // if device still present but hasn't sent a
       // notification recently, mark as not present
       if ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp)
       {
-        console.log(`Device lost: ${device.name}`)
+        console.log(`Device lost: ${device.name}`) // DEBUG
 
         // if device is currently being controlled,
         // return to the device discovery page
@@ -134,7 +134,7 @@ export const onNotification = (msg) =>
   const info = msg.split(',');
   const name = info[0];
 
-  //console.log(`Device="${name}" IP=${info[1]}`);
+  //console.log(`Device="${name}" IP=${info[1]}`); // DEBUG
 
   for (const device of get(deviceList))
   {
@@ -145,14 +145,14 @@ export const onNotification = (msg) =>
     }
   }
 
-  console.log(`Adding device: "${name}"`);
+  console.log(`Adding device: "${name}"`); // DEBUG
 
   let device = {...deviceInfo};
   device.name = name;
   device.tstamp = curTimeSecs();
   get(deviceList).push(device);
 
-  console.log('Requesting device info...');
+  console.log('Requesting device info...'); // DEBUG
 
   mqttSend(name, cmdStr_GetDevInfo);
   device.query = QUERY_DEVICE;
@@ -160,7 +160,7 @@ export const onNotification = (msg) =>
 
 export const onCommandReply = (msg) =>
 {
-  console.log(`Device reply: ${msg}`)
+  console.log(`Device reply: ${msg}`) // DEBUG
 
   const reply = msg.split('\n');
   const name = reply[0];
@@ -169,7 +169,7 @@ export const onCommandReply = (msg) =>
   const dlist = get(deviceList);
   for (const d of dlist)
   {
-    console.log('device: ', d);
+    //console.log('device: ', d); // DEBUG
     if (d.name === name)
     {
       device = d;
@@ -187,7 +187,7 @@ export const onCommandReply = (msg) =>
         if (parseDeviceInfo(device, reply))
         {
           device.ready = true;
-          console.log(`Device ready: "${device.name}"`)
+          console.log(`Device ready: "${device.name}"`) // DEBUG
           deviceList.set(get(deviceList)); // trigger UI update
 
           //mqttSend(name, cmdStr_GetPatInfo); TODO
@@ -211,7 +211,7 @@ export const onCommandReply = (msg) =>
         if (parsePluginInfo(device, reply))
         {
           device.ready = true;
-          console.log(`Device ready: "${device.name}"`)
+          console.log(`Device ready: "${device.name}"`) // DEBUG
           deviceList.set(get(deviceList)); // trigger UI update
         }
         else deviceStop();

@@ -87,7 +87,7 @@ export const convTrackLayerToID = (track, layer) =>
       ++layerid
   }
 
-  //console.log('conv: ', track, layer, ' => ', layerid);
+  //console.log('conv: ', track, layer, ' => ', layerid); // DEBUG
   return layerid;
 }
 
@@ -152,8 +152,8 @@ export const makeEntireCmdStr = () =>
   get(pStrand).bitsOverride = ridebits;
   get(pStrand).bitsEffects = splugbits;
 
-  //console.log(`oridebits=${ridebits.toString(16)}`);
-  //console.log(`splugbits=${splugbits.toString(16)}`);
+  //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
+  //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG
 
   pStrand.set(get(pStrand)); // triggers update // FIXME necessary?
 }

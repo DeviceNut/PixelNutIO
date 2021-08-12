@@ -257,7 +257,7 @@ export const strandCopyAll = () =>
 {
   strandCopyTop();
   strandCopyTracks();
-  //console.log(get(aStrands));
+  //console.log(get(aStrands)); // DEBUG
 }
 
 // clears all values for all tracks in the current strand

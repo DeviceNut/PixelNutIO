@@ -1,6 +1,27 @@
 import { get } from 'svelte/store';
 
 import {
+  defDeviceName,
+  MIN_TRACK_LAYERS,
+  PAGEMODE_CONTROLS,
+  curPageMode,
+  curDevice,
+  nTracks,
+  tLayers,
+  nStrands,
+  idStrand,
+  pStrand,
+  aStrands,
+  eStrands,
+  dStrands,
+  aBuiltinPats,
+  aCustomPats,
+  aEffectsDraw,
+  aEffectsFilter,
+  aTriggers
+} from './globals.js';
+
+import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
   cmdStr_DeviceName    ,
@@ -30,32 +51,15 @@ import {
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
   cmdStr_TriggerRange  ,
-} from './pixelnut.js';
-
-import {
-  defDeviceName,
-  curDevice,
-  nStrands,
-  idStrand,
-  pStrand,
-  aStrands,
-  eStrands,
-  dStrands,
-  aBuiltinPats,
-  aCustomPats,
-  aEffectsDraw,
-  aEffectsFilter,
-  aTriggers
-} from './globals.js';
-
-import { pluginBit_SENDFORCE } from './presets.js';
+} from './pixcmds.js';
 
 import {
   strandClearAll,
   strandCopyAll,
   strandCopyTop,
   strandCopyLayer,
-  strandCopyTracks
+  strandCopyTracks,
+  makeNewStrand
 } from './strands.js';
 
 import {
@@ -74,8 +78,16 @@ import { mqttSend } from './mqtt.js';
 
 function sendDevice(cmdstr)
 {
-  console.log('>>', cmdstr);
-  mqttSend(cmdstr);
+  let device = get(curDevice);
+  if (device !== null)
+    console.warn(`No current device (\"${cmdstr}\"`)
+  else if (!device.active)
+    console.warn(`No active device (\"${cmdstr}\"`)
+  else
+  {
+    console.log('>>', cmdstr); // FIXME
+    mqttSend(device.name, cmdstr);
+  }
 }
 
 function sendCmd(cmdstr)
@@ -972,4 +984,82 @@ export const userSetForceValue = (track, layer) =>
     let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigForce, force);
   }
+}
+
+export let userDeviceSetup = (device) =>
+{
+  console.log(`Connecting to: "${device.name}"...`); // DEBUG
+
+  let scount = device.report.scount;
+
+  let numtracks = device.report.numtracks;
+  let numlayers = device.report.numlayers;
+  let tracklayers = numlayers / numtracks;
+
+  if (tracklayers < MIN_TRACK_LAYERS)
+  {
+    tracklayers = MIN_TRACK_LAYERS;
+    numtracks = numlayers / tracklayers;
+  }
+
+  nStrands.set(scount);
+  nTracks.set(numtracks);
+  tLayers.set(tracklayers);
+
+  const sid = 0;
+  let slist = [];
+  let elist = [];
+
+  for (let s = 0; s < scount; ++s)
+  {
+    const strand = makeNewStrand(s);
+    const select = (s === sid) ? true : false;
+
+    strand.selected = select;
+    strand.pcentBright = device.report.strands[s].bright;
+    strand.msecsDelay  = device.report.strands[s].delay;
+    strand.firstPixel  = device.report.strands[s].first;
+    strand.directUp    = device.report.strands[s].direct;
+    strand.numPixels   = device.report.strands[s].pixels;
+
+    strand.doOverride  = device.report.strands[s].xt_mode;
+    strand.degreeHue   = device.report.strands[s].xt_hue;
+    strand.pcentWhite  = device.report.strands[s].xt_white;
+    strand.pcentCount  = device.report.strands[s].xt_count;
+
+    slist.push(strand);
+    elist.push(select);
+  }
+
+  aStrands.set(slist);
+  eStrands.set(elist);
+  pStrand.set(slist[sid]);
+
+  // make duplicate object to keep shadow values
+  slist = [];
+  for (let i = 0; i < scount; ++i)
+    slist.push(makeNewStrand(i));
+
+  dStrands.set(slist);
+
+  device.active = true;
+  curDevice.set(device);
+
+  for (let s = 0; s < scount; ++s)
+  {
+    idStrand.set(s);
+    pStrand.set(get(aStrands)[s]);
+    
+    if (!parsePattern(device.report.strands[s].pattern))
+    {
+      userClearPattern(); // TODO: more than this?
+      return;
+    }
+  }
+
+  // reset to use first strand
+  idStrand.set(0);
+  pStrand.set(get(aStrands)[0]);
+
+  curPageMode.set(PAGEMODE_CONTROLS);
 }

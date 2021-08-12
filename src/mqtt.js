@@ -1,10 +1,8 @@
 import { 
-  doConnect,
-  doDisconnect,
-  findDevice,
-  parseInfo,
-  cmdStr_GetInfo
-} from './pixelnut.js';
+  onConnection,
+  onNotification,
+  onCommandReply
+} from './pixtalk.js';
 
 const host = '192.168.8.222'; // do NOT put http/wss prefixes on this
 const port = 9001;            // MUST be 9001 for websocket
@@ -12,7 +10,6 @@ const port = 9001;            // MUST be 9001 for websocket
 const topicDevNotify  = 'PixelNut/Notify';
 const topicDevReply   = 'PixelNut/Reply';
 const topicCommand    = 'PixelNut/Cmd/'; // + devicename
-const topicBaseName   = 'PixelNut/'; // FIXME: remove
 
 let mqtt = 0;
 
@@ -22,20 +19,22 @@ function onConnect()
   mqtt.subscribe(topicDevNotify);
   mqtt.subscribe(topicDevReply);
 
-  doConnect();
+  onConnection(true);
 }
 
 function onLostConnect(rsp)
 {
   if (rsp.errorCode !== 0)
   {
-    console.error(`MQTT Connection: ${rsp.errorMessage}`);
+    console.error(`MQTT Lost Connection: ${rsp.errorMessage}`);
+    onConnection(false);
   }
 }
 
 function onFailure(rsp)
 {
-  console.error(`MQTT Failure: ${rsp.errorMessage}`);
+  console.error(`MQTT Broker Failed: ${rsp.errorMessage}`);
+  onConnection(false);
 }
 
 function onMessage(message)
@@ -46,58 +45,24 @@ function onMessage(message)
   switch (message.topic)
   {
     case topicDevNotify:
-      //console.log(`Notify=${msg}`);
-      onNotify(msg);
+      onNotification(msg);
       break;
 
     case topicDevReply:
-      console.log(`Reply=${msg}`)
-      onReply(msg);
+      onCommandReply(msg);
       break;
   }
-}
-
-function onNotify(msg)
-{
-  const info = msg.split(',');
-  const name = info[0];
-
-  //console.log(`Device="${name}" IP=${info[1]}`);
-
-  const dobj = findDevice(name, true); // add if not found
-  if (dobj.isnew)
-  {
-    console.log('Requesting device info...');
-    //mqtt.publish(topicCommand + name, cmdStr_GetInfo);
-    mqtt.publish(topicBaseName + name, cmdStr_GetInfo); // FIXME: remove
-  }
-}
-
-function onReply(msg)
-{
-  const info = msg.split('\n');
-  const name = info[0];
-  const device = findDevice(name).device;
-  if (device !== null)
-  {
-    info.shift();
-    if (!parseInfo(device, info))
-    {
-      // TODO 
-    }
-  }
-  else console.error(`No device found: "${name}"`);
 }
 
 export const mqttBrokerSearch = () => // TODO
 {
-  console.log('Seareching for MQTT Broker...');
+  console.log('Searching for MQTT Broker...');
   console.log(`Found: ${host}:${port}`);
 }
 
 export const mqttConnect = () =>
 {
-  doDisconnect();
+  onConnection(false);
   if (mqtt) mqtt.disconnect();
 
   mqtt = new Paho.Client(host, port, 'pixelnut');
@@ -115,12 +80,12 @@ export const mqttConnect = () =>
 
   mqtt.onMessageArrived = onMessage;
   mqtt.onConnectionLost = onLostConnect;
+  //mqtt.disconnectedPublishing = true/false; // TODO?
+  //mqtt.onMessageDelivered
+  //mqtt.onMessageArrived
 }
 
-export const mqttSend = (msg) =>
+export const mqttSend = (name, msg) =>
 {
-  let topic = topicBaseName + 'Music Room';
-  let message = new Paho.Message(msg);
-  message.destinationName = topic;
-  mqtt.send(message);
+  mqtt.publish(topicCommand + name, msg);
 }

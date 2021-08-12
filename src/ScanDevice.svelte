@@ -1,25 +1,24 @@
 <script>
 
-  import { PAGEMODE_CONTROLS, curPageMode } from './globals.js';
-  import { strandsDeviceSetup } from './strands.js';
+  import { userDeviceSetup } from './cmduser.js';
 
   export let device;
 
   let showinfo = false;
   const moreinfo = () => { showinfo = !showinfo; }
 
-  const doctrls = () =>
-  {
-    console.log(`Connect to: "${device.name}"`);
-    strandsDeviceSetup(device);
-    curPageMode.set(PAGEMODE_CONTROLS);
-  }
+  const doctrls = () => { userDeviceSetup(device) }
 
 </script>
 
 <div class="devbox" class:expand={showinfo}>
-  <div    on:click={moreinfo}  class="devname" >{device.name}</div>
-  <button on:click={doctrls} class="button" >Controls</button>
+  {#if device.ready }
+    <div    on:click={moreinfo}  class="devname" >{device.name}</div>
+    <button on:click={doctrls} class="button" >Controls</button>
+  {:else}
+    <div class="devscan" >{device.name}</div>
+    <!-- TODO: spinner waiting to become ready -->
+  {/if}
 </div>
 {#if showinfo }
   <div class="infobox">
@@ -73,6 +72,11 @@
   }
   .devbox.expand {
     border-bottom: 0;
+  }
+  .devscan {
+    display: inline;
+    padding: 5px;
+    font-size:1.15em;
   }
   .devname {
     display: inline;

@@ -3,14 +3,25 @@
   import { get } from 'svelte/store';
   import { Loading } from "carbon-components-svelte";
 
-  import { startConnect, deviceList } from './globals.js';
+  import { isConnected, deviceList } from './globals.js';
   import { mqttConnect } from './mqtt.js';
 
-  import DevicesHeader from "./DevicesHeader.svelte"
-  import ScanDevice from "./ScanDevice.svelte"
+  import DevicesHeader from './DevicesHeader.svelte';
+  import ScanDevice from './ScanDevice.svelte';
 
   let MSECS_CHECK_TIMEOUT = 800;
   let scanning = false;
+  let connected;
+  let title;
+
+  $: connected = get(isConnected);
+  $: title = connected ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
+
+  // when start this page, start "spinner" if:
+  // 1) no devices in list
+  // 2) just connected for first time (same as #1)
+  // 3) returned from Controls after error or disconnect
+  // but not if just returned from Controls or Docs normally
 
   const docheck = () =>
   {
@@ -23,15 +34,14 @@
   const doscan = () =>
   {
     scanning = true;
-    mqttConnect();
+
+    if (!connected) mqttConnect();
+
     docheck();
   }
 
-  if (get(startConnect))
-  {
-    doscan(); // start connection process immediately
-    startConnect.set(false); // only first time
-  }
+  if (!connected || (get(deviceList).length < 1))
+    doscan();
 
 </script>
 
@@ -41,11 +51,11 @@
   <div class="panel">
 
     <div class="scanbox">
+      <p style="margin-bottom:15px;">{title}</p>
       {#if scanning }
-        <div style="padding-top:30px;"></div>
         <Loading style="margin-left:42%;" withOverlay={false} />
       {:else}
-        <button on:click={doscan} class="button" >Clear and Rescan</button>
+        <button on:click={doscan} class="button" >Reconnect</button>
       {/if}
     </div>
 
@@ -53,11 +63,9 @@
 
     <div class="listbox">
       {#each $deviceList as device }
-        {#if device.ready }
-          <div class="listitem">
-            <ScanDevice {device} />
-          </div>
-        {/if}
+        <div class="listitem">
+          <ScanDevice {device} />
+        </div>
       {/each}
     </div>
 
@@ -81,7 +89,8 @@
     font-style: italic;
   }
   .scanbox {
-    min-height: 130px;
+    min-height: 160px;
+    padding-top: 30px;
   }
   .listbox {
     max-width: 400px;

@@ -4,13 +4,10 @@ import {
   MIN_TRACK_LAYERS,
   nStrands, idStrand, pStrand,
   eStrands, aStrands, dStrands,
-  nTracks, tLayers,
-  curDevice
+  nTracks, tLayers
 } from './globals.js';
 
-import { userClearPattern } from './cmduser.js';
-import { parsePattern } from './cmdparse.js';
-import { MAX_FORCE } from "./pixelnut.js"
+import { MAX_FORCE } from './pixcmds.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
@@ -141,7 +138,7 @@ function makeNewTracks(s)
   return tracks;
 }
 
-function makeNewStrand(s)
+export const makeNewStrand = (s) =>
 {
   let strand = {...oneStrand};
   strand.tracks = makeNewTracks();
@@ -332,74 +329,4 @@ export const strandSwapLayers = (track, layer) =>
 
   strandCopyLayer(track, layer-1);
   strandCopyLayer(track, layer);
-}
-
-export let strandsDeviceSetup = (device) =>
-{
-  //console.log(device);
-
-  let scount = device.report.scount;
-
-  let numtracks = device.report.numtracks;
-  let numlayers = device.report.numlayers;
-  let tracklayers = numlayers / numtracks;
-
-  if (tracklayers < MIN_TRACK_LAYERS)
-  {
-    tracklayers = MIN_TRACK_LAYERS;
-    numtracks = numlayers / tracklayers;
-  }
-
-  nStrands.set(scount);
-  nTracks.set(numtracks);
-  tLayers.set(tracklayers);
-  curDevice.set(device);
-
-  const sid = 0;
-  let slist = [];
-  let elist = [];
-
-  idStrand.set(0); // start with first strand
-
-  for (let i = 0; i < scount; ++i)
-  {
-    const strand = makeNewStrand(i);
-    const select = (i === sid) ? true : false;
-
-    strand.selected = select;
-    strand.pcentBright = device.report.strands[i].bright;
-    strand.msecsDelay  = device.report.strands[i].delay;
-    strand.firstPixel  = device.report.strands[i].first;
-    strand.directUp    = device.report.strands[i].direct;
-    strand.numPixels   = device.report.strands[i].pixels;
-
-    strand.doOverride  = device.report.strands[i].xt_mode;
-    strand.degreeHue   = device.report.strands[i].xt_hue;
-    strand.pcentWhite  = device.report.strands[i].xt_white;
-    strand.pcentCount  = device.report.strands[i].xt_count;
-
-    slist.push(strand);
-    elist.push(select);
-  }
-
-  aStrands.set(slist);
-  eStrands.set(elist);
-  pStrand.set(slist[sid]);
-
-  // make duplicate object to keep shadow values
-  slist = [];
-  for (let i = 0; i < scount; ++i)
-    slist.push(makeNewStrand(i));
-
-  dStrands.set(slist);
-
-  for (let i = 0; i < scount; ++i)
-  {
-    if (!parsePattern(device.report.strands[i].pattern))
-    {
-      // TODO: user error popup
-      userClearPattern();
-      break;
-    }
-  }
 }

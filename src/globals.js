@@ -14,10 +14,10 @@ export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
 
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
-export let startConnect   = writable(true);   // true to start scanning on devices page
+export let isConnected    = writable(false);  // true if currently connected to broker
 
 export let deviceList     = writable([]);     // list of discovered devices
-export let curDevice      = writable({});     // "points" to current device
+export let curDevice      = writable(null);   // "points" to current device
 
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables

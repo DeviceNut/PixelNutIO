@@ -11,7 +11,7 @@ const topicDevNotify  = 'PixelNut/Notify';
 const topicDevReply   = 'PixelNut/Reply';
 const topicCommand    = 'PixelNut/Cmd/'; // + devicename
 
-let mqtt = 0;
+let mqtt = null;
 
 function onConnect()
 {
@@ -35,6 +35,7 @@ function onFailure(rsp)
 {
   console.error(`MQTT Broker Failed: ${rsp.errorMessage}`);
   onConnection(false);
+  mqtt = null; // prevent disconnecting (crash & hang)
 }
 
 function onMessage(message)
@@ -63,7 +64,7 @@ export const mqttBrokerSearch = () => // TODO
 export const mqttConnect = () =>
 {
   onConnection(false);
-  if (mqtt) mqtt.disconnect();
+  if (mqtt !== null) mqtt.disconnect();
 
   mqtt = new Paho.Client(host, port, 'pixelnut');
 

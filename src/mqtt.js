@@ -28,6 +28,7 @@ function onLostConnect(rsp)
   {
     console.error(`MQTT Lost Connection: ${rsp.errorMessage}`);
     onConnection(false);
+    mqtt = null; // prevent disconnecting (crash & hang)
   }
 }
 

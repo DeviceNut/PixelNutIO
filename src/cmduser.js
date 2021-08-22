@@ -79,7 +79,7 @@ import { mqttSend } from './mqtt.js';
 function sendDevice(cmdstr)
 {
   let device = get(curDevice);
-  if (device !== null)
+  if (device === null)
     console.warn(`No current device (\"${cmdstr}\"`)
   else if (!device.active)
     console.warn(`No active device (\"${cmdstr}\"`)

@@ -57,7 +57,8 @@ export const storePatternsInit = () =>
 
 export const storePatternSave = (name, desc, cmds) =>
 {
-  if (name && desc && cmds)
+  if (!desc) desc = ''; // allow empty description
+  if (name && cmds)
   {
     //console.log(`saving: ${name}:${desc}`); // DEBUG
 

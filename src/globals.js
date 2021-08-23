@@ -31,8 +31,10 @@ export let tLayers        = writable(0);      // total layers for each track
 
 export let aBuiltinPats   = writable([]);     // list of all built-in patterns
 export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
-export let aCustomPats    = writable([]);     // list of all saved custom patterns
-export let aCustomDesc    = writable([]);     //  and list of help strings for them
+export let aStoredPats    = writable([]);     // list of all stored custom patterns
+export let aStoredDesc    = writable([]);     //  and list of help strings for them
+export let aDevicePats    = writable([]);     // list of all device custom patterns
+export let aDeviceDesc    = writable([]);     //  and list of help strings for them
 
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions

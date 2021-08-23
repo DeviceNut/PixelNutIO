@@ -85,13 +85,14 @@ const oneTrack =
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
-  showCustom      : false,  // true if displaying custom panel
-  haveCustom      : false,  // true if previously created custom pattern
+  showCustom      : false,  // true if displaying customize panel
+  fromStored      : false,  // true if current pattern from storage
+  userChanged     : false,  // true if user has changed pattern
 
-  patternID       : 0,      // index of the current pattern
   patternName     : '',     // name of the current pattern
-  patternCmds     : '',     // current pattern command string
-  //backupCmds     : '',     // reverts to know good after bad edit
+  orgPatternStr   : '',     // original pattern command string
+  curPatternStr   : '',     // edited pattern command string
+  //badPatternStr   : '',     // reverts to know good after bad edit
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
@@ -159,23 +160,24 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.showCustom   = ps.showCustom;
-        strand.haveCustom   = ps.haveCustom;
-        strand.patternID    = ps.patternID;
-        strand.patternName  = ps.patternName;
-        strand.patternCmds  = ps.patternCmds;
-        //strand.backupCmds  = ps.backupCmds;
-        strand.bitsOverride = ps.bitsOverride;
-        strand.bitsEffects  = ps.bitsEffects;
+        strand.showCustom     = ps.showCustom;
+        strand.fromStored     = ps.fromStored;
+        strand.userChanged    = ps.userChanged;
+        strand.patternName    = ps.patternName;
+        strand.orgPatternStr  = ps.orgPatternStr;
+        strand.curPatternStr  = ps.curPatternStr;
+        //strand.badPatternStr  = ps.badPatternStr;
+        strand.bitsOverride   = ps.bitsOverride;
+        strand.bitsEffects    = ps.bitsEffects;
 
-        strand.pcentBright  = ps.pcentBright;
-        strand.msecsDelay   = ps.msecsDelay;
-        strand.firstPixel   = ps.firstPixel;
-        strand.doOverride   = ps.doOverride;
-        strand.degreeHue    = ps.degreeHue;
-        strand.pcentWhite   = ps.pcentWhite;
-        strand.pcentCount   = ps.pcentCount;
-        strand.forceValue   = ps.forceValue;
+        strand.pcentBright    = ps.pcentBright;
+        strand.msecsDelay     = ps.msecsDelay;
+        strand.firstPixel     = ps.firstPixel;
+        strand.doOverride     = ps.doOverride;
+        strand.degreeHue      = ps.degreeHue;
+        strand.pcentWhite     = ps.pcentWhite;
+        strand.pcentCount     = ps.pcentCount;
+        strand.forceValue     = ps.forceValue;
       }
       get(eStrands)[s] = strand.selected;
     }

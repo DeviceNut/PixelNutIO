@@ -13,7 +13,7 @@
 
 <Grid>
   <Row style="margin-top:7px; margin-left:-10px;">
-    <p style="margin-right:17px;">Strands:</p>
+    <p style="margin:5px 17px 0 0; font-size:.95em;">Strands:</p>
 
     {#each $aStrands as _,n}
       <Checkbox labelText={n+1}

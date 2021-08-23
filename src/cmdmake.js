@@ -146,7 +146,7 @@ export const makeEntireCmdStr = () =>
 
   if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
-  get(pStrand).patternCmds = cmdstr;
+  get(pStrand).curPatternStr = cmdstr;
   //get(pStrand).backupCmds = cmdstr;
 
   get(pStrand).bitsOverride = ridebits;
@@ -155,7 +155,7 @@ export const makeEntireCmdStr = () =>
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
   //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG
 
-  pStrand.set(get(pStrand)); // triggers update // FIXME necessary?
+  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
 }
 
 // create partial command string for one layer in a track

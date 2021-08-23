@@ -6,9 +6,7 @@
     Grid,
     Row,
     Column,
-    Select,
-    SelectItem,
-    SelectItemGroup,
+    Dropdown,
     Modal,
     Form,
     FormGroup,
@@ -28,12 +26,14 @@
 
   import {
     pStrand,
+    aDevicePats,
+    aDeviceDesc,
+    aStoredPats,
+    aStoredDesc,
     aBuiltinPats,
-    aBuiltinDesc,
-    aCustomPats,
-    aCustomDesc
+    aBuiltinDesc
   } from './globals.js';
-;
+
   import {
     storePatternsInit,
     storePatternSave,
@@ -51,11 +51,61 @@
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
 
+  let pattindex = 0;
+  let pattypes = [];
+  if ($aDevicePats.length > 0) pattypes.push({ id: 0, text: 'Device' });
+  if ($aStoredPats.length > 0) pattypes.push({ id: 1, text: 'Stored' });
+  pattypes.push({ id: 2, text: 'Website' });
+  //pattypes.push({ id: 1, text: 'Stored' });
+
+  let selindex = 0;
+  let sellist, heading, helpstrs, pattern;
+  const dosetup = () =>
+  {
+    let id = pattypes[pattindex].id;
+    if (id === 0)
+    {
+      sellist = $aDevicePats;
+      pattern = $aDevicePats[selindex].cmd;
+      heading = $aDevicePats[selindex].text;
+      helpstrs = $aDeviceDesc[selindex];
+      $pStrand.fromStored = false;
+    }
+    else if (id === 1)
+    {
+      sellist = $aStoredPats;
+      pattern = $aStoredPats[selindex].cmd;
+      heading = $aStoredPats[selindex].text;
+      helpstrs = $aStoredDesc[selindex];
+      $pStrand.fromStored = true;
+    }
+    else if (id === 2)
+    {
+      sellist = $aBuiltinPats;
+      pattern = $aBuiltinPats[selindex].cmd;
+      heading = $aBuiltinPats[selindex].text;
+      helpstrs = $aBuiltinDesc[selindex];
+      $pStrand.fromStored = false;
+    }
+  }
+  dosetup(); // run 1st time
+
+  const doselect = () =>
+  {
+    dosetup();
+    userSetPattern(heading, pattern);
+  }
+
+  $: {
+    if (!$pStrand.userChanged && ($pStrand.curPatternStr !== $pStrand.orgPatternStr))
+      $pStrand.userChanged = true // NOTE: user changed setting here
+  }
+
   function copyToClipboard()
   {
     let textArea = document.createElement("textarea");
 
-    textArea.value = $pStrand.patternCmds;
+    textArea.value = $pStrand.curPatternStr;
 
     document.body.appendChild(textArea);
     textArea.focus();
@@ -74,43 +124,23 @@
     document.body.removeChild(textArea);
   }
 
-  let heading, helpstrs;
-  $: {
-    let id = $pStrand.patternID;
-    let len = $aBuiltinPats.length;
-
-    if (id > 0)
-    {
-      if (--id < len)
-      {
-        heading = $aBuiltinPats[id].text;
-        helpstrs = $aBuiltinDesc[id];
-      }
-      else
-      {
-        heading = $aCustomPats[id-len].text;
-        helpstrs = $aCustomDesc[id-len];
-      }
-    }
-    else
-    {
-      heading = '';
-      helpstrs = [];
-    }
-  }
-
   let openHelp = false;
   const dohelp   = () => { openHelp = !openHelp; }
 
-  const doclear  = () => { userClearPattern(); }
+  const doclear  = () =>
+  {
+    selindex = 0;
+    dosetup();
+    userClearPattern();
+  }
 
-  let openSave = false;
+  let openStore = false;
   let savename, savedesc;
   let copyclip = false;
 
   const dosave = () =>
   {
-    storePatternSave(savename, savedesc, $pStrand.patternCmds);
+    storePatternSave(savename, savedesc, $pStrand.curPatternStr);
     storePatternsInit();
 
     if (copyclip)
@@ -120,131 +150,83 @@
     }
 
     savename = savedesc = '';
-    openSave = false;
+    openStore = false;
   }
 
-  let openRemove = false;
-  const doremove = () =>
+  let openDelete = false;
+  const dodelete = () =>
   {
     storePatternRemove($pStrand.patternName);
     storePatternsInit();
-
     userClearPattern();
-    $pStrand.patternID = 0;
 
-    openRemove = false;
-  }
-
-  // BUG: this fires on *every* change to <Slider> or <input>?
-  const doselect = () =>
-  {
-    //console.log('ID=', $pStrand.patternID);
-    userSetPattern();
+    openDelete = false;
   }
 
 </script>
 
 <Grid>
-  <Row>
-    <Column style="margin-left:-7px; max-width:250px;">
-      <Select
-        bind:selected={$pStrand.patternID}
-        on:change={doselect}
-      >
-        <SelectItem value={0} text={"<custom>"} />
-        {#if ($aCustomPats.length > 0) }
-          <SelectItemGroup label="Saved Patterns">
-            {#each $aCustomPats as pat}
-              <SelectItem value={pat.id} text={pat.text} />
-            {/each}
-          </SelectItemGroup>
-        {/if}
-        <SelectItemGroup label="Built-in Patterns">
-          {#each $aBuiltinPats as pat}
-            <SelectItem value={pat.id} text={pat.text} />
-          {/each}
-        </SelectItemGroup>
-      </Select>
-    </Column>
-    <MediaQuery query="(min-width:501px)" let:matches>
-      {#if matches}
-        <Column style="margin-top:10px;">
-          <div style="margin:0 auto; text-align:center;">
-            {#if ($pStrand.patternID > 0) }
-              <button
-                class="button button-help"
-                on:click={dohelp}
-                >?
-              </button>
-              {#if $pStrand.haveCustom}
-                <button
-                  class="button button-pattern"
-                  on:click={() => {openRemove=true;}}
-                  >Remove
-                </button>
-              {/if}
-            {:else}
-              <button
-                class="button button-pattern"
-                on:click={doclear}
-                disabled={$pStrand.patternCmds === ''}
-                >Clear
-              </button>
-              <button
-                class="button button-pattern"
-                on:click={() => { openSave = !openSave; }}
-                disabled={$pStrand.patternCmds === ''}
-                >Save
-              </button>
-            {/if}
-          </div>
-        </Column>
-      {/if}
-    </MediaQuery>
-    <MediaQuery query="(max-width:500px)" let:matches>
-    {#if matches && ($pStrand.patternID > 0) }
-      <Column style="margin-top:10px;">
-        <button
-          class="button button-help"
-          on:click={dohelp}
-          >?
-        </button>
-      </Column>
-    {/if}
-  </MediaQuery>
-  </Row>
-  <MediaQuery query="(max-width:500px)" let:matches>
-    {#if matches}
-      <Row style="margin-top:10px;">
-        <Column style="margin-left:30px;">
-          {#if ($pStrand.patternID > 0) }
-            {#if $pStrand.haveCustom}
-              <button
-                class="button button-pattern"
-                on:click={() => {openRemove=true;}}
-                >Remove
-              </button>
-            {/if}
-          {:else}
-            <button
-              class="button button-pattern"
-              on:click={doclear}
-              disabled={$pStrand.patternCmds === ''}
-              >Clear
-            </button>
-            <button
-              class="button button-pattern"
-              on:click={() => { openSave = !openSave; }}
-              disabled={$pStrand.patternCmds === ''}
-              >Save
-            </button>
-          {/if}
-        </Column>
-      </Row>
-    {/if}
-  </MediaQuery>
 
-  <Row style="margin-top:7px;">
+  {#if pattypes.length > 1}
+    <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
+  {/if}
+
+  <Row style="padding-top:10px;">
+    <Column>
+      <Row>
+        {#if pattypes.length > 1}
+          <div style="margin-left:15px;"></div>
+          <Dropdown
+            type="inline"
+            on:select={dosetup}
+            bind:selectedIndex={pattindex}
+            bind:items={pattypes}
+          />
+        {:else}
+          <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
+        {/if}
+        <Dropdown
+          type="inline"
+          on:select={doselect}
+          bind:selectedIndex={selindex}
+          bind:items={sellist}
+        />
+      </Row>
+    </Column>
+  </Row>
+
+  <Row style="margin-top:-10px;">
+    <Column>
+      <button
+        class="button button-help"
+        on:click={dohelp}
+        disabled={selindex === 0}
+        >?
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={doclear}
+        disabled={$pStrand.curPatternStr === ''}
+        >Clear
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={() => { openStore = !openStore; }}
+        disabled={($pStrand.curPatternStr === '') || !$pStrand.userChanged}
+        >Store
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={() => {openDelete=true;}}
+        disabled={!$pStrand.fromStored}
+        >Delete
+      </button>
+    </Column>
+  </Row>
+
+  <div class="divider"></div>
+
+  <Row style="margin-top:10px;">
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
@@ -254,7 +236,7 @@
             max={MAX_FORCE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
-            disabled={($pStrand.patternCmds === '') ||
+            disabled={($pStrand.curPatternStr === '') ||
                      !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
         </Column>
@@ -264,7 +246,7 @@
               <button
                 class="button"
                 on:click={userSendTrigger}
-                disabled={($pStrand.patternCmds === '') ||
+                disabled={($pStrand.curPatternStr === '') ||
                          !($pStrand.bitsEffects & pluginBit_TRIGGER)}
                 >Trigger
               </button>
@@ -274,6 +256,7 @@
       </Row>
     </Column>
   </Row>
+
   <MediaQuery query="(max-width:500px)" let:matches>
     {#if matches}
       <Row style="margin-top:5px;">
@@ -281,7 +264,7 @@
           <button
             class="button"
             on:click={userSendTrigger}
-            disabled={($pStrand.patternCmds === '') ||
+            disabled={($pStrand.curPatternStr === '') ||
                      !($pStrand.bitsEffects & pluginBit_TRIGGER)}
             >Trigger
           </button>
@@ -304,8 +287,8 @@
 </Modal>
 <Modal
   passiveModal
-  modalHeading="Save Custom Pattern"
-  bind:open={openSave}
+  modalHeading="Store Custom Pattern"
+  bind:open={openStore}
   on:close
   >
   <Form on:submit={dosave} >
@@ -325,7 +308,7 @@
       bind:checked={copyclip}
     />
     <ButtonSet>
-      <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
+      <Button kind="secondary" on:click={() => {openStore = false;}}>Cancel</Button>
       <Button type="submit">Submit</Button>
     </ButtonSet>
   </Form>
@@ -333,28 +316,33 @@
 <Modal
   passiveModal
   modalHeading={`Remove Current Pattern?`}
-  bind:open={openRemove}
+  bind:open={openDelete}
   on:close
   >
   <ButtonSet>
-    <Button kind="secondary" on:click={() => {openRemove = false;}}>Cancel</Button>
-    <Button on:click={doremove}>Remove</Button>
+    <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
+    <Button on:click={dodelete}>Remove</Button>
   </ButtonSet>
 </Modal>
 
 <style>
+  .divider {
+    margin-top: 15px;
+    padding-top: 2px;
+    background-color: var(--bg-color-divider);
+  }
   .button {
     height: 35px;
     padding: 3px;
   }
   .button-help {
-    float:left;
     width: 35px;
+    margin-right: 15px;
     border-width: 2px;
     border-radius: 75%;
   }
   .button-pattern {
     width: 60px;
-    margin-right:15px;
+    margin-right: 15px;
   }
 </style>

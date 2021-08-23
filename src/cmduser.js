@@ -15,7 +15,7 @@ import {
   eStrands,
   dStrands,
   aBuiltinPats,
-  aCustomPats,
+  aStoredPats,
   aEffectsDraw,
   aEffectsFilter,
   aTriggers
@@ -114,14 +114,14 @@ function sendCmd(cmdstr)
 export const sendEntireCmdStr = () =>
 {
   sendCmd(cmdStr_SaveFlash);
-  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).patternCmds));
+  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).curPatternStr));
   sendCmd(cmdStr_SaveFlash);
   sendCmd('0'); // triggers executing that pattern just stored
 }
 
 function sendCmdCheck(cmdstr)
 {
-  if (get(pStrand).patternCmds !== '')
+  if (get(pStrand).curPatternStr !== '')
     sendCmd(cmdstr);
 }
 
@@ -343,39 +343,22 @@ export const userStrandSelect = (combine) =>
 
 // Pattern Commands from PanelMain: 
 
-// user just selected pattern from list
-export const userSetPattern = () =>
+// user just selected pattern to use
+export const userSetPattern = (name, cmdstr) =>
 {
   const strand = get(pStrand);
-  let id = strand.patternID;
 
-  // ignore if <custom> or already on that one
-  if ((id > 0) && (get(dStrands)[get(idStrand)].patternID !== id))
+  strandClearAll();
+
+  strand.patternName = name;
+  strand.orgPatternStr = cmdstr;
+
+  if (parsePattern(cmdstr)) // sets vars for current strand
   {
-    get(dStrands)[get(idStrand)].patternID = id;
-
-    --id; // zero-base this
-    let len = get(aBuiltinPats).length;
-    let iscustom = (id >= len);
-    let name   = iscustom ? get(aCustomPats)[id-len].text : get(aBuiltinPats)[id].text;
-    let cmdstr = iscustom ? get(aCustomPats)[id-len].cmd  : get(aBuiltinPats)[id].cmd;
-
-    strandClearAll();
-
-    if (parsePattern(cmdstr)) // sets vars for current strand
-    {
-      strandCopyAll();
-      sendEntireCmdStr();
-  
-      strand.patternName = name;
-      strand.haveCustom = iscustom;
-  
-      // indicate if in custom mode
-      if (strand.showCustom)
-        strand.patternID = 0;
-    }
-    // else software bug: all pre-builts are valid
+    strandCopyAll();
+    sendEntireCmdStr();
   }
+  // else software bug? FIXME?
 }
 
 export const userClearPattern = () =>
@@ -389,6 +372,8 @@ export const userClearPattern = () =>
 
   strand.showCustom = false;
   strand.patternName = '';
+
+  strand.userChanged = false; // must reset after clear
 }
 
 // Pattern Commands from PanelCustom: 
@@ -397,7 +382,7 @@ export const userClearPattern = () =>
 // user just edited pattern string - DISABLED TODO
 export const userEditPattern = () =>
 {
-  let cmdstr = get(pStrand).patternCmds;
+  let cmdstr = get(pStrand).curPatternStr;
 
   strandClearAll();
 
@@ -406,7 +391,7 @@ export const userEditPattern = () =>
     strandCopyAll();
     sendEntireCmdStr();
   }
-  else get(pStrand).patternCmds = get(pStrand).backupCmds;
+  else get(pStrand).curPatternStr = get(pStrand).backupCmds;
 }
 */
 

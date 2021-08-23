@@ -1,9 +1,8 @@
 import { get } from 'svelte/store';
 
 import {
-  aBuiltinPats,
-  aCustomPats,
-  aCustomDesc
+  aStoredPats,
+  aStoredDesc
 } from './globals.js';
 
 const SavePatternSeparator  = ',';
@@ -26,7 +25,7 @@ export const storePatternsInit = () =>
   if ((names !== null) && (names !== ''))
   {
     let nlist = names.split(SavePatternSeparator);
-    let bcount = get(aBuiltinPats).length;
+    let bcount = 0;
 
     //console.log('nlist=', nlist); // DEBUG
 
@@ -52,8 +51,8 @@ export const storePatternsInit = () =>
     }
   }
   
-  aCustomPats.set(lpats);
-  aCustomDesc.set(ldesc);
+  aStoredPats.set(lpats);
+  aStoredDesc.set(ldesc);
 }
 
 export const storePatternSave = (name, desc, cmds) =>

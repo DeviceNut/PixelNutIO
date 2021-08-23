@@ -13,15 +13,7 @@
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customizer");
 
-  const toggleshow = () =>
-  {
-    $pStrand.showCustom = !$pStrand.showCustom;
-    if ($pStrand.showCustom)
-    {
-      // force the pattern selector to say "custom" while in custom mode
-      $pStrand.patternID = 0;
-    }
-  }
+  const toggleshow = () => { $pStrand.showCustom = !$pStrand.showCustom; }
 
 </script>
 
@@ -58,13 +50,13 @@
     background-color: var(--bg-color-panel);
   }
   .divider {
-    margin-top:5px;
+    margin-top: 5px;
     padding-top: 2px;
     background-color: var(--bg-color-divider);
   }
   .bdiv {
     cursor: pointer;
-    margin-top:10px;
+    margin-top: 10px;
     padding: 5px;
     text-align: center;
     background-color: var(--bg-color-button);
@@ -73,7 +65,7 @@
     color: var(--color-button);
   }
   .select {
-    margin-top:10px;
+    margin-top: 10px;
     padding: 2px 0 0 0;
   }
 </style>

@@ -36,7 +36,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 650px)" let:matches>
+<MediaQuery query="(max-width: 620px)" let:matches>
   {#if matches}
     <div class="header">
       <input
@@ -47,15 +47,14 @@
       />
     </div>
     <div class="header2">
-      <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
-      <button on:click={dopause} class="button left" >{textPause}</button>
-      <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
-      <button on:click={dolinks} class="button rite" >Links</button>
+      <button on:click={dodevs}  class="button center" >&lt;&lt; Devices</button>
+      <button on:click={dopause} class="button center" >{textPause}</button>
+      <button on:click={dolinks} class="button center" >Links</button>
+      <button on:click={dodocs}  class="button center" >Docs &gt;&gt;</button>
     </div>
   {/if}
 </MediaQuery>
-<!-- BUG? if use 651 here it disappears at that boundary !! -->
-<MediaQuery query="(min-width: 650px)" let:matches>
+<MediaQuery query="(min-width: 621px)" let:matches>
   {#if matches }
     <div class="header">
       <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
@@ -78,13 +77,15 @@
   modalHeading={"Links to Code and Websites"}
   on:close
   >
-  <p>Text for links paragraph 1.</p><br>
+  <p>Text for links paragraph 1.</p><br>  <!-- TODO: -->
   <p>Text for links paragraph 2.</p><br>
   <p>Visit our website <a href="https://www.devicenut.com">here</a>.</p>
 </Modal>
 
 <style>
   .header {
+    max-width: 625px;
+    margin: 0 auto;
     height: 45px;
     padding: 2px 0 10px 0;
     text-align: center;
@@ -92,6 +93,7 @@
   }
   .header2 {
     height: 45px;
+    text-align: center;
     background-color: var(--bg-color-header);
   }
   .title {
@@ -102,12 +104,15 @@
     font-size:1.2em;
   }
   .button {
-    margin-top:3px;
+    margin-top: 3px;
     padding: 7px;
+  }
+  .button.center {
+    margin: 5px;
   }
   .button.left {
     float: left;
-    margin-left:10px;
+    margin-left: 10px;
   }
   .button.rite {
     float: right;

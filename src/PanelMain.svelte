@@ -53,14 +53,19 @@
 
   let pattindex = 0;
   let pattypes = [];
-  if ($aDevicePats.length > 0) pattypes.push({ id: 0, text: 'Device' });
-  if ($aStoredPats.length > 0) pattypes.push({ id: 1, text: 'Stored' });
-  pattypes.push({ id: 2, text: 'Website' });
-  //pattypes.push({ id: 1, text: 'Stored' });
+
+  function settypes()
+  {
+    if ($aDevicePats.length > 0) pattypes.push({ id: 0, text: 'Device' });
+    if ($aStoredPats.length > 0) pattypes.push({ id: 1, text: 'Stored' });
+    pattypes.push({ id: 2, text: 'Website' });
+  }
+  settypes(); // run 1st time
 
   let selindex = 0;
   let sellist, heading, helpstrs, pattern;
-  const dosetup = () =>
+
+  function setpattern()
   {
     let id = pattypes[pattindex].id;
     if (id === 0)
@@ -88,18 +93,19 @@
       $pStrand.fromStored = false;
     }
   }
-  dosetup(); // run 1st time
+  setpattern(); // run 1st time
+
+  const dosetup = () =>
+  {
+    selindex = 0;
+    setpattern();
+  }
 
   const doselect = () =>
   {
-    dosetup();
+    setpattern();
+    console.log(`name=${heading}`);
     userSetPattern(heading, pattern);
-  }
-
-  $: {
-    console.log('curpat:', $pStrand.curPatternStr);
-    console.log('orgpat:', $pStrand.orgPatternStr);
-    $pStrand.userChanged = ($pStrand.curPatternStr !== $pStrand.orgPatternStr);
   }
 
   function copyToClipboard()
@@ -139,10 +145,11 @@
   let savename, savedesc;
   let copyclip = false;
 
-  const dosave = () =>
+  const dostore = () =>
   {
     storePatternSave(savename, savedesc, $pStrand.curPatternStr);
     storePatternsInit();
+    settypes();
 
     if (copyclip)
     {
@@ -161,6 +168,9 @@
     storePatternsInit();
     userClearPattern();
 
+    settypes();
+    setpattern();
+
     openDelete = false;
   }
 
@@ -172,27 +182,25 @@
     <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
   {/if}
 
-  <div class:custom={$pStrand.userChanged}>
-    <Row style="padding-top:10px;">
-      {#if pattypes.length > 1}
-        <div style="margin-left:15px;"></div>
-        <Dropdown
-          type="inline"
-          on:select={dosetup}
-          bind:selectedIndex={pattindex}
-          bind:items={pattypes}
-        />
-      {:else}
-        <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
-      {/if}
+  <Row style="padding-top:10px;">
+    {#if pattypes.length > 1}
+      <div style="margin-left:15px;"></div>
       <Dropdown
         type="inline"
-        on:select={doselect}
-        bind:selectedIndex={selindex}
-        bind:items={sellist}
+        on:select={dosetup}
+        bind:selectedIndex={pattindex}
+        bind:items={pattypes}
       />
-    </Row>
-  </div>
+    {:else}
+      <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
+    {/if}
+    <Dropdown
+      type="inline"
+      on:select={doselect}
+      bind:selectedIndex={selindex}
+      bind:items={sellist}
+    />
+  </Row>
 
   <Row style="margin-top:-15px;">
     <button
@@ -210,7 +218,7 @@
     <button
       class="button button-pattern"
       on:click={() => { openStore = !openStore; }}
-      disabled={($pStrand.curPatternStr === '') || !$pStrand.userChanged}
+      disabled={$pStrand.curPatternStr === ''}
       >Store
     </button>
     <button
@@ -288,7 +296,7 @@
   bind:open={openStore}
   on:close
   >
-  <Form on:submit={dosave} >
+  <Form on:submit={dostore} >
     <FormGroup>
       <TextInput
         labelText="Name"
@@ -312,7 +320,7 @@
 </Modal>
 <Modal
   passiveModal
-  modalHeading={`Remove Current Pattern?`}
+  modalHeading={`Remove Pattern: "${heading}" ?`}
   bind:open={openDelete}
   on:close
   >
@@ -323,10 +331,6 @@
 </Modal>
 
 <style>
-  .custom {
-    pointer-events: none;
-    opacity: 0.25;
-  }
   .divider {
     margin-top: 15px;
     padding-top: 2px;

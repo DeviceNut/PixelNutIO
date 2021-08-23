@@ -87,10 +87,8 @@ const oneStrand =
   selected        : false,  // true if selected for modification
   showCustom      : false,  // true if displaying customize panel
   fromStored      : false,  // true if current pattern from storage
-  userChanged     : false,  // true if user has changed pattern
 
   patternName     : '',     // name of the current pattern
-  orgPatternStr   : '',     // original pattern command string
   curPatternStr   : '',     // edited pattern command string
   //badPatternStr   : '',     // reverts to know good after bad edit
 
@@ -162,9 +160,7 @@ export const strandCopyTop = () =>
       {
         strand.showCustom     = ps.showCustom;
         strand.fromStored     = ps.fromStored;
-        strand.userChanged    = ps.userChanged;
         strand.patternName    = ps.patternName;
-        strand.orgPatternStr  = ps.orgPatternStr;
         strand.curPatternStr  = ps.curPatternStr;
         //strand.badPatternStr  = ps.badPatternStr;
         strand.bitsOverride   = ps.bitsOverride;

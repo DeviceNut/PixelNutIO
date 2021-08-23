@@ -14,8 +14,6 @@ import {
   aStrands,
   eStrands,
   dStrands,
-  aBuiltinPats,
-  aStoredPats,
   aEffectsDraw,
   aEffectsFilter,
   aTriggers
@@ -222,7 +220,7 @@ export const updateTriggerLayers = () =>
 
 export const userSetDevName = () =>
 {
-  let name = get(curDevice).name;
+  let name = get(curDevice).name; // FIXME BUG?
   // TODO disallow some chars for device name
   if (name === '') name = defDeviceName;
   else sendDevice(cmdStr_DeviceName.concat(name));
@@ -351,7 +349,6 @@ export const userSetPattern = (name, cmdstr) =>
   strandClearAll();
 
   strand.patternName = name;
-  strand.orgPatternStr = cmdstr;
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {
@@ -372,7 +369,6 @@ export const userClearPattern = () =>
 
   strand.showCustom = false;
   strand.patternName = '';
-  strand.userChanged = false; // must reset after clear
 }
 
 // Pattern Commands from PanelCustom: 

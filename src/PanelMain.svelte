@@ -97,8 +97,9 @@
   }
 
   $: {
-    if (!$pStrand.userChanged && ($pStrand.curPatternStr !== $pStrand.orgPatternStr))
-      $pStrand.userChanged = true // NOTE: user changed setting here
+    console.log('curpat:', $pStrand.curPatternStr);
+    console.log('orgpat:', $pStrand.orgPatternStr);
+    $pStrand.userChanged = ($pStrand.curPatternStr !== $pStrand.orgPatternStr);
   }
 
   function copyToClipboard()
@@ -171,57 +172,53 @@
     <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
   {/if}
 
-  <Row style="padding-top:10px;">
-    <Column>
-      <Row>
-        {#if pattypes.length > 1}
-          <div style="margin-left:15px;"></div>
-          <Dropdown
-            type="inline"
-            on:select={dosetup}
-            bind:selectedIndex={pattindex}
-            bind:items={pattypes}
-          />
-        {:else}
-          <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
-        {/if}
+  <div class:custom={$pStrand.userChanged}>
+    <Row style="padding-top:10px;">
+      {#if pattypes.length > 1}
+        <div style="margin-left:15px;"></div>
         <Dropdown
           type="inline"
-          on:select={doselect}
-          bind:selectedIndex={selindex}
-          bind:items={sellist}
+          on:select={dosetup}
+          bind:selectedIndex={pattindex}
+          bind:items={pattypes}
         />
-      </Row>
-    </Column>
-  </Row>
+      {:else}
+        <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
+      {/if}
+      <Dropdown
+        type="inline"
+        on:select={doselect}
+        bind:selectedIndex={selindex}
+        bind:items={sellist}
+      />
+    </Row>
+  </div>
 
-  <Row style="margin-top:-10px;">
-    <Column>
-      <button
-        class="button button-help"
-        on:click={dohelp}
-        disabled={selindex === 0}
-        >?
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={doclear}
-        disabled={$pStrand.curPatternStr === ''}
-        >Clear
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={() => { openStore = !openStore; }}
-        disabled={($pStrand.curPatternStr === '') || !$pStrand.userChanged}
-        >Store
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={() => {openDelete=true;}}
-        disabled={!$pStrand.fromStored}
-        >Delete
-      </button>
-    </Column>
+  <Row style="margin-top:-15px;">
+    <button
+      class="button button-help"
+      on:click={dohelp}
+      disabled={selindex === 0}
+      >?
+    </button>
+    <button
+      class="button button-pattern"
+      on:click={doclear}
+      disabled={$pStrand.curPatternStr === ''}
+      >Clear
+    </button>
+    <button
+      class="button button-pattern"
+      on:click={() => { openStore = !openStore; }}
+      disabled={($pStrand.curPatternStr === '') || !$pStrand.userChanged}
+      >Store
+    </button>
+    <button
+      class="button button-pattern"
+      on:click={() => {openDelete=true;}}
+      disabled={!$pStrand.fromStored}
+      >Delete
+    </button>
   </Row>
 
   <div class="divider"></div>
@@ -326,6 +323,10 @@
 </Modal>
 
 <style>
+  .custom {
+    pointer-events: none;
+    opacity: 0.25;
+  }
   .divider {
     margin-top: 15px;
     padding-top: 2px;
@@ -337,6 +338,7 @@
   }
   .button-help {
     width: 35px;
+    margin-left: 10px;
     margin-right: 15px;
     border-width: 2px;
     border-radius: 75%;

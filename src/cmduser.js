@@ -372,7 +372,6 @@ export const userClearPattern = () =>
 
   strand.showCustom = false;
   strand.patternName = '';
-
   strand.userChanged = false; // must reset after clear
 }
 

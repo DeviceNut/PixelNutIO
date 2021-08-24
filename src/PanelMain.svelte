@@ -180,30 +180,29 @@
 
 <Grid>
 
-  {#if pattypes.length > 1}
-    <div style="text-align: center;">
-      <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
-    </div>
-  {/if}
-
   <Row style="padding-top:10px;">
-    <div style="margin: 0 auto;">
+    <div style="margin-left: 130px;">
       {#if pattypes.length > 1}
-        <Dropdown
-          type="inline"
-          on:select={dosetup}
-          bind:selectedIndex={pattindex}
-          bind:items={pattypes}
-        />
+        <p style="font-size:.9em;">Choose source and pattern:</p>
+        <div style="width:120px; display:inline-block;">
+          <Dropdown
+            type="inline"
+            on:select={dosetup}
+            bind:selectedIndex={pattindex}
+            bind:items={pattypes}
+          />
+        </div>
       {:else}
         <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
       {/if}
-      <Dropdown
-        type="inline"
-        on:select={doselect}
-        bind:selectedIndex={selindex}
-        bind:items={sellist}
-      />
+        <div style="display:inline-block;">
+          <Dropdown
+            type="inline"
+            on:select={doselect}
+            bind:selectedIndex={selindex}
+            bind:items={sellist}
+          />
+      </div>
     </div>
   </Row>
 

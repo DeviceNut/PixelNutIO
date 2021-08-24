@@ -35,11 +35,16 @@ export const storePatternsInit = () =>
       let cmd = localStorage.getItem(SavePatternKeyCmd+text);
       let adesc = localStorage.getItem(SavePatternKeyDesc+text);
 
-      //console.log('cmd=', cmd); // DEBUG
-      //console.log('adesc=', adesc); // DEBUG
-
       if (cmd !== '')
       {
+        if (bcount === 0)
+        {
+          const obj = { id:'0', text:'<none>', cmd:'' };
+          lpats.push(obj);
+          ldesc.push([]);
+          bcount = 1;
+        }
+
         const obj = { id:`${++bcount}`, text:text, cmd:cmd };
         lpats.push(obj);
 

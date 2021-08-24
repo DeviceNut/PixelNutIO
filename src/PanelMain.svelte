@@ -51,11 +51,13 @@
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
 
-  let pattindex = 0;
-  let pattypes = [];
+  let pattindex, pattypes;
 
   function settypes()
   {
+    pattindex = 0;
+    pattypes = [];
+
     if ($aDevicePats.length > 0) pattypes.push({ id: 0, text: 'Device' });
     if ($aStoredPats.length > 0) pattypes.push({ id: 1, text: 'Stored' });
     pattypes.push({ id: 2, text: 'Website' });
@@ -104,7 +106,7 @@
   const doselect = () =>
   {
     setpattern();
-    console.log(`name=${heading}`);
+    //console.log(`name=${heading}`);
     userSetPattern(heading, pattern);
   }
 
@@ -136,7 +138,6 @@
 
   const doclear  = () =>
   {
-    selindex = 0;
     dosetup();
     userClearPattern();
   }
@@ -168,6 +169,7 @@
     storePatternsInit();
     userClearPattern();
 
+    selindex = 0;
     settypes();
     setpattern();
 
@@ -179,54 +181,59 @@
 <Grid>
 
   {#if pattypes.length > 1}
-    <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
+    <div style="text-align: center;">
+      <p style="font-size:.9em; margin-top: 10px;">Choose source and pattern:</p>
+    </div>
   {/if}
 
   <Row style="padding-top:10px;">
-    {#if pattypes.length > 1}
-      <div style="margin-left:15px;"></div>
+    <div style="margin: 0 auto;">
+      {#if pattypes.length > 1}
+        <Dropdown
+          type="inline"
+          on:select={dosetup}
+          bind:selectedIndex={pattindex}
+          bind:items={pattypes}
+        />
+      {:else}
+        <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
+      {/if}
       <Dropdown
         type="inline"
-        on:select={dosetup}
-        bind:selectedIndex={pattindex}
-        bind:items={pattypes}
+        on:select={doselect}
+        bind:selectedIndex={selindex}
+        bind:items={sellist}
       />
-    {:else}
-      <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
-    {/if}
-    <Dropdown
-      type="inline"
-      on:select={doselect}
-      bind:selectedIndex={selindex}
-      bind:items={sellist}
-    />
+    </div>
   </Row>
 
-  <Row style="margin-top:-15px;">
-    <button
-      class="button button-help"
-      on:click={dohelp}
-      disabled={selindex === 0}
-      >?
-    </button>
-    <button
-      class="button button-pattern"
-      on:click={doclear}
-      disabled={$pStrand.curPatternStr === ''}
-      >Clear
-    </button>
-    <button
-      class="button button-pattern"
-      on:click={() => { openStore = !openStore; }}
-      disabled={$pStrand.curPatternStr === ''}
-      >Store
-    </button>
-    <button
-      class="button button-pattern"
-      on:click={() => {openDelete=true;}}
-      disabled={!$pStrand.fromStored}
-      >Delete
-    </button>
+  <Row style="margin-top:-10px;">
+    <div style="margin: 0 auto;">
+      <button
+        class="button button-help"
+        on:click={dohelp}
+        disabled={selindex === 0}
+        >?
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={doclear}
+        disabled={$pStrand.curPatternStr === ''}
+        >Clear
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={() => { openStore = !openStore; }}
+        disabled={$pStrand.curPatternStr === ''}
+        >Store
+      </button>
+      <button
+        class="button button-pattern"
+        on:click={() => {openDelete=true;}}
+        disabled={!$pStrand.fromStored || (selindex === 0)}
+        >Delete
+      </button>
+    </div>
   </Row>
 
   <div class="divider"></div>

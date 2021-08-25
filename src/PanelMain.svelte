@@ -180,60 +180,187 @@
 
 <Grid>
 
-  <Row style="padding-top:10px;">
-    <div style="margin-left: 130px;">
-      {#if pattypes.length > 1}
-        <p style="font-size:.9em;">Choose source and pattern:</p>
-        <div style="width:120px; display:inline-block;">
+  {#if pattypes.length > 1}
+
+    <div style="margin-top:10px; text-align:center;">
+      <p style="font-size:.9em;">Choose source and pattern:</p>
+    </div>
+
+    <MediaQuery query="(max-width: 400px)" let:matches>
+      {#if matches}
+        <div style="margin-top:5px; text-align:center;">
           <Dropdown
+            size="sm"
             type="inline"
             on:select={dosetup}
             bind:selectedIndex={pattindex}
             bind:items={pattypes}
           />
         </div>
-      {:else}
-        <p style="font-size:.95em; margin:10px 15px 0 15px;">Choose pattern:</p>
-      {/if}
-        <div style="display:inline-block;">
+        <div style="margin-top:-20px; text-align:center;">
           <Dropdown
+            size="sm"
             type="inline"
             on:select={doselect}
             bind:selectedIndex={selindex}
             bind:items={sellist}
           />
-      </div>
-    </div>
-  </Row>
+        </div>
+      {/if}
+    </MediaQuery>
+    <MediaQuery query="(min-width: 401px)" let:matches>
+      {#if matches}
+        <div style="margin-top:5px; text-align:center;">
+          <div style="width:120px; display:inline-block;">
+            <Dropdown
+              size="sm"
+              type="inline"
+              on:select={dosetup}
+              bind:selectedIndex={pattindex}
+              bind:items={pattypes}
+            />
+          </div>
+          <div style="display:inline-block;">
+            <Dropdown
+              size="sm"
+              type="inline"
+              on:select={doselect}
+              bind:selectedIndex={selindex}
+              bind:items={sellist}
+            />
+          </div>
+        </div>
+      {/if}
+    </MediaQuery>
 
-  <Row style="margin-top:-10px;">
-    <div style="margin: 0 auto;">
-      <button
-        class="button button-help"
-        on:click={dohelp}
-        disabled={selindex === 0}
-        >?
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={doclear}
-        disabled={$pStrand.curPatternStr === ''}
-        >Clear
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={() => { openStore = !openStore; }}
-        disabled={$pStrand.curPatternStr === ''}
-        >Store
-      </button>
-      <button
-        class="button button-pattern"
-        on:click={() => {openDelete=true;}}
-        disabled={!$pStrand.fromStored || (selindex === 0)}
-        >Delete
-      </button>
-    </div>
-  </Row>
+    <Row style="margin-top:-10px;">
+      <div style="margin: 0 auto;">
+        <button
+          class="button button-help"
+          on:click={dohelp}
+          disabled={selindex === 0}
+          >?
+        </button>
+        <button
+          class="button button-pattern"
+          on:click={doclear}
+          disabled={$pStrand.curPatternStr === ''}
+          >Clear
+        </button>
+        <button
+          class="button button-pattern"
+          on:click={() => { openStore = !openStore; }}
+          disabled={$pStrand.curPatternStr === ''}
+          >Store
+        </button>
+        <button
+          class="button button-pattern"
+          on:click={() => {openDelete=true;}}
+          disabled={!$pStrand.fromStored || (selindex === 0)}
+          >Delete
+        </button>
+      </div>
+    </Row>
+
+  {:else}
+    <MediaQuery query="(max-width: 500px)" let:matches>
+      {#if matches}
+
+        <Row style="margin-top:10px;">
+          <div style="margin-left: 20px;">
+            <Dropdown
+              style="text-align:center;"
+              titleText="Select:"
+              size="sm"
+              type="inline"
+              on:select={doselect}
+              bind:selectedIndex={selindex}
+              bind:items={sellist}
+            />
+          </div>
+        </Row>
+
+        <Row style="margin-top:-10px;">
+          <div style="margin-left: 20px;">
+            <button
+              class="button button-help"
+              on:click={dohelp}
+              disabled={selindex === 0}
+              >?
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={doclear}
+              disabled={$pStrand.curPatternStr === ''}
+              >Clear
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={() => { openStore = !openStore; }}
+              disabled={$pStrand.curPatternStr === ''}
+              >Store
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={() => {openDelete=true;}}
+              disabled={!$pStrand.fromStored || (selindex === 0)}
+              >Delete
+            </button>
+          </div>
+        </Row>
+
+      {/if}
+    </MediaQuery>
+
+    <MediaQuery query="(min-width: 501px)" let:matches>
+      {#if matches}
+
+        <Row style="margin-top:10px;">
+          <div style="margin: 0 auto;">
+            <Dropdown
+              style="text-align:center;"
+              titleText="Select:"
+              size="sm"
+              type="inline"
+              on:select={doselect}
+              bind:selectedIndex={selindex}
+              bind:items={sellist}
+            />
+          </div>
+        </Row>
+
+        <Row style="margin-top:-10px;">
+          <div style="margin: 0 auto;">
+            <button
+              class="button button-help"
+              on:click={dohelp}
+              disabled={selindex === 0}
+              >?
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={doclear}
+              disabled={$pStrand.curPatternStr === ''}
+              >Clear
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={() => { openStore = !openStore; }}
+              disabled={$pStrand.curPatternStr === ''}
+              >Store
+            </button>
+            <button
+              class="button button-pattern"
+              on:click={() => {openDelete=true;}}
+              disabled={!$pStrand.fromStored || (selindex === 0)}
+              >Delete
+            </button>
+          </div>
+        </Row>
+      {/if}
+    </MediaQuery>
+
+  {/if}
 
   <div class="divider"></div>
 

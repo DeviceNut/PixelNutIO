@@ -39,10 +39,8 @@
         </Column>
       {/if}
     </Row>
-    <div style="margin:10px 0 5px 0;">
-      <div style="margin:0 auto; text-align:center;">
-        <ButtonsAddDel track={-1}/>
-      </div>
+    <div style="margin:10px 0 5px 0; text-align:center;">
+      <ButtonsAddDel track={-1}/>
     </div>
   </Grid>
 </div>

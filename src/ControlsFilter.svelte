@@ -35,10 +35,11 @@
   <Row>
     <MediaQuery query="(min-width: 401px)" let:matches>
       {#if matches}
-        <p style="font-size:.9em; margin:10px 12px 0 0;">Filter Effect:</p>
+        <p style="font-size:.9em; margin:7px 12px 0 0;">Filter Effect:</p>
       {/if}
     </MediaQuery>
     <Dropdown
+      size="sm"
       type="inline"
       on:select={seteffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}

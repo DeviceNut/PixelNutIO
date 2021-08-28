@@ -16,7 +16,8 @@ import {
   dStrands,
   aEffectsDraw,
   aEffectsFilter,
-  aTriggers
+  aTriggers,
+  aCurListPats
 } from './globals.js';
 
 import {
@@ -342,13 +343,15 @@ export const userStrandSelect = (combine) =>
 // Pattern Commands from PanelMain: 
 
 // user just selected pattern to use
-export const userSetPattern = (name, cmdstr) =>
+export const userSetPattern = () =>
 {
   const strand = get(pStrand);
+  const thepat = get(aCurListPats)[strand.indexPatterns];
+  const cmdstr = thepat.cmd;
+
+  console.log(`SetPattern: ${thepat.text} index=${strand.indexPatterns}`); // DEBUG
 
   strandClearAll();
-
-  strand.patternName = name;
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {
@@ -368,7 +371,7 @@ export const userClearPattern = () =>
   makeEntireCmdStr();
 
   strand.showCustom = false;
-  strand.patternName = '';
+  strand.indexPatterns = 0;
 }
 
 // Pattern Commands from PanelCustom: 
@@ -377,7 +380,8 @@ export const userClearPattern = () =>
 // user just edited pattern string - DISABLED TODO
 export const userEditPattern = () =>
 {
-  let cmdstr = get(pStrand).curPatternStr;
+  const strand = get(pStrand);
+  let cmdstr = strand.editPatternStr;
 
   strandClearAll();
 
@@ -386,7 +390,7 @@ export const userEditPattern = () =>
     strandCopyAll();
     sendEntireCmdStr();
   }
-  else get(pStrand).curPatternStr = get(pStrand).backupCmds;
+  else strand.curPatternStr = strand.selectedCmd;
 }
 */
 

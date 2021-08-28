@@ -35,6 +35,12 @@ export let aStoredPats    = writable([]);     // list of all stored custom patte
 export let aStoredDesc    = writable([]);     //  and list of help strings for them
 export let aDevicePats    = writable([]);     // list of all device custom patterns
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them
+export let aCurListPats   = writable([]);     // "points" to current patterns list
+export let aCurListDesc   = writable([]);     // "points" to current descriptions list
+
+export let updateSources  = writable(false);  // true to force update of sources list
+export let updatePatterns = writable(false);  // true to force update of patterns list
+export let storedPattern  = writable(false);  // true to set pattern to last stored one
 
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions

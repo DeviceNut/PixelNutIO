@@ -86,11 +86,13 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
   showCustom      : false,  // true if displaying customize panel
+
+  indexSources    : 0,      // index into sources list
+  indexPatterns   : 0,      // index into patterns list
   fromStored      : false,  // true if current pattern from storage
 
-  patternName     : '',     // name of the current pattern
-  curPatternStr   : '',     // edited pattern command string
-  //badPatternStr   : '',     // reverts to know good after bad edit
+  curPatternStr   : '',     // active pattern command string
+                            // (as created from current settings)
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
@@ -159,10 +161,11 @@ export const strandCopyTop = () =>
       if (strand.selected)
       {
         strand.showCustom     = ps.showCustom;
+        strand.indexSources   = ps.indexSources;
+        strand.indexPatterns  = ps.indexPatterns;
         strand.fromStored     = ps.fromStored;
-        strand.patternName    = ps.patternName;
+
         strand.curPatternStr  = ps.curPatternStr;
-        //strand.badPatternStr  = ps.badPatternStr;
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;
 

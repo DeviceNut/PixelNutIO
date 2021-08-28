@@ -106,7 +106,7 @@ export const makeEntireCmdStr = () =>
     let drawplugin = false;
     let tplugbits = 0;
 
-    let ismute = false; // DEBUG
+    //let ismute = false; // DEBUG
 
     // must have effect and not be mute be enabled
 
@@ -127,7 +127,7 @@ export const makeEntireCmdStr = () =>
           ridebits |= makeOrideBits(strand, i);
           splugbits |= layer.pluginBits;
         }
-        else ismute = true; // DEBUG
+        //else ismute = true; // DEBUG
       }
       else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
       {
@@ -136,7 +136,7 @@ export const makeEntireCmdStr = () =>
         tplugbits |= layer.pluginBits;
       }
 
-      else ismute = true; // DEBUG
+      //else ismute = true; // DEBUG
       //console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
 
@@ -147,8 +147,6 @@ export const makeEntireCmdStr = () =>
   if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).curPatternStr = cmdstr;
-  //get(pStrand).backupCmds = cmdstr;
-
   get(pStrand).bitsOverride = ridebits;
   get(pStrand).bitsEffects = splugbits;
 

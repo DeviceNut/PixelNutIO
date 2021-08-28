@@ -349,7 +349,7 @@ export const userSetPattern = () =>
   const thepat = get(aCurListPats)[strand.indexPatterns];
   const cmdstr = thepat.cmd;
 
-  console.log(`SetPattern: ${thepat.text} index=${strand.indexPatterns}`); // DEBUG
+  //console.log(`SetPattern: ${thepat.text} index=${strand.indexPatterns}`); // DEBUG
 
   strandClearAll();
 

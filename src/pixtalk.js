@@ -73,12 +73,12 @@ function deviceStop(device=null)
     curdev.active = false;
     curDevice.set(null);
 
-    console.log(`Device stopped: ${curdev.name}`); // DEBUG
+    console.error(`Device stopped: ${curdev.name}`);
   }
 
   if (device !== null)
   {
-    console.log(`Device failed: ${device.name}`); // DEBUG
+    console.error(`Device failed: ${device.name}`);
 
     device.failed = true;
     deviceList.set(get(deviceList)); // trigger UI update
@@ -107,7 +107,7 @@ function startcheck()
       if (!device.failed &&
          ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
       {
-        console.log(`Device lost: ${device.name}`) // DEBUG
+        console.error(`Device lost: ${device.name}`)
 
         // if device is currently being controlled,
         // return to the device discovery page

@@ -27,8 +27,8 @@ export const cmdStr_AddrLayer     = "M";    // layer index
 
 // Commands that form patterns              // value is:
 export const cmdStr_Clear         = "P";    // none
-export const cmdStr_PcentStart    = "J";    // percent of pixels **
-export const cmdStr_PcentLength   = "K";    // percent of pixels **
+export const cmdStr_PcentOffset   = "J";    // percent of pixels **
+export const cmdStr_PcentExtent   = "K";    // percent of pixels **
 
 ////////////////////////////////////////////// not used
 export const cmdStr_PcentFirst    = "L";    // percent of pixel length ++

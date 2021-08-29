@@ -632,55 +632,35 @@ export const userSetOverrides = (track) =>
   }
 }
 
-export const userSetStart = (track) =>
+export const userSetOffset = (track) =>
 {
   const strand = get(pStrand);
-  let start = strand.tracks[track].drawProps.pcentStart;
+  let offset = strand.tracks[track].drawProps.pcentOffset;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart !== start)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset !== offset)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart = start;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
 
-    let length = strand.tracks[track].drawProps.pcentFinish - start;
-    if (length > 0)
-    {
-      updateLayerVals(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
 
-      // must resend entire command when start/fnish has changed
-      sendEntireCmdStr();
-      return false;
-    }
-    else
-    {
-      strand.tracks[track].drawProps.pcentFinish = start;
-      return true; // cause reactive change and call to userSetFinish()
-    }
+    // must resend entire command when offset/extent has changed
+    sendEntireCmdStr();
   }
 }
 
-export const userSetFinish = (track) =>
+export const userSetExtent = (track) =>
 {
   const strand = get(pStrand);
-  let finish = strand.tracks[track].drawProps.pcentFinish;
+  let extent = strand.tracks[track].drawProps.pcentExtent;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish !== finish)
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent !== extent)
   {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish = finish;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
 
-    let length = finish - strand.tracks[track].drawProps.pcentStart;
-    if (length > 0)
-    {
-      updateLayerVals(track, DRAW_LAYER);
+    updateLayerVals(track, DRAW_LAYER);
 
-      // must resend entire command when start/fnish has changed
-      sendEntireCmdStr();
-      return false;
-    }
-    else
-    {
-      strand.tracks[track].drawProps.pcentStart = finish;
-      return true; // cause reactive change and call to userSetStart()
-    } 
+    // must resend entire command when offset/extent has changed
+    sendEntireCmdStr();
   }
 }
 

@@ -4,8 +4,8 @@ import {
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentStart    ,
-  cmdStr_PcentLength   ,
+  cmdStr_PcentOffset    ,
+  cmdStr_PcentExtent   ,
   cmdStr_Effect        ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
@@ -99,8 +99,8 @@ export const parsePattern = (cmdstr) =>
 {
   let track = -1;
   let layer = -1;
-  let start = 0;
-  let finish = 100;
+  let offset = 0;
+  let extent = 100;
   let trackbits = 0;
 
   const cmds = cmdstr.toUpperCase().split(/\s+/); // remove all spaces
@@ -120,20 +120,18 @@ export const parsePattern = (cmdstr) =>
         strandClearAll();
         break;
       }
-      case cmdStr_PcentStart:
+      case cmdStr_PcentOffset:
       {
         if (!isNaN(val)) // ignore if no value
-        {
-          start = valueToPercent(val);
-        }
+          offset = valueToPercent(val);
+
         break;
       }
-      case cmdStr_PcentLength:
+      case cmdStr_PcentExtent:
       {
         if (!isNaN(val)) // ignore if no value
-        {
-          finish = valueToPercent(val);
-        }
+          extent = valueToPercent(val);
+
         break;
       }
       case cmdStr_Effect:
@@ -193,17 +191,14 @@ export const parsePattern = (cmdstr) =>
           ++track;
           layer = 0; // DRAW_LAYER
 
-          if (start > finish)
-          {
-            get(pStrand).tracks[track].drawProps.pcentStart = start;
-            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentStart = start;
-  
-            get(pStrand).tracks[track].drawProps.pcentFinish = finish;
-            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentFinish = finish;
+          get(pStrand).tracks[track].drawProps.pcentOffset = offset;
+          get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
 
-            start = 0;
-            finish = 100;
-          }
+          get(pStrand).tracks[track].drawProps.pcentExtent = extent;
+          get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
+
+          offset = 0;
+          extent = 100;
 
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;

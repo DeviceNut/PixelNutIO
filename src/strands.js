@@ -64,8 +64,8 @@ const drawProps =
   overCount       : false,  // true to allow global override
   pcentCount      : 0,      // percent of pixels affected in range
                           
-  pcentStart      : 0,      // percent of pixels where start
-  pcentFinish     : 100,    // percent of pixels where finish
+  pcentOffset     : 0,      // percent of pixels for offset
+  pcentExtent     : 100,    // percent of pixels to be drawn
                             //  (start must be <= finish)
 
   reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)

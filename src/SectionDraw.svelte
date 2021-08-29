@@ -31,8 +31,8 @@
     userSetDrawEffect,
     userSetBright,
     userSetDelay,
-    userSetStart,
-    userSetFinish,
+    userSetOffset,
+    userSetExtent,
     userSetOwrite,
     userSetDirect,
     userSetTrigStart,
@@ -50,24 +50,8 @@
   const setDelay  = () => { userSetDelay( track); }
   const setOwrite = () => { userSetOwrite(track); }
   const setDirect = () => { userSetDirect(track); }
-
-  const setStart = () =>
-  {
-    if (userSetStart(track)) // update for new values
-    {
-      $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
-      $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
-    }
-  }
-  const setFinish = () =>
-  {
-    if (userSetFinish(track)) // update for new values
-    {
-      $pStrand.tracks[track].drawProps.pcentStart = $pStrand.tracks[track].drawProps.pcentStart;
-      $pStrand.tracks[track].drawProps.pcentFinish = $pStrand.tracks[track].drawProps.pcentFinish;
-    }
-  }
-
+  const setOffset = () => { userSetOffset(track); }
+  const setExtent = () => { userSetExtent(track); }
   const autoStart = () => { userSetTrigStart(track); }
   const setMain   = () => { userSetTrigMain(track); }
 
@@ -130,15 +114,15 @@
       />
     </Row>
     <Row>
-      <SliderVal name='Start&nbsp;'
-        onchange={setStart}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentStart}
+      <SliderVal name='Offset&nbsp;'
+        onchange={setOffset}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
       />
     </Row>
     <Row>
-      <SliderVal name='Finish'
-        onchange={setFinish}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentFinish}
+      <SliderVal name='Extent'
+        onchange={setExtent}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
       />
     </Row>
 

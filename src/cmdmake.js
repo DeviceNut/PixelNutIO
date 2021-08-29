@@ -6,8 +6,8 @@ import {
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentStart    ,
-  cmdStr_PcentLength   ,
+  cmdStr_PcentOffset    ,
+  cmdStr_PcentExtent   ,
   cmdStr_Effect        ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
@@ -168,17 +168,12 @@ export const makeLayerCmdStr = (track, layer) =>
     {
       let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
-      let start = pdraw.pcentStart;
-      let finish = pdraw.pcentFinish;
 
-      if (start !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_PcentStart}${start} `);
+      if (pdraw.pcentOffset !== 0)
+        cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
 
-      if (finish !== 100)
-      {
-        let length = finish - start;
-        cmdstr = cmdstr.concat(`${cmdStr_PcentLength}${length} `);
-      }
+      if (pdraw.pcentExtent !== 100)
+        cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
 
       cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
 

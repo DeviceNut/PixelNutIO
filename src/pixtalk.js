@@ -7,7 +7,9 @@ import {
   MIN_TRACKS,
   MIN_TRACK_LAYERS,
   deviceList,
-  isConnected
+  isConnected,
+  aDevicePats,
+  aDeviceDesc
  } from './globals.js';
 
 import { mqttSend } from './mqtt.js';
@@ -17,52 +19,84 @@ export const cmdStr_GetDevInfo    = "?";    // returns info on device
 export const cmdStr_GetPatInfo    = "?P";   // returns info on custom patterns
 export const cmdStr_GetPlugInfo   = "?G";   // returns info on custom plugins
 
-export const strandState =
-{
-  pixels: 0,          // number of pixels
-  bright: 0,          // brightness percent
-  delay: 0,           // delay percent
-  force: 0,           // force (0-MAX_FORCE)
-  first: 1,           // first pixel to draw (from 1)
-  direct: 0,          // direction flag 0/1
-
-                      // extern mode:
-  xt_mode: 0,         //  enabled=1
-  xt_hue: 0,          //  hue property (0-359)
-  xt_white: 0,        //  white property (percent)
-  xt_count: 0,        //  count property (percent)
-
-  patnum: 0,          // pattern number (not used?)
-  pattern: ''         // pattern string
-};
-
-export const deviceInfo =
-{
-  curname: '',        // used as topic to talk to device
-  newname: '',        // used when renaming the device
-
-  tstamp: 0,          // timestamp(secs) of last notify
-  query: 0,           // state of query commands (QUERY_xxx)
-  failed: false,      // device communication failed
-  ready: false,       // true if ready for controlling
-                      // (all info retrieved successfully)
-  active: false,      // true if being controlled now
-                      // (only one device at a time)
-  report:             // reported capabilities & state
-  {
-    scount: 0,        // strand count (>= 1)
-    maxlen: 0,        // max length for cmds/patterns
-    numtracks: 0,     // number of tracks available
-    numlayers: 0,     // number of layers available
-    strands: [],      // list of 'strandState'
-  }
-};
-
+const QUERY_NONE          = 0;  // invalid state
 const QUERY_DEVICE        = 1;  // waiting for device info reply
 const QUERY_PATTERNS      = 2;  // waiting for patterns info reply
 const QUERY_PLUGINS       = 3;  // waiting for plugins info reply
 
+                                // stage of QUERY_PATTERNS/PLUGINS:
+const QSTAGE_NONE         = 0;  // invalid state
+const QSTAGE_NAME         = 1;  // waiting for name
+const QSTAGE_DESC         = 2;  // waiting for description
+const QSTAGE_CMD          = 3;  // waiting for command str
+
 const SECS_NOTIFY_TIMEOUT = 7;  // secs since last notify to clear active status
+
+export const strandState =
+{
+  pixels: 0,            // number of pixels
+  bright: 0,            // brightness percent
+  delay: 0,             // delay percent
+  force: 0,             // force (0-MAX_FORCE)
+  first: 1,             // first pixel to draw (from 1)
+  direct: 0,            // direction flag 0/1
+
+                        // extern mode:
+  xt_mode: 0,           //  enabled=1
+  xt_hue: 0,            //  hue property (0-359)
+  xt_white: 0,          //  white property (percent)
+  xt_count: 0,          //  count property (percent)
+
+  patnum: 0,            // pattern number (not used?)
+  pattern: ''           // pattern string
+};
+
+export const deviceInfo =
+{
+  curname: '',          // used as topic to talk to device
+  newname: '',          // used when renaming the device
+
+  tstamp: 0,            // timestamp(secs) of last notify
+
+  failed: false,        // device communication failed
+  ready: false,         // true if ready for controlling
+                        // (all info retrieved successfully)
+  active: false,        // true if being controlled now
+                        // (only one device at a time)
+
+  query:  QUERY_NONE,   // state of query commands (QUERY_xxx)
+  qcount: 0,            // patterns left to receive (QUERY_PATTERNS)
+  qstage: QSTAGE_NONE,  // stage of each pattern retrieval
+
+  qname: '',            // holds pattern/plugin name
+  qdesc: '',            // holds pattern/plugin desc
+  qcmd:  '',            // holds pattern/plugin cmd
+
+  report:               // reported capabilities & state
+  {
+    nstrands: 0,        // strand count (>= 1)
+    npatterns: 0,       // custom device patterns
+    nplugins: 0,        // custom device plugins
+
+    maxstrlen: 0,       // max length for cmds/patterns
+    numtracks: 0,       // number of tracks available
+    numlayers: 0,       // number of layers available
+    strands: [],        // list of 'strandState'
+  }
+};
+
+function deviceStart(device)
+{
+  console.log(`Device ready: "${device.curname}"`) // DEBUG
+
+  device.ready  = true;
+  device.query  = QUERY_NONE;
+  device.qstage = QSTAGE_NONE;
+  device.qcount = 0;
+  device.tstamp = curTimeSecs();
+
+  deviceList.set(get(deviceList)); // trigger UI update
+}
 
 function deviceStop(device=null)
 {
@@ -215,19 +249,48 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parseDeviceInfo(device, reply))
         {
-          mqttSend(name, cmdStr_GetPatInfo);
-          device.query = QUERY_PATTERNS;
+          if (device.report.npatterns > 0)
+          {
+            mqttSend(name, cmdStr_GetPatInfo);
+            device.query = QUERY_PATTERNS;
+            device.qstage = QSTAGE_NAME;
+            device.qcount = 0;
+
+            // init device patterns/descriptions
+            const obj = { id:'0', text:'<none>', cmd:'' };
+            aDevicePats.set([obj]);
+            aDeviceDesc.set([[]]);
+          }
+          else deviceStart(device);
         }
         else deviceStop(device);
         break;
       }
-      case QUERY_PATTERNS: // TODO
+      case QUERY_PATTERNS:
       {
         reply.shift();
         if (parsePatternInfo(device, reply))
         {
-          mqttSend(name, cmdStr_GetPlugInfo);
-          device.query = QUERY_PLUGINS;
+          if (device.qstage === QSTAGE_NONE)
+          {
+            const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
+            get(aDevicePats).push(obj);
+            get(aDeviceDesc).push([device.qdesc]);
+
+            if (++device.qcount >= device.report.npatterns)
+            {
+              if (device.report.nplugins > 0)
+              {
+                mqttSend(name, cmdStr_GetPlugInfo);
+                device.query = QUERY_PLUGINS;
+                device.qstage = QSTAGE_NAME;
+                device.qcount = 0;
+              }
+              else deviceStart(device);
+            }
+            else device.qstage = QSTAGE_NAME;
+          }
+          // else keep parsing responses
         }
         else deviceStop(device);
         break;
@@ -237,11 +300,8 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parsePluginInfo(device, reply))
         {
-          console.log(`Device ready: "${device.curname}"`) // DEBUG
-
-          device.ready = true;
-          device.tstamp = curTimeSecs();
-          deviceList.set(get(deviceList)); // trigger UI update
+          if (++device.qcount >= device.report.nplugins)
+            deviceStart(device);
         }
         else deviceStop(device);
         break;
@@ -271,14 +331,16 @@ function parseDeviceInfo(device, reply)
     return false;
   }
 
-  device.report.scount = strs[0];
-  device.report.maxlen = strs[1];
-  device.report.numlayers = strs[2];
-  device.report.numtracks = strs[3];
+  device.report.nstrands  = strs[0];
+  device.report.maxstrlen = strs[1];
+  device.report.npatterns = strs[2];
+  device.report.nplugins  = strs[3];
+  device.report.numlayers = strs[4];
+  device.report.numtracks = strs[5];
 
-  if (device.report.scount < 1)
+  if (device.report.nstrands < 1)
   {
-    console.error(`Bad strand count: "${scount}"`);
+    console.error(`Bad strand count: "${nstrands}"`);
     return false;
   }
 
@@ -295,7 +357,7 @@ function parseDeviceInfo(device, reply)
   }
 
   // 3 parm lines per strand
-  if (reply.length !== (device.report.scount * 3))
+  if (reply.length !== (device.report.nstrands * 3))
   {
     console.error(`Unexpected strand line count: "${reply.length}"`);
     return false;
@@ -303,7 +365,7 @@ function parseDeviceInfo(device, reply)
 
   device.report.strands = [];
 
-  for (var i = 0; i < device.report.scount; ++i)
+  for (var i = 0; i < device.report.nstrands; ++i)
   {
     line = reply[0];
     reply.shift();
@@ -353,10 +415,43 @@ function parseDeviceInfo(device, reply)
 
 function parsePatternInfo(device, reply)
 {
+  let line = reply[0];
+  reply.shift();
+
+  switch (device.qstage)
+  {
+    case QSTAGE_NAME:
+    {
+      //console.log(`name=${line}`); // DEBUG
+      device.qname = line;
+      device.qstage = QSTAGE_DESC;
+      break;
+    }
+    case QSTAGE_DESC:
+    {
+      //console.log(`desc=${line}`); // DEBUG
+      device.desc = line;
+      device.qstage = QSTAGE_CMD;
+      break;
+    }
+    case QSTAGE_CMD:
+    {
+      //console.log(`cmd=${line}`); // DEBUG
+      device.qcmd = line;
+      device.qstage = QSTAGE_NONE;
+      break;
+    }
+    default:
+    {
+      console.error(`Unexpected pattern stage: ${device.qstage}`);
+      return false;
+    }
+  }
+
   return true;
 }
 
 function parsePluginInfo(device, reply)
 {
-  return true;
+  return false;
 }

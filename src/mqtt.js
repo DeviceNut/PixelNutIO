@@ -89,5 +89,7 @@ export const mqttConnect = () =>
 
 export const mqttSend = (name, msg) =>
 {
+  console.log('>>', msg); // DEBUG
+
   mqtt.publish(topicCommand + name, msg);
 }

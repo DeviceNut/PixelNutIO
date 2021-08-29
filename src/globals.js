@@ -29,12 +29,12 @@ export let pStrand        = writable([]);     // "points" to current strand in a
 export let nTracks        = writable(0);      // total number of tracks
 export let tLayers        = writable(0);      // total layers for each track
 
-export let aBuiltinPats   = writable([]);     // list of all built-in patterns
-export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
-export let aStoredPats    = writable([]);     // list of all stored custom patterns
-export let aStoredDesc    = writable([]);     //  and list of help strings for them
 export let aDevicePats    = writable([]);     // list of all device custom patterns
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them
+export let aStoredPats    = writable([]);     // list of all stored custom patterns
+export let aStoredDesc    = writable([]);     //  and list of help strings for them
+export let aBuiltinPats   = writable([]);     // list of all built-in patterns
+export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
 export let aCurListPats   = writable([]);     // "points" to current patterns list
 export let aCurListDesc   = writable([]);     // "points" to current descriptions list
 

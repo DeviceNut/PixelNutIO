@@ -78,15 +78,14 @@ import { mqttSend } from './mqtt.js';
 function sendDevice(cmdstr)
 {
   let device = get(curDevice);
+
   if (device === null)
     console.warn(`No current device (\"${cmdstr}\"`)
-  else if (!device.active)
+
+    else if (!device.active)
     console.warn(`No active device (\"${cmdstr}\"`)
-  else
-  {
-    console.log('>>', cmdstr); // DEBUG
-    mqttSend(device.curname, cmdstr);
-  }
+
+    else mqttSend(device.curname, cmdstr);
 }
 
 function sendCmd(cmdstr)
@@ -976,7 +975,7 @@ export let userDeviceSetup = (device) =>
 {
   console.log(`Connecting to: "${device.curname}"...`); // DEBUG
 
-  let scount = device.report.scount;
+  let scount = device.report.nstrands;
 
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;

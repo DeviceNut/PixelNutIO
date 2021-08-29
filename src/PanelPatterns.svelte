@@ -31,7 +31,8 @@
   {
     if ($updateSources)
     {
-      console.log('updating sources...');
+      //console.log('updating sources...'); // DEBUG
+
       listsources = [];
 
       if ($aDevicePats.length > 0) listsources.push({ id: 1, text: 'Device' });
@@ -66,7 +67,8 @@
   {
     if ($updatePatterns)
     {
-      console.log('updating patterns...');
+      // console.log('updating patterns...'); // DEBUG
+
       switch (listsources[$pStrand.indexSources].id)
       {
         default:

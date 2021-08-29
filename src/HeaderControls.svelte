@@ -17,6 +17,9 @@
     userSendPause
   } from './cmduser.js'
 
+  let devname = $curDevice.curname;
+  const setname = () => { userSetDevName(devname); }
+
   let isPaused = false;
   let textPause = '';
   $: textPause = (isPaused ? 'Resume' : 'Pause');
@@ -42,8 +45,8 @@
       <input
         class="title"
         size=32 maxlength=32
-        on:change={userSetDevName}
-        bind:value={$curDevice.name}
+        on:change={setname}
+        bind:value={devname}
       />
     </div>
     <div class="header2">
@@ -62,8 +65,8 @@
       <input
         class="title"
         size=32 maxlength=32
-        on:change={userSetDevName}
-        bind:value={$curDevice.name}
+        on:change={setname}
+        bind:value={devname}
       />
       <button on:click={dodocs}  class="button rite" >Docs &gt;&gt;</button>
       <button on:click={dolinks} class="button rite" >Links</button>

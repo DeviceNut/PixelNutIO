@@ -38,7 +38,9 @@ export const strandState =
 
 export const deviceInfo =
 {
-  name: '',           // used as topic to talk to device
+  curname: '',        // used as topic to talk to device
+  newname: '',        // used when renaming the device
+
   tstamp: 0,          // timestamp(secs) of last notify
   query: 0,           // state of query commands (QUERY_xxx)
   failed: false,      // device communication failed
@@ -73,12 +75,12 @@ function deviceStop(device=null)
     curdev.active = false;
     curDevice.set(null);
 
-    console.error(`Device stopped: ${curdev.name}`);
+    //console.log(`Device stopped: ${curdev.curname}`); // DEBUG
   }
 
   if (device !== null)
   {
-    console.error(`Device failed: ${device.name}`);
+    console.error(`Device failed: ${device.curname}`);
 
     device.failed = true;
     deviceList.set(get(deviceList)); // trigger UI update
@@ -100,14 +102,14 @@ function startcheck()
     let tstamp = curTimeSecs();
     for (const device of curlist)
     {
-      //console.log(`Checking: ${device.name}`); // DEBUG
+      //console.log(`Checking: ${device.curname}`); // DEBUG
   
       // if device hasn't failed already and hasn't sent
       // a notification recently, mark as not present
       if (!device.failed &&
          ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
       {
-        console.warn(`Device lost: ${device.name}`)
+        console.warn(`Device lost: ${device.curname}`);
 
         // if device is currently being controlled,
         // return to the device discovery page
@@ -150,7 +152,7 @@ export const onNotification = (msg) =>
 
   for (const device of get(deviceList))
   {
-    if (device.name === name)
+    if (device.curname === name)
     {
       if (device.failed)
       {
@@ -160,12 +162,21 @@ export const onNotification = (msg) =>
 
       return; // don't add this device
     }
+    else if (device.newname === name)
+    {
+      console.log(`Renaming device: "${name}"`); // DEBUG
+
+      device.curname = name;
+      device.newname = '';
+      device.tstamp = curTimeSecs();
+      return; // don't add this device
+    }
   }
 
   console.log(`Adding device: "${name}"`); // DEBUG
 
   let device = {...deviceInfo};
-  device.name = name;
+  device.curname = name;
   device.tstamp = curTimeSecs();
   get(deviceList).push(device);
   deviceList.set(get(deviceList)); // trigger UI update
@@ -188,7 +199,7 @@ export const onCommandReply = (msg) =>
   for (const d of dlist)
   {
     //console.log('device: ', d); // DEBUG
-    if (d.name === name)
+    if (d.curname === name)
     {
       device = d;
       break;
@@ -204,10 +215,6 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parseDeviceInfo(device, reply))
         {
-          //device.ready = true;
-          //console.log(`Device ready: "${device.name}"`) // DEBUG
-          //deviceList.set(get(deviceList)); // trigger UI update
-
           mqttSend(name, cmdStr_GetPatInfo);
           device.query = QUERY_PATTERNS;
         }
@@ -230,9 +237,10 @@ export const onCommandReply = (msg) =>
         reply.shift();
         if (parsePluginInfo(device, reply))
         {
-          console.log(`Device ready: "${device.name}"`) // DEBUG
+          console.log(`Device ready: "${device.curname}"`) // DEBUG
 
           device.ready = true;
+          device.tstamp = curTimeSecs();
           deviceList.set(get(deviceList)); // trigger UI update
         }
         else deviceStop(device);

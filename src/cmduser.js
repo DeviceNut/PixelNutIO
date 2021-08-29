@@ -85,7 +85,7 @@ function sendDevice(cmdstr)
   else
   {
     console.log('>>', cmdstr); // DEBUG
-    mqttSend(device.name, cmdstr);
+    mqttSend(device.curname, cmdstr);
   }
 }
 
@@ -219,12 +219,14 @@ export const updateTriggerLayers = () =>
 
 // Commands from Header:
 
-export const userSetDevName = () =>
+export const userSetDevName = (devname) =>
 {
-  let name = get(curDevice).name; // FIXME BUG?
   // TODO disallow some chars for device name
-  if (name === '') name = defDeviceName;
-  else sendDevice(cmdStr_DeviceName.concat(name));
+  if (devname === '') devname = defDeviceName;
+
+  get(curDevice).newname = devname;
+
+  sendDevice(cmdStr_DeviceName.concat(devname));
 }
 
 export const userSendPause = (enable) =>
@@ -568,7 +570,7 @@ export const userSendTrigger = () =>
   sendCmdCheck(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
 }
 
-// Commands from ControlsDraw:
+// Commands from SectionDraw:
 
 export const userSetDrawEffect = (track) =>
 {
@@ -749,7 +751,7 @@ export const userSetTrigMain = (track, layer) =>
   }
 }
 
-// Commands from ControlsFilter:
+// Commands from SectionFilter:
 
 export const userSetFilterEffect = (track, layer) =>
 {
@@ -972,7 +974,7 @@ export const userSetForceValue = (track, layer) =>
 
 export let userDeviceSetup = (device) =>
 {
-  console.log(`Connecting to: "${device.name}"...`); // DEBUG
+  console.log(`Connecting to: "${device.curname}"...`); // DEBUG
 
   let scount = device.report.scount;
 

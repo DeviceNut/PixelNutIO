@@ -114,7 +114,7 @@
       />
     </Row>
     <Row>
-      <SliderVal name='Offset&nbsp;'
+      <SliderVal name='Offset'
         onchange={setOffset}
         bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
       />

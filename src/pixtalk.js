@@ -107,7 +107,7 @@ function startcheck()
       if (!device.failed &&
          ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
       {
-        console.error(`Device lost: ${device.name}`)
+        console.warn(`Device lost: ${device.name}`)
 
         // if device is currently being controlled,
         // return to the device discovery page

@@ -5,8 +5,8 @@
   import Revealer from './Revealer.svelte';
   import ButtonsDnUp from './ButtonsDnUp.svelte';
   import ButtonsSoloMute from './ButtonsSoloMute.svelte';
-  import ControlsDraw from './ControlsDraw.svelte';
-  import ControlsFilter from './ControlsFilter.svelte';
+  import SectionDraw from './SectionDraw.svelte';
+  import SectionFilter from './SectionFilter.svelte';
 
   export let track;
   export let layer;
@@ -30,9 +30,9 @@
   {#if $pStrand.tracks[track].layers[layer].open }
     <Column style="padding-top:10px; background-color: var(--bg-color-tracklayer-area);">
       {#if (layer === 0) }
-        <ControlsDraw {track} />
+        <SectionDraw {track} />
       {:else}
-        <ControlsFilter {track} {layer} />
+        <SectionFilter {track} {layer} />
       {/if}
     </Column>
   {/if}

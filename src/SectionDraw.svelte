@@ -39,7 +39,7 @@
     userSetTrigMain
   } from './cmduser.js'
 
-  import ControlsTrigger from './ControlsTrigger.svelte';
+  import SectionTrigger from './SectionTrigger.svelte';
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';
   import SliderVal from './SliderVal.svelte';
 
@@ -154,7 +154,7 @@
     </Row>
 
     {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER) }
-      <ControlsTrigger {track} />
+      <SectionTrigger {track} />
     {:else}
       <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px;
                   background-color: var(--bg-color-controls-area);">

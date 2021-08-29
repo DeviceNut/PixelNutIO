@@ -6,7 +6,7 @@
   import { isConnected, deviceList } from './globals.js';
   import { mqttConnect } from './mqtt.js';
 
-  import DevicesHeader from './DevicesHeader.svelte';
+  import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
 
   let MSECS_CHECK_TIMEOUT = 800;
@@ -51,7 +51,7 @@
 </script>
 
 <main>
-  <DevicesHeader/>
+  <HeaderDevices/>
 
   <div class="panel">
 

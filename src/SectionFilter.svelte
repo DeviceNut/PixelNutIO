@@ -15,7 +15,7 @@
 
   import { userSetFilterEffect } from './cmduser.js'
 
-  import ControlsTrigger from './ControlsTrigger.svelte';
+  import SectionTrigger from './SectionTrigger.svelte';
 
   export let track;
   export let layer;
@@ -57,6 +57,6 @@
   </Row>
 
   {#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
-    <ControlsTrigger {track} {layer} />
+    <SectionTrigger {track} {layer} />
   {/if}
 </div>

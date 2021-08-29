@@ -31,7 +31,7 @@
   let heading, listdesc;
   $:
   {
-    heading = $aCurListPats[$pStrand.indexPatterns];
+    heading = $aCurListPats[$pStrand.indexPatterns].text;
     listdesc = $aCurListDesc[$pStrand.indexPatterns];
   }
 

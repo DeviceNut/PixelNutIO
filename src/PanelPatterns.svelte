@@ -36,7 +36,7 @@
       listsources = [];
 
       if ($aDevicePats.length > 0) listsources.push({ id: 1, text: 'Device' });
-      if ($aStoredPats.length > 0) listsources.push({ id: 2, text: 'Stored' });
+      if ($aStoredPats.length > 0) listsources.push({ id: 2, text: 'Browser' });
 
       listsources.push({ id: 0, text: 'Website' });
 

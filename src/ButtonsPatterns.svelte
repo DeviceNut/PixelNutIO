@@ -31,8 +31,8 @@
   let heading, listdesc;
   $:
   {
-    heading = $aCurListPats[$pStrand.indexPatterns].text;
-    listdesc = $aCurListDesc[$pStrand.indexPatterns];
+    heading = $aCurListPats[$pStrand.curPatternIdx].text;
+    listdesc = $aCurListDesc[$pStrand.curPatternIdx];
   }
 
   let openHelp = false;
@@ -67,7 +67,7 @@
 
   const delstart = () =>
   {
-    remname = $aCurListPats[$pStrand.indexPatterns].text
+    remname = $aCurListPats[$pStrand.curPatternIdx].text
     openDelete = true;
   }
 
@@ -113,7 +113,7 @@
 <button
   class="button button-help"
   on:click={dohelp}
-  disabled={$pStrand.indexPatterns === 0}
+  disabled={$pStrand.curPatternIdx === 0}
   >?
 </button>
 <button
@@ -131,7 +131,7 @@
 <button
   class="button button-pattern"
   on:click={delstart}
-  disabled={!$pStrand.fromStored || ($pStrand.indexPatterns === 0)}
+  disabled={!$pStrand.isBrowserSource || ($pStrand.curPatternIdx === 0)}
   >Delete
 </button>
 

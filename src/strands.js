@@ -1,10 +1,15 @@
 import { get } from 'svelte/store';
 
 import {
-  MIN_TRACK_LAYERS,
-  nStrands, idStrand, pStrand,
-  eStrands, aStrands, dStrands,
-  nTracks, tLayers
+  SOURCE_WEBSITE,
+  nStrands,
+  idStrand,
+  pStrand,
+  eStrands,
+  aStrands,
+  dStrands,
+  nTracks,
+  tLayers
 } from './globals.js';
 
 import { MAX_FORCE } from './pixcmds.js';
@@ -87,11 +92,11 @@ const oneStrand =
   selected        : false,  // true if selected for modification
   showCustom      : false,  // true if displaying customize panel
 
-  indexSources    : 0,      // index into sources list
-  indexPatterns   : 0,      // index into patterns list
-  fromStored      : false,  // true if current pattern from storage
+  curSourceIdx    : 0,      // index into current sources list
+  browserSource   : false,  // true if that is the browser list
 
-  curPatternStr   : '',     // active pattern command string
+  curPatternIdx   : 0,      // index into current patterns list
+  curPatternStr   : '',     // current pattern command string
                             // (as created from current settings)
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
@@ -161,10 +166,10 @@ export const strandCopyTop = () =>
       if (strand.selected)
       {
         strand.showCustom     = ps.showCustom;
-        strand.indexSources   = ps.indexSources;
-        strand.indexPatterns  = ps.indexPatterns;
-        strand.fromStored     = ps.fromStored;
-
+        strand.sourceType     = ps.sourceType;
+        strand.browserSource  = ps.browserSource
+        strand.curSourceIdx   = ps.curSourceIdx;
+        strand.curPatternIdx  = ps.curPatternIdx;
         strand.curPatternStr  = ps.curPatternStr;
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;

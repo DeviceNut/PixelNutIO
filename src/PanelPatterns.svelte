@@ -17,45 +17,54 @@
     aBuiltinDesc,
     aCurListPats,
     aCurListDesc,
+    aListSources,
     updateSources,
     updatePatterns,
-    storedPattern
+    storedPattern,
+    selectSource,
+    selectPattern
   } from './globals.js';
 
   import { userSetPattern  } from './cmduser.js';
 
   import ButtonsPatterns from './ButtonsPatterns.svelte';
 
-  let listsources = [];
+  const SOURCE_DEVICE      = 0;    // read from current device
+  const SOURCE_BROWSER     = 1;    // user stored to this browser
+  const SOURCE_WEBSITE     = 2;    // built into this website
+
   $:
   {
     if ($updateSources)
     {
-      //console.log('updating sources...'); // DEBUG
+      //console.log('updating sources: idx=', $pStrand.curSourceIdx); // DEBUG
 
-      listsources = [];
+      $aListSources = [];
 
-      if ($aDevicePats.length > 0) listsources.push({ id: 1, text: 'Device' });
-      if ($aStoredPats.length > 0) listsources.push({ id: 2, text: 'Browser' });
+      if ($aDevicePats.length > 0) $aListSources.push({ id: SOURCE_DEVICE,  text: 'Device' });
+      if ($aStoredPats.length > 0) $aListSources.push({ id: SOURCE_BROWSER, text: 'Browser' });
 
-      listsources.push({ id: 0, text: 'Website' });
+      $aListSources.push({ id: SOURCE_WEBSITE, text: 'Website' });
 
+      // if just stored a pattern, change current selection to be that
       if ($storedPattern && ($aStoredPats.length > 0))
       {
         let index = 0;
         let i = 0;
-        for (let i = 0; i < listsources.length; ++i)
+        for (let i = 0; i < $aListSources.length; ++i)
         {
-          if (listsources[i].id == 2)
+          if ($aListSources[i].id == SOURCE_BROWSER)
           {
             index = i;
             break;
           }
         }
-        console.log('indexes: ', index, ($aStoredPats.length - 1));
+        //console.log('indexes: ', index, ($aStoredPats.length - 1)); // DEBUG
 
-        $pStrand.indexSources = index;
-        $pStrand.indexPatterns = ($aStoredPats.length - 1);
+        $pStrand.curSourceIdx = index;
+        $pStrand.curPatternIdx = ($aStoredPats.length - 1);
+
+        $storedPattern = false;
         $updatePatterns = true;
       }
 
@@ -67,29 +76,29 @@
   {
     if ($updatePatterns)
     {
-      // console.log('updating patterns...'); // DEBUG
+       //console.log('updating patterns: idx=', $pStrand.curSourceIdx); // DEBUG
 
-      switch (listsources[$pStrand.indexSources].id)
+      switch ($aListSources[$pStrand.curSourceIdx].id)
       {
         default:
         {
           $aCurListPats = $aBuiltinPats;
           $aCurListDesc = $aBuiltinDesc;
-          $pStrand.fromStored = false;
+          $pStrand.browserSource = false;
           break;
         }
-        case 1:
+        case SOURCE_DEVICE:
         {
           $aCurListPats = $aDevicePats;
           $aCurListDesc = $aDeviceDesc;
-          $pStrand.fromStored = false;
+          $pStrand.browserSource = false;
           break;
         }
-        case 2:
+        case SOURCE_BROWSER:
         {
           $aCurListPats = $aStoredPats;
           $aCurListDesc = $aStoredDesc;
-          $pStrand.fromStored = true;
+          $pStrand.browserSource = true;
           break;
         }
       }
@@ -100,12 +109,21 @@
 
   const selsource = () =>
   {
-    if (!$storedPattern)
+    if ($selectSource)
     {
-      $updatePatterns = true;
-      $pStrand.indexPatterns = 0;
+      if (!$storedPattern)
+      {
+        $updatePatterns = true;
+        $pStrand.curPatternIdx = 0;
+      }
     }
-    else $storedPattern = false;
+    else $selectSource = true;
+  }
+
+  const selpattern = () =>
+  {
+    if ($selectPattern) userSetPattern();
+    else $selectPattern = true;
   }
 
   $updateSources = true;
@@ -113,7 +131,7 @@
 
 </script>
 
-{#if listsources.length > 1}
+{#if $aListSources.length > 1}
 
   <div style="margin-top:10px; text-align:center;">
     <p style="font-size:.9em;">Choose source and pattern:</p>
@@ -126,16 +144,16 @@
           size="sm"
           type="inline"
           on:select={selsource}
-          bind:selectedIndex={$pStrand.indexSources}
-          bind:items={listsources}
+          bind:selectedIndex={$pStrand.curSourceIdx}
+          bind:items={$aListSources}
         />
       </div>
       <div style="margin-top:-20px; text-align:center;">
         <Dropdown
           size="sm"
           type="inline"
-          on:select={userSetPattern}
-          bind:selectedIndex={$pStrand.indexPatterns}
+          on:select={selpattern}
+          bind:selectedIndex={$pStrand.curPatternIdx}
           bind:items={$aCurListPats}
         />
       </div>
@@ -149,16 +167,16 @@
             size="sm"
             type="inline"
             on:select={selsource}
-            bind:selectedIndex={$pStrand.indexSources}
-            bind:items={listsources}
+            bind:selectedIndex={$pStrand.curSourceIdx}
+            bind:items={$aListSources}
           />
         </div>
         <div style="display:inline-block;">
           <Dropdown
             size="sm"
             type="inline"
-            on:select={userSetPattern}
-            bind:selectedIndex={$pStrand.indexPatterns}
+            on:select={selpattern}
+            bind:selectedIndex={$pStrand.curPatternIdx}
             bind:items={$aCurListPats}
           />
         </div>
@@ -185,7 +203,7 @@
             size="sm"
             type="inline"
             on:select={userSetPattern}
-            bind:selectedIndex={$pStrand.indexPatterns}
+            bind:selectedIndex={$pStrand.curPatternIdx}
             bind:items={$aCurListPats}
           />
         </div>
@@ -211,7 +229,7 @@
             size="sm"
             type="inline"
             on:select={userSetPattern}
-            bind:selectedIndex={$pStrand.indexPatterns}
+            bind:selectedIndex={$pStrand.curPatternIdx}
             bind:items={$aCurListPats}
           />
         </div>

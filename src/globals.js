@@ -5,9 +5,9 @@ export let titleHelpDocs  = 'PixelNut! Docs';
 
 export let defDeviceName  = 'PixelNut!';
 
-export const PAGEMODE_DEVICES   = 0;
-export const PAGEMODE_CONTROLS  = 1;
-export const PAGEMODE_HELPDOCS  = 2;
+export const PAGEMODE_DEVICES   = 0;    // list of devices to connect to
+export const PAGEMODE_CONTROLS  = 1;    // controls for specific device
+export const PAGEMODE_HELPDOCS  = 2;    // controls help documentation
 
 export const MIN_TRACKS         = 4;    // minimum tracks for built-in patterns
 export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
@@ -37,10 +37,15 @@ export let aBuiltinPats   = writable([]);     // list of all built-in patterns
 export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
 export let aCurListPats   = writable([]);     // "points" to current patterns list
 export let aCurListDesc   = writable([]);     // "points" to current descriptions list
+export let aListSources   = writable([]);     // list of pattern source menu items
 
 export let updateSources  = writable(false);  // true to force update of sources list
 export let updatePatterns = writable(false);  // true to force update of patterns list
 export let storedPattern  = writable(false);  // true to set pattern to last stored one
+
+                                              // prevents device update from dropdown init:
+export let selectSource   = writable(false);  // false to ignore source selection
+export let selectPattern  = writable(false);  // false to ignore pattern selection
 
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions

@@ -12,13 +12,11 @@
     curDevice
    } from './globals.js';
 
-  import {
-    userSetDevName,
-    userSendPause
-  } from './cmduser.js'
+  import { userSendPause } from './cmduser.js'
+  import { deviceSetName } from './device.js'
 
   let devname = $curDevice.curname;
-  const setname = () => { userSetDevName(devname); }
+  const setname = () => { deviceSetName(devname); }
 
   let isPaused = false;
   let textPause = '';

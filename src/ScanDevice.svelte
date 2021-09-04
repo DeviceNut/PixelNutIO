@@ -1,14 +1,14 @@
 <script>
 
   import { Loading } from "carbon-components-svelte";
-  import { userDeviceSetup } from './cmduser.js';
+  import { deviceSetup } from './device.js';
 
   export let device;
 
   let showinfo = false;
   const moreinfo = () => { showinfo = !showinfo; }
 
-  const doctrls = () => { userDeviceSetup(device) }
+  const doctrls = () => { deviceSetup(device) }
 
 </script>
 

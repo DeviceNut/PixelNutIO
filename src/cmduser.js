@@ -1,13 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  defDeviceName,
-  MIN_TRACK_LAYERS,
-  PAGEMODE_CONTROLS,
-  curPageMode,
-  curDevice,
-  nTracks,
-  tLayers,
   nStrands,
   idStrand,
   pStrand,
@@ -23,7 +16,6 @@ import {
 import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
-  cmdStr_DeviceName    ,
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
@@ -57,8 +49,7 @@ import {
   strandCopyAll,
   strandCopyTop,
   strandCopyLayer,
-  strandCopyTracks,
-  makeNewStrand
+  strandCopyTracks
 } from './strands.js';
 
 import {
@@ -71,22 +62,9 @@ import {
 } from './cmdmake.js';
 
 import { parsePattern } from './cmdparse.js';
-import { mqttSend } from './mqtt.js';
+import { deviceSend } from './device.js';
 
 ///////////////////////////////////////////////////////////
-
-function sendDevice(cmdstr)
-{
-  let device = get(curDevice);
-
-  if (device === null)
-    console.warn(`No current device (\"${cmdstr}\"`)
-
-    else if (!device.active)
-    console.warn(`No active device (\"${cmdstr}\"`)
-
-    else mqttSend(device.curname, cmdstr);
-}
 
 function sendCmd(cmdstr)
 {
@@ -94,36 +72,52 @@ function sendCmd(cmdstr)
   let didone = false;
 
   if (get(pStrand).selected)
-    sendDevice(cmdstr); // send to current strand
+    deviceSend(cmdstr); // send to current strand
 
   for (let s = 0; s < get(nStrands); ++s)
   {
     if ((s !== sid) && get(aStrands)[s].selected)
     {
-      sendDevice(cmdStr_AddrStrand.concat(s));
-      sendDevice(cmdstr);
+      deviceSend(cmdStr_AddrStrand.concat(s));
+      deviceSend(cmdstr);
       didone = true;
     }
   }
 
-  if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
+  if (didone) deviceSend(cmdStr_AddrStrand.concat(sid));
+}
+
+function flashCmdStr(cmdstr)
+{
+  sendCmd(cmdStr_SaveFlash);
+  sendCmd(cmdstr);
+  sendCmd(cmdStr_SaveFlash);
 }
 
 export const sendEntireCmdStr = () =>
 {
-  sendCmd(cmdStr_SaveFlash);
-  sendCmd(cmdStr_Clear.concat(' ', get(pStrand).curPatternStr));
-  sendCmd(cmdStr_SaveFlash);
+  let cmdstr = get(pStrand).curPatternStr;
+
+  if (cmdstr !== '')
+  {
+    sendCmd(cmdStr_Clear);
+    flashCmdStr(cmdstr);
+  }
+  else flashCmdStr(cmdStr_Clear);
+
   sendCmd('0'); // triggers executing that pattern just stored
 }
 
+// send command only if valid active command
 function sendCmdCheck(cmdstr)
 {
-  if (get(pStrand).curPatternStr !== '')
-    sendCmd(cmdstr);
+  if (get(pStrand).curPatternStr !== '') sendCmd(cmdstr);
+
+  else console.log(`NOT sending: ${cmdstr}`);
 }
 
-// send command (and optional value) to entire strand
+// send command (and optional value) to strand
+// unless there is no valid active command
 function sendStrandCmd(cmdstr, cmdval)
 {
   if (cmdval !== undefined)
@@ -132,6 +126,7 @@ function sendStrandCmd(cmdstr, cmdval)
 }
 
 // send command (and optional value) to specific layer
+// unless there is no valid active command
 function sendLayerCmd(id, cmdstr, cmdval)
 {
   if (cmdval !== undefined)
@@ -218,38 +213,28 @@ export const updateTriggerLayers = () =>
 
 // Commands from Header:
 
-export const userSetDevName = (devname) =>
-{
-  // TODO disallow some chars for device name
-  if (devname === '') devname = defDeviceName;
-
-  get(curDevice).newname = devname;
-
-  sendDevice(cmdStr_DeviceName.concat(devname));
-}
-
 export const userSendPause = (enable) =>
 {
   const sid = get(idStrand);
   let didone = false;
 
   if (enable)
-       sendDevice(cmdStr_Pause);
-  else sendDevice(cmdStr_Resume);
+       deviceSend(cmdStr_Pause);
+  else deviceSend(cmdStr_Resume);
 
   for (let s = 0; s < get(nStrands); ++s)
   {
     if ((s !== sid) && get(aStrands)[s].selected)
     {
-      sendDevice(cmdStr_AddrStrand.concat(s));
+      deviceSend(cmdStr_AddrStrand.concat(s));
       if (enable)
-           sendDevice(cmdStr_Pause);
-      else sendDevice(cmdStr_Resume);
+           deviceSend(cmdStr_Pause);
+      else deviceSend(cmdStr_Resume);
       didone = true;
     }
   }
 
-  if (didone) sendDevice(cmdStr_AddrStrand.concat(sid));
+  if (didone) deviceSend(cmdStr_AddrStrand.concat(sid));
 }
 
 // Commands from Strand Selector
@@ -281,7 +266,7 @@ function switchStrands(s)
 {
   idStrand.set(s);
   pStrand.set(get(aStrands)[s]);
-  sendDevice(cmdStr_AddrStrand.concat(s));
+  deviceSend(cmdStr_AddrStrand.concat(s));
 }
 
 export const userStrandSelect = (combine) =>
@@ -308,9 +293,9 @@ export const userStrandSelect = (combine) =>
         strandCopyAll();
 
         // mirror current strand by sending entire current command to newly selected strand
-        sendDevice(cmdStr_AddrStrand.concat(s));
+        deviceSend(cmdStr_AddrStrand.concat(s));
         sendEntireCmdStr();
-        sendDevice(cmdStr_AddrStrand.concat(sid));
+        deviceSend(cmdStr_AddrStrand.concat(sid));
       }
       else if (!nowon && combine && (s === cur))
       {
@@ -347,10 +332,10 @@ export const userStrandSelect = (combine) =>
 export const userSetPattern = () =>
 {
   const strand = get(pStrand);
-  const thepat = get(aCurListPats)[strand.indexPatterns];
+  const thepat = get(aCurListPats)[strand.curPatternIdx];
   const cmdstr = thepat.cmd;
 
-  //console.log(`SetPattern: ${thepat.text} index=${strand.indexPatterns}`); // DEBUG
+  //console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
 
   strandClearAll();
 
@@ -367,12 +352,12 @@ export const userClearPattern = () =>
   const strand = get(pStrand);
 
   strandClearAll();
-
-  sendCmd(cmdStr_Clear);
   makeEntireCmdStr();
 
+  flashCmdStr(cmdStr_Clear);
+
   strand.showCustom = false;
-  strand.indexPatterns = 0;
+  strand.curPatternIdx = 0;
 }
 
 // Pattern Commands from PanelCustom: 
@@ -566,7 +551,7 @@ export const userSetForce = () =>
 
 export const userSendTrigger = () =>
 {
-  sendCmdCheck(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
+  sendCmd(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
 }
 
 // Commands from SectionDraw:
@@ -949,82 +934,4 @@ export const userSetForceValue = (track, layer) =>
     let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdStr_TrigForce, force);
   }
-}
-
-export let userDeviceSetup = (device) =>
-{
-  console.log(`Connecting to: "${device.curname}"...`); // DEBUG
-
-  let scount = device.report.nstrands;
-
-  let numtracks = device.report.numtracks;
-  let numlayers = device.report.numlayers;
-  let tracklayers = numlayers / numtracks;
-
-  if (tracklayers < MIN_TRACK_LAYERS)
-  {
-    tracklayers = MIN_TRACK_LAYERS;
-    numtracks = numlayers / tracklayers;
-  }
-
-  nStrands.set(scount);
-  nTracks.set(numtracks);
-  tLayers.set(tracklayers);
-
-  const sid = 0;
-  let slist = [];
-  let elist = [];
-
-  for (let s = 0; s < scount; ++s)
-  {
-    const strand = makeNewStrand(s);
-    const select = (s === sid) ? true : false;
-
-    strand.selected = select;
-    strand.pcentBright = device.report.strands[s].bright;
-    strand.msecsDelay  = device.report.strands[s].delay;
-    strand.firstPixel  = device.report.strands[s].first;
-    strand.directUp    = device.report.strands[s].direct;
-    strand.numPixels   = device.report.strands[s].pixels;
-
-    strand.doOverride  = device.report.strands[s].xt_mode;
-    strand.degreeHue   = device.report.strands[s].xt_hue;
-    strand.pcentWhite  = device.report.strands[s].xt_white;
-    strand.pcentCount  = device.report.strands[s].xt_count;
-
-    slist.push(strand);
-    elist.push(select);
-  }
-
-  aStrands.set(slist);
-  eStrands.set(elist);
-  pStrand.set(slist[sid]);
-
-  // make duplicate object to keep shadow values
-  slist = [];
-  for (let i = 0; i < scount; ++i)
-    slist.push(makeNewStrand(i));
-
-  dStrands.set(slist);
-
-  device.active = true;
-  curDevice.set(device);
-
-  for (let s = 0; s < scount; ++s)
-  {
-    idStrand.set(s);
-    pStrand.set(get(aStrands)[s]);
-    
-    if (!parsePattern(device.report.strands[s].pattern))
-    {
-      userClearPattern(); // TODO: more than this?
-      return;
-    }
-  }
-
-  // reset to use first strand
-  idStrand.set(0);
-  pStrand.set(get(aStrands)[0]);
-
-  curPageMode.set(PAGEMODE_CONTROLS);
 }

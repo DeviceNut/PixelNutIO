@@ -169,11 +169,11 @@ export const makeLayerCmdStr = (track, layer) =>
       let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
 
-      if (pdraw.pcentOffset !== 0)
+      if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
+      {
         cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
-
-      if (pdraw.pcentExtent !== 100)
         cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
+      }
 
       cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
 
@@ -186,17 +186,17 @@ export const makeLayerCmdStr = (track, layer) =>
       if (pdraw.pcentBright !== 100)
         cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
 
-      if (pdraw.msecsDelay !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
+      if (pdraw.pcentWhite !== 0)
+        cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
 
       if (pdraw.degreeHue !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
 
-      if (pdraw.pcentWhite !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
-
       if (pdraw.pcentCount !== 0)
         cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
+
+      if (pdraw.msecsDelay !== 0)
+        cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
 
       let bits = makeOrideBits(get(pStrand), track);
       if (bits !== 0)
@@ -208,8 +208,14 @@ export const makeLayerCmdStr = (track, layer) =>
       cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
     }
 
+    if (player.forceRandom)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+
+    else if (player.forceValue !== MAX_FORCE/2) // default
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+
     if (player.trigFromMain)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
+      cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
     if (player.trigDoLayer)
     {
@@ -218,12 +224,6 @@ export const makeLayerCmdStr = (track, layer) =>
       let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
       cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
     }
-
-    if (player.forceRandom)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
-
-    else if (player.forceValue !== MAX_FORCE/2) // default
-      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
     if (player.trigTypeStr === 'auto')
     {

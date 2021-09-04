@@ -17,15 +17,13 @@
 <SliderVal name='Bright'
   onchange={userSetBright}
   bind:cur={$pStrand.pcentBright}
-  disabled={$pStrand.curPatternStr === ''}
 />
 
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
   max={MAX_BYTE_VALUE}
-  disabled={($pStrand.curPatternStr === '') ||
-            !($pStrand.bitsEffects & pluginBit_DELAY)}
+  disabled={!($pStrand.bitsEffects & pluginBit_DELAY)}
   />
 
 <SliderVal name='Rotate'
@@ -33,5 +31,4 @@
   bind:cur={$pStrand.firstPixel}
   min={1}
   max={$pStrand.numPixels}
-  disabled={$pStrand.curPatternStr === ''}
 />

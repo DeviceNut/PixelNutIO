@@ -1,6 +1,5 @@
 <script>
 
-  import { get } from 'svelte/store';
   import { Loading } from "carbon-components-svelte";
 
   import { isConnected, deviceList } from './globals.js';
@@ -15,7 +14,7 @@
   let waitcount;
   let title;
 
-  $: title = get(isConnected) ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
+  $: title = $isConnected ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
 
   // when start this page, start "spinner" if:
   // 1) no devices in list
@@ -26,10 +25,10 @@
   const docheck = () =>
   {
     // wait until get at least one device before stop spinner
-    if (get(deviceList).length > 0)
+    if ($deviceList.length > 0)
       scanning = false;
 
-    else if ((--waitcount <= 0) && !get(isConnected))
+    else if ((--waitcount <= 0) && !$isConnected)
       scanning = false;
 
     else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
@@ -39,52 +38,46 @@
   {
     scanning = true;
 
-    if (!get(isConnected)) mqttConnect();
+    if (!$isConnected) mqttConnect();
 
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
     docheck();
   }
 
-  if (!get(isConnected) || (get(deviceList).length < 1))
+  if (!$isConnected || ($deviceList.length < 1))
     doscan();
 
 </script>
 
-<main>
-  <HeaderDevices/>
+<HeaderDevices/>
 
-  <div class="panel">
+<div class="panel">
 
-    <div class="scanbox">
-      <p style="margin-bottom:15px;">{title}</p>
-      {#if scanning }
-        <Loading style="margin-left:42%;" withOverlay={false} />
-      {:else}
-        <button on:click={doscan} disabled={$isConnected} class="button" >Reconnect</button>
-      {/if}
-    </div>
-
-    <p class="active">Available Devices:</p>
-
-    <div class="listbox">
-      {#each $deviceList as device }
-        {#if !device.failed }
-          <div class="listitem">
-            <ScanDevice {device} />
-          </div>
-        {/if}
-      {/each}
-    </div>
-
-    <div class="divider"></div>
+  <div class="scanbox">
+    <p style="margin-bottom:15px;">{title}</p>
+    {#if scanning }
+      <Loading style="margin-left:42%;" withOverlay={false} />
+    {:else}
+      <button on:click={doscan} disabled={$isConnected} class="button" >Reconnect</button>
+    {/if}
   </div>
 
-</main>
+  <p class="active">Available Devices:</p>
+
+  <div class="listbox">
+    {#each $deviceList as device }
+      {#if !device.failed }
+        <div class="listitem">
+          <ScanDevice {device} />
+        </div>
+      {/if}
+    {/each}
+  </div>
+
+  <div class="divider"></div>
+</div>
 
 <style>
-  main {
-    min-width: 320px;
-  }
   .panel {
     max-width: 550px;
     margin: 0 auto;

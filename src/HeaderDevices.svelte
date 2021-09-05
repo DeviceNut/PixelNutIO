@@ -1,10 +1,7 @@
 <script>
 
-  import { get } from 'svelte/store';
-
   import {
     titleDevices,
-    PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode
@@ -12,8 +9,8 @@
 
   const dodocs = () =>
   {
-    prevPageMode.set(get(curPageMode));
-    curPageMode.set(PAGEMODE_HELPDOCS);
+    $prevPageMode = $curPageMode;
+    $curPageMode = PAGEMODE_HELPDOCS;
   }
 
 </script>

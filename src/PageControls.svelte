@@ -17,33 +17,27 @@
 
 </script>
 
-<main>
-  <HeaderControls/>
+<HeaderControls/>
 
-  <div class="panel">
+<div class="panel">
 
-    {#if ($nStrands > 1) }
-      <MultiStrands/>
-      <div class="divider"></div>
-    {/if}
-
-    <PanelMain/>
-
-    <div class="bdiv" class:select={$pStrand.showCustom} on:click={toggleshow} >
-      <span class="btext" >{pstr}</span>
-    </div>
-  </div>
-
-  {#if $pStrand.showCustom }
-    <PanelCustom/>
+  {#if ($nStrands > 1) }
+    <MultiStrands/>
+    <div class="divider"></div>
   {/if}
 
-</main>
+  <PanelMain/>
+
+  <div class="bdiv" class:select={$pStrand.showCustom} on:click={toggleshow} >
+    <span class="btext" >{pstr}</span>
+  </div>
+</div>
+
+{#if $pStrand.showCustom }
+  <PanelCustom/>
+{/if}
 
 <style>
-  main {
-    min-width: 320px;
-  }
   .panel {
     max-width: 550px;
     margin: 0 auto;

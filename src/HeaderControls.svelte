@@ -1,6 +1,5 @@
 <script>
 
-  import { get } from 'svelte/store';
   import MediaQuery from "svelte-media-query";
   import { Modal } from "carbon-components-svelte";
 
@@ -27,12 +26,12 @@
   let openlinks = false;
   const dolinks = () => { openlinks = !openlinks; }
 
-  const dodevs = () => { curPageMode.set(PAGEMODE_DEVICES); }
+  const dodevs = () => { $curPageMode = PAGEMODE_DEVICES; }
 
   const dodocs = () =>
   {
-    prevPageMode.set(get(curPageMode));
-    curPageMode.set(PAGEMODE_HELPDOCS);
+    $prevPageMode = $curPageMode;
+    $curPageMode = PAGEMODE_HELPDOCS;
   }
 
 </script>

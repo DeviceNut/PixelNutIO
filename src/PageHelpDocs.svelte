@@ -16,27 +16,18 @@
 
 </script>
 
-<main>
-  <HelpDocsHeader menuOpen />
+<HelpDocsHeader menuOpen />
 
-  <Grid>
-    <Row>
-      <Column>
-        <HelpDocsMenu/>
-      </Column>
-      <Column>
-        <TextArea
-          bind:value={helptext}
-        />
-      </Column>
-    </Row>
-  </Grid>
+<Grid>
+  <Row>
+    <Column>
+      <HelpDocsMenu/>
+    </Column>
+    <Column>
+      <TextArea
+        bind:value={helptext}
+      />
+    </Column>
+  </Row>
+</Grid>
 
-</main>
-
-<style>
-  main {
-    min-width: 320px;
-  }
-</style>
-  

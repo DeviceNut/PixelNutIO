@@ -1,13 +1,10 @@
 <script>
 
-  import { get } from 'svelte/store';
-
   import Menu32 from "carbon-icons-svelte/lib/Menu32";
 
   import {
     titleHelpDocs,
     PAGEMODE_DEVICES,
-    PAGEMODE_CONTROLS,
     curPageMode,
     prevPageMode
   } from './globals.js';
@@ -15,9 +12,9 @@
   export let menuOpen;
 
   let prevPage;
-  $: prevPage = get(prevPageMode) == PAGEMODE_DEVICES ? "Devices" : "Controls";
+  $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
 
-  const goback = () => { curPageMode.set(get(prevPageMode)); }
+  const goback = () => { $curPageMode = $prevPageMode; }
 
 </script>
 

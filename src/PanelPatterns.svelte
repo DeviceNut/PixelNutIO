@@ -19,7 +19,6 @@
     aCurListDesc,
     aListSources,
     updateSources,
-    updatePatterns,
     storedPattern,
     selectSource,
     selectPattern
@@ -65,45 +64,41 @@
         $pStrand.curPatternIdx = ($aStoredPats.length - 1);
 
         $storedPattern = false;
-        $updatePatterns = true;
       }
 
       $updateSources = false;
+
+      updatePatternLists();
     }
   }
 
-  $:
+  function updatePatternLists()
   {
-    if ($updatePatterns)
+      //console.log('updating patterns: idx=', $pStrand.curSourceIdx); // DEBUG
+
+    switch ($aListSources[$pStrand.curSourceIdx].id)
     {
-       //console.log('updating patterns: idx=', $pStrand.curSourceIdx); // DEBUG
-
-      switch ($aListSources[$pStrand.curSourceIdx].id)
+      default:
       {
-        default:
-        {
-          $aCurListPats = $aBuiltinPats;
-          $aCurListDesc = $aBuiltinDesc;
-          $pStrand.browserSource = false;
-          break;
-        }
-        case SOURCE_DEVICE:
-        {
-          $aCurListPats = $aDevicePats;
-          $aCurListDesc = $aDeviceDesc;
-          $pStrand.browserSource = false;
-          break;
-        }
-        case SOURCE_BROWSER:
-        {
-          $aCurListPats = $aStoredPats;
-          $aCurListDesc = $aStoredDesc;
-          $pStrand.browserSource = true;
-          break;
-        }
+        $aCurListPats = $aBuiltinPats;
+        $aCurListDesc = $aBuiltinDesc;
+        $pStrand.browserSource = false;
+        break;
       }
-
-      $updatePatterns = false;
+      case SOURCE_DEVICE:
+      {
+        $aCurListPats = $aDevicePats;
+        $aCurListDesc = $aDeviceDesc;
+        $pStrand.browserSource = false;
+        break;
+      }
+      case SOURCE_BROWSER:
+      {
+        $aCurListPats = $aStoredPats;
+        $aCurListDesc = $aStoredDesc;
+        $pStrand.browserSource = true;
+        break;
+      }
     }
   }
 
@@ -113,8 +108,8 @@
     {
       if (!$storedPattern)
       {
-        $updatePatterns = true;
         $pStrand.curPatternIdx = 0;
+        updatePatternLists();
       }
     }
     else $selectSource = true;
@@ -127,7 +122,6 @@
   }
 
   $updateSources = true;
-  $updatePatterns = true;
 
 </script>
 

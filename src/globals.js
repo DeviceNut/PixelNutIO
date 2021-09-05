@@ -40,7 +40,6 @@ export let aCurListDesc   = writable([]);     // "points" to current description
 export let aListSources   = writable([]);     // list of pattern source menu items
 
 export let updateSources  = writable(false);  // true to force update of sources list
-export let updatePatterns = writable(false);  // true to force update of patterns list
 export let storedPattern  = writable(false);  // true to set pattern to last stored one
 
                                               // prevents device update from dropdown init:

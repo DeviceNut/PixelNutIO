@@ -16,7 +16,6 @@
     aCurListPats,
     aCurListDesc,
     updateSources,
-    updatePatterns,
     storedPattern
   } from './globals.js';
 
@@ -80,7 +79,6 @@
     userClearPattern();
 
     $updateSources = true;
-    $updatePatterns = true;
 
     openDelete = false;
   }

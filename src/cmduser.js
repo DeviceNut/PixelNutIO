@@ -335,7 +335,7 @@ export const userSetPattern = () =>
   const thepat = get(aCurListPats)[strand.curPatternIdx];
   const cmdstr = thepat.cmd;
 
-  //console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
+  console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
 
   strandClearAll();
 
@@ -351,13 +351,15 @@ export const userClearPattern = () =>
 {
   const strand = get(pStrand);
 
+  console.log('Clear Pattern'); // DEBUG
+
   strandClearAll();
   makeEntireCmdStr();
 
-  flashCmdStr(cmdStr_Clear);
+  //flashCmdStr(cmdStr_Clear);
 
   strand.showCustom = false;
-  strand.curPatternIdx = 0;
+  strand.curPatternIdx = 0; // this causes a clear
 }
 
 // Pattern Commands from PanelCustom: 

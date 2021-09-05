@@ -128,6 +128,8 @@ export let deviceSetup = (device) =>
   device.active = true;
   curDevice.set(device);
 
+  let doselect = false;
+
   for (let s = 0; s < numstrands; ++s)
   {
     idStrand.set(s);
@@ -141,67 +143,82 @@ export let deviceSetup = (device) =>
       let match, slist;
       let found = false;
 
-      // search for match in any of the pattern lists
+      console.log(`Device pattern: "${cmdstr}"`); // DEBUG
 
-      slist = get(aDevicePats);
-      if (slist.length > 0)
+      if (cmdstr !== '')
       {
-        if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
-        {
-          strand.curSourceIdx = sindex;
-          strand.curPatternIdx = match;
-          found = true;
-        }
-        ++sindex;
-      }
+        // search for match in any of the pattern lists
 
-      slist = get(aStoredPats);
-      if (!found && (slist.length > 0))
-      {
-        if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
+        slist = get(aDevicePats);
+        if (slist.length > 0)
         {
-          strand.curSourceIdx = sindex;
-          strand.curPatternIdx = match;
-          found = true;
-        }
-        ++sindex;
-      }
-
-      slist = get(aBuiltinPats);
-      if (!found && (slist.length > 0))
-      {
-        if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
-        {
-          strand.curSourceIdx = sindex;
-          strand.curPatternIdx = match;
-          found = true;
-        }
-        //++sindex;
-      }
-
-      if (!found) // TODO: create new pattern entry in device
-      {
-        const devlen = get(aDevicePats).length;
-
-        if (devlen === 0)
-        {
-          aDevicePats.set([{ id:'0', text:'<none>', cmd:'' }]);
-          aDeviceDesc.set([[]]);
+          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
+          {
+            strand.curSourceIdx = sindex;
+            strand.curPatternIdx = match;
+            found = true;
+          }
+          ++sindex;
         }
 
-        const obj = { id:devlen, text:'found-on-device', cmd:cmdstr };
-        const desc = 'This pattern was found on the device.';
+        slist = get(aStoredPats);
+        if (!found && (slist.length > 0))
+        {
+          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
+          {
+            strand.curSourceIdx = sindex;
+            strand.curPatternIdx = match;
+            found = true;
+          }
+          ++sindex;
+        }
 
-        get(aDevicePats).push(obj);
-        get(aDeviceDesc).push([desc]);
+        slist = get(aBuiltinPats);
+        if (!found && (slist.length > 0))
+        {
+          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
+          {
+            strand.curSourceIdx = sindex;
+            strand.curPatternIdx = match;
+            found = true;
+          }
+          //++sindex;
+        }
 
-        strand.curSourceIdx = 0;
-        strand.curPatternIdx = devlen;
+        if (!found) // TODO: create new pattern entry in device
+        {
+          const devlen = get(aDevicePats).length;
+
+          if (devlen === 0)
+          {
+            aDevicePats.set([{ id:'0', text:'<none>', cmd:'' }]);
+            aDeviceDesc.set([[]]);
+          }
+
+          const obj = { id:devlen, text:'found-on-device', cmd:cmdstr };
+          const desc = 'This pattern was found on the device.';
+
+          get(aDevicePats).push(obj);
+          get(aDeviceDesc).push([desc]);
+
+          strand.curSourceIdx = 0;
+          strand.curPatternIdx = devlen;
+        }
+      }
+      else // set to first pattern in built-ins
+      {
+        let index = 0;
+        if (get(aDevicePats).length > 0) ++index;
+        if (get(aStoredPats).length > 0) ++index;
+        strand.curSourceIdx = index;
+        strand.curPatternIdx = 1;
+
+        if (s === 0) doselect = true;
       }
 
-      //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
+      console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
     }
-    // else get set to empty pattern by default menu selections
+    // else set to empty pattern by default menu selections
   }
 
   // reset to use first strand
@@ -209,7 +226,7 @@ export let deviceSetup = (device) =>
   pStrand.set(get(aStrands)[0]);
 
   selectSource.set(false);
-  selectPattern.set(false);
+  selectPattern.set(doselect);
 
   curPageMode.set(PAGEMODE_CONTROLS);
 }

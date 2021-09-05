@@ -167,6 +167,13 @@ export const parsePattern = (cmdstr) =>
 
           layerbits = get(aEffectsFilter)[obj.index].bits;
           trackbits |= layerbits;
+
+          // if don't find a 'T' then disable triggering
+          get(pStrand).tracks[track].layers[layer].trigAutoStart = false;
+          get(pStrand).tracks[track].layers[layer].trigTypeStr = 'none';
+
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'none';
         }
         else // drawing effect
         {
@@ -206,6 +213,7 @@ export const parsePattern = (cmdstr) =>
           // if don't find a 'T' then disable triggering
           get(pStrand).tracks[track].layers[0].trigAutoStart = false;
           get(pStrand).tracks[track].layers[0].trigTypeStr = 'none';
+
           get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[0].trigTypeStr = 'none';
         }
@@ -318,7 +326,7 @@ export const parsePattern = (cmdstr) =>
           }
           case cmdStr_TrigFromLayer:
           {
-            let tlayer = (isNaN(val)) ? 0 : valueToTrackLayer(val);
+            let tlayer = valueToTrackLayer(val);
 
             get(pStrand).tracks[track].layers[layer].trigDoLayer = true;
             get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
@@ -374,6 +382,7 @@ export const parsePattern = (cmdstr) =>
           {
             if (isNaN(val))
             {
+              //console.log(`track=${track}.layer=${layer} TrigOnce`);
               get(pStrand).tracks[track].layers[layer].trigTypeStr = 'once';
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'once';
             }
@@ -390,7 +399,7 @@ export const parsePattern = (cmdstr) =>
             get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = true;
             break;
           }
-          case cmdStr_Go: break; // no-op?
+          case cmdStr_Go: break;
 
           default:
           {
@@ -406,5 +415,6 @@ export const parsePattern = (cmdstr) =>
     makeLayerCmdStr(track, layer);
 
   makeEntireCmdStr();
+
   return true;
 }

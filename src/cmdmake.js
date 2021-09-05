@@ -214,9 +214,6 @@ export const makeLayerCmdStr = (track, layer) =>
     else if (player.forceValue !== MAX_FORCE/2) // default
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-    if (player.trigFromMain)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
-
     if (player.trigDoLayer)
     {
       let tracknum = player.trigTrackNum;
@@ -224,6 +221,9 @@ export const makeLayerCmdStr = (track, layer) =>
       let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
       cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
     }
+
+    if (player.trigFromMain)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
     if (player.trigTypeStr === 'auto')
     {

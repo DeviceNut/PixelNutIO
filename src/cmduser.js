@@ -335,14 +335,14 @@ export const userSetPattern = () =>
   const thepat = get(aCurListPats)[strand.curPatternIdx];
   const cmdstr = thepat.cmd;
 
-  console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
+  //console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
 
   strandClearAll();
 
   if (parsePattern(cmdstr)) // sets vars for current strand
   {
     strandCopyAll();
-    sendEntireCmdStr();
+    sendEntireCmdStr(); // causes Clear if no pattern is set
   }
   // else software bug? FIXME?
 }
@@ -351,15 +351,13 @@ export const userClearPattern = () =>
 {
   const strand = get(pStrand);
 
-  console.log('Clear Pattern'); // DEBUG
+  //console.log('Clear Pattern'); // DEBUG
 
   strandClearAll();
   makeEntireCmdStr();
 
-  //flashCmdStr(cmdStr_Clear);
-
   strand.showCustom = false;
-  strand.curPatternIdx = 0; // this causes a clear
+  strand.curPatternIdx = 0; // causes userSetPattern() with <none>
 }
 
 // Pattern Commands from PanelCustom: 

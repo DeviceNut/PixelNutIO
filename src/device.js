@@ -216,7 +216,7 @@ export let deviceSetup = (device) =>
         if (s === 0) doselect = true;
       }
 
-      console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
+      //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
     }
     // else set to empty pattern by default menu selections
   }

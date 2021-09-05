@@ -293,7 +293,7 @@ export const parsePattern = (cmdstr) =>
           {
             if (!isNaN(val)) // ignore if no value (device toggles in this case)
             {
-              let rdir = valueToBool(val);
+              let rdir = !valueToBool(val); // reverse is 0, default is 1
               get(pStrand).tracks[track].drawProps.reverseDir = rdir;
               get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
             }

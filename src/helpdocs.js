@@ -1,47 +1,66 @@
 
 export const helpText = (id) =>
 {
-  return `Help ID=${id}`;
+  return helpMap.get(id);
 }
 
 export const helpTopics =
   [
-    { id: 0, text: "AI / Machine learning" },
+    { id: 0, text: "What is PixelNut?" },
     {
       id: 1,
-      text: "Analytics",
+      text: "Topic 1",
       children: [
         {
-          id: 2,
-          text: "IBM Analytics Engine",
+          id: 10,
+          text: "Topic 10",
           children: [
-            { id: 3, text: "Apache Spark" },
-            { id: 4, text: "Hadoop" },
+            { id: 100, text: "Topic 100" },
+            { id: 101, text: "Topic 101" },
           ],
         },
-        { id: 5, text: "IBM Cloud SQL Query" },
-        { id: 6, text: "IBM Db2 Warehouse on Cloud" },
       ],
     },
     {
-      id: 7,
-      text: "Blockchain",
-      children: [{ id: 8, text: "IBM Blockchain Platform" }],
-    },
-    {
-      id: 9,
-      text: "Databases",
+      id: 2,
+      text: "Topic 2",
       children: [
-        { id: 10, text: "IBM Cloud Databases for Elasticsearch" },
-        { id: 11, text: "IBM Cloud Databases for Enterprise DB" },
-        { id: 12, text: "IBM Cloud Databases for MongoDB" },
-        { id: 13, text: "IBM Cloud Databases for PostgreSQL" },
+        { id: 20, text: "Topic 20" },
+        { id: 21, text: "Topic 21" },
       ],
-    },
-    {
-      id: 14,
-      text: "Integration",
-      disabled: true,
-      children: [{ id: 15, text: "IBM API Connect", disabled: true }],
     },
   ];
+
+  const helpMap = new Map();
+
+helpMap.set(0,
+  "Help message 0",
+);
+
+helpMap.set(1,
+  "Help message 1",
+);
+
+helpMap.set(10,
+  "Help message 10",
+);
+
+helpMap.set(100,
+  "Help message 100",
+);
+
+helpMap.set(101,
+  "Help message 101",
+);
+
+helpMap.set(2,
+  "Help message 2",
+);
+
+helpMap.set(20,
+  "Help message 20",
+);
+
+helpMap.set(21,
+  "Help message 21",
+);

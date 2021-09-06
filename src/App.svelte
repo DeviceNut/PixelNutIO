@@ -26,6 +26,7 @@
 
 </script>
 
+<p>WHAT IS GOING ON????</p>
 <main>
   {#if ($curPageMode === PAGEMODE_HELPDOCS)}
     <PageHelpDocs/>

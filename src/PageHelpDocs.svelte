@@ -32,7 +32,13 @@
   <Row>
 
     {#if $docsMenuOpen }
-      <Column>
+      <Column
+        style='margin-top:13px;'
+        sm={4}
+        md={4}
+        lg={6}
+        max={4}
+        >
         <TreeView
           children={helpTopics}
           bind:activeId
@@ -44,8 +50,18 @@
       </Column>
     {/if}
 
-    <Column style='margin-top:13px;'>
-      <TextArea value={helptext}/>
+    <Column
+      style='margin-top:13px;'
+      sm={4}
+      md={4}
+      lg={10}
+      max={12}
+      >
+      <TextArea
+        style="font-family:'Courier New'"
+        rows={30}
+        value={helptext}
+      />
     </Column>
 
   </Row>

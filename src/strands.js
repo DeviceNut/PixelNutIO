@@ -1,7 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  SOURCE_WEBSITE,
   nStrands,
   idStrand,
   pStrand,

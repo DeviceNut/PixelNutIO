@@ -7,6 +7,11 @@
     prevPageMode
   } from './globals.js';
 
+  import ModalLinks from './ModalLinks.svelte';
+
+  let openlinks = false;
+  const dolinks = () => { openlinks = !openlinks; }
+
   const dodocs = () =>
   {
     $prevPageMode = $curPageMode;
@@ -17,8 +22,11 @@
 
 <div class="header">
   <span class="title">{titleDevices}</span>
-  <button on:click={dodocs} class="button" >Docs &gt;&gt;</button>
+  <button on:click={dodocs}  class="button" >Docs &gt;&gt;</button>
+  <button on:click={dolinks} class="button" >Links</button>
 </div>
+
+<ModalLinks {openlinks} />
 
 <style>
   .header {

@@ -10,8 +10,13 @@
     docsMenuOpen
   } from './globals.js';
 
+  import ModalLinks from './ModalLinks.svelte';
+
   let prevPage;
   $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
+
+  let openlinks = false;
+  const dolinks = () => { openlinks = !openlinks; }
 
   const goback = () => { $curPageMode = $prevPageMode; }
 
@@ -25,8 +30,11 @@
 
   <span class="title">{titleHelpDocs}</span>
 
-  <button on:click={goback} class="button" >{prevPage} &gt;&gt;</button>
+  <button on:click={goback}  class="button" >{prevPage} &gt;&gt;</button>
+  <button on:click={dolinks} class="button" >Links</button>
 </div>
+
+<ModalLinks {openlinks} />
 
 <style>
   .header {

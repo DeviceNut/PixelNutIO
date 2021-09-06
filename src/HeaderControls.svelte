@@ -1,7 +1,6 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
-  import { Modal } from "carbon-components-svelte";
 
   import {
     PAGEMODE_DEVICES,
@@ -11,8 +10,10 @@
     curDevice
    } from './globals.js';
 
-  import { userSendPause } from './cmduser.js'
-  import { deviceSetName } from './device.js'
+  import { userSendPause } from './cmduser.js';
+  import { deviceSetName } from './device.js';
+
+  import ModalLinks from './ModalLinks.svelte';
 
   let devname = $curDevice.curname;
   const setname = () => { deviceSetName(devname); }
@@ -20,14 +21,15 @@
   let isPaused = false;
   let textPause = '';
   $: textPause = (isPaused ? 'Resume' : 'Pause');
-
   const dopause = () => { userSendPause(isPaused = !isPaused); }
 
   let openlinks = false;
   const dolinks = () => { openlinks = !openlinks; }
 
-  const dodevs = () => { $curPageMode = PAGEMODE_DEVICES; }
-
+  const dodevs = () =>
+  {
+    $curPageMode = PAGEMODE_DEVICES;
+  }
   const dodocs = () =>
   {
     $prevPageMode = $curPageMode;
@@ -71,16 +73,7 @@
   {/if}
 </MediaQuery>
 
-<Modal
-  bind:open={openlinks}
-  passiveModal
-  modalHeading={"Links to Code and Websites"}
-  on:close
-  >
-  <p>Text for links paragraph 1.</p><br>  <!-- TODO: -->
-  <p>Text for links paragraph 2.</p><br>
-  <p>Visit our website <a href="https://www.devicenut.com">here</a>.</p>
-</Modal>
+<ModalLinks {openlinks} />
 
 <style>
   .header {

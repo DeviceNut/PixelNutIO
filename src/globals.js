@@ -5,6 +5,8 @@ export let titleHelpDocs  = 'PixelNut! Docs';
 
 export let defDeviceName  = 'PixelNut!';
 
+export const HELPTEXT_HEIGHT    = 45;   // height of help text panel
+
 export const PAGEMODE_DEVICES   = 0;    // list of devices to connect to
 export const PAGEMODE_CONTROLS  = 1;    // controls for specific device
 export const PAGEMODE_HELPDOCS  = 2;    // controls help documentation

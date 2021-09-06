@@ -8,8 +8,15 @@
     TextArea
   } from "carbon-components-svelte";
 
-  import { docsMenuOpen } from './globals.js';
-  import { helpTopics, helpText } from './helpmain.js';
+  import {
+    HELPTEXT_HEIGHT,
+    docsMenuOpen
+  } from './globals.js';
+
+  import {
+    helpTopics,
+    helpText
+  } from './helpmain.js';
 
   import HelpDocsHeader from './HelpDocsHeader.svelte';
 
@@ -59,7 +66,7 @@
       >
       <TextArea
         style="font-family:'Courier New'"
-        rows={30}
+        rows={HELPTEXT_HEIGHT}
         value={helptext}
       />
     </Column>

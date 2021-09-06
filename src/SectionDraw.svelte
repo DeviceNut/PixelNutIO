@@ -37,7 +37,7 @@
     userSetDirect,
     userSetTrigStart,
     userSetTrigMain
-  } from './cmduser.js'
+  } from './cmduser.js';
 
   import SectionTrigger from './SectionTrigger.svelte';
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';

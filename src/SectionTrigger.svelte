@@ -15,7 +15,7 @@
   import {
     pStrand,
     aTriggers
-  } from './globals.js'
+  } from './globals.js';
 
   import {
     pluginBit_TRIGGER,
@@ -33,7 +33,7 @@
     userSetTrigDrange,
     userSetForceType,
     userSetForceValue
-  } from './cmduser.js'
+  } from './cmduser.js';
 
   import { makeTrigSourceList } from './cmdmake.js';
 

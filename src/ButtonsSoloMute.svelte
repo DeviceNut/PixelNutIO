@@ -14,7 +14,7 @@
     makeTrackCmdStrs,
     makeLayerCmdStr,
     makeEntireCmdStr
-  } from './cmdmake.js'
+  } from './cmdmake.js';
 
   import { sendEntireCmdStr } from './cmduser.js';
 

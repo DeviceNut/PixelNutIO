@@ -25,7 +25,7 @@
   import {
     userSetOverMode,
     userSetProps
-  } from './cmduser.js'
+  } from './cmduser.js';
   
   import SliderVal from './SliderVal.svelte';
 

@@ -1,8 +1,17 @@
 <script>
 
-  import { Grid, Row, Checkbox } from "carbon-components-svelte";
-  import { aStrands } from './globals.js'
-  import { userStrandSelect, userStrandCombine } from './cmduser.js';
+  import {
+    Grid,
+    Row,
+    Checkbox
+  } from "carbon-components-svelte";
+
+  import { aStrands } from './globals.js';
+  
+  import {
+    userStrandSelect,
+    userStrandCombine
+  } from './cmduser.js';
 
   let combine = false;
 

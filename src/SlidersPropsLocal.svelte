@@ -23,7 +23,7 @@
     userSetWhite,
     userSetCount,
     userSetOverrides
-  } from './cmduser.js'
+  } from './cmduser.js';
 
   import SliderVal from './SliderVal.svelte';
 

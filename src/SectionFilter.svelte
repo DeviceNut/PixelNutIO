@@ -11,9 +11,9 @@
     pStrand,
     aEffectsFilter,
     aEffFilterDesc
-  } from './globals.js'
+  } from './globals.js';
 
-  import { userSetFilterEffect } from './cmduser.js'
+  import { userSetFilterEffect } from './cmduser.js';
 
   import SectionTrigger from './SectionTrigger.svelte';
 

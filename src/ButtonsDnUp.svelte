@@ -9,7 +9,7 @@
   import {
     strandSwapTracks,
     strandSwapLayers
-  } from './strands.js'
+  } from './strands.js';
 
   import {
     sendEntireCmdStr,

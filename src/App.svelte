@@ -10,14 +10,17 @@
   import { mqttBrokerSearch } from './mqtt.js';
   import { storePatternsInit } from './userstore.js';
   import { presetsInit } from './presets.js';
+  import { helpInit } from './helpmain.js';
 
   import PageDevices from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
   import PageHelpDocs from './PageHelpDocs.svelte';
 
-  mqttBrokerSearch();
-  storePatternsInit();
+  helpInit();
   presetsInit();
+  storePatternsInit();
+
+  mqttBrokerSearch();
 
   $curPageMode = PAGEMODE_DEVICES;
 

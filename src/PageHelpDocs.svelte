@@ -9,7 +9,7 @@
   } from "carbon-components-svelte";
 
   import { docsMenuOpen } from './globals.js';
-  import { helpTopics, helpText } from './helpdocs.js';
+  import { helpTopics, helpText } from './helpmain.js';
 
   import HelpDocsHeader from './HelpDocsHeader.svelte';
 

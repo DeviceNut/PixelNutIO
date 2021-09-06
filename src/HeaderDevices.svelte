@@ -16,13 +16,14 @@
 </script>
 
 <div class="header">
-  <div style="padding-top:10px;"></div>
   <span class="title">{titleDevices}</span>
-  <button on:click={dodocs}  class="button" >Docs &gt;&gt;</button>
+  <button on:click={dodocs} class="button" >Docs &gt;&gt;</button>
 </div>
 
 <style>
   .header {
+    max-width: 625px;
+    margin: 0 auto;
     height: 45px;
     text-align: center;
     background-color: var(--bg-color-header);
@@ -31,14 +32,14 @@
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    min-width: 175px;
+    min-width: 250px;
+    margin-top: 10px;
     color: var(--color-title);
     font-size:1.5em;
   }
   .button {
     float: right;
-    margin-top: -5px;
-    margin-right: 10px;
+    margin: 5px 10px 0 0;
     padding: 7px;
   }
 </style>

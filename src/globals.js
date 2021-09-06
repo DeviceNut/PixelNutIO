@@ -19,6 +19,8 @@ export let isConnected    = writable(false);  // true if currently connected to 
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device
 
+export let docsMenuOpen   = writable(true);   // true to display docs menu
+
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
@@ -41,7 +43,6 @@ export let aListSources   = writable([]);     // list of pattern source menu ite
 
 export let updateSources  = writable(false);  // true to force update of sources list
 export let storedPattern  = writable(false);  // true to set pattern to last stored one
-
                                               // prevents device update from dropdown init:
 export let selectSource   = writable(false);  // false to ignore source selection
 export let selectPattern  = writable(false);  // false to ignore pattern selection

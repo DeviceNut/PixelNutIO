@@ -6,10 +6,9 @@
     titleHelpDocs,
     PAGEMODE_DEVICES,
     curPageMode,
-    prevPageMode
+    prevPageMode,
+    docsMenuOpen
   } from './globals.js';
-
-  export let menuOpen;
 
   let prevPage;
   $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
@@ -19,10 +18,9 @@
 </script>
 
 <div class="header">
-  <div style="padding-top:5px;"></div>
 
-  <span style="cursor:pointer;" on:click={()=>{menuOpen = !menuOpen}}>
-    <Menu32 style="float:left; margin-left:5px;"/>
+  <span style="cursor:pointer;" on:click={()=>{$docsMenuOpen = !$docsMenuOpen}}>
+    <Menu32 style="float:left; margin-left:10px;"/>
   </span>
 
   <span class="title">{titleHelpDocs}</span>
@@ -33,6 +31,7 @@
 <style>
   .header {
     height: 45px;
+    padding-top: 5px;
     text-align: center;
     background-color: var(--bg-color-header);
   }
@@ -41,7 +40,7 @@
     left: 50%;
     transform: translate(-50%, 0);
     min-width: 250px;
-    margin-top: 7px;
+    margin-top: 5px;
     color: var(--color-title);
     font-size:1.5em;
   }

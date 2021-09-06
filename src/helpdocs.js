@@ -1,10 +1,11 @@
-<script>
-  import { TreeView } from "carbon-components-svelte";
 
-  let activeId = 1;
-  let selectedIds = [];
-  let expandedIds = [1, 2, 14];
-  let children = [
+export const helpText = (id) =>
+{
+  return `Help ID=${id}`;
+}
+
+export const helpTopics =
+  [
     { id: 0, text: "AI / Machine learning" },
     {
       id: 1,
@@ -44,21 +45,3 @@
       children: [{ id: 15, text: "IBM API Connect", disabled: true }],
     },
   ];
-
-/*
-<div>Active node id: {activeId}</div>
-<div>Selected ids: {JSON.stringify(selectedIds)}</div>
-<div>Expanded ids: {JSON.stringify(expandedIds)}</div>
-*/
-</script>
-
-<TreeView
-  labelText="Cloud Products"
-  {children}
-  bind:activeId
-  bind:selectedIds
-  bind:expandedIds
-  on:select={({ detail }) => console.log('select', detail)}
-  on:toggle={({ detail }) => console.log('toggle', detail)}
-  on:focus={({ detail }) => console.log('focus', detail)}
-/>

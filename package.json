@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "sirv-cli": "^1.0.12",
-    "svelte-media-query": "^1.1.1",
-    "sveltestrap": "^5.5.1"
+    "svelte-media-query": "^1.1.1"
   }
 }

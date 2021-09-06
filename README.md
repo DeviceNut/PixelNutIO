@@ -1,2 +1,2 @@
 # PixelNutIO
-Web app for locally controlled PixelNut devices over Mqtt/Wifi.
+Web app for locally controlled PixelNut devices over Wifi/Mqtt.

@@ -6,9 +6,9 @@
     FormGroup,
     TextInput,
     TextArea,
+    Checkbox,
     Button,
-    ButtonSet,
-    Checkbox
+    ButtonSet
   } from "carbon-components-svelte";
 
   import {
@@ -23,7 +23,7 @@
     storePatternsInit,
     storePatternSave,
     storePatternRemove
-  } from './userstore.js';
+  } from './browser.js';
 
   import { userClearPattern } from './cmduser.js';
 
@@ -168,7 +168,7 @@
     />
     <ButtonSet>
       <Button kind="secondary" on:click={() => {openStore = false;}}>Cancel</Button>
-      <Button type="submit">Submit</Button>
+      <Button type="submit">Store</Button>
     </ButtonSet>
   </Form>
 </Modal>

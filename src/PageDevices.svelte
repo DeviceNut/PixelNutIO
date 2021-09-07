@@ -1,50 +1,81 @@
 <script>
 
-  import { Loading } from "carbon-components-svelte";
+  import {
+    Loading,
+    Modal,
+    Form,
+    FormGroup,
+    TextInput,
+    Button,
+    ButtonSet
+  } from "carbon-components-svelte";
 
-  import { isConnected, deviceList } from './globals.js';
+  import {
+    MSECS_CHECK_TIMEOUT,
+    MSECS_WAIT_CONNECTION,
+    mqttBrokerIP,
+    mqttBrokerFail,
+    isConnected,
+    deviceList
+  } from './globals.js';
+
+  import { storeSetBrokerIP } from './browser.js';
   import { mqttConnect } from './mqtt.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
 
-  let MSECS_CHECK_TIMEOUT = 800;
-  let MSECS_WAIT_CONNECTION = 5000;
-  let scanning = false;
-  let waitcount;
-  let title;
-
-  $: title = $isConnected ? 'Connected' : scanning ? 'Connecting...' : 'Disconnected';
-
   // when start this page, start "spinner" if:
-  // 1) no devices in list
+  // 1) no valid brokerIP or devices in list
   // 2) just connected for first time (same as #1)
   // 3) returned from Controls after error or disconnect
   // but not if just returned from Controls or Docs normally
 
-  const docheck = () =>
-  {
-    // wait until get at least one device before stop spinner
-    if ($deviceList.length > 0)
-      scanning = false;
+  let title;
+  $: title = $isConnected ? `Connected (${$mqttBrokerIP})` : scanning ? 'Connecting...' : 'Disconnected';
 
-    else if ((--waitcount <= 0) && !$isConnected)
-      scanning = false;
+  let scanning = false;
+  let openForm = false;
+  let openError = false;
+  let waitcount;
 
-    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
-  }
-
-  const doscan = () =>
+  function doscan()
   {
     scanning = true;
-
-    if (!$isConnected) mqttConnect();
+    mqttConnect();
 
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
     docheck();
   }
 
-  if (!$isConnected || ($deviceList.length < 1))
+  const docheck = () =>
+  {
+    if ($mqttBrokerFail === true)
+    {
+      scanning = false;
+      openError = true;
+    }
+    // stop spinner if have device(s) or timeout
+    else if (($deviceList.length > 0) || (--waitcount <= 0))
+    {
+      scanning = false;
+      if (!$mqttBrokerFail) storeSetBrokerIP();
+    }
+    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
+  }
+
+  const dochange = () => { openForm = true; }
+
+  const setaddr = () =>
+  {
+    openForm = false;
+    $mqttBrokerFail = false;
+    doscan();
+  }
+
+  if ($mqttBrokerIP === '') dochange();
+
+  else if (!$isConnected || ($deviceList.length < 1))
     doscan();
 
 </script>
@@ -58,7 +89,7 @@
     {#if scanning }
       <Loading style="margin-left:42%;" withOverlay={false} />
     {:else}
-      <button on:click={doscan} disabled={$isConnected} class="button" >Reconnect</button>
+      <button on:click={dochange} class="button">Change Connection</button>
     {/if}
   </div>
 
@@ -76,6 +107,36 @@
 
   <div class="divider"></div>
 </div>
+
+<Modal
+  passiveModal
+  modalHeading="Connect to Message Server"
+  bind:open={openForm}
+  on:close
+  >
+  <Form on:submit={setaddr} >
+    <FormGroup>
+      <TextInput
+        labelText="IP Address"
+        bind:value={$mqttBrokerIP}
+      />
+    </FormGroup>
+    <ButtonSet>
+      <Button kind="secondary" on:click={() => {openForm = false;}}>Cancel</Button>
+      <Button type="submit">Connect</Button>
+    </ButtonSet>
+  </Form>
+</Modal>
+
+<Modal
+  passiveModal
+  modalHeading={"Connection Error"}
+  bind:open={openError}
+  on:close
+  >
+  <p>Connection to that Message Broker failed.</p><br>
+  <Button kind="secondary" on:click={() => {openError = false; openForm = true;}}>Continue</Button>
+</Modal>
 
 <style>
   .panel {

@@ -7,10 +7,13 @@
     curPageMode
   } from './globals.js';
 
-  import { mqttBrokerSearch } from './mqtt.js';
-  import { storePatternsInit } from './userstore.js';
-  import { presetsInit } from './presets.js';
+  import {
+    storeGetBrokerIP,
+    storePatternsInit
+  } from './browser.js';
+
   import { helpInit } from './helpmain.js';
+  import { presetsInit } from './presets.js';
 
   import PageDevices from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
@@ -19,14 +22,12 @@
   helpInit();
   presetsInit();
   storePatternsInit();
-
-  mqttBrokerSearch();
+  storeGetBrokerIP();
 
   $curPageMode = PAGEMODE_DEVICES;
 
 </script>
 
-<p>WHAT IS GOING ON????</p>
 <main>
   {#if ($curPageMode === PAGEMODE_HELPDOCS)}
     <PageHelpDocs/>

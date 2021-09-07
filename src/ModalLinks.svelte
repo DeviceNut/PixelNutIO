@@ -7,9 +7,9 @@
 </script>
 
 <Modal
-  bind:open={openlinks}
   passiveModal
   modalHeading={"Links to the PixelNut! website and code:"}
+  bind:open={openlinks}
   on:close
   >
   <p>Visit the PixelNut! website <a target="_blank" href="https://www.devicenut.com/pixelnut">here</a>.</p>

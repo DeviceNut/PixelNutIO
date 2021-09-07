@@ -5,6 +5,11 @@ export let titleHelpDocs  = 'PixelNut! Docs';
 
 export let defDeviceName  = 'PixelNut!';
 
+export const MQTT_BROKER_PORT   = 9001;   // MUST be 9001 for websocket
+
+export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
+export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
+
 export const HELPTEXT_HEIGHT    = 45;   // height of help text panel
 
 export const PAGEMODE_DEVICES   = 0;    // list of devices to connect to
@@ -16,7 +21,10 @@ export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
 
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
-export let isConnected    = writable(false);  // true if currently connected to broker
+
+export let mqttBrokerIP   = writable('');     // IP address string of broker
+export let mqttBrokerFail = writable(false);  // true if broker connection failed
+export let isConnected    = writable(false);  // true if connected to that broker
 
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device

@@ -1,9 +1,12 @@
 import { get } from 'svelte/store';
 
 import {
+  mqttBrokerIP,
   aStoredPats,
   aStoredDesc
 } from './globals.js';
+
+const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
 
 const SavePatternSeparator  = ',';
 const SavePatternNames      = "PixelNut-Names";
@@ -11,6 +14,21 @@ const SavePatternKeyCmd     = "PixelNut-Cmds-";
 const SavePatternKeyDesc    = "PixelNut-Desc-";
 
 ///////////////////////////////////////////////////////////
+
+export const storeGetBrokerIP = () =>
+{
+  let ipaddr = localStorage.getItem(SaveBrokerIPaddr);
+  if (ipaddr === null) ipaddr = '';
+  console.log(`Retrieving broker IP: ${ipaddr}`);
+  mqttBrokerIP.set(ipaddr);
+}
+
+export const storeSetBrokerIP = () =>
+{
+  let ipaddr = get(mqttBrokerIP);
+  console.log(`Saving broker IP: ${ipaddr}`);
+  localStorage.setItem(SaveBrokerIPaddr, ipaddr);
+}
 
 export const storePatternsInit = () =>
 {

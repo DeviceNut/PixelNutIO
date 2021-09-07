@@ -1,11 +1,18 @@
+import { get } from 'svelte/store';
+
+import {
+  MQTT_BROKER_PORT,
+  mqttBrokerIP,
+  mqttBrokerFail
+} from './globals.js';
+
 import { 
   onConnection,
   onNotification,
   onCommandReply
 } from './pixtalk.js';
 
-const host = '192.168.8.222'; // do NOT put http/wss prefixes on this
-const port = 9001;            // MUST be 9001 for websocket
+//const host = '192.168.8.222'; // do NOT put http/wss prefixes on this
 
 const topicDevNotify  = 'PixelNut/Notify';
 const topicDevReply   = 'PixelNut/Reply';
@@ -37,6 +44,8 @@ function onFailure(rsp)
   console.error(`MQTT Broker Failed: ${rsp.errorMessage}`);
   onConnection(false);
   mqtt = null; // prevent disconnecting (crash & hang)
+
+  mqttBrokerFail.set(true);
 }
 
 function onMessage(message)
@@ -56,20 +65,22 @@ function onMessage(message)
   }
 }
 
+/*
 export const mqttBrokerSearch = () => // TODO
 {
   console.log('Searching for MQTT Broker...'); // DEBUG
   console.log(`Found: ${host}:${port}`); // DEBUG
 }
+*/
 
 export const mqttConnect = () =>
 {
   onConnection(false);
   if (mqtt !== null) mqtt.disconnect();
 
-  mqtt = new Paho.Client(host, port, 'pixelnut');
+  mqtt = new Paho.Client(get(mqttBrokerIP), MQTT_BROKER_PORT, 'pixelnut');
 
-  console.log('MQTT Connecting...'); // DEBUG
+  console.log(`MQTT Connecting to ${get(mqttBrokerIP)}...`); // DEBUG
 
   let options = {
     timeout: 1,

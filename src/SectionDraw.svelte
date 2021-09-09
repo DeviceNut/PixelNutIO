@@ -37,7 +37,7 @@
     userSetDirect,
     userSetTrigStart,
     userSetTrigMain
-  } from './cmduser.js';
+  } from './cmduser.js'
 
   import SectionTrigger from './SectionTrigger.svelte';
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';
@@ -52,8 +52,6 @@
   const setDirect = () => { userSetDirect(track); }
   const setOffset = () => { userSetOffset(track); }
   const setExtent = () => { userSetExtent(track); }
-  const autoStart = () => { userSetTrigStart(track); }
-  const setMain   = () => { userSetTrigMain(track); }
 
 </script>
 
@@ -137,30 +135,7 @@
       />
     </Row>
 
-    {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginBits & pluginBit_TRIGGER) }
-      <SectionTrigger {track} />
-    {:else}
-      <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px;
-                  background-color: var(--bg-color-controls-area);">
-
-        <Row style="margin:0;">
-          <Checkbox labelText="Trigger once at start"
-            style="padding: 3px;"
-            on:check={autoStart}
-            bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigAutoStart}
-          />
-        </Row>
-        {#if !$pStrand.tracks[track].layers[DRAW_LAYER].trigAutoStart }
-          <Row style="margin:0;">
-            <Checkbox labelText="Trigger from main controls"
-              style="padding: 3px;"
-              on:check={setMain}
-              bind:checked={$pStrand.tracks[track].layers[DRAW_LAYER].trigFromMain}
-            />
-          </Row>
-        {/if}
-      </div>
-    {/if}
+    <SectionTrigger {track} />
 
   {/if}
 </div>

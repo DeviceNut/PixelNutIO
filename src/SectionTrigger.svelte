@@ -1,6 +1,7 @@
 <script>
 
   import {
+    Row,
     Checkbox,
     Dropdown,
     RadioButton,
@@ -23,6 +24,7 @@
   } from './presets.js';
 
   import {
+    userSetTrigStart,
     userSetTrigMain,
     userSetTrigLayer,
     userSetTrigNums,
@@ -77,6 +79,7 @@
   const setDrange = () => { userSetTrigDrange(track, layer); }
   const setFtype  = () => { userSetForceType(track, layer); }
   const setFvalue = () => { userSetForceValue(track, layer); }
+  const autoStart = () => { userSetTrigStart(track); }
 
 </script>
 
@@ -178,5 +181,27 @@
         />
       {/if}
     </div>
+  </div>
+
+{:else}
+  <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px;
+              background-color: var(--bg-color-controls-area);">
+
+    <Row style="margin:0;">
+      <Checkbox labelText="Trigger once at start"
+        style="padding: 3px;"
+        on:check={autoStart}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigAutoStart}
+      />
+    </Row>
+    {#if !$pStrand.tracks[track].layers[layer].trigAutoStart }
+      <Row style="margin:0;">
+        <Checkbox labelText="Trigger from main controls"
+          style="padding: 3px;"
+          on:check={setMain}
+          bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
+        />
+      </Row>
+    {/if}
   </div>
 {/if}

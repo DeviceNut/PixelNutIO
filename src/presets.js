@@ -221,10 +221,10 @@ aEffFilterDesc.set([
 
 export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
-export const pluginBit_DELAY       = 0x0004;  // changing delay has an effect
+export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
 export const pluginBit_TRIGGER     = 0x0010;  // triggering changes the effect
-export const pluginBit_TRIGFORCE   = 0x0020;  // trigger force is (TRIGGER must be set)
+export const pluginBit_TRIGFORCE   = 0x0020;  // trigger force used (TRIGGER must be set)
 export const pluginBit_SENDFORCE   = 0x0040;  // sends force to other plugins
                                               // only for filter effects:
 export const pluginBit_ORIDE_HUE   = 0x0100;  // effect overrides hue property

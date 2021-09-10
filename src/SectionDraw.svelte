@@ -22,7 +22,6 @@
   import {
     pluginBit_DELAY,
     pluginBit_DIRECTION,
-    pluginBit_TRIGGER,
     pluginBit_ORIDE_DELAY,
     pluginBit_ORIDE_DIR
   } from './presets.js';

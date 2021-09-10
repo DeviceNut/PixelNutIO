@@ -98,6 +98,7 @@ export const makeEntireCmdStr = () =>
   let cmdstr = '';
   let ridebits = 0;
   let splugbits = 0;
+  let trigused = false;
   let strand = get(pStrand);
 
   for (let i = 0; i < strand.tactives; ++i)
@@ -126,6 +127,8 @@ export const makeEntireCmdStr = () =>
           cmdstr = cmdstr.concat(`${layer.cmdstr}`);
           ridebits |= makeOrideBits(strand, i);
           splugbits |= layer.pluginBits;
+
+          if (layer.trigFromMain) trigused = true;
         }
         //else ismute = true; // DEBUG
       }
@@ -134,6 +137,8 @@ export const makeEntireCmdStr = () =>
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
         splugbits |= layer.pluginBits;
         tplugbits |= layer.pluginBits;
+
+        if (layer.trigFromMain) trigused = true;
       }
 
       //else ismute = true; // DEBUG
@@ -149,6 +154,7 @@ export const makeEntireCmdStr = () =>
   get(pStrand).curPatternStr = cmdstr;
   get(pStrand).bitsOverride = ridebits;
   get(pStrand).bitsEffects = splugbits;
+  get(pStrand).triggerUsed = trigused;
 
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
   //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG

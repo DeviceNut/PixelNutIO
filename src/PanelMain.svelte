@@ -9,11 +9,7 @@
   } from "carbon-components-svelte";
 
   import { MAX_FORCE } from './pixcmds.js';
-
-  import {
-    pluginBit_TRIGGER,
-    pluginBit_TRIGFORCE
-  } from './presets.js';
+  import { pluginBit_TRIGFORCE } from './presets.js';
 
   import { pStrand } from './globals.js';
   import { userSetForce, userSendTrigger } from './cmduser.js';
@@ -51,7 +47,7 @@
                 class="button"
                 on:click={userSendTrigger}
                 disabled={($pStrand.curPatternStr === '') ||
-                         !($pStrand.bitsEffects & pluginBit_TRIGGER)}
+                         !($pStrand.triggerUsed)}
                 >Trigger
               </button>
             </Column>
@@ -69,7 +65,7 @@
             class="button"
             on:click={userSendTrigger}
             disabled={($pStrand.curPatternStr === '') ||
-                     !($pStrand.bitsEffects & pluginBit_TRIGGER)}
+                         !($pStrand.triggerUsed)}
             >Trigger
           </button>
         </Column>

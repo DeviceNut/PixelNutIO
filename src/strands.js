@@ -100,6 +100,7 @@ const oneStrand =
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
+  triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw

@@ -365,26 +365,6 @@ export const userClearPattern = () =>
   strand.curPatternIdx = 0; // causes userSetPattern() with <none>
 }
 
-// Pattern Commands from PanelCustom: 
-
-/*
-// user just edited pattern string - DISABLED TODO
-export const userEditPattern = () =>
-{
-  const strand = get(pStrand);
-  let cmdstr = strand.editPatternStr;
-
-  strandClearAll();
-
-  if (parsePattern(cmdstr)) // sets vars for current strand
-  {
-    strandCopyAll();
-    sendEntireCmdStr();
-  }
-  else strand.curPatternStr = strand.selectedCmd;
-}
-*/
-
 // Commands from PanelMain:
 
 export const userSetBright = (track) =>

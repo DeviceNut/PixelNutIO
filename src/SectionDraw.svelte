@@ -33,9 +33,7 @@
     userSetOffset,
     userSetExtent,
     userSetOwrite,
-    userSetDirect,
-    userSetTrigStart,
-    userSetTrigMain
+    userSetDirect
   } from './cmduser.js'
 
   import SectionTrigger from './SectionTrigger.svelte';

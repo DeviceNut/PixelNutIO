@@ -71,7 +71,6 @@
     if ($aTriggers.length < 1) makeTrigSourceList();
   }
 
-  const setMain   = () => { userSetTrigMain(track, layer); }
   const setType   = () => { userSetTrigType(track, layer); }
   const setRandom = () => { userSetTrigRandom(track, layer); }
   const setCount  = () => { userSetTrigCount(track, layer); }
@@ -79,7 +78,22 @@
   const setDrange = () => { userSetTrigDrange(track, layer); }
   const setFtype  = () => { userSetForceType(track, layer); }
   const setFvalue = () => { userSetForceValue(track, layer); }
-  const autoStart = () => { userSetTrigStart(track); }
+  
+  const autoStart = () =>
+  {
+    if ($pStrand.tracks[track].layers[layer].trigAutoStart)
+        $pStrand.tracks[track].layers[layer].trigFromMain = false;
+
+    userSetTrigStart(track, layer);
+  }
+
+  const setMain = () =>
+  {
+    if ($pStrand.tracks[track].layers[layer].trigFromMain)
+        $pStrand.tracks[track].layers[layer].trigAutoStart = false;
+
+    userSetTrigMain(track, layer);
+  }
 
 </script>
 
@@ -194,14 +208,12 @@
         bind:checked={$pStrand.tracks[track].layers[layer].trigAutoStart}
       />
     </Row>
-    {#if !$pStrand.tracks[track].layers[layer].trigAutoStart }
-      <Row style="margin:0;">
-        <Checkbox labelText="Trigger from main controls"
-          style="padding: 3px;"
-          on:check={setMain}
-          bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
-        />
-      </Row>
-    {/if}
+    <Row style="margin:0;">
+      <Checkbox labelText="Trigger from main controls"
+        style="padding: 3px;"
+        on:check={setMain}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
+      />
+    </Row>
   </div>
 {/if}

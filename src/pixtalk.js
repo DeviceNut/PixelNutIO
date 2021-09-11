@@ -39,7 +39,7 @@ export const strandState =
   delay: 0,             // delay percent
   force: 0,             // force (0-MAX_FORCE)
   first: 1,             // first pixel to draw (from 1)
-  direct: 0,            // direction flag 0/1
+  direct: 0,            // direction flag 0/1 (1 is default for up)
 
                         // extern mode:
   xt_mode: 0,           //  enabled=1
@@ -404,8 +404,6 @@ function parseDeviceInfo(device, reply)
 
     strand.pattern = reply[0];
     reply.shift();
-
-    // TODO: search for match with this pattern
 
     device.report.strands.push(strand);
   }

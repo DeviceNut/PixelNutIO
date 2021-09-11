@@ -5,21 +5,29 @@
   import {
     Grid,
     Row,
-    Column
+    Column,
+    Checkbox
   } from "carbon-components-svelte";
 
   import { MAX_FORCE } from './pixcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
 
   import { pStrand } from './globals.js';
-  import { userSetForce, userSendTrigger } from './cmduser.js';
+
+  import {
+    userSetForce,
+    userSendTrigger,
+    userSetDirect
+  } from './cmduser.js'
 
   import PanelPatterns from './PanelPatterns.svelte';
   import SlidersMain from './SlidersMain.svelte';
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
 
-</script>
+  const setDirect = () => { userSetDirect(); }
+
+  </script>
 
 <Grid>
 
@@ -59,7 +67,7 @@
 
   <MediaQuery query="(max-width:500px)" let:matches>
     {#if matches}
-      <Row style="margin-top:5px;">
+      <Row style="margin-top:5px; margin-bottom:15px;">
         <Column style="margin-left:-5px;">
           <button
             class="button"
@@ -72,6 +80,15 @@
       </Row>
     {/if}
   </MediaQuery>
+
+  <Row style="margin-top:5px;">
+    <Column style="margin-left:-5px;">
+      <Checkbox labelText="Reverse Direction"
+        on:check={setDirect}
+        bind:checked={$pStrand.dirReverse}
+      />
+    </Column>
+  </Row>
 
 </Grid>
 

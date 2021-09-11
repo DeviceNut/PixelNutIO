@@ -103,7 +103,7 @@ export let deviceSetup = (device) =>
     strand.pcentBright = device.report.strands[s].bright;
     strand.msecsDelay  = device.report.strands[s].delay;
     strand.firstPixel  = device.report.strands[s].first;
-    strand.directUp    = device.report.strands[s].direct;
+    strand.dirReverse  = device.report.strands[s].direct ? 0 : 1; // 0 if "down", which is reversed
     strand.numPixels   = device.report.strands[s].pixels;
 
     strand.doOverride  = device.report.strands[s].xt_mode;

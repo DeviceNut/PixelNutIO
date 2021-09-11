@@ -5,7 +5,7 @@
   import {
     Row,
     Dropdown,
-    Checkbox,
+    Checkbox
   } from "carbon-components-svelte";
 
   import {
@@ -46,9 +46,9 @@
   const setBright = () => { userSetBright(track); }
   const setDelay  = () => { userSetDelay( track); }
   const setOwrite = () => { userSetOwrite(track); }
-  const setDirect = () => { userSetDirect(track); }
   const setOffset = () => { userSetOffset(track); }
   const setExtent = () => { userSetExtent(track); }
+  const setDirect = () => { userSetDirect(track); }
 
 </script>
 

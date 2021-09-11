@@ -25,7 +25,10 @@
     storePatternRemove
   } from './browser.js';
 
-  import { userClearPattern } from './cmduser.js';
+  import {
+    saveEntireCmdStr,
+    userClearPattern
+   } from './cmduser.js';
 
   let heading, listdesc;
   $:
@@ -38,6 +41,7 @@
   const dohelp = () => { openHelp = !openHelp; }
 
   const doclear = () => { userClearPattern(); }
+  const dosave  = () => { saveEntireCmdStr(); }
 
   let openStore = false;
   let savename, savedesc;
@@ -114,22 +118,32 @@
   disabled={$pStrand.curPatternIdx === 0}
   >?
 </button>
+
 <button
   class="button button-pattern"
   on:click={doclear}
   disabled={$pStrand.curPatternStr === ''}
   >Clear
 </button>
+
+<button
+  class="button button-pattern"
+  on:click={dosave}
+  disabled={($pStrand.curPatternStr === '') || ($pStrand.modifyPattern === false)}
+  >Save
+</button>
+
 <button
   class="button button-pattern"
   on:click={() => { openStore = !openStore; }}
   disabled={$pStrand.curPatternStr === ''}
   >Store
 </button>
+
 <button
   class="button button-pattern"
   on:click={delstart}
-  disabled={!$pStrand.isBrowserSource || ($pStrand.curPatternIdx === 0)}
+  disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
   >Delete
 </button>
 
@@ -198,7 +212,7 @@
     border-radius: 75%;
   }
   .button-pattern {
-    width: 60px;
-    margin-right: 15px;
+    width: 55px;
+    margin-right: 10px;
   }
 </style>

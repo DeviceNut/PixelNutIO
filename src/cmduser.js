@@ -92,6 +92,15 @@ function flashCmdStr(cmdstr)
   sendCmd(cmdStr_SaveFlash);
   sendCmd(cmdstr);
   sendCmd(cmdStr_SaveFlash);
+
+  get(pStrand).modifyPattern = false;
+  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+}
+
+export const saveEntireCmdStr = () =>
+{
+  let cmdstr = get(pStrand).curPatternStr;
+  if (cmdstr !== '') flashCmdStr(cmdstr);
 }
 
 export const sendEntireCmdStr = () =>
@@ -132,14 +141,10 @@ function sendLayerCmd(id, cmdstr, cmdval)
   if (cmdval !== undefined)
     cmdstr = cmdstr.concat(cmdval);
 
-  // don't need to set back to top-of-stack?
-  //let str = `${cmdStr_AddrLayer}${id} `;
-  //str = str.concat(`${cmdstr} `);
-  //str = str.concat(`${cmdStr_AddrLayer}`);
-  //sendCmdCheck(str);
-
   // Note: effective only within a command string
   sendCmdCheck(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
+
+  get(pStrand).modifyPattern = true;
 }
 
 function updateLayerVals(track, layer)
@@ -696,9 +701,6 @@ export const userSetTrigStart = (track, layer) =>
 
 export const userSetTrigMain = (track, layer) =>
 {
-  // TODO: if not new firmware then must send
-  //       entire command string if turning off
-
   if (layer === undefined) layer = 0;
 
   let domain = get(pStrand).tracks[track].layers[layer].trigFromMain;
@@ -793,6 +795,7 @@ export const userSetTrigType = (track, layer) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = valstr;
 
+    //console.log(`valstr=${valstr}`);
     if (valstr === 'none')
     {
       updateLayerVals(track, layer);

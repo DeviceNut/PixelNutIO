@@ -128,6 +128,7 @@ export const makeEntireCmdStr = () =>
           ridebits |= makeOrideBits(strand, i);
           splugbits |= layer.pluginBits;
 
+          //console.log(`draw: cmdstr=${cmdstr} tmain=${layer.trigFromMain}`);
           if (layer.trigFromMain) trigused = true;
         }
         //else ismute = true; // DEBUG
@@ -138,6 +139,7 @@ export const makeEntireCmdStr = () =>
         splugbits |= layer.pluginBits;
         tplugbits |= layer.pluginBits;
 
+        //console.log(`filter: tmain=${layer.trigFromMain}`);
         if (layer.trigFromMain) trigused = true;
       }
 

@@ -28,10 +28,11 @@
     <Menu32 style="float:left; margin-left:10px;"/>
   </span>
 
+  <button on:click={dolinks} class="button-left" >Links</button>
+
   <span class="title">{titleHelpDocs}</span>
 
-  <button on:click={goback}  class="button" >{prevPage} &gt;&gt;</button>
-  <button on:click={dolinks} class="button" >Links</button>
+  <button on:click={goback}  class="button-rite" >{prevPage} &gt;&gt;</button>
 </div>
 
 <ModalLinks {openlinks} />
@@ -47,12 +48,16 @@
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    min-width: 250px;
     margin-top: 5px;
     color: var(--color-title);
     font-size:1.5em;
   }
-  .button {
+  .button-left {
+    float: left;
+    margin-left: 10px;
+    padding: 7px;
+  }
+  .button-rite {
     float: right;
     margin-right: 10px;
     padding: 7px;

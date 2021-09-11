@@ -21,18 +21,18 @@
 </script>
 
 <div class="header">
+  <button on:click={dolinks} class="button-left" >Links</button>
   <span class="title">{titleDevices}</span>
-  <button on:click={dodocs}  class="button" >Docs &gt;&gt;</button>
-  <button on:click={dolinks} class="button" >Links</button>
+  <button on:click={dodocs}  class="button-rite" >Docs &gt;&gt;</button>
 </div>
 
 <ModalLinks {openlinks} />
 
 <style>
   .header {
+    height: 45px;
     max-width: 625px;
     margin: 0 auto;
-    height: 45px;
     text-align: center;
     background-color: var(--bg-color-header);
   }
@@ -45,9 +45,16 @@
     color: var(--color-title);
     font-size:1.5em;
   }
-  .button {
+  .button-left {
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+    padding: 7px;
+  }
+  .button-rite {
     float: right;
-    margin: 5px 10px 0 0;
+    margin-top: 5px;
+    margin-right: 10px;
     padding: 7px;
   }
 </style>

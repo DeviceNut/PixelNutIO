@@ -1,10 +1,6 @@
 <script>
 
-  import {
-    Grid,
-    Row,
-    Checkbox
-  } from "carbon-components-svelte";
+  import { Checkbox } from "carbon-components-svelte";
 
   import { aStrands } from './globals.js';
   
@@ -20,19 +16,20 @@
 
 </script>
 
-<Grid>
-  <Row style="margin-top:7px; margin-left:-10px;">
-    <p style="margin:5px 17px 0 0; font-size:.95em;">Strands:</p>
+<div style="margin-top:7px; margin-left:5px; text-align: center;">
+  <span style="margin-right:5px;">Strands:</span>
 
-    {#each $aStrands as _,n}
-      <Checkbox labelText={n+1}
-        on:check={checkenables}
-        bind:checked={$aStrands[n].selected}
-      />
-    {/each}
-
-    <Checkbox labelText="Duplicate"
-      on:check={checkowrite}
+  {#each $aStrands as _,n}
+    <Checkbox
+      style="display:inline-block; margin-left:5px;"
+      labelText={n+1}
+      on:check={checkenables}
+      bind:checked={$aStrands[n].selected}
     />
-  </Row>
-</Grid>
+  {/each}
+
+  <Checkbox labelText="Duplicate"
+  style="display:inline-block; margin-left:15px;"
+    on:check={checkowrite}
+  />
+</div>

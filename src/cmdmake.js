@@ -35,6 +35,8 @@ import {
   
 import { pluginBit_SENDFORCE } from './presets.js';
 
+import { strandCopyLayer } from './strands.js';
+
 ///////////////////////////////////////////////////////////
 
 export const makeOrideBits = (p, track) =>
@@ -285,4 +287,73 @@ export const makeTrigSourceList = () =>
   if (count === 0) items.push({ id: 0, text: 'none'});
 
   aTriggers.set(items);
+}
+
+// must be called after any changes to the number
+// or position of tracks, layers, or effect settings
+export const updateTriggerLayers = () =>
+{
+  makeTrigSourceList();
+
+  const strand = get(pStrand);
+  let atrigs = get(aTriggers);
+
+  // update index into trigger source list for all enabled layers
+  for (let track = 0; track < strand.tactives; ++track)
+  {
+    for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
+    {
+      if (strand.tracks[track].layers[layer].trigDoLayer)
+      {
+        let found = false;
+        let tnum = strand.tracks[track].layers[layer].trigTrackNum;
+        let lnum = strand.tracks[track].layers[layer].trigLayerNum;
+
+        for (const [i, item] of atrigs.entries())
+        {
+          if (item.id > 0) // not placeholder entry
+          {
+            if ((item.tnum === tnum) && (item.lnum === lnum))
+            {
+              found = true;
+              strand.tracks[track].layers[layer].trigListDex = i;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = i;
+
+              //console.log('updated: ', track, layer, tnum, lnum, i, item); // DEBUG
+            }
+          }
+        }
+
+        if (!found)
+        {
+          //console.log('disabling trigger (track,layer): ', track, layer); // DEBUG
+
+          strand.tracks[track].layers[layer].trigDoLayer = false;
+          strand.tracks[track].layers[layer].trigListDex = 0;
+
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = 0;
+        }
+      }
+    }
+  }
+}
+
+export const updateAllTracks = () =>
+{
+  // rebuild all tracks to account for changes
+  // to tracks/layers or trigger sources
+
+  for (let i = 0; i <= get(pStrand).tactives; ++i)
+    makeTrackCmdStrs(i);
+
+  strandCopyTracks();
+  makeEntireCmdStr();
+}
+
+export const updateLayerVals = (track, layer) =>
+{
+  makeLayerCmdStr(track, layer);
+  strandCopyLayer(track, layer);
+  makeEntireCmdStr();
 }

@@ -9,7 +9,6 @@ import {
   dStrands,
   aEffectsDraw,
   aEffectsFilter,
-  aTriggers,
   aCurListPats
 } from './globals.js';
 
@@ -19,16 +18,13 @@ import {
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
-  cmdStr_SaveFlash     ,
   cmdStr_AddrStrand    ,
-  cmdStr_AddrLayer     ,
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
   cmdStr_SetXmode      ,
   cmdStr_SetFirst      ,
   cmdStr_SetDirect     ,
-  cmdStr_Clear         ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
@@ -48,174 +44,29 @@ import {
 import {
   strandClearAll,
   strandCopyAll,
-  strandCopyTop,
-  strandCopyLayer,
-  strandCopyTracks
+  strandCopyTop
 } from './strands.js';
 
 import {
   convTrackLayerToID,
   makeOrideBits,
-  makeLayerCmdStr,
   makeEntireCmdStr,
-  makeTrackCmdStrs,
-  makeTrigSourceList
+  updateAllTracks,
+  updateTriggerLayers
 } from './cmdmake.js';
+
+import {
+  sendLayerCmd,
+  sendStrandCmd,
+  sendEntirePattern,
+  sendPatternToStrand,
+  sendStrandSwitch
+} from './cmdsend.js';
 
 import { parsePattern } from './cmdparse.js';
 import { deviceSend } from './device.js';
 
 ///////////////////////////////////////////////////////////
-
-function sendCmd(cmdstr)
-{
-  const sid = get(idStrand);
-  let didone = false;
-
-  if (get(pStrand).selected)
-    deviceSend(cmdstr); // send to current strand
-
-  for (let s = 0; s < get(nStrands); ++s)
-  {
-    if ((s !== sid) && get(aStrands)[s].selected)
-    {
-      deviceSend(cmdStr_AddrStrand.concat(s));
-      deviceSend(cmdstr);
-      didone = true;
-    }
-  }
-
-  if (didone) deviceSend(cmdStr_AddrStrand.concat(sid));
-}
-
-function flashCmdStr(cmdstr)
-{
-  sendCmd(cmdStr_SaveFlash);
-  sendCmd(cmdstr);
-  sendCmd(cmdStr_SaveFlash);
-
-  get(pStrand).modifyPattern = false;
-  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
-}
-
-export const saveEntireCmdStr = () =>
-{
-  let cmdstr = get(pStrand).curPatternStr;
-  if (cmdstr !== '') flashCmdStr(cmdstr);
-}
-
-export const sendEntireCmdStr = () =>
-{
-  let cmdstr = get(pStrand).curPatternStr;
-
-  if (cmdstr !== '')
-  {
-    sendCmd(cmdStr_Clear);
-    flashCmdStr(cmdstr);
-  }
-  else flashCmdStr(cmdStr_Clear);
-
-  sendCmd('0'); // triggers executing that pattern just stored
-}
-
-// send command only if valid active command
-function sendCmdCheck(cmdstr)
-{
-  if (get(pStrand).curPatternStr !== '') sendCmd(cmdstr);
-
-  else console.log(`NOT sending: ${cmdstr}`);
-}
-
-// send command (and optional value) to strand
-// unless there is no valid active command
-function sendStrandCmd(cmdstr, cmdval)
-{
-  if (cmdval !== undefined)
-       sendCmdCheck(cmdstr.concat(cmdval));
-  else sendCmdCheck(cmdstr);
-}
-
-// send command (and optional value) to specific layer
-// unless there is no valid active command
-function sendLayerCmd(id, cmdstr, cmdval)
-{
-  if (cmdval !== undefined)
-    cmdstr = cmdstr.concat(cmdval);
-
-  // Note: effective only within a command string
-  sendCmdCheck(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
-
-  get(pStrand).modifyPattern = true;
-}
-
-function updateLayerVals(track, layer)
-{
-  makeLayerCmdStr(track, layer);
-  strandCopyLayer(track, layer);
-  makeEntireCmdStr();
-}
-
-export const updateAllTracks = () =>
-{
-  // rebuild all tracks to account for changes
-  // to tracks/layers or trigger sources
-
-  for (let i = 0; i <= get(pStrand).tactives; ++i)
-    makeTrackCmdStrs(i);
-
-  strandCopyTracks();
-  makeEntireCmdStr();
-}
-
-// must be called after any changes to the number
-// or position of tracks, layers, or effect settings
-export const updateTriggerLayers = () =>
-{
-  makeTrigSourceList();
-
-  const strand = get(pStrand);
-  let atrigs = get(aTriggers);
-
-  // update index into trigger source list for all enabled layers
-  for (let track = 0; track < strand.tactives; ++track)
-  {
-    for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
-    {
-      if (strand.tracks[track].layers[layer].trigDoLayer)
-      {
-        let found = false;
-        let tnum = strand.tracks[track].layers[layer].trigTrackNum;
-        let lnum = strand.tracks[track].layers[layer].trigLayerNum;
-
-        for (const [i, item] of atrigs.entries())
-        {
-          if (item.id > 0) // not placeholder entry
-          {
-            if ((item.tnum === tnum) && (item.lnum === lnum))
-            {
-              found = true;
-              strand.tracks[track].layers[layer].trigListDex = i;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = i;
-
-              //console.log('updated: ', track, layer, tnum, lnum, i, item); // DEBUG
-            }
-          }
-        }
-
-        if (!found)
-        {
-          //console.log('disabling trigger (track,layer): ', track, layer); // DEBUG
-
-          strand.tracks[track].layers[layer].trigDoLayer = false;
-          strand.tracks[track].layers[layer].trigListDex = 0;
-
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = 0;
-        }
-      }
-    }
-  }
-}
 
 // Commands from Header:
 
@@ -268,13 +119,6 @@ export const userStrandCombine = (combine) =>
   }
 }
 
-function switchStrands(s)
-{
-  idStrand.set(s);
-  pStrand.set(get(aStrands)[s]);
-  deviceSend(cmdStr_AddrStrand.concat(s));
-}
-
 export const userStrandSelect = (combine) =>
 {
   let cur = get(idStrand);
@@ -289,7 +133,9 @@ export const userStrandSelect = (combine) =>
       {
         // user selected a different strand
         get(aStrands)[cur].selected = false;
-        switchStrands(s);
+        idStrand.set(s);
+        pStrand.set(get(aStrands)[s]);
+        sendStrandSwitch(s);
         get(eStrands)[cur] = false;
         get(eStrands)[s] = true;
       }
@@ -298,10 +144,8 @@ export const userStrandSelect = (combine) =>
         get(eStrands)[cur] = true;
         strandCopyAll();
 
-        // mirror current strand by sending entire current command to newly selected strand
-        deviceSend(cmdStr_AddrStrand.concat(s));
-        sendEntireCmdStr();
-        deviceSend(cmdStr_AddrStrand.concat(cur));
+        // mirror current strand by sending current pattern to newly selected strand
+        sendPatternToStrand(s);
       }
       else if (!nowon && combine && (s === cur))
       {
@@ -310,7 +154,9 @@ export const userStrandSelect = (combine) =>
         {
           if (get(aStrands)[ss].selected)
           {
-            switchStrands(ss);
+            idStrand.set(s);
+            pStrand.set(get(aStrands)[s]);
+            sendStrandSwitch(ss);
             break;
           }
         }
@@ -318,9 +164,9 @@ export const userStrandSelect = (combine) =>
       }
       else if (nowon && (s === cur))
       {
-        // must resend entire command string
+        // must resend entire current pattern
         // after having all strands disabled
-        sendEntireCmdStr();
+        sendPatternToStrand(s);
       }
       else
       {
@@ -338,17 +184,18 @@ export const userStrandSelect = (combine) =>
 export const userSetPattern = () =>
 {
   const strand = get(pStrand);
-  const thepat = get(aCurListPats)[strand.curPatternIdx];
-  const cmdstr = thepat.cmd;
+  const patitem = get(aCurListPats)[strand.curPatternIdx];
+  const pattern = patitem.cmd;
 
-  //console.log(`SetPattern: ${thepat.text} index=${strand.curPatternIdx}`); // DEBUG
+  console.log(`SetPattern: ${patitem.text} index=${strand.curPatternIdx}`); // DEBUG
 
   strandClearAll();
 
-  if (parsePattern(cmdstr)) // sets vars for current strand
+  if (parsePattern(pattern)) // sets vars for current strand
   {
     strandCopyAll();
-    sendEntireCmdStr(); // causes Clear if no pattern is set
+    makeEntireCmdStr();
+    sendEntirePattern();
   }
   // else software bug? FIXME?
 }
@@ -537,7 +384,7 @@ export const userSetForce = () =>
 
 export const userSendTrigger = () =>
 {
-  sendCmd(cmdStr_PullTrigger.concat(get(pStrand).forceValue));
+  sendStrandCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
 }
 
 // Commands from SectionDraw:
@@ -560,7 +407,7 @@ export const userSetDrawEffect = (track) =>
     // must update all tracks and resend entire command
     // when an effect is changed
     updateAllTracks();
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 }
 
@@ -615,7 +462,7 @@ export const userSetOffset = (track) =>
     updateLayerVals(track, DRAW_LAYER);
 
     // must resend entire command when offset/extent has changed
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 }
 
@@ -631,7 +478,7 @@ export const userSetExtent = (track) =>
     updateLayerVals(track, DRAW_LAYER);
 
     // must resend entire command when offset/extent has changed
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 }
 
@@ -663,7 +510,7 @@ export const userSetDirect = (track) =>
       sendStrandCmd(cmdStr_SetDirect, (rdir ? 0 : 1)); // 1 is default
 
       // must restart entire pattern for this to take effect
-      sendEntireCmdStr();
+      sendEntirePattern();
     }
   }
   else
@@ -736,7 +583,7 @@ export const userSetFilterEffect = (track, layer) =>
     // must update all tracks and resend entire command
     // when an effect is changed
     updateAllTracks();
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 }
 
@@ -799,7 +646,7 @@ export const userSetTrigType = (track, layer) =>
       updateLayerVals(track, layer);
 
       // must resend entire command to remove trigger
-      sendEntireCmdStr();
+      sendEntirePattern();
     }
     else if (valstr === 'once')
     {

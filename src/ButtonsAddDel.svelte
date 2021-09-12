@@ -12,10 +12,11 @@
   } from './strands.js';
 
   import {
-    sendEntireCmdStr,
     updateAllTracks,
     updateTriggerLayers
-  } from './cmduser.js';
+  } from './cmdmake.js';
+
+  import { sendEntirePattern } from './cmdsend.js';
 
   export let track;
 
@@ -80,7 +81,7 @@
     // must update all tracks and resend entire command
     // whenever a track/layer is deleted
     updateAllTracks();
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 
 </script>

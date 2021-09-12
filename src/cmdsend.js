@@ -1,0 +1,108 @@
+import { get } from 'svelte/store';
+
+import {
+  nStrands,
+  idStrand,
+  pStrand,
+  aStrands
+} from './globals.js';
+
+import {
+  cmdStr_SaveFlash     ,
+  cmdStr_AddrStrand    ,
+  cmdStr_AddrLayer     ,
+  cmdStr_Clear         ,
+} from './pixcmds.js';
+
+import { deviceSend } from './device.js';
+
+///////////////////////////////////////////////////////////
+
+export const sendStrandSwitch = (s) =>
+{
+  deviceSend(cmdStr_AddrStrand.concat(s));
+}
+
+// sends command to all selected strands
+// optionally skips the current strand
+// optionally stores the pattern on the device
+function sendCmdToStrands(cmdstr, dostore=false)
+{
+  const sid = get(idStrand);
+  let didone = false;
+
+  if (get(pStrand).selected)
+  {
+    if (dostore) deviceSend(cmdStr_SaveFlash);
+    deviceSend(cmdstr);
+    if (dostore) deviceSend(cmdStr_SaveFlash);
+  }
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if ((s !== sid) && get(aStrands)[s].selected)
+    {
+      sendStrandSwitch(s)
+      if (dostore) deviceSend(cmdStr_SaveFlash);
+      deviceSend(cmdstr);
+      if (dostore) deviceSend(cmdStr_SaveFlash);
+      didone = true;
+    }
+  }
+
+  if (didone) sendStrandSwitch(sid)
+}
+
+// store current pattern to the device for all selected strands
+// reset indicator that the pattern hasn't been stored yet
+export const savePatternToDevice = () =>
+{
+  sendCmdToStrands(get(pStrand).curPatternStr, true);
+
+  get(pStrand).modifyPattern = false;
+}
+
+// sends current pattern to just the specified strand
+// if not currently selected one switch back and forth
+// note that this stores and triggers the pattern as well
+export const sendPatternToStrand = (s) =>
+{
+  let sid = get(idStrand);
+  let pattern = get(pStrand).curPatternStr;
+
+  if (sid != s) sendStrandSwitch(s);
+  deviceSend(cmdStr_SaveFlash);
+  deviceSend(pattern);
+  deviceSend(cmdStr_SaveFlash);
+  deviceSend('0'); // causes pattern to be executed not just stored
+  if (sid != s) sendStrandSwitch(sid);
+}
+
+// sends current pattern to all selected strands
+// always clears the device pattern stack first
+export const sendEntirePattern = () =>
+{
+  let pattern = get(pStrand).curPatternStr;
+  if (pattern !== '')
+       sendCmdToStrands(cmdStr_Clear.concat(' ').concat(pattern));
+  else sendCmdToStrands(cmdStr_Clear);
+}
+
+// send top level command (and optional value) to all selected strands
+export const sendStrandCmd = (cmdstr, cmdval) =>
+{
+  if (cmdval !== undefined)
+       sendCmdToStrands(cmdstr.concat(cmdval));
+  else sendCmdToStrands(cmdstr);
+}
+
+// send command (and optional value) to specific layer for all selected strands
+export const sendLayerCmd = (id, cmdstr, cmdval) =>
+{
+  if (cmdval !== undefined)
+    cmdstr = cmdstr.concat(cmdval);
+
+  sendCmdToStrands(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
+
+  get(pStrand).modifyPattern = true;
+}

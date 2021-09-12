@@ -25,10 +25,8 @@
     storePatternRemove
   } from './browser.js';
 
-  import {
-    saveEntireCmdStr,
-    userClearPattern
-   } from './cmduser.js';
+  import { userClearPattern } from './cmduser.js';
+  import { savePatternToDevice } from './cmdsend.js';
 
   let heading, listdesc;
   $:
@@ -41,7 +39,12 @@
   const dohelp = () => { openHelp = !openHelp; }
 
   const doclear = () => { userClearPattern(); }
-  const dosave  = () => { saveEntireCmdStr(); }
+  const dosave  = () =>
+  {
+    savePatternToDevice();
+
+    $pStrand = $pStrand; // triggers update to UI - MUST HAVE THIS FIXME??
+  }
 
   let openStore = false;
   let savename, savedesc;

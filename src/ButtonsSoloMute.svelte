@@ -16,7 +16,7 @@
     makeEntireCmdStr
   } from './cmdmake.js';
 
-  import { sendEntireCmdStr } from './cmduser.js';
+  import { sendEntirePattern } from './cmdsend.js';
 
   export let track;
   export let layer;
@@ -32,10 +32,10 @@
   function rebuild()
   {
     if (layer === 0) makeTrackCmdStrs(track);
-    else            makeLayerCmdStr(track, layer);
+    else             makeLayerCmdStr(track, layer);
 
     makeEntireCmdStr();
-    sendEntireCmdStr();
+    sendEntirePattern();
   }
 
   const dosolo = () =>

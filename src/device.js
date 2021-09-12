@@ -26,6 +26,7 @@ import { cmdStr_DeviceName } from './pixcmds.js';
 
 import { makeNewStrand } from './strands.js';
 import { parsePattern } from './cmdparse.js';
+import { makeEntireCmdStr } from './cmdmake.js';
 import { mqttSend } from './mqtt.js';
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +86,8 @@ export let deviceSetup = (device) =>
     numtracks = numlayers / tracklayers;
   }
 
-  nStrands.set(numstrands);
+  nStrands.set(2); // DEBUG
+  //nStrands.set(numstrands);
   nTracks.set(numtracks);
   tLayers.set(tracklayers);
 
@@ -113,6 +115,12 @@ export let deviceSetup = (device) =>
 
     slist.push(strand);
     elist.push(select);
+
+    // DEBUG
+    let std = makeNewStrand(1);
+    std.selected = false;
+    slist.push(std);
+    elist.push(false);
   }
 
   aStrands.set(slist);
@@ -123,21 +131,28 @@ export let deviceSetup = (device) =>
   slist = [];
   for (let i = 0; i < numstrands; ++i)
     slist.push(makeNewStrand(i));
+  slist.push(makeNewStrand(1)); // DEBUG
   dStrands.set(slist);
 
   device.active = true;
   curDevice.set(device);
 
   let doselect = false;
+  let doreset;
 
   for (let s = 0; s < numstrands; ++s)
   {
+    doreset = false;
+
     idStrand.set(s);
     let strand = get(aStrands)[s];
     pStrand.set(strand);
 
-    if (parsePattern(device.report.strands[s].pattern))
+    //if (parsePattern(device.report.strands[s].pattern))
+    if (parsePattern(device.report.strands[0].pattern)) // DEBUG
     {
+      makeEntireCmdStr();
+
       let cmdstr = strand.curPatternStr;
       let sindex = 0;
       let match, slist;
@@ -205,20 +220,22 @@ export let deviceSetup = (device) =>
           strand.curPatternIdx = devlen;
         }
       }
-      else // set to first pattern in built-ins
-      {
-        let index = 0;
-        if (get(aDevicePats).length > 0) ++index;
-        if (get(aStoredPats).length > 0) ++index;
-        strand.curSourceIdx = index;
-        strand.curPatternIdx = 1;
-
-        if (s === 0) doselect = true;
-      }
-
-      //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
+      else doreset = true;
     }
-    // else set to empty pattern by default menu selections
+    else doreset = true;
+
+    if (doreset) // set to first pattern in built-ins
+    {
+      let index = 0;
+      if (get(aDevicePats).length > 0) ++index;
+      if (get(aStoredPats).length > 0) ++index;
+      strand.curSourceIdx = index;
+      strand.curPatternIdx = 1;
+
+      if (s === 0) doselect = true;
+    }
+
+    //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
   }
 
   // reset to use first strand

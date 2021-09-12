@@ -411,10 +411,9 @@ export const parsePattern = (cmdstr) =>
     }
   }
 
+  // make sure to finish last layer
   if ((track >= 0) && (layer >= 0))
     makeLayerCmdStr(track, layer);
-
-  makeEntireCmdStr();
 
   return true;
 }

@@ -93,7 +93,7 @@ export const mqttConnect = () =>
 
   mqtt.onMessageArrived = onMessage;
   mqtt.onConnectionLost = onLostConnect;
-  //mqtt.disconnectedPublishing = true/false; // TODO?
+  //mqtt.disconnectedPublishing = true/false;
   //mqtt.onMessageDelivered
   //mqtt.onMessageArrived
 }

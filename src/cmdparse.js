@@ -95,7 +95,7 @@ function valueToTrackLayer(value)
 // parse the given pattern command string
 // and set values for the current strand
 // returns false if failed to parse
-export const parsePattern = (cmdstr) =>
+export const parsePattern = (pattern) =>
 {
   let track = -1;
   let layer = -1;
@@ -103,7 +103,7 @@ export const parsePattern = (cmdstr) =>
   let extent = 100;
   let trackbits = 0;
 
-  const cmds = cmdstr.toUpperCase().split(/\s+/); // remove all spaces
+  const cmds = pattern.toUpperCase().split(/\s+/); // remove all spaces
   //console.log('parse: ', cmds); // DEBUG
 
   for (let cmd of cmds)

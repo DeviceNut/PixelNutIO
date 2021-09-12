@@ -86,8 +86,7 @@ export let deviceSetup = (device) =>
     numtracks = numlayers / tracklayers;
   }
 
-  nStrands.set(2); // DEBUG
-  //nStrands.set(numstrands);
+  nStrands.set(numstrands);
   nTracks.set(numtracks);
   tLayers.set(tracklayers);
 
@@ -115,12 +114,6 @@ export let deviceSetup = (device) =>
 
     slist.push(strand);
     elist.push(select);
-
-    // DEBUG
-    let std = makeNewStrand(1);
-    std.selected = false;
-    slist.push(std);
-    elist.push(false);
   }
 
   aStrands.set(slist);
@@ -131,7 +124,6 @@ export let deviceSetup = (device) =>
   slist = [];
   for (let i = 0; i < numstrands; ++i)
     slist.push(makeNewStrand(i));
-  slist.push(makeNewStrand(1)); // DEBUG
   dStrands.set(slist);
 
   device.active = true;
@@ -148,8 +140,7 @@ export let deviceSetup = (device) =>
     let strand = get(aStrands)[s];
     pStrand.set(strand);
 
-    //if (parsePattern(device.report.strands[s].pattern))
-    if (parsePattern(device.report.strands[0].pattern)) // DEBUG
+    if (parsePattern(device.report.strands[s].pattern))
     {
       makeEntireCmdStr();
 
@@ -200,7 +191,7 @@ export let deviceSetup = (device) =>
           //++sindex;
         }
 
-        if (!found) // TODO: create new pattern entry in device
+        if (!found)
         {
           const devlen = get(aDevicePats).length;
 

@@ -51,6 +51,7 @@ import {
   convTrackLayerToID,
   makeOrideBits,
   makeEntireCmdStr,
+  updateLayerVals,
   updateAllTracks,
   updateTriggerLayers
 } from './cmdmake.js';

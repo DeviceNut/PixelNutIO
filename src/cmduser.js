@@ -301,7 +301,7 @@ export const userStrandSelect = (combine) =>
         // mirror current strand by sending entire current command to newly selected strand
         deviceSend(cmdStr_AddrStrand.concat(s));
         sendEntireCmdStr();
-        deviceSend(cmdStr_AddrStrand.concat(sid));
+        deviceSend(cmdStr_AddrStrand.concat(cur));
       }
       else if (!nowon && combine && (s === cur))
       {

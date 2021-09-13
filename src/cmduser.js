@@ -23,7 +23,6 @@ import {
   cmdStr_OR_Props      ,
   cmdStr_SetXmode      ,
   cmdStr_SetFirst      ,
-  cmdStr_SetDirect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
@@ -480,33 +479,16 @@ export const userSetOwrite = (track) =>
 
 export const userSetDirect = (track) =>
 {
-  if (track === undefined)
+  let rdir = get(pStrand).tracks[track].drawProps.reverseDir;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
   {
-    let rdir = get(pStrand).dirReverse;
-    if (get(dStrands)[get(idStrand)].dirReverse !== rdir)
-    {
-      get(dStrands)[get(idStrand)].dirReverse = rdir;
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
 
-      strandCopyTop();
-      sendStrandCmd(cmdStr_SetDirect, (rdir ? 0 : 1)); // 1 is default
+    updateLayerVals(track, DRAW_LAYER);
 
-      // must restart entire pattern for this to take effect
-      sendEntirePattern();
-    }
-  }
-  else
-  {
-    let rdir = get(pStrand).tracks[track].drawProps.reverseDir;
-
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
-    {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
-
-      updateLayerVals(track, DRAW_LAYER);
-
-      let layerid = convTrackLayerToID(track, DRAW_LAYER);
-      sendLayerCmd(layerid, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
-    }
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
   }
 }
 

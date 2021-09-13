@@ -81,15 +81,6 @@
     {/if}
   </MediaQuery>
 
-  <Row style="margin-top:5px;">
-    <Column style="margin-left:-5px;">
-      <Checkbox labelText="Reverse Direction"
-        on:check={setDirect}
-        bind:checked={$pStrand.dirReverse}
-      />
-    </Column>
-  </Row>
-
 </Grid>
 
 <style>

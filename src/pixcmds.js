@@ -20,7 +20,6 @@ export const cmdStr_OR_Delay      = ":";    // msecs of delay ++
 export const cmdStr_OR_Props      = "=";    // hue white count ++
 export const cmdStr_SetXmode      = "_";    // 0=disable 1=enable override ++
 export const cmdStr_SetFirst      = "^";    // first pixel to draw ++
-export const cmdStr_SetDirect     = "&";    // first pixel to draw ++
 
 // Determines what is addressed             // value is:
 export const cmdStr_AddrStrand    = "#";    // strand index

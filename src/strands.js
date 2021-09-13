@@ -106,7 +106,6 @@ const oneStrand =
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
   msecsDelay      : 50,     // determines msecs delay after each redraw
   firstPixel      : 1,      // determines pixel to start drawing from
-  dirReverse      : 1,      // 1 to draw in reverse direction ("down")
 
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)

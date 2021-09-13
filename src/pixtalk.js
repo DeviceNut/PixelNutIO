@@ -39,8 +39,6 @@ export const strandState =
   delay: 0,             // delay percent
   force: 0,             // force (0-MAX_FORCE)
   first: 1,             // first pixel to draw (from 1)
-  direct: 0,            // direction flag 0/1 (1 is default for up)
-
                         // extern mode:
   xt_mode: 0,           //  enabled=1
   xt_hue: 0,            //  hue property (0-359)
@@ -325,7 +323,7 @@ function parseDeviceInfo(device, reply)
   reply.shift();
 
   strs = line.split(' ');
-  if (strs.length < 4)
+  if (strs.length < 6)
   {
     console.error(`Unexpected parm count (line 2): "${strs.length}"`);
     return false;
@@ -371,7 +369,7 @@ function parseDeviceInfo(device, reply)
     reply.shift();
 
     strs = line.split(' ');
-    if (strs.length < 5)
+    if (strs.length < 4)
     {
       console.error(`Unexpected parm count (s1): "${strs.length}"`);
       return false;
@@ -383,7 +381,6 @@ function parseDeviceInfo(device, reply)
     strand.bright = parseInt(strs[1]);
     strand.delay  = parseInt(strs[2]);
     strand.first  = parseInt(strs[3]);
-    strand.direct = parseInt(strs[4]);
 
     line = reply[0];
     reply.shift();

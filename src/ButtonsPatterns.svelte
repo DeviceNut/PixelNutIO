@@ -95,15 +95,18 @@
     textArea.focus();
     textArea.select();
 
+    let ok = true;
+    let errstr = '';
     try
     {
-      let ok = document.execCommand('copy');
-      if (!ok) console.error('Failed copying pattern string clipboard');
+      ok = document.execCommand('copy');
     }
-    catch (err)
+    catch (error)
     {
-      console.error('Failed copying clipboard: ', err);
+      errstr = error;
+      ok = false;
     }
+    if (!ok) console.error(`Failed copying to clipboard: ${errstr}`);
 
     document.body.removeChild(textArea);
   }

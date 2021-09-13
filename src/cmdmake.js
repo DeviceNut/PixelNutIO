@@ -35,7 +35,10 @@ import {
   
 import { pluginBit_SENDFORCE } from './presets.js';
 
-import { strandCopyLayer } from './strands.js';
+import {
+  strandCopyLayer,
+  strandCopyTracks
+} from './strands.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -64,13 +67,13 @@ export const convTrackLayerToID = (track, layer) =>
   if (track >= strand.tactives)
   {
     console.error(`No track=${track+1}`);
-    track = get(pStrand).tactives-1;
+    return 255; // clearly invalid layer
   }
 
   if (layer >= strand.tracks[track].lactives)
   {
     console.error(`No layer=${layer+1}`);
-    layer = strand.tracks[track].lactives-1;
+    return 255; // clearly invalid layer
   }
 
   for (let i = 0; i < track; ++i)

@@ -18,7 +18,6 @@ import {
   cmdStr_PullTrigger   ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
-  cmdStr_AddrStrand    ,
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
@@ -73,26 +72,7 @@ import { deviceSend } from './device.js';
 
 export const userSendPause = (enable) =>
 {
-  const sid = get(idStrand);
-  let didone = false;
-
-  if (enable)
-       deviceSend(cmdStr_Pause);
-  else deviceSend(cmdStr_Resume);
-
-  for (let s = 0; s < get(nStrands); ++s)
-  {
-    if ((s !== sid) && get(aStrands)[s].selected)
-    {
-      deviceSend(cmdStr_AddrStrand.concat(s));
-      if (enable)
-           deviceSend(cmdStr_Pause);
-      else deviceSend(cmdStr_Resume);
-      didone = true;
-    }
-  }
-
-  if (didone) deviceSend(cmdStr_AddrStrand.concat(sid));
+  sendStrandCmd(enable ? cmdStr_Pause : cmdStr_Resume);
 }
 
 // Commands from Strand Selector

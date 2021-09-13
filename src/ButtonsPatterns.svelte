@@ -39,12 +39,7 @@
   const dohelp = () => { openHelp = !openHelp; }
 
   const doclear = () => { userClearPattern(); }
-  const dosave  = () =>
-  {
-    savePatternToDevice();
-
-    $pStrand = $pStrand; // triggers update to UI - MUST HAVE THIS FIXME??
-  }
+  const dosave  = () => { savePatternToDevice(); }
 
   let openStore = false;
   let savename, savedesc;

@@ -60,6 +60,8 @@ export const savePatternToDevice = () =>
   sendCmdToStrands(get(pStrand).curPatternStr, true);
 
   get(pStrand).modifyPattern = false;
+  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+
 }
 
 // sends current pattern to just the specified strand
@@ -86,6 +88,9 @@ export const sendEntirePattern = () =>
   if (pattern !== '')
        sendCmdToStrands(cmdStr_Clear.concat(' ').concat(pattern));
   else sendCmdToStrands(cmdStr_Clear);
+
+  get(pStrand).modifyPattern = true; // not saving it to device
+  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
 }
 
 // send top level command (and optional value) to all selected strands
@@ -105,4 +110,5 @@ export const sendLayerCmd = (id, cmdstr, cmdval) =>
   sendCmdToStrands(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
 
   get(pStrand).modifyPattern = true;
+  // don't need to force update here? FIXME?
 }

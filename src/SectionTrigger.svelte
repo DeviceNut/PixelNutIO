@@ -10,7 +10,7 @@
 
   import {
     DRAW_LAYER,
-    MAX_FORCE
+    MAX_FORCE_VALUE
   } from './pixcmds.js';
 
   import {
@@ -188,7 +188,7 @@
           bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
         />
         <SliderVal name='Fixed:'
-          max={MAX_FORCE}
+          max={MAX_FORCE_VALUE}
           onchange={setFvalue}
           bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
           disabled={$pStrand.tracks[track].layers[layer].forceRandom} 

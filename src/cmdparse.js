@@ -1,10 +1,11 @@
 import { get } from 'svelte/store';
 
 import {
+  MAX_DELAY_VALUE      ,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentOffset    ,
+  cmdStr_PcentOffset   ,
   cmdStr_PcentExtent   ,
   cmdStr_Effect        ,
   cmdStr_PcentBright   ,
@@ -71,6 +72,13 @@ function valueToDegree(value)
 function valueToPositive(value)
 {
   if (value < 0) return 0;
+  return value;
+}
+
+function valueInRange(value, limit)
+{
+  if (value < -limit) return -limit;
+  if (value >  limit) return  limit;
   return value;
 }
 
@@ -248,7 +256,8 @@ export const parsePattern = (pattern) =>
           {
             if (!isNaN(val)) // ignore if no value
             {
-              let delay = valueToPositive(val);
+              let delay = valueInRange(val, MAX_DELAY_VALUE);
+              console.log(`delay=${delay}`);
               get(pStrand).tracks[track].drawProps.msecsDelay = delay;
               get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
             }

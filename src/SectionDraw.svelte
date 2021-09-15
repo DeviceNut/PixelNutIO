@@ -10,7 +10,7 @@
 
   import {
     DRAW_LAYER,
-    MAX_BYTE_VALUE
+    MAX_DELAY_VALUE
   } from './pixcmds.js';
 
   import {
@@ -102,7 +102,8 @@
     <Row>
       <SliderVal name='Delay&nbsp;'
         onchange={setDelay}
-        max={MAX_BYTE_VALUE}
+        min={-MAX_DELAY_VALUE}
+        max={MAX_DELAY_VALUE}
         bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
         disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}

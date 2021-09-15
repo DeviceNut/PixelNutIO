@@ -1,7 +1,7 @@
 <script>
 
   import { pStrand } from './globals.js';
-  import { MAX_BYTE_VALUE } from './pixcmds.js';
+  import { MAX_DELAY_VALUE } from './pixcmds.js';
   import { pluginBit_DELAY } from './presets.js';
 
   import {
@@ -22,7 +22,8 @@
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.msecsDelay}
-  max={MAX_BYTE_VALUE}
+  min={-MAX_DELAY_VALUE}
+  max={MAX_DELAY_VALUE}
   disabled={!($pStrand.bitsEffects & pluginBit_DELAY)}
   />
 

@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 
 import {
   DRAW_LAYER,
-  MAX_FORCE,
+  MAX_FORCE_VALUE,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
@@ -224,7 +224,7 @@ export const makeLayerCmdStr = (track, layer) =>
     if (player.forceRandom)
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
 
-    else if (player.forceValue !== MAX_FORCE/2) // default
+    else if (player.forceValue !== MAX_FORCE_VALUE/2) // default
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
     if (player.trigDoLayer)

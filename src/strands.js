@@ -11,7 +11,7 @@ import {
   tLayers
 } from './globals.js';
 
-import { MAX_FORCE } from './pixcmds.js';
+import { MAX_FORCE_VALUE } from './pixcmds.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
@@ -49,7 +49,7 @@ const oneLayer =
   trigDelayRange  : 0,      //  range of delay values possible (min...min+range)
 
   forceRandom     : false,  // true if a random force is applied when triggering
-  forceValue      : MAX_FORCE/2, // percent force to apply (if not random)
+  forceValue      : MAX_FORCE_VALUE/2, // percent force to apply (if not random)
 
   cmdstr          : ''      // command string for the current settings
 }
@@ -104,7 +104,7 @@ const oneStrand =
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
-  msecsDelay      : 50,     // determines msecs delay after each redraw
+  msecsDelay      : 0,      // determines msecs delay after each redraw
   firstPixel      : 1,      // determines pixel to start drawing from
 
   doOverride      : false,  // true to override local properties with:
@@ -112,7 +112,7 @@ const oneStrand =
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
   pcentCount      : 0,      // percent of pixels affected in range
 
-  forceValue      : MAX_FORCE/2, // force value for triggering
+  forceValue      : MAX_FORCE_VALUE/2, // force value for triggering
   numPixels       : 0,      // number of pixels in this strand
 
   tactives        : 1,      // current number of active tracks (>=1)

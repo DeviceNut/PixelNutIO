@@ -65,14 +65,6 @@ function onMessage(message)
   }
 }
 
-/*
-export const mqttBrokerSearch = () => // TODO
-{
-  console.log('Searching for MQTT Broker...'); // DEBUG
-  console.log(`Found: ${host}:${port}`); // DEBUG
-}
-*/
-
 export const mqttConnect = () =>
 {
   onConnection(false);

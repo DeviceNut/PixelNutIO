@@ -1,11 +1,12 @@
 import { get } from 'svelte/store';
 
 import {
+  SECS_NOTIFY_TIMEOUT,
+  MIN_TRACKS,
+  MIN_TRACK_LAYERS,
   PAGEMODE_DEVICES,
   curPageMode,
   curDevice,
-  MIN_TRACKS,
-  MIN_TRACK_LAYERS,
   deviceList,
   isConnected,
   aDevicePats,
@@ -30,14 +31,12 @@ const QSTAGE_NAME         = 1;  // waiting for name
 const QSTAGE_DESC         = 2;  // waiting for description
 const QSTAGE_CMD          = 3;  // waiting for command str
 
-const SECS_NOTIFY_TIMEOUT = 7;  // secs since last notify to clear active status
-
 export const strandState =
 {
   pixels: 0,            // number of pixels
   bright: 0,            // brightness percent
-  delay: 0,             // delay percent
-  force: 0,             // force (0-MAX_FORCE)
+  delay: 0,             // delay msecs +/- MAX_DELAY
+  force: 0,             // force (0-MAX_FORCE_VALUE)
   first: 1,             // first pixel to draw (from 1)
                         // extern mode:
   xt_mode: 0,           //  enabled=1

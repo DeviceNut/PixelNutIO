@@ -1,23 +1,22 @@
 import { writable } from 'svelte/store'
 
+export let defDeviceName  = 'PixelNut!';
 export let titleDevices   = 'PixelNut! Devices';
 export let titleHelpDocs  = 'PixelNut! Docs';
 
-export let defDeviceName  = 'PixelNut!';
-
-export const MQTT_BROKER_PORT   = 9001;   // MUST be 9001 for websocket
-
+export const MQTT_BROKER_PORT       = 9001;   // MUST be 9001 for websocket
 export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
 export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
+export const SECS_NOTIFY_TIMEOUT    = 7;      // secs since last notify for connection timeout
 
-export const HELPTEXT_HEIGHT    = 45;   // height of help text panel
+export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
-export const PAGEMODE_DEVICES   = 0;    // list of devices to connect to
-export const PAGEMODE_CONTROLS  = 1;    // controls for specific device
-export const PAGEMODE_HELPDOCS  = 2;    // controls help documentation
+export const PAGEMODE_DEVICES       = 0;      // list of devices to connect to
+export const PAGEMODE_CONTROLS      = 1;      // controls for specific device
+export const PAGEMODE_HELPDOCS      = 2;      // controls help documentation
 
-export const MIN_TRACKS         = 4;    // minimum tracks for built-in patterns
-export const MIN_TRACK_LAYERS   = 4;    // minimum layers for each track
+export const MIN_TRACKS             = 4;      // minimum tracks for built-in patterns
+export const MIN_TRACK_LAYERS       = 4;      // minimum layers for each track
 
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);

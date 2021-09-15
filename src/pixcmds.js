@@ -1,7 +1,8 @@
 
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
-export const MAX_FORCE            = 1000;   // maximum force value
+export const MAX_FORCE_VALUE      = 1000;   // maximum force value
+export const MAX_DELAY_VALUE      = 60;     // maximum delay msecs
 
 export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite

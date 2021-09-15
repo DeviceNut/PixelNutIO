@@ -9,7 +9,7 @@
     Checkbox
   } from "carbon-components-svelte";
 
-  import { MAX_FORCE } from './pixcmds.js';
+  import { MAX_FORCE_VALUE } from './pixcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
 
   import { pStrand } from './globals.js';
@@ -41,7 +41,7 @@
       <Row>
         <Column>
           <SliderVal name='Force'
-            max={MAX_FORCE}
+            max={MAX_FORCE_VALUE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
             disabled={($pStrand.curPatternStr === '') ||

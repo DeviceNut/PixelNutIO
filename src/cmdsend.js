@@ -36,6 +36,7 @@ function sendCmdToStrands(cmdstr, dostore=false)
     if (dostore) deviceSend(cmdStr_SaveFlash);
     deviceSend(cmdstr);
     if (dostore) deviceSend(cmdStr_SaveFlash);
+    if (dostore) deviceSend('0'); // causes pattern to be executed not just stored
   }
 
   for (let s = 0; s < get(nStrands); ++s)
@@ -46,6 +47,7 @@ function sendCmdToStrands(cmdstr, dostore=false)
       if (dostore) deviceSend(cmdStr_SaveFlash);
       deviceSend(cmdstr);
       if (dostore) deviceSend(cmdStr_SaveFlash);
+      if (dostore) deviceSend('0'); // causes pattern to be executed not just stored
       didone = true;
     }
   }
@@ -73,10 +75,12 @@ export const sendPatternToStrand = (s) =>
   let pattern = get(pStrand).curPatternStr;
 
   if (sid != s) sendStrandSwitch(s);
+
   deviceSend(cmdStr_SaveFlash);
   deviceSend(pattern);
   deviceSend(cmdStr_SaveFlash);
   deviceSend('0'); // causes pattern to be executed not just stored
+
   if (sid != s) sendStrandSwitch(sid);
 }
 

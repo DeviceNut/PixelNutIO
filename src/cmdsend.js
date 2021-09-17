@@ -15,6 +15,8 @@ import {
   cmdStr_Clear         ,
 } from './pixcmds.js';
 
+import { mqttSend } from './mqtt.js';
+
 ///////////////////////////////////////////////////////////
 
 function sendCmdToDevice(cmdstr)

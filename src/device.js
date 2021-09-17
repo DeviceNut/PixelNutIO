@@ -1,7 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  defDeviceName,
   MIN_TRACK_LAYERS,
   PAGEMODE_CONTROLS,
   curPageMode,

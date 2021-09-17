@@ -13,8 +13,6 @@ import {
   aDeviceDesc
  } from './globals.js';
 
-import { mqttSend } from './mqtt.js';
-
 // Query commands:
 export const cmdStr_GetDevInfo    = "?";    // returns info on device
 export const cmdStr_GetPatInfo    = "?P";   // returns info on custom patterns
@@ -174,7 +172,7 @@ export const onConnection = (enabled) =>
   isConnected.set(enabled);
 }
 
-export const onNotification = (msg) =>
+export const onNotification = (msg, fsend) =>
 {
   const info = msg.split(',');
   const name = info[0];
@@ -214,11 +212,11 @@ export const onNotification = (msg) =>
 
   console.log('Requesting device info...'); // DEBUG
 
-  mqttSend(name, cmdStr_GetDevInfo);
+  fsend(name, cmdStr_GetDevInfo);
   device.query = QUERY_DEVICE;
 }
 
-export const onCommandReply = (msg) =>
+export const onCommandReply = (msg, fsend) =>
 {
   console.log(`Device reply: ${msg}`) // DEBUG
 
@@ -248,7 +246,7 @@ export const onCommandReply = (msg) =>
         {
           if (device.report.npatterns > 0)
           {
-            mqttSend(name, cmdStr_GetPatInfo);
+            fsend(name, cmdStr_GetPatInfo);
             device.query = QUERY_PATTERNS;
             device.qstage = QSTAGE_NAME;
             device.qcount = 0;
@@ -278,7 +276,7 @@ export const onCommandReply = (msg) =>
             {
               if (device.report.nplugins > 0)
               {
-                mqttSend(name, cmdStr_GetPlugInfo);
+                fsend(name, cmdStr_GetPlugInfo);
                 device.query = QUERY_PLUGINS;
                 device.qstage = QSTAGE_NAME;
                 device.qcount = 0;

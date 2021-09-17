@@ -4,7 +4,8 @@ import {
   nStrands,
   idStrand,
   pStrand,
-  aStrands
+  aStrands,
+  curDevice
 } from './globals.js';
 
 import {
@@ -14,13 +15,17 @@ import {
   cmdStr_Clear         ,
 } from './pixcmds.js';
 
-import { deviceSend } from './device.js';
-
 ///////////////////////////////////////////////////////////
+
+function sendCmdToDevice(cmdstr)
+{
+  let device = get(curDevice);
+  mqttSend(device.curname, cmdstr);
+}
 
 export const sendStrandSwitch = (s) =>
 {
-  deviceSend(cmdStr_AddrStrand.concat(s));
+  sendCmdToDevice(cmdStr_AddrStrand.concat(s));
 }
 
 // sends command to all selected strands
@@ -33,10 +38,10 @@ function sendCmdToStrands(cmdstr, dostore=false)
 
   if (get(pStrand).selected)
   {
-    if (dostore) deviceSend(cmdStr_SaveFlash);
-    deviceSend(cmdstr);
-    if (dostore) deviceSend(cmdStr_SaveFlash);
-    if (dostore) deviceSend('0'); // causes pattern to be executed not just stored
+    if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
+    sendCmdToDevice(cmdstr);
+    if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
+    if (dostore) sendCmdToDevice('0'); // causes pattern to be executed not just stored
   }
 
   for (let s = 0; s < get(nStrands); ++s)
@@ -44,10 +49,10 @@ function sendCmdToStrands(cmdstr, dostore=false)
     if ((s !== sid) && get(aStrands)[s].selected)
     {
       sendStrandSwitch(s)
-      if (dostore) deviceSend(cmdStr_SaveFlash);
-      deviceSend(cmdstr);
-      if (dostore) deviceSend(cmdStr_SaveFlash);
-      if (dostore) deviceSend('0'); // causes pattern to be executed not just stored
+      if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
+      sendCmdToDevice(cmdstr);
+      if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
+      if (dostore) sendCmdToDevice('0'); // causes pattern to be executed not just stored
       didone = true;
     }
   }
@@ -63,7 +68,6 @@ export const savePatternToDevice = () =>
 
   get(pStrand).modifyPattern = false;
   pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
-
 }
 
 // sends current pattern to just the specified strand
@@ -76,10 +80,10 @@ export const sendPatternToStrand = (s) =>
 
   if (sid != s) sendStrandSwitch(s);
 
-  deviceSend(cmdStr_SaveFlash);
-  deviceSend(pattern);
-  deviceSend(cmdStr_SaveFlash);
-  deviceSend('0'); // causes pattern to be executed not just stored
+  sendCmdToDevice(cmdStr_SaveFlash);
+  sendCmdToDevice(pattern);
+  sendCmdToDevice(cmdStr_SaveFlash);
+  sendCmdToDevice('0'); // causes pattern to be executed not just stored
 
   if (sid != s) sendStrandSwitch(sid);
 }

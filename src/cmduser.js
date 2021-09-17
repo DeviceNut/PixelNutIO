@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  defDeviceName,
   nStrands,
   idStrand,
   pStrand,
@@ -16,6 +17,7 @@ import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
   cmdStr_PullTrigger   ,
+  cmdStr_DeviceName    ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
   cmdStr_OR_Bright     ,
@@ -63,11 +65,20 @@ import {
 } from './cmdsend.js';
 
 import { parsePattern } from './cmdparse.js';
-import { deviceSend } from './device.js';
 
 ///////////////////////////////////////////////////////////
 
 // Commands from Header:
+
+export const userSetDevname = (devname) =>
+{
+  // TODO disallow some chars for device name
+  if (devname === '') devname = defDeviceName;
+
+  get(curDevice).newname = devname;
+
+  sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+}
 
 export const userSendPause = (enable) =>
 {

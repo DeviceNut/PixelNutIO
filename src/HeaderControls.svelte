@@ -10,13 +10,15 @@
     curDevice
    } from './globals.js';
 
-  import { userSendPause } from './cmduser.js';
-  import { deviceSetName } from './device.js';
+  import {
+    userSetDevname,
+    userSendPause
+  } from './cmduser.js';
 
   import ModalLinks from './ModalLinks.svelte';
 
   let devname = $curDevice.curname;
-  const setname = () => { deviceSetName(devname); }
+  const setname = () => { userSetDevname(devname); }
 
   let isPaused = false;
   let textPause = '';

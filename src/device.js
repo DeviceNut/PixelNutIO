@@ -22,37 +22,11 @@ import {
   selectPattern
 } from './globals.js';
 
-import { cmdStr_DeviceName } from './pixcmds.js';
-
 import { makeNewStrand } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
-import { mqttSend } from './mqtt.js';
 
 ///////////////////////////////////////////////////////////
-
-export const deviceSend = (cmdstr) =>
-{
-  let device = get(curDevice);
-
-  if (device === null)
-    console.warn(`No current device (\"${cmdstr}\"`)
-
-  else if (!device.active)
-    console.warn(`No active device (\"${cmdstr}\"`)
-
-  else mqttSend(device.curname, cmdstr);
-}
-
-export const deviceSetName = (devname) =>
-{
-  // TODO disallow some chars for device name
-  if (devname === '') devname = defDeviceName;
-
-  get(curDevice).newname = devname;
-
-  deviceSend(cmdStr_DeviceName.concat(devname));
-}
 
 // returns index of match in list, or -1
 function matchCmdInItemList(cmd, list)

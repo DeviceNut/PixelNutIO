@@ -20,6 +20,13 @@ const topicCommand    = 'PixelNut/Cmd/'; // + devicename
 
 let mqtt = null;
 
+export const mqttSend = (name, msg) =>
+{
+  console.log('>>', msg); // DEBUG
+
+  mqtt.publish(topicCommand + name, msg);
+}
+
 function onConnect()
 {
   console.log('MQTT Subscribing...'); // DEBUG
@@ -56,11 +63,11 @@ function onMessage(message)
   switch (message.topic)
   {
     case topicDevNotify:
-      onNotification(msg);
+      onNotification(msg, mqttSend);
       break;
 
     case topicDevReply:
-      onCommandReply(msg);
+      onCommandReply(msg, mqttSend);
       break;
   }
 }
@@ -88,11 +95,4 @@ export const mqttConnect = () =>
   //mqtt.disconnectedPublishing = true/false;
   //mqtt.onMessageDelivered
   //mqtt.onMessageArrived
-}
-
-export const mqttSend = (name, msg) =>
-{
-  console.log('>>', msg); // DEBUG
-
-  mqtt.publish(topicCommand + name, msg);
 }

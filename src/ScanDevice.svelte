@@ -24,7 +24,7 @@
 {#if showinfo }
   <div class="infobox">
     <div>
-      <span class="infotext1">Cmdlen={device.report.maxlen}</span>
+      <span class="infotext1">Cmdlen={device.report.maxstrlen}</span>
       <span class="infotext1">Tracks={device.report.numtracks}</span>
       <span class="infotext1">Layers={device.report.numlayers}</span>
     </div>
@@ -34,22 +34,18 @@
         <div style="margin-top:5px; margin-left:10px;">
           <div>
             <span class="infotext2">Pixels={strand.pixels}</span>
-            <span class="infotext2">Overrides:</span>
+            <span class="infotext2">Override={strand.xt_mode ? 'Yes' : 'No'}</span>
           </div>
           <div>
             <span class="infotext2">Bright={strand.bright}%</span>
-            <span class="infotext2">Enabled={strand.xt_mode ? 'Yes' : 'No'}</span>
-          </div>
-          <div>
-            <span class="infotext2">Delay={strand.delay}%</span>
             <span class="infotext2" class:disprops={!strand.xt_mode}>Hue={strand.xt_hue}</span>
           </div>
           <div>
-            <span class="infotext2">FirstPos={strand.first}</span>
+            <span class="infotext2">Delay={strand.delay}%</span>
             <span class="infotext2" class:disprops={!strand.xt_mode}>White={strand.xt_white}%</span>
           </div>
           <div>
-            <span class="infotext2">Direction={strand.direct ? 'Up' : 'Down'}</span>
+            <span class="infotext2">FirstPos={strand.first}</span>
             <span class="infotext2" class:disprops={!strand.xt_mode}>Count={strand.xt_count}%</span>
           </div>
           <div class="pattern">

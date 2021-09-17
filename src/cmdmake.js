@@ -28,6 +28,8 @@ import {
 
 import {
   pStrand,
+  dStrands,
+  idStrand,
   aEffectsDraw,
   aEffectsFilter,
   aTriggers

@@ -62,16 +62,6 @@ function sendCmdToStrands(cmdstr, dostore=false)
   if (didone) sendStrandSwitch(sid)
 }
 
-// store current pattern to the device for all selected strands
-// reset indicator that the pattern hasn't been stored yet
-export const savePatternToDevice = () =>
-{
-  sendCmdToStrands(get(pStrand).curPatternStr, true);
-
-  get(pStrand).modifyPattern = false;
-  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
-}
-
 // sends current pattern to just the specified strand
 // if not currently selected one switch back and forth
 // note that this stores and triggers the pattern as well
@@ -92,15 +82,22 @@ export const sendPatternToStrand = (s) =>
 
 // sends current pattern to all selected strands
 // always clears the device pattern stack first
-export const sendEntirePattern = () =>
+// optionally stores the pattern to the device
+// if dostore is false don't update modify flag
+// else if undefined (not passed) then do set it
+export const sendEntirePattern = (dostore) =>
 {
-  let pattern = get(pStrand).curPatternStr;
-  if (pattern !== '')
-       sendCmdToStrands(cmdStr_Clear.concat(' ').concat(pattern));
-  else sendCmdToStrands(cmdStr_Clear);
+  let cmdstr = cmdStr_Clear;
+  const pattern = get(pStrand).curPatternStr;
 
-  get(pStrand).modifyPattern = true; // not saving it to device
-  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+  if (pattern !== '') cmdstr = cmdstr.concat(' ').concat(pattern);
+  sendCmdToStrands(cmdstr, dostore);
+
+  if (dostore !== false)
+  {
+    get(pStrand).modifyPattern = !dostore; // did modify if not stored
+    pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+  }
 }
 
 // send top level command (and optional value) to all selected strands
@@ -120,5 +117,5 @@ export const sendLayerCmd = (id, cmdstr, cmdval) =>
   sendCmdToStrands(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
 
   get(pStrand).modifyPattern = true;
-  // don't need to force update here? FIXME?
+  // don't need to force update here, while you do above ??
 }

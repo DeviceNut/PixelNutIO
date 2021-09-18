@@ -183,7 +183,7 @@ export const userSetPattern = () =>
     const patitem = get(aCurListPats)[index];
     const pattern = patitem.cmd;
   
-    console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
+    //console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
 
     strandClearAll();
 
@@ -191,7 +191,7 @@ export const userSetPattern = () =>
     {
       strandCopyAll();
       makeEntireCmdStr();
-      sendEntirePattern();
+      sendEntirePattern(false);
     }
     // else software bug? FIXME?
   }
@@ -203,10 +203,14 @@ export const userClearPattern = () =>
 
   strandClearAll();
   makeEntireCmdStr();
-  sendEntirePattern();
+
+  if (get(pStrand).curPatternIdx !== 0)
+    sendEntirePattern(); // must send here
+
+  // else userSetPattern() will be called
+  else get(pStrand).curPatternIdx = 0;
 
   get(pStrand).showCustom = false;
-  get(pStrand).curPatternIdx = 0;
 }
 
 // Commands from PanelMain:

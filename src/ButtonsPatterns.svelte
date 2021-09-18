@@ -26,7 +26,7 @@
   } from './browser.js';
 
   import { userClearPattern } from './cmduser.js';
-  import { savePatternToDevice } from './cmdsend.js';
+  import { sendEntirePattern } from './cmdsend.js';
 
   let heading, listdesc;
   $:
@@ -39,13 +39,13 @@
   const dohelp = () => { openHelp = !openHelp; }
 
   const doclear = () => { userClearPattern(); }
-  const dosave  = () => { savePatternToDevice(); }
+  const dostore = () => { sendEntirePattern(true); }
 
-  let openStore = false;
+  let openSave = false;
   let savename, savedesc;
   let copyclip = false;
 
-  const dostore = () =>
+  const dosave = () =>
   {
     storePatternSave(savename, savedesc, $pStrand.curPatternStr);
     storePatternsInit();
@@ -99,7 +99,7 @@
     let errstr = '';
     try
     {
-      ok = document.execCommand('copy');
+      ok = document.execCommand('copy'); // FIXME: deprecated
     }
     catch (error)
     {
@@ -129,16 +129,16 @@
 
 <button
   class="button button-pattern"
-  on:click={dosave}
-  disabled={($pStrand.curPatternStr === '') || ($pStrand.modifyPattern === false)}
-  >Save
+  on:click={dostore}
+  disabled={($pStrand.curPatternStr === '') || !$pStrand.modifyPattern}
+  >Store
 </button>
 
 <button
   class="button button-pattern"
-  on:click={() => { openStore = !openStore; }}
+  on:click={() => { openSave = !openSave; }}
   disabled={$pStrand.curPatternStr === ''}
-  >Store
+  >Save
 </button>
 
 <button
@@ -161,11 +161,11 @@
 
 <Modal
   passiveModal
-  modalHeading="Store Custom Pattern"
-  bind:open={openStore}
+  modalHeading="Save Custom Pattern"
+  bind:open={openSave}
   on:close
   >
-  <Form on:submit={dostore} >
+  <Form on:submit={dosave} >
     <FormGroup>
       <TextInput
         labelText="Name"
@@ -182,7 +182,7 @@
       bind:checked={copyclip}
     />
     <ButtonSet>
-      <Button kind="secondary" on:click={() => {openStore = false;}}>Cancel</Button>
+      <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
       <Button type="submit">Store</Button>
     </ButtonSet>
   </Form>
@@ -190,7 +190,7 @@
 
 <Modal
   passiveModal
-  modalHeading={`Delete Pattern: "${remname}" ?`}
+  modalHeading={`Delete Custom Pattern: "${remname}" ?`}
   bind:open={openDelete}
   on:close
   >

@@ -43,6 +43,19 @@ function matchCmdInItemList(cmd, list)
   return -1;
 }
 
+function setStrandTop(strand, dvals)
+{
+  strand.pcentBright = dvals.bright;
+  strand.msecsDelay  = dvals.delay;
+  strand.firstPixel  = dvals.first;
+  strand.numPixels   = dvals.pixels;
+
+  strand.doOverride  = dvals.xt_mode;
+  strand.degreeHue   = dvals.xt_hue;
+  strand.pcentWhite  = dvals.xt_white;
+  strand.pcentCount  = dvals.xt_count;
+}
+
 export let deviceSetup = (device) =>
 {
   //console.log(`Connecting to: "${device.curname}"...`); // DEBUG
@@ -73,16 +86,7 @@ export let deviceSetup = (device) =>
     const select = (s === sid) ? true : false;
 
     strand.selected = select;
-
-    strand.pcentBright = device.report.strands[s].bright;
-    strand.msecsDelay  = device.report.strands[s].delay;
-    strand.firstPixel  = device.report.strands[s].first;
-    strand.numPixels   = device.report.strands[s].pixels;
-
-    strand.doOverride  = device.report.strands[s].xt_mode;
-    strand.degreeHue   = device.report.strands[s].xt_hue;
-    strand.pcentWhite  = device.report.strands[s].xt_white;
-    strand.pcentCount  = device.report.strands[s].xt_count;
+    setStrandTop(strand, device.report.strands[s]);
 
     slist.push(strand);
     elist.push(select);
@@ -94,8 +98,12 @@ export let deviceSetup = (device) =>
 
   // make duplicate object to keep shadow values
   slist = [];
-  for (let i = 0; i < numstrands; ++i)
-    slist.push(makeNewStrand(i));
+  for (let s = 0; s < numstrands; ++s)
+  {
+    const strand = makeNewStrand(s);
+    setStrandTop(strand, device.report.strands[s]);
+    slist.push(strand);
+  }
   dStrands.set(slist);
 
   device.active = true;

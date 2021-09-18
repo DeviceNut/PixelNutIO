@@ -174,34 +174,39 @@ export const userStrandSelect = (combine) =>
 // user just selected pattern to use
 export const userSetPattern = () =>
 {
-  const strand = get(pStrand);
-  const patitem = get(aCurListPats)[strand.curPatternIdx];
-  const pattern = patitem.cmd;
+  const index = get(pStrand).curPatternIdx;
 
-  console.log(`SetPattern: ${patitem.text} index=${strand.curPatternIdx}`); // DEBUG
-
-  strandClearAll();
-
-  if (parsePattern(pattern)) // sets vars for current strand
+  if (get(dStrands)[get(idStrand)].curPatternIdx !== index)
   {
-    strandCopyAll();
-    makeEntireCmdStr();
-    sendEntirePattern();
+    get(dStrands)[get(idStrand)].curPatternIdx = index;
+
+    const patitem = get(aCurListPats)[index];
+    const pattern = patitem.cmd;
+  
+    console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
+
+    strandClearAll();
+
+    if (parsePattern(pattern)) // sets vars for current strand
+    {
+      strandCopyAll();
+      makeEntireCmdStr();
+      sendEntirePattern();
+    }
+    // else software bug? FIXME?
   }
-  // else software bug? FIXME?
 }
 
 export const userClearPattern = () =>
 {
-  const strand = get(pStrand);
-
   //console.log('Clear Pattern'); // DEBUG
 
   strandClearAll();
   makeEntireCmdStr();
+  sendEntirePattern();
 
-  strand.showCustom = false;
-  strand.curPatternIdx = 0; // causes userSetPattern() with <none>
+  get(pStrand).showCustom = false;
+  get(pStrand).curPatternIdx = 0;
 }
 
 // Commands from PanelMain:
@@ -452,7 +457,7 @@ export const userSetOffset = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
 
-    // must resend entire command when offset/extent has changed
+    // must resend entire command when offset/extent has changed FIXME
     sendEntirePattern();
   }
 }
@@ -468,7 +473,7 @@ export const userSetExtent = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
 
-    // must resend entire command when offset/extent has changed
+    // must resend entire command when offset/extent has changed FIXME
     sendEntirePattern();
   }
 }
@@ -619,7 +624,7 @@ export const userSetTrigType = (track, layer) =>
     {
       updateLayerVals(track, layer);
 
-      // must resend entire command to remove trigger
+      // must resend entire command to remove trigger FIXME
       sendEntirePattern();
     }
     else if (valstr === 'once')

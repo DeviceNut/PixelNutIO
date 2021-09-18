@@ -257,7 +257,6 @@ export const parsePattern = (pattern) =>
             if (!isNaN(val)) // ignore if no value
             {
               let delay = valueInRange(val, MAX_DELAY_VALUE);
-              console.log(`delay=${delay}`);
               get(pStrand).tracks[track].drawProps.msecsDelay = delay;
               get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
             }

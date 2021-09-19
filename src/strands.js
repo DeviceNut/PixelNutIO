@@ -70,7 +70,6 @@ const drawProps =
                           
   pcentOffset     : 0,      // percent of pixels for offset
   pcentExtent     : 100,    // percent of pixels to be drawn
-                            //  (start must be <= finish)
 
   reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)
   orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
@@ -104,8 +103,8 @@ const oneStrand =
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
   pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
-  msecsDelay      : 0,      // determines msecs delay after each redraw
-  firstPixel      : 1,      // determines pixel to start drawing from
+  msecsDelay      : 0,      // msecs delay after each redraw
+  pixelOffset     : 0,      // pixel offset to start drawing from
 
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
@@ -177,7 +176,7 @@ export const strandCopyTop = () =>
 
         strand.pcentBright    = ps.pcentBright;
         strand.msecsDelay     = ps.msecsDelay;
-        strand.firstPixel     = ps.firstPixel;
+        strand.pixelOffset     = ps.pixelOffset;
         strand.doOverride     = ps.doOverride;
         strand.degreeHue      = ps.degreeHue;
         strand.pcentWhite     = ps.pcentWhite;

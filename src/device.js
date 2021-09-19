@@ -47,7 +47,7 @@ function setStrandTop(strand, dvals)
 {
   strand.pcentBright = dvals.bright;
   strand.msecsDelay  = dvals.delay;
-  strand.firstPixel  = dvals.first;
+  strand.pixelOffset  = dvals.first;
   strand.numPixels   = dvals.pixels;
 
   strand.doOverride  = dvals.xt_mode;
@@ -205,8 +205,10 @@ export let deviceSetup = (device) =>
 
       if (s === 0) doselect = true;
     }
-
     //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
+
+    get(dStrands)[s].curSourceIdx = strand.curSourceIdx;
+    get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
   }
 
   // reset to use first strand

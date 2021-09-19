@@ -29,7 +29,7 @@
 
 <SliderVal name='Rotate'
   onchange={userSetRotate}
-  bind:cur={$pStrand.firstPixel}
-  min={1}
-  max={$pStrand.numPixels}
+  bind:cur={$pStrand.pixelOffset}
+  min={0}
+  max={$pStrand.numPixels-1}
 />

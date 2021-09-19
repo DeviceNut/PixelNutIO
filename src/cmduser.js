@@ -204,7 +204,7 @@ export const userClearPattern = () =>
   strandClearAll();
   makeEntireCmdStr();
 
-  if (get(pStrand).curPatternIdx !== 0)
+  if (get(pStrand).curPatternIdx === 0)
     sendEntirePattern(); // must send here
 
   // else userSetPattern() will be called
@@ -273,10 +273,10 @@ export const userSetDelay = (track) =>
 
 export const userSetRotate = () =>
 {
-  let firstp = get(pStrand).firstPixel;
-  if (get(dStrands)[get(idStrand)].firstPixel !== firstp)
+  let firstp = get(pStrand).pixelOffset;
+  if (get(dStrands)[get(idStrand)].pixelOffset !== firstp)
   {
-    get(dStrands)[get(idStrand)].firstPixel = firstp;
+    get(dStrands)[get(idStrand)].pixelOffset = firstp;
 
     strandCopyTop();
     sendStrandCmd(cmdStr_SetFirst, firstp);

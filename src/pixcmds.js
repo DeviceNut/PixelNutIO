@@ -32,10 +32,8 @@ export const cmdStr_PcentOffset   = "J";    // percent of pixels **
 export const cmdStr_PcentExtent   = "K";    // percent of pixels **
 
 ////////////////////////////////////////////// not used
-export const cmdStr_PcentFirst    = "L";    // percent of pixel length ++
 export const cmdStr_PixStart      = "X";    // pixel index **
 export const cmdStr_PixCount      = "Y";    // pixel index **
-export const cmdStr_PixFirst      = "Z";    // pixel index ++
 //////////////////////////////////////////////
 
 export const cmdStr_Effect        = "E";    // plugin number

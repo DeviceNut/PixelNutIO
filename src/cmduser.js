@@ -20,6 +20,8 @@ import {
   cmdStr_DeviceName    ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
+  cmdStr_PcentOffset   ,
+  cmdStr_PcentExtent   ,
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
@@ -461,8 +463,8 @@ export const userSetOffset = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
 
-    // must resend entire command when offset/extent has changed FIXME
-    sendEntirePattern();
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_PcentOffset, offset);
   }
 }
 
@@ -477,8 +479,8 @@ export const userSetExtent = (track) =>
 
     updateLayerVals(track, DRAW_LAYER);
 
-    // must resend entire command when offset/extent has changed FIXME
-    sendEntirePattern();
+    let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    sendLayerCmd(layerid, cmdStr_PcentExtent, extent);
   }
 }
 

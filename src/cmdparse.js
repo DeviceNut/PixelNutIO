@@ -107,8 +107,6 @@ export const parsePattern = (pattern) =>
 {
   let track = -1;
   let layer = -1;
-  let offset = 0;
-  let extent = 100;
   let trackbits = 0;
 
   const cmds = pattern.toUpperCase().split(/\s+/); // remove all spaces
@@ -126,20 +124,6 @@ export const parsePattern = (pattern) =>
       case cmdStr_Clear:
       {
         strandClearAll();
-        break;
-      }
-      case cmdStr_PcentOffset:
-      {
-        if (!isNaN(val)) // ignore if no value
-          offset = valueToPercent(val);
-
-        break;
-      }
-      case cmdStr_PcentExtent:
-      {
-        if (!isNaN(val)) // ignore if no value
-          extent = valueToPercent(val);
-
         break;
       }
       case cmdStr_Effect:
@@ -206,15 +190,6 @@ export const parsePattern = (pattern) =>
           ++track;
           layer = 0; // DRAW_LAYER
 
-          get(pStrand).tracks[track].drawProps.pcentOffset = offset;
-          get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
-
-          get(pStrand).tracks[track].drawProps.pcentExtent = extent;
-          get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
-
-          offset = 0;
-          extent = 100;
-
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
 
@@ -242,6 +217,26 @@ export const parsePattern = (pattern) =>
         }
         else switch (ch)
         {
+          case cmdStr_PcentOffset:
+          {
+            if (!isNaN(val)) // ignore if no value
+            {
+              const offset = valueToPercent(val);
+              get(pStrand).tracks[track].drawProps.pcentOffset = offset;
+              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
+            }
+            break;
+          }
+          case cmdStr_PcentExtent:
+          {
+            if (!isNaN(val)) // ignore if no value
+            {
+              const extent = valueToPercent(val);
+              get(pStrand).tracks[track].drawProps.pcentExtent = extent;
+              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
+            }
+            break;
+          }
           case cmdStr_PcentBright:
           {
             if (!isNaN(val)) // ignore if no value

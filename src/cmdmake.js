@@ -184,13 +184,13 @@ export const makeLayerCmdStr = (track, layer) =>
       let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
 
+      cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+
       if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
       {
         cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
         cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
       }
-
-      cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
 
       if (pdraw.reverseDir !== false)
         cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);

@@ -26,17 +26,11 @@ export const cmdStr_SetFirst      = "^";    // first pixel to draw ++
 export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "M";    // layer index
 
-// Commands that form patterns              // value is:
+// Commands that affect/form patterns       // value is:
 export const cmdStr_Clear         = "P";    // none
-export const cmdStr_PcentOffset   = "J";    // percent of pixels **
-export const cmdStr_PcentExtent   = "K";    // percent of pixels **
-
-////////////////////////////////////////////// not used
-export const cmdStr_PixStart      = "X";    // pixel index **
-export const cmdStr_PixCount      = "Y";    // pixel index **
-//////////////////////////////////////////////
-
 export const cmdStr_Effect        = "E";    // plugin number
+export const cmdStr_PcentOffset   = "J";    // percent of pixels for starting extent
+export const cmdStr_PcentExtent   = "K";    // percent of pixels for extent length
 export const cmdStr_PcentBright   = "B";    // percent of max
 export const cmdStr_MsecsDelay    = "D";    // msecs of delay
 export const cmdStr_DegreeHue     = "H";    // hue degree (0..359)
@@ -54,6 +48,5 @@ export const cmdStr_TriggerRange  = "T";    // auto trigger range time (secs) (n
 export const cmdStr_Go            = "G";    // causes all effects to be displayed
 
 // ++ these affect all tracks in the strand
-// ** these take effect only when plugin is created
-// Note: commands no starting with alpha char must be on separate line
+// Note: commands not starting with alpha char must be on separate line
 ///////////////////////////////////////////////////////////////////////

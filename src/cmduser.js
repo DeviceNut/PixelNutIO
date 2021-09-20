@@ -468,7 +468,7 @@ export const userSetOffset = (track) =>
   }
 }
 
-export const userSetExtent = (track) =>
+export const userSetLength = (track) =>
 {
   const strand = get(pStrand);
   let extent = strand.tracks[track].drawProps.pcentExtent;

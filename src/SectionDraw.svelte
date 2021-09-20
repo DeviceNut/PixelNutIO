@@ -23,7 +23,8 @@
     pluginBit_DELAY,
     pluginBit_DIRECTION,
     pluginBit_ORIDE_DELAY,
-    pluginBit_ORIDE_DIR
+    pluginBit_ORIDE_DIR,
+    pluginBit_ORIDE_EXT
   } from './presets.js';
 
   import {
@@ -31,7 +32,7 @@
     userSetBright,
     userSetDelay,
     userSetOffset,
-    userSetExtent,
+    userSetLength,
     userSetOwrite,
     userSetDirect
   } from './cmduser.js'
@@ -47,7 +48,7 @@
   const setDelay  = () => { userSetDelay( track); }
   const setOwrite = () => { userSetOwrite(track); }
   const setOffset = () => { userSetOffset(track); }
-  const setExtent = () => { userSetExtent(track); }
+  const setLength = () => { userSetLength(track); }
   const setDirect = () => { userSetDirect(track); }
 
 </script>
@@ -113,12 +114,14 @@
       <SliderVal name='Offset'
         onchange={setOffset}
         bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
+        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
       />
     </Row>
     <Row>
-      <SliderVal name='Extent'
-        onchange={setExtent}
+      <SliderVal name='Length'
+        onchange={setLength}
         bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
+        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
       />
     </Row>
 

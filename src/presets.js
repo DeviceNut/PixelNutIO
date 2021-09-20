@@ -165,7 +165,7 @@ export const presetsInit = () =>
     { id: 132, bits: 0x0074, text: 'Delay Wave' },
     { id: 141, bits: 0x0030, text: 'Bright Surge' },
     { id: 142, bits: 0x0070, text: 'Bright Wave' },
-    { id: 150, bits: 0x0046, text: 'Window Expander' },
+    { id: 150, bits: 0x2046, text: 'Window Expander' },
     { id: 160, bits: 0x1010, text: 'Flip Direction' },
   ]);
 }
@@ -232,6 +232,7 @@ export const pluginBit_ORIDE_WHITE = 0x0200;  // effect overrides white property
 export const pluginBit_ORIDE_COUNT = 0x0400;  // effect overrides count property
 export const pluginBit_ORIDE_DELAY = 0x0800;  // effect overrides delay property
 export const pluginBit_ORIDE_DIR   = 0x1000;  // effect overrides direction property
+export const pluginBit_ORIDE_EXT   = 0x2000;  // effect overrides offset/extent properties
 
 export const presetsFindEffect = (plugnum) =>
 {

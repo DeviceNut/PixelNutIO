@@ -120,6 +120,8 @@
   >?
 </button>
 
+<div style="display:inline-block; margin-left:5px;"></div>
+
 <button
   class="button button-pattern"
   on:click={doclear}
@@ -130,9 +132,10 @@
 <button
   class="button button-pattern"
   on:click={dostore}
-  disabled={($pStrand.curPatternStr === '') || !$pStrand.modifyPattern}
   >Store
 </button>
+
+<div style="display:inline-block; margin-left:5px;"></div>
 
 <button
   class="button button-pattern"

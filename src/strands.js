@@ -96,7 +96,6 @@ const oneStrand =
   curPatternIdx   : 0,      // index into current patterns list
   curPatternStr   : '',     // current pattern command string
                             // (as created from current settings)
-  modifyPattern   : false,  // true if sent pattern modify command
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
@@ -168,7 +167,6 @@ export const strandCopyTop = () =>
         strand.sourceType     = ps.sourceType;
         strand.browserSource  = ps.browserSource
         strand.curSourceIdx   = ps.curSourceIdx;
-        strand.modifyPattern  = ps.modifyPattern;
         strand.curPatternIdx  = ps.curPatternIdx;
         strand.curPatternStr  = ps.curPatternStr;
         strand.bitsOverride   = ps.bitsOverride;

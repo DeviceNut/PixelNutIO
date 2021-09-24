@@ -193,7 +193,7 @@ export const userSetPattern = () =>
     {
       strandCopyAll();
       makeEntireCmdStr();
-      sendEntirePattern(false);
+      sendEntirePattern();
     }
     // else software bug? FIXME?
   }

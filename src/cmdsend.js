@@ -30,6 +30,16 @@ export const sendStrandSwitch = (s) =>
   sendCmdToDevice(cmdStr_AddrStrand.concat(s));
 }
 
+// sends current pattern to just the specified strand
+// if not currently selected one switch back and forth
+export const sendPatternToStrand = (s) =>
+{
+  let sid = get(idStrand);
+  if (sid != s) sendStrandSwitch(s);
+  sendCmdToDevice( get(pStrand).curPatternStr );
+  if (sid != s) sendStrandSwitch(sid);
+}
+
 // sends command to all selected strands
 // optionally skips the current strand
 // optionally stores the pattern on the device
@@ -62,42 +72,21 @@ function sendCmdToStrands(cmdstr, dostore=false)
   if (didone) sendStrandSwitch(sid)
 }
 
-// sends current pattern to just the specified strand
-// if not currently selected one switch back and forth
-// note that this stores and triggers the pattern as well
-export const sendPatternToStrand = (s) =>
-{
-  let sid = get(idStrand);
-  let pattern = get(pStrand).curPatternStr;
-
-  if (sid != s) sendStrandSwitch(s);
-
-  sendCmdToDevice(cmdStr_SaveFlash);
-  sendCmdToDevice(pattern);
-  sendCmdToDevice(cmdStr_SaveFlash);
-  sendCmdToDevice('0'); // causes pattern to be executed not just stored
-
-  if (sid != s) sendStrandSwitch(sid);
-}
-
 // sends current pattern to all selected strands
 // always clears the device pattern stack first
 // optionally stores the pattern to the device
-// if dostore is false don't update modify flag
-// else if undefined (not passed) then do set it
 export const sendEntirePattern = (dostore) =>
 {
-  let cmdstr = cmdStr_Clear;
   const pattern = get(pStrand).curPatternStr;
 
-  if (pattern !== '') cmdstr = cmdstr.concat(' ').concat(pattern);
-  sendCmdToStrands(cmdstr, dostore);
-
-  if (dostore !== false)
+  if (pattern !== '')
   {
-    get(pStrand).modifyPattern = !dostore; // did modify if not stored
-    pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+    sendCmdToStrands(cmdStr_Clear, false);
+    sendCmdToStrands(pattern, dostore);
   }
+  else sendCmdToStrands(cmdStr_Clear, dostore);
+
+  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
 }
 
 // send top level command (and optional value) to all selected strands
@@ -115,7 +104,4 @@ export const sendLayerCmd = (id, cmdstr, cmdval) =>
     cmdstr = cmdstr.concat(cmdval);
 
   sendCmdToStrands(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
-
-  get(pStrand).modifyPattern = true;
-  // don't need to force update here, while you do above ??
 }

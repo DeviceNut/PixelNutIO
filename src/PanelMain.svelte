@@ -32,7 +32,7 @@
 <Grid>
 
   <PanelPatterns/>
-  <div class="divider"></div>
+  <div class="divider" style="margin-top:25px;"></div>
 
   <Row style="margin-top:10px;">
     <Column style="margin-left:-5px;">

@@ -135,7 +135,7 @@
     {#if matches}
       <div style="margin-top:5px; text-align:center;">
         <Dropdown
-          size="sm"
+          size="lg"
           type="inline"
           on:select={selsource}
           bind:selectedIndex={$pStrand.curSourceIdx}
@@ -144,7 +144,7 @@
       </div>
       <div style="margin-top:-20px; text-align:center;">
         <Dropdown
-          size="sm"
+          size="lg"
           type="inline"
           on:select={selpattern}
           bind:selectedIndex={$pStrand.curPatternIdx}
@@ -158,7 +158,7 @@
       <div style="margin-top:5px; text-align:center;">
         <div style="width:120px; display:inline-block;">
           <Dropdown
-            size="sm"
+            size="lg"
             type="inline"
             on:select={selsource}
             bind:selectedIndex={$pStrand.curSourceIdx}
@@ -167,7 +167,7 @@
         </div>
         <div style="display:inline-block;">
           <Dropdown
-            size="sm"
+            size="lg"
             type="inline"
             on:select={selpattern}
             bind:selectedIndex={$pStrand.curPatternIdx}
@@ -178,7 +178,7 @@
     {/if}
   </MediaQuery>
 
-  <Row style="margin-top:-10px;">
+  <Row>
     <div style="margin: 0 auto;">
       <ButtonsPatterns/>
     </div>
@@ -194,7 +194,7 @@
           <Dropdown
             style="text-align:center;"
             titleText="Select:"
-            size="sm"
+            size="lg"
             type="inline"
             on:select={userSetPattern}
             bind:selectedIndex={$pStrand.curPatternIdx}
@@ -203,7 +203,7 @@
         </div>
       </Row>
 
-      <Row style="margin-top:-10px;">
+      <Row>
         <div style="margin-left:20px;">
           <ButtonsPatterns/>
         </div>
@@ -215,12 +215,12 @@
   <MediaQuery query="(min-width: 501px)" let:matches>
     {#if matches}
 
-      <Row style="margin-top:10px;">
+      <Row style="margin-top:5px;">
         <div style="margin:0 auto;">
           <Dropdown
             style="text-align:center;"
             titleText="Select:"
-            size="sm"
+            size="lg"
             type="inline"
             on:select={userSetPattern}
             bind:selectedIndex={$pStrand.curPatternIdx}
@@ -229,7 +229,7 @@
         </div>
       </Row>
 
-      <Row style="margin-top:-10px;">
+      <Row style="margin-top:-5px;">
         <div style="margin:0 auto;">
           <ButtonsPatterns/>
         </div>

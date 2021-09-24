@@ -16,8 +16,7 @@
 
   import {
     userSetForce,
-    userSendTrigger,
-    userSetDirect
+    userSendTrigger
   } from './cmduser.js'
 
   import PanelPatterns from './PanelPatterns.svelte';
@@ -25,62 +24,34 @@
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
 
-  const setDirect = () => { userSetDirect(); }
-
-  </script>
+</script>
 
 <Grid>
-
   <PanelPatterns/>
   <div class="divider" style="margin-top:25px;"></div>
-
-  <Row style="margin-top:10px;">
+  <Row style="margin-top:10px; margin-left:0px;">
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
       <Row>
-        <Column>
+        <div style="max-width: 280px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
             onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
             disabled={($pStrand.curPatternStr === '') ||
-                     !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
+                      !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
-        </Column>
-        <MediaQuery query="(min-width:501px)" let:matches>
-          {#if matches}
-            <Column style="margin-top:5px;">
-              <button
-                class="button"
-                on:click={userSendTrigger}
-                disabled={($pStrand.curPatternStr === '') ||
-                         !($pStrand.triggerUsed)}
-                >Trigger
-              </button>
-            </Column>
-          {/if}
-        </MediaQuery>
+        </div> 
+        <button class="button"
+          on:click={userSendTrigger}
+          disabled={($pStrand.curPatternStr === '') ||
+                    !($pStrand.triggerUsed)}
+          >Trigger
+        </button>
       </Row>
     </Column>
   </Row>
-
-  <MediaQuery query="(max-width:500px)" let:matches>
-    {#if matches}
-      <Row style="margin-top:5px; margin-bottom:15px;">
-        <Column style="margin-left:-5px;">
-          <button
-            class="button"
-            on:click={userSendTrigger}
-            disabled={($pStrand.curPatternStr === '') ||
-                         !($pStrand.triggerUsed)}
-            >Trigger
-          </button>
-        </Column>
-      </Row>
-    {/if}
-  </MediaQuery>
-
 </Grid>
 
 <style>

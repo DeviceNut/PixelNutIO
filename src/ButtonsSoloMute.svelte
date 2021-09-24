@@ -21,12 +21,24 @@
   export let track;
   export let layer;
 
-  let isSolo;
-  let isMute;
+  let isSolo, noSolo;
+  let isMute, noMute;
 
   $: {
     isSolo = $pStrand.tracks[track].layers[layer].solo;
     isMute = $pStrand.tracks[track].layers[layer].mute;
+
+    if (layer == DRAW_LAYER)
+    {
+      noMute = $pStrand.tracks[DRAW_LAYER].layers[0].pluginIndex == 0;
+      noSolo = ($pStrand.tactives <= 1) || noMute;
+    }
+    else
+    {
+      noMute = ($pStrand.tracks[track].layers[0].pluginIndex == 0) ||
+               ($pStrand.tracks[track].layers[layer].pluginIndex == 0);
+      noSolo = ($pStrand.tracks[track].lactives <= 2) || noMute;
+    }
   }
 
   function rebuild()
@@ -154,8 +166,19 @@
 
 </script>
 
-<button class="button" class:select={isSolo} on:click={dosolo} >Solo</button>
-<button class="button" class:select={isMute} on:click={domute} >Mute</button>
+<button class="button"
+  class:select={isSolo}
+  on:click={dosolo}
+  disabled={noSolo}
+  >Solo
+</button>
+
+<button class="button"
+  class:select={isMute}
+  on:click={domute}
+  disabled={noMute}
+  >Mute
+</button>
 
 <style>
   .button {

@@ -29,12 +29,12 @@
 <Grid>
   <PanelPatterns/>
   <div class="divider" style="margin-top:25px;"></div>
-  <Row style="margin-top:10px; margin-left:0px;">
+  <Row style="margin-top:10px;">
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
       <Row>
-        <div style="max-width: 280px;">
+        <div style="max-width:280px; margin-left:15px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
             onchange={userSetForce}

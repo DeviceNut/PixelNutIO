@@ -120,8 +120,6 @@
   >?
 </button>
 
-<div style="display:inline-block; margin-left:5px;"></div>
-
 <button
   class="button button-pattern"
   on:click={doclear}
@@ -134,8 +132,6 @@
   on:click={dostore}
   >Store
 </button>
-
-<div style="display:inline-block; margin-left:5px;"></div>
 
 <button
   class="button button-pattern"
@@ -210,8 +206,7 @@
   }
   .button-help {
     width: 35px;
-    margin-left: 10px;
-    margin-right: 15px;
+    margin-right: 10px;
     border-width: 2px;
     border-radius: 75%;
   }

@@ -19,7 +19,7 @@
 
 </script>
 
-<Row style="margin-top:7px; margin-top:7px; background-color: {bgc};">
+<Row style="margin-top:10px; background-color: {bgc};">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
@@ -33,7 +33,7 @@
     </div>
   {/each}
   <Row>
-    <Column style="margin:13px 0 7px -1px;">
+    <Column style="margin:15px 0 7px -1px;">
       <ButtonsAddDel {track}/>
     </Column>
   </Row>

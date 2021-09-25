@@ -1,76 +1,76 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
+
   import {
     Grid,
     Row,
     Column,
-    TreeView,
     TextArea
   } from "carbon-components-svelte";
 
   import {
     HELPTEXT_HEIGHT,
-    docsMenuOpen
+    docsMenuOpen,
+    docsHelpText
   } from './globals.js';
 
-  import {
-    helpTopics,
-    helpText
-  } from './helpmain.js';
-
-  import HelpDocsHeader from './HelpDocsHeader.svelte';
-
-  let activeId = 0;
-  let selectedIds = [];
-  let expandedIds = [];
-
-  let helptext = '';
-  const dohelp = (id) =>
-  {
-    helptext = helpText(id);
-  }
-  dohelp(activeId);
+  import HeaderHelpDocs from './HeaderHelpDocs.svelte';
+  import PanelHelpMenu from './PanelHelpMenu.svelte';
 
 </script>
 
-<HelpDocsHeader/>
+<HeaderHelpDocs/>
 
 <Grid>
   <Row>
-
     {#if $docsMenuOpen }
-      <Column
-        style='margin-top:13px;'
-        sm={4}
-        md={4}
-        lg={6}
-        max={4}
-        >
-        <TreeView
-          children={helpTopics}
-          bind:activeId
-          bind:selectedIds
-          bind:expandedIds
-          on:select={({ detail }) => { dohelp(detail.id); }}
-          on:focus={({ detail }) => { dohelp(detail.id); }}
+
+      <MediaQuery query="(max-width: 800px)" let:matches>
+        {#if matches}
+          <Row style="width:100%; margin: 0 auto;">
+            <Column style="">
+              <PanelHelpMenu/>
+            </Column>
+          </Row>
+          <Row style="width:100%; margin: 0 auto;">
+            <Column style="text-align:center; margin-top:20px;">
+              <TextArea
+                style="font-family:'Courier New'"
+                rows={HELPTEXT_HEIGHT}
+                value={$docsHelpText}
+              />
+            </Column>
+          </Row>
+        {/if}
+      </MediaQuery>
+
+      <MediaQuery query="(min-width: 801px)" let:matches>
+        {#if matches}
+          <Column>
+            <PanelHelpMenu/>
+          </Column>
+          <Column style="margin-top:13px;">
+            <TextArea
+              style="font-family:'Courier New'"
+              rows={HELPTEXT_HEIGHT}
+              value={$docsHelpText}
+            />
+          </Column>
+        {/if}
+      </MediaQuery>
+
+    {:else}
+
+      <Column style="margin-top:13px;">
+        <TextArea
+          style="font-family:'Courier New'"
+          rows={HELPTEXT_HEIGHT}
+          value={$docsHelpText}
         />
       </Column>
+
     {/if}
-
-    <Column
-      style='margin-top:13px;'
-      sm={4}
-      md={4}
-      lg={10}
-      max={12}
-      >
-      <TextArea
-        style="font-family:'Courier New'"
-        rows={HELPTEXT_HEIGHT}
-        value={helptext}
-      />
-    </Column>
-
   </Row>
 </Grid>
 

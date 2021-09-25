@@ -29,6 +29,7 @@ export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device
 
 export let docsMenuOpen   = writable(true);   // true to display docs menu
+export let docsHelpText   = writable('');     // help text to display
 
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables

@@ -30,6 +30,8 @@ export let curDevice      = writable(null);   // "points" to current device
 
 export let docsMenuOpen   = writable(true);   // true to display docs menu
 export let docsHelpText   = writable('');     // help text to display
+export let menuActiveID   = writable(0);      // currently selected menu choice
+export let menuExpList    = writable([]);     // list of currently expanded items
 
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables

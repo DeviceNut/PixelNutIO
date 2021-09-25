@@ -36,7 +36,7 @@
 <Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color: {bgc};">
   <Column style="margin-left:-10px;">
 
-    <Checkbox labelText="Override Properties"
+    <Checkbox labelText="Override Track Properties"
       on:check={userSetOverMode}
       bind:checked={$pStrand.doOverride}
       disabled={$pStrand.bitsOverride === 0}

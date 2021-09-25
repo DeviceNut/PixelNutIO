@@ -1,7 +1,5 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-
   import {
     Row,
     Column,
@@ -35,19 +33,35 @@
   const setcount = () => { userSetCount(track); }
   const setovers = () => { userSetOverrides(track); }
 
+  /*
+  <Column>
+    <p class="overrides">Check to allow override from main controls:</p>
+  </Column>
+  <div style="width:100%;">
+    <p class="overrides">Check to allow override from main controls:</p>
+  </div>
+  */  
 </script>
 
-<Row style="margin-top:5px; margin-right:-7px;
+<Row style="margin-top:5px; padding-top:5px;
+            background-color: var(--bg-color-controls-area);">
+  <Column>
+    <p style="margin-left:60px; font-size:.9em;">
+      Check to allow main control overrides:</p>
+  </Column>
+</Row>
+
+<Row style="margin-right:-7px;
             background-color: var(--bg-color-controls-area);">
 
-  <Column style="margin-left:-5px;">
+  <Column style="margin-left:-5px; max-width:270px;">
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
+      max={359}
       onchange={sethue}
       bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
       disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
                !($pStrand.tracks[track].trackBits & pluginBit_COLOR)              ||
                 ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
-      max={359}
     />
 
     <SliderVal name='White&nbsp;'
@@ -67,62 +81,27 @@
     />
   </Column>
 
-  <MediaQuery query="(min-width:501px)" let:matches>
-    {#if matches}
-      <Column>
-        <div style="margin-top:8px;"></div>
-        <Checkbox labelText="Override"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overHue}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
-        />
-        <div style="margin-top:8px;"></div>
-        <Checkbox labelText="Override"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
-        />
-        <div style="margin-top:8px;"></div>
-        <Checkbox labelText="Override"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overCount}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
-        />
-      </Column>
-    {/if}
-  </MediaQuery>
+  <Column>
+    <div style="margin-top:10px;"></div>
+    <Checkbox
+      on:check={setovers}
+      bind:checked={$pStrand.tracks[track].drawProps.overHue}
+      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+    />
+    <div style="margin-top:20px;"></div>
+    <Checkbox
+      on:check={setovers}
+      bind:checked={$pStrand.tracks[track].drawProps.overWhite}
+      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
+    />
+    <div style="margin-top:25px;"></div>
+    <Checkbox
+      on:check={setovers}
+      bind:checked={$pStrand.tracks[track].drawProps.overCount}
+      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
+    />
+  </Column>
 </Row>
-
-<MediaQuery query="(max-width:500px)" let:matches>
-  {#if matches}
-    <Row style="padding-top:3px; margin-right:-7px;
-                background-color: var(--bg-color-controls-area);">
-
-      <Column style="margin-left:-5px;">
-        <Checkbox labelText="Overide Hue"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overHue}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
-        />
-        <Checkbox labelText="Overide White"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
-        />
-        <Checkbox labelText="Overide Count"
-          on:check={setovers}
-          bind:checked={$pStrand.tracks[track].drawProps.overCount}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
-        />
-      </Column>
-
-    </Row>
-  {/if}
-</MediaQuery>
-

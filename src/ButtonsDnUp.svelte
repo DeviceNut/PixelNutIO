@@ -150,7 +150,7 @@
  
  <style>
    .button {
-     float:right;
+     float: right;
      width: 40px;
      margin: 3px 5px 0 0;
      padding: 4px;

@@ -1,7 +1,5 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-
   import {
     Row,
     Dropdown
@@ -22,41 +20,49 @@
 
   const seteffect = () => { userSetFilterEffect(track, layer); }
 
+  let helpon = false;
+
 </script>
 
-<div style="padding-left:5px;">
-  <MediaQuery query="(max-width: 400px)" let:matches>
-    {#if matches}
-      <Row>
-        <p style="font-size:.9em;">Filter Effect:</p>
-      </Row>
-    {/if}
-  </MediaQuery>
+<div style="margin-top:5px; padding-left:5px;">
   <Row>
-    <MediaQuery query="(min-width: 401px)" let:matches>
-      {#if matches}
-        <p style="font-size:.9em; margin:7px 12px 0 0;">Filter Effect:</p>
-      {/if}
-    </MediaQuery>
     <Dropdown
+      style="margin-bottom:-13px;"
       size="sm"
       type="inline"
       on:select={seteffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
       bind:items={$aEffectsFilter}
     />
+    <button
+      class="button-help"
+      on:click={() => {helpon = !helpon;}}
+      >?
+    </button>
   </Row>
 
-  <Row style="margin-top:-13px; margin-right:-10px; padding:5px;
-              color: var(--color-textbox);
-              background-color: var(--bg-color-textbox);">
-
-    <p style="font-size:.9em;">
-      {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
-    </p>
-  </Row>
+  {#if helpon }
+    <Row style="margin-right:-10px; padding:5px;
+                color: var(--color-textbox);
+                background-color: var(--bg-color-textbox);">
+      <p style="font-size:.9em;">
+        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+      </p>
+    </Row>
+  {/if}
 
   {#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
     <SectionTrigger {track} {layer} />
   {/if}
 </div>
+
+<style>
+  .button-help {
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+    margin-right: 10px;
+    border-width: 2px;
+    border-radius: 75%;
+  }
+</style>

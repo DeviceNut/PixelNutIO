@@ -33,7 +33,7 @@
     </div>
   {/each}
   <Row>
-    <Column style="margin:7px 0 7px -1px;">
+    <Column style="margin:13px 0 7px -1px;">
       <ButtonsAddDel {track}/>
     </Column>
   </Row>

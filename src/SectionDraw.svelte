@@ -1,7 +1,5 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-
   import {
     Row,
     Dropdown,
@@ -51,31 +49,28 @@
   const setLength = () => { userSetLength(track); }
   const setDirect = () => { userSetDirect(track); }
 
+  let helpon = false;
+
 </script>
 
-<div style="padding-left:5px;">
-  <MediaQuery query="(max-width: 400px)" let:matches>
-    {#if matches}
-      <Row>
-        <p style="font-size:.9em;">Draw Effect:</p>
-      </Row>
-    {/if}
-  </MediaQuery>
+<div style="margin-top:5px; padding-left:5px;">
   <Row>
-    <MediaQuery query="(min-width: 401px)" let:matches>
-      {#if matches}
-        <p style="font-size:.9em; margin:7px 12px 0 0;">Draw Effect:</p>
-      {/if}
-    </MediaQuery>
     <Dropdown
+      style="margin-bottom:-13px;"
       size="sm"
       type="inline"
       on:select={setEffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
       bind:items={$aEffectsDraw}
     />
+    <button
+      class="button-help"
+      on:click={() => {helpon = !helpon;}}
+      >?
+    </button>
+
     {#if ((track !== 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0)) }
-      <div style="margin-top:7px; margin-left:30px;">
+      <div style="margin-left:20px;">
         <Checkbox labelText="Overwrite"
           on:check={setOwrite}
           bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
@@ -84,13 +79,15 @@
     {/if}
   </Row>
 
-  <Row style="margin-top:-13px; margin-right:-10px; padding:5px;
-              color: var(--color-textbox);
-              background-color: var(--bg-color-textbox);">
-    <p style="font-size:.9em;">
-      {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
-    </p>
-  </Row>
+  {#if helpon }
+    <Row style="margin-right:-10px; padding:5px;
+                color: var(--color-textbox);
+                background-color: var(--bg-color-textbox);">
+      <p style="font-size:.9em;">
+        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
+      </p>
+    </Row>
+  {/if}
 
   {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0) }
 
@@ -140,3 +137,14 @@
 
   {/if}
 </div>
+
+<style>
+  .button-help {
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+    margin-right: 10px;
+    border-width: 2px;
+    border-radius: 75%;
+  }
+</style>

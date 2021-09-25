@@ -119,40 +119,24 @@
 
   $updateSources = true;
 
+  $: margintop = ($aListSources.length > 1) ? -20 : 10;
+
 </script>
 
-{#if $aListSources.length > 1}
+{#if !$pStrand.showMenu}
 
-  <div style="margin-top:10px; text-align:center;">
-    <p style="font-size:.9em;">Choose source and pattern:</p>
+<Row style="margin-top:20px;">
+  <div style="margin: 0 auto;">
+    <ButtonsPatterns/>
   </div>
+</Row>
 
-  <MediaQuery query="(max-width: 400px)" let:matches>
+{:else}
+
+  <MediaQuery query="(max-width: 500px)" let:matches>
     {#if matches}
-      <div style="margin-top:5px; text-align:center;">
-        <Dropdown
-          size="lg"
-          type="inline"
-          on:select={selsource}
-          bind:selectedIndex={$pStrand.curSourceIdx}
-          bind:items={$aListSources}
-        />
-      </div>
-      <div style="margin-top:-20px; text-align:center;">
-        <Dropdown
-          size="lg"
-          type="inline"
-          on:select={selpattern}
-          bind:selectedIndex={$pStrand.curPatternIdx}
-          bind:items={$aCurListPats}
-        />
-      </div>
-    {/if}
-  </MediaQuery>
-  <MediaQuery query="(min-width: 401px)" let:matches>
-    {#if matches}
-      <div style="margin-top:5px; text-align:center;">
-        <div style="width:120px; display:inline-block;">
+      {#if $aListSources.length > 1}
+        <div style="margin-top:10px; margin-left:7px;">
           <Dropdown
             size="lg"
             type="inline"
@@ -161,6 +145,68 @@
             bind:items={$aListSources}
           />
         </div>
+      {/if}
+      <div style="margin-top:{margintop}px; margin-left:7px;">
+        <Dropdown
+          size="lg"
+          type="inline"
+          on:select={userSetPattern}
+          bind:selectedIndex={$pStrand.curPatternIdx}
+          bind:items={$aCurListPats}
+        />
+      </div>
+      <div style="margin:-7px;">
+        <div style="margin-left:20px;">
+          <ButtonsPatterns/>
+        </div>
+      </div>
+    {/if}
+  </MediaQuery>
+
+  <MediaQuery query="(min-width: 501px) and (max-width: 620px)" let:matches>
+    {#if matches}
+      {#if $aListSources.length > 1}
+        <div style="margin-top:10px; text-align:center;">
+          <Dropdown
+            size="lg"
+            type="inline"
+            on:select={selsource}
+            bind:selectedIndex={$pStrand.curSourceIdx}
+            bind:items={$aListSources}
+          />
+        </div>
+      {/if}
+      <div style="margin-top:{margintop}px; text-align:center;">
+        <Dropdown
+          size="lg"
+          type="inline"
+          on:select={selpattern}
+          bind:selectedIndex={$pStrand.curPatternIdx}
+          bind:items={$aCurListPats}
+        />
+      </div>
+      <Row style="margin:-7px;">
+        <div style="margin: 0 auto;">
+          <ButtonsPatterns/>
+        </div>
+      </Row>
+    {/if}
+  </MediaQuery>
+
+  <MediaQuery query="(min-width: 621px)" let:matches>
+    {#if matches}
+      <div style="margin-top:10px; text-align:center;">
+        {#if $aListSources.length > 1}
+          <div style="width:120px; display:inline-block;">
+            <Dropdown
+              size="lg"
+              type="inline"
+              on:select={selsource}
+              bind:selectedIndex={$pStrand.curSourceIdx}
+              bind:items={$aListSources}
+            />
+          </div>
+        {/if}
         <div style="display:inline-block;">
           <Dropdown
             size="lg"
@@ -171,67 +217,13 @@
           />
         </div>
       </div>
-    {/if}
-  </MediaQuery>
-
-  <Row>
-    <div style="margin: 0 auto;">
-      <ButtonsPatterns/>
-    </div>
-  </Row>
-
-{:else}
-
-  <MediaQuery query="(max-width: 500px)" let:matches>
-    {#if matches}
-
-      <Row style="margin-top:10px;">
-        <div style="margin-left: 20px;">
-          <Dropdown
-            style="text-align:center;"
-            titleText="Select:"
-            size="lg"
-            type="inline"
-            on:select={userSetPattern}
-            bind:selectedIndex={$pStrand.curPatternIdx}
-            bind:items={$aCurListPats}
-          />
-        </div>
-      </Row>
-
-      <Row>
-        <div style="margin-left:20px;">
+      <Row style="margin:-7px;">
+        <div style="margin: 0 auto;">
           <ButtonsPatterns/>
         </div>
       </Row>
-
-    {/if}
-  </MediaQuery>
-
-  <MediaQuery query="(min-width: 501px)" let:matches>
-    {#if matches}
-
-      <Row style="margin-top:5px;">
-        <div style="margin:0 auto;">
-          <Dropdown
-            style="text-align:center;"
-            titleText="Select:"
-            size="lg"
-            type="inline"
-            on:select={userSetPattern}
-            bind:selectedIndex={$pStrand.curPatternIdx}
-            bind:items={$aCurListPats}
-          />
-        </div>
-      </Row>
-
-      <Row style="margin-top:-5px;">
-        <div style="margin:0 auto;">
-          <ButtonsPatterns/>
-        </div>
-      </Row>
-
     {/if}
   </MediaQuery>
 
 {/if}
+

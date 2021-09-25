@@ -88,6 +88,8 @@ const oneTrack =
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
+
+  showMenu        : true,   // true to display source/pattern menus
   showCustom      : false,  // true if displaying customize panel
 
   curSourceIdx    : 0,      // index into current sources list
@@ -163,6 +165,7 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
+        strand.showMenu       = ps.showMenu;
         strand.showCustom     = ps.showCustom;
         strand.sourceType     = ps.sourceType;
         strand.browserSource  = ps.browserSource

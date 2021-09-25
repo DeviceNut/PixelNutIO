@@ -13,7 +13,12 @@
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customizer");
 
-  const toggleshow = () => { $pStrand.showCustom = !$pStrand.showCustom; }
+  const toggleshow = () =>
+  {
+    $pStrand.showCustom = !$pStrand.showCustom;
+    if ($pStrand.showCustom) $pStrand.showMenu = false;
+    else if ($pStrand.curPatternStr == '') $pStrand.showMenu = true;
+  }
 
 </script>
 

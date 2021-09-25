@@ -1,12 +1,9 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-
   import {
     Grid,
     Row,
-    Column,
-    Checkbox
+    Column
   } from "carbon-components-svelte";
 
   import { MAX_FORCE_VALUE } from './pixcmds.js';
@@ -28,8 +25,8 @@
 
 <Grid>
   <PanelPatterns/>
-  <div class="divider" style="margin-top:25px;"></div>
-  <Row style="margin-top:10px;">
+  <div class="divider" style="margin-top:20px;"></div>
+  <Row style="margin-top:10px; margin-bottom:15px;">
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>

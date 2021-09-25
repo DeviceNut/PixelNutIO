@@ -213,6 +213,7 @@ export const userClearPattern = () =>
   else get(pStrand).curPatternIdx = 0;
 
   get(pStrand).showCustom = false;
+  get(pStrand).showMenu = true;
 }
 
 // Commands from PanelMain:

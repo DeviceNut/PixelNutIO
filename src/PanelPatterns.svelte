@@ -120,10 +120,14 @@
   $updateSources = true;
 
   $: margintop = ($aListSources.length > 1) ? -20 : 10;
+  $: menuname  = ($aListSources.length > 1) ? 'menus' : 'menu';
 
 </script>
 
 {#if !$pStrand.showMenu}
+
+<p style="font-size:.9em; margin-top:10px; text-align:center;">
+  Clear to redisplay {menuname}</p>
 
 <Row style="margin-top:20px;">
   <div style="margin: 0 auto;">
@@ -135,7 +139,10 @@
 
   <MediaQuery query="(max-width: 500px)" let:matches>
     {#if matches}
-      {#if $aListSources.length > 1}
+      <p style="font-size:.9em; margin-top:10px; margin-left:13px;">
+        Select pattern from {menuname}:</p>
+  
+        {#if $aListSources.length > 1}
         <div style="margin-top:10px; margin-left:7px;">
           <Dropdown
             size="lg"
@@ -165,6 +172,9 @@
 
   <MediaQuery query="(min-width: 501px) and (max-width: 620px)" let:matches>
     {#if matches}
+      <p style="font-size:.9em; margin-top:10px; text-align:center;">
+        Select pattern from {menuname}:</p>
+
       {#if $aListSources.length > 1}
         <div style="margin-top:10px; text-align:center;">
           <Dropdown
@@ -195,6 +205,8 @@
 
   <MediaQuery query="(min-width: 621px)" let:matches>
     {#if matches}
+      <p style="font-size:.9em; margin-top:10px; text-align:center;">
+        Select pattern from {menuname}:</p>
       <div style="margin-top:10px; text-align:center;">
         {#if $aListSources.length > 1}
           <div style="width:120px; display:inline-block;">
@@ -207,7 +219,7 @@
             />
           </div>
         {/if}
-        <div style="display:inline-block;">
+        <div style="width:120px; display:inline-block;">
           <Dropdown
             size="lg"
             type="inline"

@@ -116,7 +116,6 @@
 <button
   class="button button-help"
   on:click={dohelp}
-  disabled={$pStrand.curPatternIdx === 0}
   >?
 </button>
 

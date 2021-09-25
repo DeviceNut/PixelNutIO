@@ -1,7 +1,5 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-
   import {
     Row,
     Column,
@@ -36,8 +34,13 @@
 </script>
 
 <Row style="margin:15px 0 10px 0; padding:3px 0 5px 0; background-color: {bgc};">
-
   <Column style="margin-left:-10px;">
+
+    <Checkbox labelText="Override Properties"
+      on:check={userSetOverMode}
+      bind:checked={$pStrand.doOverride}
+      disabled={$pStrand.bitsOverride === 0}
+    />
     <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
       onchange={userSetProps}
       bind:cur={$pStrand.degreeHue}
@@ -61,30 +64,4 @@
                 !($pStrand.bitsEffects  & pluginBit_COUNT)}
     />
   </Column>
-
-  <MediaQuery query="(max-width:500px)" let:matches>
-    {#if matches}
-      <Row style="margin:5px 0 3px 2px;">
-        <Column>
-          <Checkbox labelText="Override Properties"
-            on:check={userSetOverMode}
-            bind:checked={$pStrand.doOverride}
-            disabled={$pStrand.bitsOverride === 0}
-          />
-        </Column>
-      </Row>
-    {/if}
-  </MediaQuery>
-  <MediaQuery query="(min-width:501px)" let:matches>
-    {#if matches}
-      <Column>
-        <Checkbox labelText="Override"
-          on:check={userSetOverMode}
-          bind:checked={$pStrand.doOverride}
-          disabled={$pStrand.bitsOverride === 0}
-        />
-      </Column>
-    {/if}
-  </MediaQuery>
-
 </Row>

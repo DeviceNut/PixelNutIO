@@ -1,11 +1,7 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
-
-  import {
-    Row,
-    Dropdown,
-  } from "carbon-components-svelte";
+  import { Row, Dropdown } from "carbon-components-svelte";
 
   import {
     pStrand,
@@ -234,6 +230,7 @@
           <ButtonsPatterns/>
         </div>
       </Row>
+
     {/if}
   </MediaQuery>
 

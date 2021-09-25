@@ -34,7 +34,7 @@
       <SlidersMain/>
       <SlidersPropsGlobal/>
       <Row>
-        <div style="max-width:280px; margin-left:15px;">
+        <div style="max-width:280px; margin-left:17px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
             onchange={userSetForce}

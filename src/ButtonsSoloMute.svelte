@@ -166,14 +166,16 @@
 
 </script>
 
-<button class="button"
+<button
+  class="button"
   class:select={isSolo}
   on:click={dosolo}
   disabled={noSolo}
   >Solo
 </button>
 
-<button class="button"
+<button
+  class="button"
   class:select={isMute}
   on:click={domute}
   disabled={noMute}

@@ -89,7 +89,11 @@
     {#if scanning }
       <Loading style="margin-left:42%;" withOverlay={false} />
     {:else}
-      <button on:click={dochange} class="button">Change Connection</button>
+      <button
+        on:click={dochange}
+        class="button"
+        >Change Connection
+    </button>
     {/if}
   </div>
 

@@ -40,7 +40,8 @@
                       !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
         </div> 
-        <button class="button"
+        <button
+          class="button"
           on:click={userSendTrigger}
           disabled={($pStrand.curPatternStr === '') ||
                     !($pStrand.triggerUsed)}

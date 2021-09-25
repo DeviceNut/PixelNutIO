@@ -14,7 +14,7 @@
 
 <div class="devbox" class:expand={showinfo}>
   {#if device.ready }
-    <div    on:click={moreinfo}  class="devname" >{device.curname}</div>
+    <div on:click={moreinfo} class="devname" >{device.curname}</div>
     <button on:click={doctrls} class="button" >Controls</button>
   {:else}
     <div class="devscan" >{device.curname}</div>

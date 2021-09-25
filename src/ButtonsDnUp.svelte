@@ -120,14 +120,32 @@
  
 {#if (layer === 0)}
   {#if (track > 0)}
-  <button class="button" on:click={movedn} >Dn</button>
+  <button
+    class="button"
+    on:click={movedn}
+    >Dn
+  </button>
   {/if}
-  <button class="button" on:click={moveup} disabled={track+1 >= $pStrand.tactives} >Up</button>
+  <button
+    class="button"
+    on:click={moveup}
+    disabled={track+1 >= $pStrand.tactives}
+    >Up
+  </button>
 {:else}
   {#if (layer > 1)}
-  <button class="button" on:click={movedn} >Dn</button>
+  <button
+    class="button"
+    on:click={movedn}
+    >Dn
+  </button>
   {/if}
-  <button class="button" on:click={moveup} disabled={layer+1 >= $pStrand.tracks[track].lactives} >Up</button>
+  <button
+    class="button"
+    on:click={moveup}
+    disabled={layer+1 >= $pStrand.tracks[track].lactives}
+    >Up
+  </button>
 {/if}
  
  <style>

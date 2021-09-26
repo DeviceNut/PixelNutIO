@@ -72,12 +72,19 @@ function onMessage(message)
   }
 }
 
+function genUniqueID()
+{
+  const id = '!' + Math.random().toString(36).substr(2, 9);
+  console.log(`MQTT ID: ${id}`);
+  return id;
+};
+
 export const mqttConnect = () =>
 {
   onConnection(false);
   if (mqtt !== null) mqtt.disconnect();
 
-  mqtt = new Paho.Client(get(mqttBrokerIP), MQTT_BROKER_PORT, 'pixelnut');
+  mqtt = new Paho.Client(get(mqttBrokerIP), MQTT_BROKER_PORT, genUniqueID());
 
   console.log(`MQTT Connecting to ${get(mqttBrokerIP)}...`); // DEBUG
 

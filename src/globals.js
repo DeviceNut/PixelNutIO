@@ -4,9 +4,6 @@ export let defDeviceName  = 'PixelNut!';
 export let titleDevices   = 'PixelNut! Devices';
 export let titleHelpDocs  = 'PixelNut! Docs';
 
-// specifies valid chars in device name (exclude ,/\) `~!@#$A%^&*()-_+=[]{}|;:'"<>.?
-export let devNameRegx    = '/[A-Za-z0-9 ]/'
-
 export const MQTT_BROKER_PORT       = 9001;   // MUST be 9001 for websocket
 export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
 export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added

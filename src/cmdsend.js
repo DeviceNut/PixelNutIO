@@ -26,7 +26,7 @@ export const sendCmdToDevice = (cmdstr) =>
   if (device !== null)
     mqttSend(device.curname, cmdstr);
 
-    else console.warn(`Device null on send: ${cmdstr}`);
+  else console.warn(`Device null on send: ${cmdstr}`);
 }
 
 export const sendStrandSwitch = (s) =>

@@ -3,8 +3,12 @@
   import MediaQuery from "svelte-media-query";
 
   import {
+    Modal,
+    Button
+  } from "carbon-components-svelte";
+
+  import {
     defDeviceName,
-    devNameRegx,
     PAGEMODE_DEVICES,
     PAGEMODE_HELPDOCS,
     curPageMode,
@@ -21,11 +25,16 @@
 
   import ModalLinks from './ModalLinks.svelte';
 
+  let openError = false;
   let devname = $curDevice.curname;
   const setname = () =>
   {
     if (devname === '') devname = defDeviceName;
-    userSetDevname(devname);
+    if (!userSetDevname(devname))
+    {
+      openError = true;
+      devname = $curDevice.curname;
+    }
   }
 
   let isPaused = false;
@@ -55,7 +64,6 @@
   {#if matches}
     <div class="header">
       <input
-        pattern={devNameRegx}
         class="title"
         size=32 maxlength=32
         on:change={setname}
@@ -76,7 +84,6 @@
       <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <input
-        pattern={devNameRegx}
         class="title"
         size=32 maxlength=32
         on:change={setname}
@@ -89,6 +96,16 @@
 </MediaQuery>
 
 <ModalLinks {openlinks} />
+
+<Modal
+  passiveModal
+  modalHeading={"Setting Device Name"}
+  bind:open={openError}
+  on:close
+  >
+  <p>Cannot use chars `,/\ in device name.</p><br>
+  <Button kind="secondary" on:click={() => {openError = false;}}>Continue</Button>
+</Modal>
 
 <style>
   .header {

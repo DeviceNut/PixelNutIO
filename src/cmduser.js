@@ -80,11 +80,17 @@ export const userSetDevname = (devname) =>
   {
     if (devname !== device.curname)
     {
-      device.newname = devname;
-      sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+      if (!/[`,/\\]/.test(devname))
+      {
+        device.newname = devname;
+        sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+        return true;
+      }
+      else return false;
     }
   }
-  else console.warn('Setting name on null device');
+
+  return true;
 }
 
 export const userSendPause = (enable) =>

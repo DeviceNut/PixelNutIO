@@ -235,81 +235,84 @@ export const onCommandReply = (msg, fsend) =>
     }
   }
 
-  if (device != null)
+  if (device === null)
   {
-    switch (device.query)
-    {
-      case QUERY_DEVICE:
-      {
-        reply.shift();
-        if (parseDeviceInfo(device, reply))
-        {
-          if (device.report.npatterns > 0)
-          {
-            fsend(name, cmdStr_GetPatInfo);
-            device.query = QUERY_PATTERNS;
-            device.qstage = QSTAGE_NAME;
-            device.qcount = 0;
-
-            // init device patterns/descriptions
-            const obj = { id:'0', text:'<none>', cmd:'' };
-            aDevicePats.set([obj]);
-            aDeviceDesc.set([[]]);
-          }
-          else deviceStart(device);
-        }
-        else deviceStop(device);
-        break;
-      }
-      case QUERY_PATTERNS:
-      {
-        reply.shift();
-        if (parsePatternInfo(device, reply))
-        {
-          if (device.qstage === QSTAGE_NONE)
-          {
-            const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
-            get(aDevicePats).push(obj);
-            get(aDeviceDesc).push([device.qdesc]);
-
-            if (++device.qcount >= device.report.npatterns)
-            {
-              if (device.report.nplugins > 0)
-              {
-                fsend(name, cmdStr_GetPlugInfo);
-                device.query = QUERY_PLUGINS;
-                device.qstage = QSTAGE_NAME;
-                device.qcount = 0;
-              }
-              else deviceStart(device);
-            }
-            else device.qstage = QSTAGE_NAME;
-          }
-          // else keep parsing responses
-        }
-        else deviceStop(device);
-        break;
-      }
-      case QUERY_PLUGINS: // TODO
-      {
-        reply.shift();
-        if (parsePluginInfo(device, reply))
-        {
-          if (++device.qcount >= device.report.nplugins)
-            deviceStart(device);
-        }
-        else deviceStop(device);
-        break;
-      }
-      default:
-      {
-        console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
-        break;        
-      }
-    }
-  
+    //console.log(`Ignoring reply from other device: ${name}`); // DEBUG
   }
-  else console.error(`No device found: "${name}"`);
+  else if (device.ready)
+  {
+    //console.log(`Ignoring reply from current device: ${name}`); // DEBUG
+  }
+  else switch (device.query)
+  {
+    case QUERY_DEVICE:
+    {
+      reply.shift();
+      if (parseDeviceInfo(device, reply))
+      {
+        if (device.report.npatterns > 0)
+        {
+          fsend(name, cmdStr_GetPatInfo);
+          device.query = QUERY_PATTERNS;
+          device.qstage = QSTAGE_NAME;
+          device.qcount = 0;
+
+          // init device patterns/descriptions
+          const obj = { id:'0', text:'<none>', cmd:'' };
+          aDevicePats.set([obj]);
+          aDeviceDesc.set([[]]);
+        }
+        else deviceStart(device);
+      }
+      else deviceStop(device);
+      break;
+    }
+    case QUERY_PATTERNS:
+    {
+      reply.shift();
+      if (parsePatternInfo(device, reply))
+      {
+        if (device.qstage === QSTAGE_NONE)
+        {
+          const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
+          get(aDevicePats).push(obj);
+          get(aDeviceDesc).push([device.qdesc]);
+
+          if (++device.qcount >= device.report.npatterns)
+          {
+            if (device.report.nplugins > 0)
+            {
+              fsend(name, cmdStr_GetPlugInfo);
+              device.query = QUERY_PLUGINS;
+              device.qstage = QSTAGE_NAME;
+              device.qcount = 0;
+            }
+            else deviceStart(device);
+          }
+          else device.qstage = QSTAGE_NAME;
+        }
+        // else keep parsing responses
+      }
+      else deviceStop(device);
+      break;
+    }
+    case QUERY_PLUGINS: // TODO
+    {
+      reply.shift();
+      if (parsePluginInfo(device, reply))
+      {
+        if (++device.qcount >= device.report.nplugins)
+          deviceStart(device);
+      }
+      else deviceStop(device);
+      break;
+    }
+    default:
+    {
+      console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
+      break;        
+    }
+  }
 }
 
 function parseDeviceInfo(device, reply)

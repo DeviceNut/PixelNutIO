@@ -3,11 +3,15 @@
   import MediaQuery from "svelte-media-query";
 
   import {
+    defDeviceName,
+    devNameRegx,
     PAGEMODE_DEVICES,
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    curDevice
+    curDevice,
+    selectSource,
+    selectPattern
    } from './globals.js';
 
   import {
@@ -18,7 +22,11 @@
   import ModalLinks from './ModalLinks.svelte';
 
   let devname = $curDevice.curname;
-  const setname = () => { userSetDevname(devname); }
+  const setname = () =>
+  {
+    if (devname === '') devname = defDeviceName;
+    userSetDevname(devname);
+  }
 
   let isPaused = false;
   let textPause = '';
@@ -34,6 +42,9 @@
   }
   const dodocs = () =>
   {
+    $selectSource = false;  // prevent changing source
+    $selectPattern = false; // or pattern when return
+
     $prevPageMode = $curPageMode;
     $curPageMode = PAGEMODE_HELPDOCS;
   }
@@ -44,6 +55,7 @@
   {#if matches}
     <div class="header">
       <input
+        pattern={devNameRegx}
         class="title"
         size=32 maxlength=32
         on:change={setname}
@@ -64,6 +76,7 @@
       <button on:click={dodevs}  class="button left" >&lt;&lt; Devices</button>
       <button on:click={dopause} class="button left" >{textPause}</button>
       <input
+        pattern={devNameRegx}
         class="title"
         size=32 maxlength=32
         on:change={setname}

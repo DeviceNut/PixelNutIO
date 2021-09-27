@@ -19,10 +19,14 @@ import { mqttSend } from './mqtt.js';
 
 ///////////////////////////////////////////////////////////
 
-function sendCmdToDevice(cmdstr)
+export const sendCmdToDevice = (cmdstr) =>
 {
   let device = get(curDevice);
-  mqttSend(device.curname, cmdstr);
+
+  if (device !== null)
+    mqttSend(device.curname, cmdstr);
+
+    else console.warn(`Device null on send: ${cmdstr}`);
 }
 
 export const sendStrandSwitch = (s) =>

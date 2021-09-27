@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
-  defDeviceName,
+  curDevice,
   nStrands,
   idStrand,
   pStrand,
@@ -59,6 +59,7 @@ import {
 } from './cmdmake.js';
 
 import {
+  sendCmdToDevice,
   sendLayerCmd,
   sendStrandCmd,
   sendEntirePattern,
@@ -74,12 +75,16 @@ import { parsePattern } from './cmdparse.js';
 
 export const userSetDevname = (devname) =>
 {
-  // TODO disallow some chars for device name
-  if (devname === '') devname = defDeviceName;
-
-  get(curDevice).newname = devname;
-
-  sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+  const device = get(curDevice);
+  if (device !== null)
+  {
+    if (devname !== device.curname)
+    {
+      device.newname = devname;
+      sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+    }
+  }
+  else console.warn('Setting name on null device');
 }
 
 export const userSendPause = (enable) =>
@@ -174,6 +179,7 @@ export const userStrandSelect = (combine) =>
 // Pattern Commands from PanelMain: 
 
 // user just selected pattern to use
+// return false if pattern parse failed
 export const userSetPattern = () =>
 {
   const index = get(pStrand).curPatternIdx;
@@ -195,8 +201,9 @@ export const userSetPattern = () =>
       makeEntireCmdStr();
       sendEntirePattern();
     }
-    // else software bug? FIXME?
+    else return false;
   }
+  return true;
 }
 
 export const userClearPattern = () =>

@@ -183,11 +183,7 @@ export const onNotification = (msg, fsend) =>
   {
     if (device.curname === name)
     {
-      if (device.failed)
-      {
-        // ignore? TODO?
-      }
-      else device.tstamp = curTimeSecs();
+      if (!device.failed) device.tstamp = curTimeSecs();
 
       return; // don't add this device
     }
@@ -198,6 +194,7 @@ export const onNotification = (msg, fsend) =>
       device.curname = name;
       device.newname = '';
       device.tstamp = curTimeSecs();
+
       return; // don't add this device
     }
   }
@@ -237,12 +234,12 @@ export const onCommandReply = (msg, fsend) =>
 
   if (device === null)
   {
-    console.log(`Ignoring reply from other device: ${name}`); // DEBUG
+    //console.log(`Ignoring reply from other device: ${name}`); // DEBUG
   }
   else if (device.ready)
   {
     // MUST HAVE THIS: BUG IN SVELTE COMPILER?!?!
-    console.log(`Ignoring reply from current device: ${name}`); // DEBUG
+    //console.log(`Ignoring reply from current device: ${name}`); // DEBUG
   }
   else switch (device.query)
   {

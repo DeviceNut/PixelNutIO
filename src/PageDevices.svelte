@@ -147,11 +147,11 @@
 
 <Modal
   passiveModal
-  modalHeading={"Connection Error"}
+  modalHeading={"Connection Failed"}
   bind:open={openError}
   on:close
   >
-  <p>Connection to that Message Broker failed.</p><br>
+  <p>No Message Broker found at {$mqttBrokerIP}.</p><br>
   <Button kind="secondary" on:click={() => {openError = false; openForm = true;}}>Continue</Button>
 </Modal>
 

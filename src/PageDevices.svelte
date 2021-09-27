@@ -19,7 +19,7 @@
     deviceList
   } from './globals.js';
 
-  import { storeSetBrokerIP } from './browser.js';
+  import { storeBrokerWrite } from './browser.js';
   import { mqttConnect } from './mqtt.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
@@ -59,9 +59,15 @@
     else if (($deviceList.length > 0) || (--waitcount <= 0))
     {
       scanning = false;
-      if (!$mqttBrokerFail) storeSetBrokerIP();
+      if (!$mqttBrokerFail) storeBrokerWrite();
     }
     else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
+  }
+
+  const doretry = () =>
+  {
+    $mqttBrokerFail = false;
+    doscan();
   }
 
   const dochange = () => { openForm = true; }
@@ -92,7 +98,14 @@
       <button
         on:click={dochange}
         class="button"
-        >Change Connection
+        >Change
+    </button>
+      <button
+        style="margin-left:10px;"
+        on:click={doretry}
+        class="button"
+        disabled={$isConnected}
+        >Retry
     </button>
     {/if}
   </div>

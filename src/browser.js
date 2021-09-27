@@ -7,23 +7,26 @@ import {
 } from './globals.js';
 
 const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
-
-const SavePatternSeparator  = ',';
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
 const SavePatternKeyDesc    = "PixelNut-Desc-";
+const SavePatternSeparator  = ',';
 
 ///////////////////////////////////////////////////////////
 
-export const storeGetBrokerIP = () =>
+export const storeBrokerRead = () =>
 {
   let ipaddr = localStorage.getItem(SaveBrokerIPaddr);
   if (ipaddr === null) ipaddr = '';
   console.log(`Retrieving broker IP: ${ipaddr}`);
+  if (ipaddr === '')
+  {
+    // TODO check if passed IP from server
+  }
   mqttBrokerIP.set(ipaddr);
 }
 
-export const storeSetBrokerIP = () =>
+export const storeBrokerWrite = () =>
 {
   let ipaddr = get(mqttBrokerIP);
   console.log(`Saving broker IP: ${ipaddr}`);

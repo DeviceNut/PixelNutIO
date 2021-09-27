@@ -12,8 +12,6 @@ import {
   onCommandReply
 } from './pixtalk.js';
 
-//const host = '192.168.8.222'; // do NOT put http/wss prefixes on this
-
 const topicDevNotify  = 'PixelNut/Notify';
 const topicDevReply   = 'PixelNut/Reply';
 const topicCommand    = 'PixelNut/Cmd/'; // + devicename

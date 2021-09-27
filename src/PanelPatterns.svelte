@@ -1,7 +1,13 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
-  import { Row, Dropdown } from "carbon-components-svelte";
+
+  import {
+    Row,
+    Dropdown,
+    Modal,
+    Button
+  } from "carbon-components-svelte";
 
   import {
     pStrand,
@@ -111,10 +117,11 @@
     else $selectSource = true;
   }
 
+  let openError = false;
   const selpattern = () =>
   {
-    if ($selectPattern) userSetPattern();
-    else $selectPattern = true;
+    if (!$selectPattern) $selectPattern = true;
+    else if (!userSetPattern()) openError = true;
   }
 
   $updateSources = true;
@@ -157,7 +164,7 @@
         <Dropdown
           size="lg"
           type="inline"
-          on:select={userSetPattern}
+          on:select={selpattern}
           bind:selectedIndex={$pStrand.curPatternIdx}
           bind:items={$aCurListPats}
         />
@@ -239,3 +246,12 @@
 
 {/if}
 
+<Modal
+  passiveModal
+  modalHeading={"Pattern Error"}
+  bind:open={openError}
+  on:close
+  >
+  <p>Failed to interpret pattern commands.</p><br>
+  <Button kind="secondary" on:click={() => {openError = false;}}>Continue</Button>
+</Modal>

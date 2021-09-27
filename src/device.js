@@ -191,9 +191,9 @@ export let deviceSetup = (device) =>
           strand.curPatternIdx = devlen;
         }
       }
-      else doreset = true;
+      else doreset = true; // if no pattern string
     }
-    else doreset = true;
+    else doreset = true; // if pattern string parse error
 
     if (doreset) // set to first pattern in built-ins
     {
@@ -215,6 +215,8 @@ export let deviceSetup = (device) =>
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
 
+  // prevent disturbing what's currently running on the device
+  // when first connect unless explicitely setting pattern
   selectSource.set(false);
   selectPattern.set(doselect);
 

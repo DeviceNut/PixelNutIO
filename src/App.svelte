@@ -8,7 +8,7 @@
   } from './globals.js';
 
   import {
-    storeGetBrokerIP,
+    storeBrokerRead,
     storePatternsInit
   } from './browser.js';
 
@@ -22,7 +22,7 @@
   helpInit();
   presetsInit();
   storePatternsInit();
-  storeGetBrokerIP();
+  storeBrokerRead();
 
   $curPageMode = PAGEMODE_DEVICES;
 

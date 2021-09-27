@@ -52,7 +52,6 @@
     background-color: var(--bg-color-panel);
   }
   .col1 {
-    /* min-width:320px; FIXME*/
     max-width:550px;
   }
   .col2 {

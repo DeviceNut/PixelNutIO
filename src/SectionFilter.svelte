@@ -46,7 +46,11 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+        {#if ($pStrand.tracks[track].layers[layer].pluginIndex === 0) }
+          Explain filter effect menu.
+        {:else}
+          {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+        {/if}
       </p>
     </Row>
   {/if}

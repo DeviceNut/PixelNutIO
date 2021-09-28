@@ -13,6 +13,7 @@
 
   import {
     pStrand,
+    aListSources,
     aCurListPats,
     aCurListDesc,
     updateSources,
@@ -31,8 +32,14 @@
   let heading, listdesc;
   $:
   {
-    heading = $aCurListPats[$pStrand.curPatternIdx].text;
-    listdesc = $aCurListDesc[$pStrand.curPatternIdx];
+    if ($pStrand.curSourceIdx !== 0)
+    {
+      heading = $aCurListPats[$pStrand.curPatternIdx].text;
+      listdesc = $aCurListDesc[$pStrand.curPatternIdx];
+    }
+    if ($aListSources.length > 1)
+         heading = 'Source and Pattern Menus'
+    else heading = 'Pattern Menu'
   }
 
   let openHelp = false;
@@ -152,9 +159,16 @@
   bind:open={openHelp}
   on:close
   >
-  {#each listdesc as para,n}
-    <p>{para}</p><br>
-  {/each}
+  {#if ($pStrand.curSourceIdx === 0) }
+    {#if ($aListSources.length > 1) }
+      <p>Explain use of source menu.</p>
+    {/if}
+    <p>Explain use of pattern menu.</p>
+  {:else}
+    {#each listdesc as para,n}
+      <p>{para}</p><br>
+    {/each}
+  {/if}
 </Modal>
 
 <Modal

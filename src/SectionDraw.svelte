@@ -84,7 +84,11 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
+        {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex === 0) }
+          Explain drawing effect menu.
+        {:else}
+          {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
+        {/if}
       </p>
     </Row>
   {/if}

@@ -128,7 +128,7 @@
 
     <SlidersPropsLocal {track} />
 
-    <Row style="margin-top:7px;">
+    <Row style="margin-top:10px; margin-bottom:5px;">
       <Checkbox labelText="Reverse Direction"
         on:check={setDirect}
         bind:checked={$pStrand.tracks[track].drawProps.reverseDir}

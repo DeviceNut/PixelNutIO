@@ -1,7 +1,6 @@
 <script>
 
   import {
-    Row,
     Checkbox,
     Dropdown,
     RadioButton,
@@ -180,7 +179,7 @@
 
       {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
 
-      <div style="margin-top:10px; padding-top:1px; background-color: var(--bg-color-divider);"/>
+      <div style="margin:10px 0 10px; 0; background-color: var(--bg-color-divider);"/>
 
         <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
         <Checkbox labelText="Random"
@@ -198,22 +197,19 @@
   </div>
 
 {:else}
-  <div style="margin:7px 0 0 -13px; padding:5px 0 5px 5px;
-              background-color: var(--bg-color-controls-area);">
 
-    <Row style="margin:0;">
-      <Checkbox labelText="Trigger once at start"
-        style="padding: 3px;"
-        on:check={autoStart}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigAutoStart}
-      />
-    </Row>
-    <Row style="margin:0;">
-      <Checkbox labelText="Trigger from main controls"
-        style="padding: 3px;"
-        on:check={setMain}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
-      />
-    </Row>
+  <div style="margin:5px -10px 0 -10px; padding:5px;
+              background-color: var(--bg-color-controls-area);">
+    <Checkbox labelText="Trigger once at start"
+      style="padding: 3px;"
+      on:check={autoStart}
+      bind:checked={$pStrand.tracks[track].layers[layer].trigAutoStart}
+    />
+    <Checkbox labelText="Trigger from main controls"
+      style="padding: 3px;"
+      on:check={setMain}
+      bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
+    />
   </div>
+
 {/if}

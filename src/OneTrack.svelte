@@ -15,7 +15,7 @@
 
   let bgc;
   $: bgc = $pStrand.tracks[track].open ? '#222522' : '#111';
-  // cannot use css vars here, and <Row> cannot take a class
+  // cannot use css vars here, and <style> cannot access globals
 
 </script>
 

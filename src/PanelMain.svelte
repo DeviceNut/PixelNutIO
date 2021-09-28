@@ -27,10 +27,12 @@
   <PanelPatterns/>
   <div class="divider" style="margin-top:20px;"></div>
   <Row style="margin-top:10px; margin-bottom:15px;">
+
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
-      <Row>
+
+      <Row style="margin-top:10px;">
         <div style="max-width:280px; margin-left:17px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
@@ -61,5 +63,6 @@
   .button {
     height: 35px;
     padding: 3px;
+    margin-top: 5px;
   }
 </style>

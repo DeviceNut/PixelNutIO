@@ -33,75 +33,96 @@
   const setcount = () => { userSetCount(track); }
   const setovers = () => { userSetOverrides(track); }
 
-  /*
-  <Column>
-    <p class="overrides">Check to allow override from main controls:</p>
-  </Column>
-  <div style="width:100%;">
-    <p class="overrides">Check to allow override from main controls:</p>
-  </div>
-  */  
+  let helpon = false;
+
 </script>
 
-<Row style="margin-top:5px; padding-top:5px;
+<div style="margin-left:-10px;
+            padding-top:13px; padding-bottom:8px;
             background-color: var(--bg-color-controls-area);">
-  <Column>
-    <p style="margin-left:60px; font-size:.9em;">
-      Check to allow main control overrides:</p>
-  </Column>
-</Row>
+  <div>
+    <button
+      class="button-help"
+      on:click={() => {helpon = !helpon;}}
+      >?
+    </button>
+    <p style="display:inline-block; margin-left:25px; font-size:.9em;">
+      Check for main control overrides:</p>
 
-<Row style="margin-right:-7px;
-            background-color: var(--bg-color-controls-area);">
+    {#if helpon }
+        <div style="margin:15px 10px 0 10px; padding:5px;
+                    color: var(--color-textbox);
+                    background-color: var(--bg-color-textbox);">
+          <p style="font-size:.9em;">
+            Explain main control overrides.
+          </p>
+        </div>
+    {/if}
+  </div>
 
-  <Column style="margin-left:-5px; max-width:270px;">
-    <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
-      max={359}
-      onchange={sethue}
-      bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
-      disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
-               !($pStrand.tracks[track].trackBits & pluginBit_COLOR)              ||
-                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
-    />
+  <Row>
+    <Column style="margin-left:10px;">
+      <div style="max-width:245px;">
+        <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
+          max={359}
+          onchange={sethue}
+          bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
+          disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
+                  !($pStrand.tracks[track].trackBits & pluginBit_COLOR)              ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+        />
 
-    <SliderVal name='White&nbsp;'
-      onchange={setwhite}
-      bind:cur={$pStrand.tracks[track].drawProps.pcentWhite}
-      disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overWhite) ||
-               !($pStrand.tracks[track].trackBits & pluginBit_COLOR)                ||
-                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
-    />
+        <SliderVal name='White&nbsp;'
+          onchange={setwhite}
+          bind:cur={$pStrand.tracks[track].drawProps.pcentWhite}
+          disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overWhite) ||
+                  !($pStrand.tracks[track].trackBits & pluginBit_COLOR)                ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
+        />
 
-    <SliderVal name='Count&nbsp;'
-      onchange={setcount}
-      bind:cur={$pStrand.tracks[track].drawProps.pcentCount}
-      disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overCount) ||
-               !($pStrand.tracks[track].trackBits & pluginBit_COUNT)                ||
-                ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
-    />
-  </Column>
+        <SliderVal name='Count&nbsp;'
+          onchange={setcount}
+          bind:cur={$pStrand.tracks[track].drawProps.pcentCount}
+          disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overCount) ||
+                  !($pStrand.tracks[track].trackBits & pluginBit_COUNT)                ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
+        />
+      </div>
+    </Column>
+    <Column>
+      <div style="margin-top:10px;"></div>
+      <Checkbox
+        on:check={setovers}
+        bind:checked={$pStrand.tracks[track].drawProps.overHue}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+      />
+      <div style="margin-top:22px;"></div>
+      <Checkbox
+        on:check={setovers}
+        bind:checked={$pStrand.tracks[track].drawProps.overWhite}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
+      />
+      <div style="margin-top:20px;"></div>
+      <Checkbox
+        on:check={setovers}
+        bind:checked={$pStrand.tracks[track].drawProps.overCount}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
+      />
+    </Column>
+  </Row>
+</div>
 
-  <Column>
-    <div style="margin-top:10px;"></div>
-    <Checkbox
-      on:check={setovers}
-      bind:checked={$pStrand.tracks[track].drawProps.overHue}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
-    />
-    <div style="margin-top:20px;"></div>
-    <Checkbox
-      on:check={setovers}
-      bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
-    />
-    <div style="margin-top:25px;"></div>
-    <Checkbox
-      on:check={setovers}
-      bind:checked={$pStrand.tracks[track].drawProps.overCount}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
-    />
-  </Column>
-</Row>
+<style>
+  .button-help {
+    font-size: .8em;
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+    margin-left: 15px;
+    border-width: 2px;
+    border-radius: 75%;
+  }
+</style>

@@ -15,5 +15,5 @@ Svelte Issues:
 2) $var in HTML vs var.get/get(var) in .js, why not preprocess .js and use $var there too?
 3) Can get into infinite callback crash by changing $var inside if with $var.
 4) Should be able to use CSS variables in .js code.
-
+5) Putting <style> in a comment in the <script> section fails compiler.
 

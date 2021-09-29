@@ -76,12 +76,10 @@
       strandClearLayer(track, $pStrand.tracks[track].lactives)
     }
 
-    updateTriggerLayers(); // update trigger sources and rebuild cmdstrs
+    updateTriggerLayers(); // update trigger sources
+    updateAllTracks();     // recreate all tracks
 
-    // must update all tracks and resend entire command
-    // whenever a track/layer is deleted
-    updateAllTracks();
-    sendEntirePattern();
+    sendEntirePattern(); // FIXME when device command handling updated
   }
 
 </script>

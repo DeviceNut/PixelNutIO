@@ -205,7 +205,7 @@ export const userSetPattern = () =>
     {
       strandCopyAll();
       makeEntireCmdStr();
-      sendEntirePattern();
+      sendEntirePattern(); // set new pattern
     }
     else return false;
   }
@@ -220,7 +220,7 @@ export const userClearPattern = () =>
   makeEntireCmdStr();
 
   if (get(pStrand).curPatternIdx === 0)
-    sendEntirePattern(); // must send here
+    sendEntirePattern(); // clear pattern
 
   // else userSetPattern() will be called
   else get(pStrand).curPatternIdx = 0;
@@ -418,12 +418,10 @@ export const userSetDrawEffect = (track) =>
     strand.tracks[track].layers[DRAW_LAYER].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
 
-    updateTriggerLayers();
+    updateTriggerLayers(); // update trigger sources
+    updateAllTracks();     // recreate all tracks
 
-    // must update all tracks and resend entire command
-    // when an effect is changed
-    updateAllTracks();
-    sendEntirePattern();
+    sendEntirePattern(); // FIXME when device command handling updated
   }
 }
 
@@ -576,13 +574,10 @@ export const userSetFilterEffect = (track, layer) =>
     strand.tracks[track].layers[layer].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
-    //console.log('setfilter: ', pindex, bits);
-    updateTriggerLayers();
+    updateTriggerLayers(); // update trigger sources
+    updateAllTracks();     // recreate all tracks
 
-    // must update all tracks and resend entire command
-    // when an effect is changed
-    updateAllTracks();
-    sendEntirePattern();
+    sendEntirePattern(); // FIXME when device command handling updated
   }
 }
 
@@ -644,8 +639,7 @@ export const userSetTrigType = (track, layer) =>
     {
       updateLayerVals(track, layer);
 
-      // must resend entire command to remove trigger FIXME
-      sendEntirePattern();
+      sendEntirePattern(); // FIXME when trigger command updated
     }
     else if (valstr === 'once')
     {

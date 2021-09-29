@@ -46,7 +46,7 @@
   const dohelp = () => { openHelp = !openHelp; }
 
   const doclear = () => { userClearPattern(); }
-  const dostore = () => { sendEntirePattern(true); }
+  const dostore = () => { sendEntirePattern(true); } // store pattern
 
   let openSave = false;
   let savename, savedesc;

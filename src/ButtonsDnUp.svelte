@@ -94,10 +94,9 @@
          checkTrigTrack(track+1);
     else checkTrigLayer(layer+1);
 
-    // must update all tracks and resend entire command
-    // whenever a track/layer is moved
-    updateAllTracks();
-    sendEntirePattern();
+    updateAllTracks(); // recreate all tracks
+
+    sendEntirePattern(); // FIXME when device command handling updated
 
     $pStrand = $pStrand; // refresh screen
   }
@@ -108,10 +107,9 @@
          checkTrigTrack(track);
     else checkTrigLayer(layer);
 
-    // must update all tracks and resend entire command
-    // whenever a track/layer is moved
-    updateAllTracks();
-    sendEntirePattern();
+    updateAllTracks(); // recreate all tracks
+
+    sendEntirePattern(); // FIXME when device command handling updated
 
     $pStrand = $pStrand; // refresh screen
   }

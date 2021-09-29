@@ -46,8 +46,9 @@
     if (layer === 0) makeTrackCmdStrs(track);
     else             makeLayerCmdStr(track, layer);
 
-    makeEntireCmdStr();
-    sendEntirePattern();
+    makeEntireCmdStr(); // build new pattern string
+
+    sendEntirePattern(); // FIXME when device command handling updated
   }
 
   const dosolo = () =>

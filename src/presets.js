@@ -28,8 +28,9 @@ export const presetsInit = () =>
     { id: 10, text: 'Blink Surges',       cmd: 'E51 C10 D60 T E112 T E131 F1000 I T G' },
     { id: 11, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
     { id: 12, text: 'Color Melts',        cmd: 'E0 H30 D30 T E110 F600 I T E111 A1 G' },
-    { id: 13, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I O10 T20 G' },
-    { id: 14, text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 F0 A1 I T G' },
+    { id: 13, text: 'July 4th',           cmd: 'E50 J0 K33 H355 D10 T E50 J33 K34 W100 D10 T E50 J67 K34 H230 D10 T G' },
+    { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I O10 T20 G' },
+    { id: 15, text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 F0 A1 I T G' },
   ]);
 
   aBuiltinDesc.set([
@@ -88,6 +89,9 @@ export const presetsInit = () =>
     [
       "Colors melt from one to the other, with slow and smooth transitions.",
       "Triggering causes a new target color to be is chosen, with larger Forcs causing larger color changes."
+    ],
+    [
+      "Celebrate the holiday with Red, White, and Blue twinkles!"
     ],
     [
       "Festive red and green twinkles, with an occasional white comet that streaks across them.",

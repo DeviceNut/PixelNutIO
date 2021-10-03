@@ -13,7 +13,9 @@ import {
   aDeviceDesc
  } from './globals.js';
 
-// Query commands:
+ export const cmdStr_VersionStr    = "P!!"   // specifies response format version
+ 
+ // Query commands:
 export const cmdStr_GetDevInfo    = "?";    // returns info on device
 export const cmdStr_GetPatInfo    = "?P";   // returns info on custom patterns
 export const cmdStr_GetPlugInfo   = "?G";   // returns info on custom plugins
@@ -42,7 +44,6 @@ export const strandState =
   xt_white: 0,          //  white property (percent)
   xt_count: 0,          //  count property (percent)
 
-  patnum: 0,            // pattern number (not used?)
   pattern: ''           // pattern string
 };
 
@@ -246,23 +247,30 @@ export const onCommandReply = (msg, fsend) =>
     case QUERY_DEVICE:
     {
       reply.shift();
-      if (parseDeviceInfo(device, reply))
+      if (reply[0] === cmdStr_VersionStr)
       {
-        if (device.report.npatterns > 0)
+        reply.shift();
+        console.log('reply: ', reply);
+        if (parseDeviceInfo(device, reply))
         {
-          fsend(name, cmdStr_GetPatInfo);
-          device.query = QUERY_PATTERNS;
-          device.qstage = QSTAGE_NAME;
-          device.qcount = 0;
+          if (device.report.npatterns > 0)
+          {
+            fsend(name, cmdStr_GetPatInfo);
+            device.query = QUERY_PATTERNS;
+            device.qstage = QSTAGE_NAME;
+            device.qcount = 0;
 
-          // init device patterns/descriptions
-          const obj = { id:'0', text:'<none>', cmd:'' };
-          aDevicePats.set([obj]);
-          aDeviceDesc.set([[]]);
+            // init device patterns/descriptions
+            const obj = { id:'0', text:'<none>', cmd:'' };
+            aDevicePats.set([obj]);
+            aDeviceDesc.set([[]]);
+          }
+          else deviceStart(device);
         }
-        else deviceStart(device);
+        else deviceStop(device);
       }
       else deviceStop(device);
+
       break;
     }
     case QUERY_PATTERNS:
@@ -324,7 +332,7 @@ function parseDeviceInfo(device, reply)
   strs = line.split(' ');
   if (strs.length < 6)
   {
-    console.error(`Unexpected parm count (line 2): "${strs.length}"`);
+    console.error(`Unexpected parm count (line 2): ${strs.length}`);
     return false;
   }
 
@@ -337,7 +345,7 @@ function parseDeviceInfo(device, reply)
 
   if (device.report.nstrands < 1)
   {
-    console.error(`Bad strand count: "${nstrands}"`);
+    console.error(`Bad strand count: "${device.report.nstrands}"`);
     return false;
   }
 
@@ -385,7 +393,7 @@ function parseDeviceInfo(device, reply)
     reply.shift();
 
     strs = line.split(' ');
-    if (strs.length < 6)
+    if (strs.length < 5)
     {
       console.error(`Unexpected parm count (s2): "${strs.length}"`);
       return false;
@@ -396,7 +404,6 @@ function parseDeviceInfo(device, reply)
     strand.xt_white = parseInt(strs[2]);
     strand.xt_count = parseInt(strs[3]);
     strand.force    = parseInt(strs[4]);
-    strand.patnum   = parseInt(strs[5]);
 
     strand.pattern = reply[0];
     reply.shift();

@@ -21,7 +21,8 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TriggerRange  ,
+  cmdStr_TrigRange     ,
+  cmdStr_Trigger       ,
   cmdStr_Clear         ,
   cmdStr_Go
   } from './pixcmds.js';
@@ -381,7 +382,7 @@ export const parsePattern = (pattern) =>
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = mintime;
             break;
           }
-          case cmdStr_TriggerRange:
+          case cmdStr_Trigger: //FIXME Range:
           {
             if (isNaN(val))
             {

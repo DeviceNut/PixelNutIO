@@ -7,16 +7,25 @@
    } from './globals.js';
  
   import {
+    DRAW_LAYER,
+    OPER_SWAP_LAYER,
+    OPER_SWAP_TRACK,
+    cmdStr_Operation
+  } from './pixcmds.js';
+
+  import {
     strandSwapTracks,
     strandSwapLayers
   } from './strands.js';
 
   import {
     updateAllTracks,
-    updateTriggerLayers
+    updateTriggerLayers,
+    convTrackLayerToID
   } from './cmdmake.js';
 
-  import { sendEntirePattern } from './cmdsend.js';
+  import { sendEntirePattern } from './cmdsend.js'; // FIXME
+  import { sendLayerCmd } from './cmdsend.js';
 
   export let track;
   export let layer;
@@ -90,11 +99,22 @@
 
   const moveup = () =>
   {
-    if (layer === 0)
-         checkTrigTrack(track+1);
-    else checkTrigLayer(layer+1);
+    if (layer === DRAW_LAYER)
+    {
+      checkTrigTrack(track+1);
+      updateAllTracks(); // recreate all tracks
 
-    updateAllTracks(); // recreate all tracks
+      //let layerid = convTrackLayerToID(track, DRAW_LAYER);
+      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
+    }
+    else
+    {
+      checkTrigLayer(layer+1);
+      updateAllTracks(); // recreate all tracks
+
+      //let layerid = convTrackLayerToID(track, layer);
+      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
+    }
 
     sendEntirePattern(); // FIXME when device command handling updated
 
@@ -103,11 +123,22 @@
 
   const movedn = () =>
   {
-    if (layer === 0)
-         checkTrigTrack(track);
-    else checkTrigLayer(layer);
+    if (layer === DRAW_LAYER)
+    {
+      checkTrigTrack(track);
+      updateAllTracks(); // recreate all tracks
 
-    updateAllTracks(); // recreate all tracks
+      //let layerid = convTrackLayerToID(track-1, DRAW_LAYER);
+      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
+    }
+    else
+    {
+      checkTrigLayer(layer);
+      updateAllTracks(); // recreate all tracks
+
+      //let layerid = convTrackLayerToID(track, layer-1);
+      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
+    }
 
     sendEntirePattern(); // FIXME when device command handling updated
 
@@ -116,7 +147,7 @@
  
 </script>
  
-{#if (layer === 0)}
+{#if (layer === DRAW_LAYER)}
   {#if (track > 0)}
   <button
     class="button"
@@ -131,7 +162,7 @@
     >Up
   </button>
 {:else}
-  {#if (layer > 1)}
+  {#if (layer !== DRAW_LAYER)}
   <button
     class="button"
     on:click={movedn}

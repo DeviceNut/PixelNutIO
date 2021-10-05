@@ -40,7 +40,7 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TriggerRange  ,
+  cmdStr_TrigRange  ,
 } from './pixcmds.js';
 
 import {
@@ -422,6 +422,9 @@ export const userSetDrawEffect = (track) =>
     updateAllTracks();     // recreate all tracks
 
     sendEntirePattern(); // FIXME when device command handling updated
+
+    //let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
   }
 }
 
@@ -578,6 +581,9 @@ export const userSetFilterEffect = (track, layer) =>
     updateAllTracks();     // recreate all tracks
 
     sendEntirePattern(); // FIXME when device command handling updated
+
+    //let layerid = convTrackLayerToID(track, layer);
+    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
   }
 }
 
@@ -646,7 +652,7 @@ export const userSetTrigType = (track, layer) =>
       updateLayerVals(track, layer);
 
       let layerid = convTrackLayerToID(track, layer);
-      sendLayerCmd(layerid, cmdStr_TriggerRange); // no value is set for 'once' type
+      sendLayerCmd(layerid, cmdStr_TrigRange); // no value is set for 'once' type
     }
     else if (valstr === 'auto')
     {
@@ -656,7 +662,7 @@ export const userSetTrigType = (track, layer) =>
 
         let layerid = convTrackLayerToID(track, layer);
         let range = strand.tracks[track].layers[layer].trigDelayRange;
-        sendLayerCmd(layerid, cmdStr_TriggerRange, range);
+        sendLayerCmd(layerid, cmdStr_TrigRange, range);
       }
     }
   }
@@ -734,7 +740,7 @@ export const userSetTrigDrange = (track, layer) =>
     updateLayerVals(track, layer);
 
     let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TriggerRange, dmax);
+    sendLayerCmd(layerid, cmdStr_TrigRange, dmax);
 
     return true;
   }

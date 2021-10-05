@@ -22,7 +22,8 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TriggerRange  ,
+  cmdStr_TrigRange     ,
+  cmdStr_Trigger       ,
   cmdStr_Go            
   } from './pixcmds.js';
 
@@ -248,11 +249,11 @@ export const makeLayerCmdStr = (track, layer) =>
       if (player.trigDelayMin !== 1)
         cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
 
-      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange}${player.trigDelayRange} `);
+      cmdstr = cmdstr.concat(`${cmdStr_Trigger}${player.trigDelayRange} `);
     }
     else if (player.trigTypeStr === 'once')
     {
-      cmdstr = cmdstr.concat(`${cmdStr_TriggerRange} `);
+      cmdstr = cmdstr.concat(`${cmdStr_Trigger} `);
     }
   }
 

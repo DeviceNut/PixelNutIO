@@ -3,7 +3,6 @@
   import { Checkbox } from 'carbon-components-svelte';
 
   import {
-    DRAW_LAYER,
     overBit_DegreeHue,
     overBit_PcentWhite,
     overBit_PcentCount,

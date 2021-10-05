@@ -7,16 +7,25 @@
   } from './globals.js';
 
   import {
+    DRAW_LAYER,
+    OPER_DEL_LAYER,
+    OPER_DEL_TRACK,
+    cmdStr_Operation
+  } from './pixcmds.js';
+
+  import {
     strandClearTrack,
     strandClearLayer
   } from './strands.js';
 
   import {
     updateAllTracks,
-    updateTriggerLayers
+    updateTriggerLayers,
+    convTrackLayerToID
   } from './cmdmake.js';
 
-  import { sendEntirePattern } from './cmdsend.js';
+  import { sendEntirePattern } from './cmdsend.js'; // FIXME
+  import { sendLayerCmd } from './cmdsend.js';
 
   export let track;
 
@@ -59,11 +68,16 @@
 
   const dodel = () =>
   {
+    let layer, oper;
+
     if (istrack)
     {
       let n = --($pStrand.tactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
+
+      oper = OPER_DEL_TRACK;
+      layer = DRAW_LAYER;
 
       strandClearTrack($pStrand.tactives)
     }
@@ -73,12 +87,17 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      strandClearLayer(track, $pStrand.tracks[track].lactives)
+      oper = OPER_DEL_LAYER;
+      layer = $pStrand.tracks[track].lactives;
+
+      strandClearLayer(track, layer);
     }
 
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
+    //let layerid = convTrackLayerToID(track, layer);
+    //sendLayerCmd(layerid, cmdStr_Operation, `${oper}`);
     sendEntirePattern(); // FIXME when device command handling updated
   }
 

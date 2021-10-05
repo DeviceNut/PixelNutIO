@@ -1,7 +1,8 @@
 <script>
  
   import {
-    DRAW_LAYER
+    DRAW_LAYER,
+    cmdStr_LayerMute
   } from './pixcmds.js';
 
   import {
@@ -13,10 +14,12 @@
   import {
     makeTrackCmdStrs,
     makeLayerCmdStr,
-    makeEntireCmdStr
+    makeEntireCmdStr,
+    convTrackLayerToID
   } from './cmdmake.js';
 
-  import { sendEntirePattern } from './cmdsend.js';
+  import { sendEntirePattern } from './cmdsend.js'; // FIXME
+  import { sendLayerCmd } from './cmdsend.js';
 
   export let track;
   export let layer;
@@ -30,12 +33,12 @@
 
     if (layer == DRAW_LAYER)
     {
-      noMute = $pStrand.tracks[DRAW_LAYER].layers[0].pluginIndex == 0;
+      noMute = $pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex == 0;
       noSolo = ($pStrand.tactives <= 1) || noMute;
     }
     else
     {
-      noMute = ($pStrand.tracks[track].layers[0].pluginIndex == 0) ||
+      noMute = ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex == 0) ||
                ($pStrand.tracks[track].layers[layer].pluginIndex == 0);
       noSolo = ($pStrand.tracks[track].lactives <= 2) || noMute;
     }
@@ -43,10 +46,11 @@
 
   function rebuild()
   {
-    if (layer === 0) makeTrackCmdStrs(track);
-    else             makeLayerCmdStr(track, layer);
+    if (layer === DRAW_LAYER)
+         makeTrackCmdStrs(track);
+    else makeLayerCmdStr(track, layer);
 
-    makeEntireCmdStr(); // build new pattern string
+    makeEntireCmdStr();  // build new pattern string
 
     sendEntirePattern(); // FIXME when device command handling updated
   }
@@ -58,7 +62,7 @@
     // setting a track to Solo turns off its Mute but turns it on for all other
     // tracks, but turning off the Solos for all other tracks, whereas turning
     // off the Solo turns off Mutes for all other tracks.
-    if (layer === 0)
+    if (layer === DRAW_LAYER)
     {
       if (isSolo)
       {
@@ -66,14 +70,19 @@
 
         for (let i = 0; i < $nTracks; ++i)
         {
+          //let layerid = convTrackLayerToID(i, DRAW_LAYER);
           if (i !== track)
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = true;
+
+            //sendLayerCmd(layerid, cmdStr_LayerMute, true);
           }
           else
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
+
+            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
           }
         }
       }
@@ -86,6 +95,9 @@
           if (i !== track)
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
+
+            //let layerid = convTrackLayerToID(i, DRAW_LAYER);
+            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
           }
         }
       }
@@ -103,14 +115,19 @@
 
         for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
         {
+          //let layerid = convTrackLayerToID(track, i);
           if (i !== layer)
           {
             $pStrand.tracks[track].layers[i].solo = false;
             $pStrand.tracks[track].layers[i].mute = true;
+
+            //sendLayerCmd(layerid, cmdStr_LayerMute, true);
           }
           else
           {
             $pStrand.tracks[track].layers[i].mute = false;
+
+            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
           }
         }
       }
@@ -123,6 +140,9 @@
           if (i !== layer)
           {
             $pStrand.tracks[track].layers[i].mute = false;
+
+            //let layerid = convTrackLayerToID(track, i);
+            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
           }
         }
       }
@@ -136,29 +156,24 @@
     isMute = !isMute;
     $pStrand.tracks[track].layers[layer].mute = isMute;
 
+    //let layerid = convTrackLayerToID(track, layer);
+    //sendLayerCmd(layerid, cmdStr_LayerMute, `${isMute}`);
+
     // turning off mute for a track/layer that is not on Solo
     // turns off the Solo for any other track/layer
     if (!isMute)
     {
-      if (layer === 0)
+      if (layer === DRAW_LAYER)
       {
         for (let i = 0; i < $nTracks; ++i)
-        {
           if (i !== track)
-          {
             $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
-          }
-        }
       }
       else
       {
-        for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
-        {
+        for (let i = 1; i < $tLayers; ++i) // note layer 0 (DRAW_LAYER) not affected
           if (i !== layer)
-          {
             $pStrand.tracks[track].layers[i].solo = false;
-          }
-        }
       }
     }
 

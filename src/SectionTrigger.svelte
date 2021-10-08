@@ -82,7 +82,7 @@
 
 </script>
 
-<div style="margin:10px 0 7px -10px;
+<div style="margin:5px 0 7px -10px;
             padding-top:13px; padding-bottom:5px;
             background-color: var(--bg-color-controls-area);">
 

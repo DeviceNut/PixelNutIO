@@ -37,7 +37,7 @@
 
 </script>
 
-<div style="margin-left:-10px;
+<div style="margin-left:-10px; margin-bottom:7px;
             padding-top:13px; padding-bottom:8px;
             background-color: var(--bg-color-controls-area);">
 

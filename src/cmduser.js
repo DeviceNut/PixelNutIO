@@ -236,6 +236,43 @@ export const userClearPattern = () =>
   get(pStrand).showMenu = true;
 }
 
+export const userSetEffect = (track, layer, elist) =>
+{
+  const strand = get(pStrand);
+  const pindex = strand.tracks[track].layers[layer].pluginIndex;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
+
+    const bits = elist[pindex].bits;
+    strand.tracks[track].layers[layer].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
+
+    updateTriggerLayers(); // update trigger sources
+    updateAllTracks();     // recreate all tracks
+
+    sendEntirePattern(); // FIXME when device command handling updated
+    //userSendToLayer(track, layer, cmdStr_SwitchEffect, `${pindex}`);
+  }
+}
+
+export const userSetOwrite = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const orval = get(pStrand).tracks[track].drawProps.orPixelVals;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals !== orval)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = orval;
+
+    updateLayerVals(track, layer);
+    userSendToLayer(track, layer, cmdStr_OwritePixs, (orval ? 1 : 0));
+  }
+}
+
+// Main Controls:
+
 export const userSetBright = (track) =>
 {
   if (track === undefined)
@@ -355,6 +392,59 @@ export const userSetProps = () =>
   }
 }
 
+export const userSendTrigger = () =>
+{
+  sendStrandCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
+}
+
+// Track Controls:
+
+export const userSetOffset = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const strand = get(pStrand);
+  const offset = strand.tracks[track].drawProps.pcentOffset;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset !== offset)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
+
+    updateLayerVals(track, layer);
+    userSendToLayer(track, layer, cmdStr_PcentOffset, offset);
+  }
+}
+
+export const userSetLength = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const strand = get(pStrand);
+  const extent = strand.tracks[track].drawProps.pcentExtent;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent !== extent)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
+
+    updateLayerVals(track, layer);
+    userSendToLayer(track, layer, cmdStr_PcentExtent, extent);
+  }
+}
+
+export const userSetDirect = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const rdir = get(pStrand).tracks[track].drawProps.reverseDir;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
+
+    updateLayerVals(track, layer);
+    userSendToLayer(track, layer, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
+  }
+}
+
+// Track Properties:
+
 export const userSetHue = (track) =>
 {
   const layer = DRAW_LAYER;
@@ -397,37 +487,6 @@ export const userSetCount = (track) =>
   }
 }
 
-export const userSetForce = () =>
-{
-  // do nothing when user changes force value
-}
-
-export const userSendTrigger = () =>
-{
-  sendStrandCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
-}
-
-export const userSetEffect = (track, layer, elist) =>
-{
-  const strand = get(pStrand);
-  const pindex = strand.tracks[track].layers[layer].pluginIndex;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
-
-    const bits = elist[pindex].bits;
-    strand.tracks[track].layers[layer].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
-
-    updateTriggerLayers(); // update trigger sources
-    updateAllTracks();     // recreate all tracks
-
-    sendEntirePattern(); // FIXME when device command handling updated
-    //userSendToLayer(track, layer, cmdStr_SwitchEffect, `${pindex}`);
-  }
-}
-
 export const userSetOverrides = (track) =>
 {
   const layer = DRAW_LAYER;
@@ -467,63 +526,7 @@ export const userSetOverrides = (track) =>
   }
 }
 
-export const userSetOffset = (track) =>
-{
-  const layer = DRAW_LAYER;
-  const strand = get(pStrand);
-  const offset = strand.tracks[track].drawProps.pcentOffset;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset !== offset)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
-
-    updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentOffset, offset);
-  }
-}
-
-export const userSetLength = (track) =>
-{
-  const layer = DRAW_LAYER;
-  const strand = get(pStrand);
-  const extent = strand.tracks[track].drawProps.pcentExtent;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent !== extent)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
-
-    updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentExtent, extent);
-  }
-}
-
-export const userSetOwrite = (track) =>
-{
-  const layer = DRAW_LAYER;
-  const orval = get(pStrand).tracks[track].drawProps.orPixelVals;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals !== orval)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = orval;
-
-    updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_OwritePixs, (orval ? 1 : 0));
-  }
-}
-
-export const userSetDirect = (track) =>
-{
-  const layer = DRAW_LAYER;
-  const rdir = get(pStrand).tracks[track].drawProps.reverseDir;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
-
-    updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_Direction, (rdir ? 0 : 1)); // 1 is default
-  }
-}
+// Trigger Settings:
 
 export const userSetTrigStart = (track, layer) =>
 {

@@ -8,13 +8,8 @@
 
   import { MAX_FORCE_VALUE } from './pixcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
-
   import { pStrand } from './globals.js';
-
-  import {
-    userSetForce,
-    userSendTrigger
-  } from './cmduser.js'
+  import { userSendTrigger } from './cmduser.js'
 
   import PanelPatterns from './PanelPatterns.svelte';
   import SlidersMain from './SlidersMain.svelte';
@@ -36,7 +31,6 @@
         <div style="max-width:280px; margin-left:17px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
-            onchange={userSetForce}
             bind:cur={$pStrand.forceValue}
             disabled={($pStrand.curPatternStr === '') ||
                       !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}

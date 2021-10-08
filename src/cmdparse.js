@@ -8,7 +8,7 @@ import {
   overBit_PcentCount   ,
   cmdStr_PcentOffset   ,
   cmdStr_PcentExtent   ,
-  cmdStr_Effect        ,
+  cmdStr_SetEffect        ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
@@ -128,7 +128,7 @@ export const parsePattern = (pattern) =>
         strandClearAll();
         break;
       }
-      case cmdStr_Effect:
+      case cmdStr_SetEffect:
       {
         let firstone = ((track < 0) || (layer < 0));
         let layerbits;

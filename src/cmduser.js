@@ -396,30 +396,7 @@ export const userSendTrigger = () =>
   sendStrandCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
 }
 
-export const userSetDrawEffect = (track) =>
-{
-  const strand = get(pStrand);
-  let pindex = strand.tracks[track].layers[DRAW_LAYER].pluginIndex;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex !== pindex)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginIndex = pindex;
-
-    let bits = get(aEffectsDraw)[pindex].bits;
-    strand.tracks[track].layers[DRAW_LAYER].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[DRAW_LAYER].pluginBits = bits;
-
-    updateTriggerLayers(); // update trigger sources
-    updateAllTracks();     // recreate all tracks
-
-    sendEntirePattern(); // FIXME when device command handling updated
-
-    //let layerid = convTrackLayerToID(track, DRAW_LAYER);
-    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
-  }
-}
-
-export const userSetFilterEffect = (track, layer) =>
+export const userSetEffect = (track, layer, elist) =>
 {
   const strand = get(pStrand);
   let pindex = strand.tracks[track].layers[layer].pluginIndex;
@@ -428,7 +405,7 @@ export const userSetFilterEffect = (track, layer) =>
   {
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
 
-    let bits = get(aEffectsFilter)[pindex].bits;
+    let bits = elist[pindex].bits;
     strand.tracks[track].layers[layer].pluginBits = bits;
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
 
@@ -438,7 +415,7 @@ export const userSetFilterEffect = (track, layer) =>
     sendEntirePattern(); // FIXME when device command handling updated
 
     //let layerid = convTrackLayerToID(track, layer);
-    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
+    //sendLayerCmd(layerid, cmdStr_SwitchEffect, `${pindex}`);
   }
 }
 

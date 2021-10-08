@@ -26,7 +26,7 @@
   } from './presets.js';
 
   import {
-    userSetDrawEffect,
+    userSetEffect,
     userSetBright,
     userSetDelay,
     userSetOffset,
@@ -41,7 +41,7 @@
 
   export let track;
 
-  const setEffect = () => { userSetDrawEffect(track); }
+  const setEffect = () => { userSetEffect(track, DRAW_LAYER, $aEffectsDraw); }
   const setBright = () => { userSetBright(track); }
   const setDelay  = () => { userSetDelay( track); }
   const setOwrite = () => { userSetOwrite(track); }

@@ -36,7 +36,8 @@ export const cmdStr_LayerMute     = "M";    // mute layer: 0=off, 1=on
 export const cmdStr_Operation     = "Z";    // performs operation, value is one of OPER_xxx
 
 // Commands that affect/form patterns       // value is:
-export const cmdStr_Effect        = "E";    // plugin number
+export const cmdStr_SetEffect     = "E";    // plugin number
+export const cmdStr_SwitchEffect  = "S";    // plugin number
 export const cmdStr_PcentOffset   = "J";    // percent of pixels for starting extent
 export const cmdStr_PcentExtent   = "K";    // percent of pixels for extent length
 export const cmdStr_PcentBright   = "B";    // percent of max
@@ -60,7 +61,6 @@ export const cmdStr_Clear         = "P";    // clears all effects
 export const cmdStr_Go            = "G";    // display all effects
 
 // ++ these affect all tracks in the strand
-// Note: there is no command 'S'
 // Note: not using X,Y commands (start/length of extent in pixels)
 // Note: commands not starting with alpha char must be on separate line
 ///////////////////////////////////////////////////////////////////////

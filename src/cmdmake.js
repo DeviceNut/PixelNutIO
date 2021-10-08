@@ -8,7 +8,7 @@ import {
   overBit_PcentCount   ,
   cmdStr_PcentOffset   ,
   cmdStr_PcentExtent   ,
-  cmdStr_Effect        ,
+  cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
@@ -185,7 +185,7 @@ export const makeLayerCmdStr = (track, layer) =>
       let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
       let pdraw = get(pStrand).tracks[track].drawProps;
 
-      cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+      cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
 
       if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
       {
@@ -221,7 +221,7 @@ export const makeLayerCmdStr = (track, layer) =>
     else
     {
       let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
-      cmdstr = cmdstr.concat(`${cmdStr_Effect}${plugvalue} `);
+      cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
     }
 
     if (player.forceRandom)

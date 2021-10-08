@@ -11,14 +11,14 @@
     aEffFilterDesc
   } from './globals.js';
 
-  import { userSetFilterEffect } from './cmduser.js';
+  import { userSetEffect } from './cmduser.js';
 
   import SectionTrigger from './SectionTrigger.svelte';
 
   export let track;
   export let layer;
 
-  const seteffect = () => { userSetFilterEffect(track, layer); }
+  const seteffect = () => { userSetEffect(track, layer, $aEffectsFilter); }
 
   let helpon = false;
 

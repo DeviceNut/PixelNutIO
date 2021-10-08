@@ -29,7 +29,7 @@
   export let track;
   export let layer;
 
-  function checkTrigTrack(tupper)
+  function checkTrigTrack(track)
   {
     let found = false;
 
@@ -40,28 +40,29 @@
       {
         if ($pStrand.tracks[i].layers[j].trigOnLayer)
         {
-          let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
+          // convert from 1-based numbers to 0-based index
+          let ti = $pStrand.tracks[i].layers[j].trigTrackNum-1;
 
-          if (tnum === tupper+1)
+          if (ti === track)
           {
-            $pStrand.tracks[i].layers[j].trigTrackNum = tupper;
+            $pStrand.tracks[i].layers[j].trigTrackNum = track+1;
             found = true;
           }
-          else if (tnum === tupper)
+          else if (ti === track+1)
           {
-            $pStrand.tracks[i].layers[j].trigTrackNum = tupper+1;
+            $pStrand.tracks[i].layers[j].trigTrackNum = track;
             found = true;
           }
         } 
       }
     }
 
-    strandSwapTracks(tupper);
+    strandSwapTracks(track);
 
     if (found) updateTriggerLayers();
   }
 
-  function checkTrigLayer(lupper)
+  function checkTrigLayer(layer)
   {
     let found = false;
 
@@ -72,26 +73,27 @@
       {
         if ($pStrand.tracks[i].layers[j].trigOnLayer)
         {
-          let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
-          let lnum = $pStrand.tracks[i].layers[j].trigLayerNum;
+          // convert from 1-based numbers to 0-based index
+          let ti = $pStrand.tracks[i].layers[j].trigTrackNum-1;
+          let li = $pStrand.tracks[i].layers[j].trigLayerNum-1;
 
-          if ((tnum === track+1) && (lnum === lupper+1))
+          if ((ti === track) && (li === layer))
           {
-            $pStrand.tracks[i].layers[j].trigLayerNum = lupper;
-            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper;
+            $pStrand.tracks[i].layers[j].trigLayerNum = layer+1;
+            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = layer+1;
             found = true;
           }
-          else if ((tnum === track+1) && (lnum === lupper))
+          else if ((ti === track) && (li === layer+1))
           {
-            $pStrand.tracks[i].layers[j].trigLayerNum = lupper+1;
-            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = lupper+1;
+            $pStrand.tracks[i].layers[j].trigLayerNum = layer;
+            $dStrands[$idStrand].tracks[i].layers[j].trigLayerNum = layer;
             found = true;
           }
         } 
       }
     }
 
-    strandSwapLayers(track, lupper);
+    strandSwapLayers(track, layer);
 
     if (found) updateTriggerLayers();
   }
@@ -100,14 +102,14 @@
   {
     if (layer === DRAW_LAYER)
     {
-      checkTrigTrack(track+1);
+      checkTrigTrack(track);
       updateAllTracks(); // recreate all tracks
 
       //userSendToLayer(track, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
-      checkTrigLayer(layer+1);
+      checkTrigLayer(layer);
       updateAllTracks(); // recreate all tracks
 
       //userSendToLayer(track, layer, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
@@ -122,14 +124,14 @@
   {
     if (layer === DRAW_LAYER)
     {
-      checkTrigTrack(track);
+      checkTrigTrack(track-1);
       updateAllTracks(); // recreate all tracks
 
       //userSendToLayer(track-1, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
-      checkTrigLayer(layer);
+      checkTrigLayer(layer-1);
       updateAllTracks(); // recreate all tracks
 
       //userSendToLayer(track, layer-1, cmdStr_Operation, `${OPER_SWAP_LAYER}`);

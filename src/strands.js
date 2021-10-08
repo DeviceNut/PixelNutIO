@@ -302,38 +302,29 @@ export const strandClearLayer = (track, layer) =>
   strandCopyLayer(track, layer);
 }
 
-// swaps specified track for the one below in the current strand
-// and copies both tracks to all other selected strands
+// swaps specified track for the one after in all selected strands
 export const strandSwapTracks = (track) =>
 {
-  let sid = get(idStrand);
-  let track1 = get(aStrands)[sid].tracks[track-1];
-  let track2 = get(aStrands)[sid].tracks[track];
-
-  get(aStrands)[sid].tracks[track-1] = track2;
-  get(aStrands)[sid].tracks[track] = track1;
-
-  get(dStrands)[sid].tracks[track-1] = track2;
-  get(dStrands)[sid].tracks[track] = track1;
-
-  strandCopyTrack(track-1);
-  strandCopyTrack(track);
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      let tsave = get(aStrands)[s].tracks.splice(track, 1)[0];
+      get(aStrands)[s].tracks.splice(track+1, 0, tsave);
+    }
+  }
 }
 
-// swaps specified track layer for the one below in the current strand
+// swaps specified track layer for the one after in the current strand
 // and copies both layers to all other selected strands
 export const strandSwapLayers = (track, layer) =>
 {
-  let sid = get(idStrand);
-  let layer1 = get(aStrands)[sid].tracks[track].layers[layer-1];
-  let layer2 = get(aStrands)[sid].tracks[track].layers[layer];
-
-  get(aStrands)[sid].tracks[track].layers[layer-1] = layer2;
-  get(aStrands)[sid].tracks[track].layers[layer] = layer1;
-
-  get(dStrands)[sid].tracks[track].layers[layer-1] = layer2;
-  get(dStrands)[sid].tracks[track].layers[layer] = layer1;
-
-  strandCopyLayer(track, layer-1);
-  strandCopyLayer(track, layer);
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      let tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1);
+      get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
+    }
+  }
 }

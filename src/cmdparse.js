@@ -187,7 +187,11 @@ export const parsePattern = (pattern) =>
 
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
-        }
+
+          // turn off default triggering-on-start to allow it to be missing in pattern
+          get(pStrand).tracks[track].layers[layer].trigAtStart = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
+      }
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
@@ -361,12 +365,6 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_TrigFromMain:
-          {
-            get(pStrand).tracks[track].layers[layer].trigFromMain = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = true;
-            break;
-          }
           case cmdStr_TrigFromLayer:
           {
             if (!isNaN(val)) // ignore if no value
@@ -381,6 +379,12 @@ export const parsePattern = (pattern) =>
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
             }
+            break;
+          }
+          case cmdStr_TrigFromMain:
+          {
+            get(pStrand).tracks[track].layers[layer].trigFromMain = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = true;
             break;
           }
           case cmdStr_TrigAtStart:

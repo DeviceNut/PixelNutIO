@@ -238,8 +238,8 @@ export const makeLayerCmdStr = (track, layer) =>
       if (player.trigDelayMin !== 1)
         cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
 
-      if (player.trigDelayRange !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
+      // must always have this to enable auto-triggering, even if default value
+      cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
     }
 
     if (player.trigOnLayer)

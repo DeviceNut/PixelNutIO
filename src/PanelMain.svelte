@@ -16,6 +16,8 @@
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
 
+  const setforce = () => {} // nothing to do here
+
 </script>
 
 <Grid>
@@ -31,6 +33,7 @@
         <div style="max-width:280px; margin-left:17px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
+            onchange={setforce}
             bind:cur={$pStrand.forceValue}
             disabled={($pStrand.curPatternStr === '') ||
                       !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}

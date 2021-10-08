@@ -35,12 +35,13 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigFromLayer ,
-  cmdStr_TrigFromMain  ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TrigRange  ,
+  cmdStr_TrigRangeTime ,
+  cmdStr_TrigFromLayer ,
+  cmdStr_TrigFromMain  ,
+  cmdStr_TrigAtStart   ,
 } from './pixcmds.js';
 
 import {
@@ -71,8 +72,6 @@ import { parsePattern } from './cmdparse.js';
 
 ///////////////////////////////////////////////////////////
 
-// Commands from Header:
-
 export const userSetDevname = (devname) =>
 {
   const device = get(curDevice);
@@ -97,8 +96,6 @@ export const userSendPause = (enable) =>
 {
   sendStrandCmd(enable ? cmdStr_Pause : cmdStr_Resume);
 }
-
-// Commands from Strand Selector
 
 export const userStrandCombine = (combine) =>
 {
@@ -182,8 +179,6 @@ export const userStrandSelect = (combine) =>
   }
 }
 
-// Pattern Commands from PanelMain: 
-
 // user just selected pattern to use
 // return false if pattern parse failed
 export const userSetPattern = () =>
@@ -228,8 +223,6 @@ export const userClearPattern = () =>
   get(pStrand).showCustom = false;
   get(pStrand).showMenu = true;
 }
-
-// Commands from PanelMain:
 
 export const userSetBright = (track) =>
 {
@@ -403,8 +396,6 @@ export const userSendTrigger = () =>
   sendStrandCmd(cmdStr_PullTrigger, get(pStrand).forceValue);
 }
 
-// Commands from SectionDraw:
-
 export const userSetDrawEffect = (track) =>
 {
   const strand = get(pStrand);
@@ -424,6 +415,29 @@ export const userSetDrawEffect = (track) =>
     sendEntirePattern(); // FIXME when device command handling updated
 
     //let layerid = convTrackLayerToID(track, DRAW_LAYER);
+    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
+  }
+}
+
+export const userSetFilterEffect = (track, layer) =>
+{
+  const strand = get(pStrand);
+  let pindex = strand.tracks[track].layers[layer].pluginIndex;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
+
+    let bits = get(aEffectsFilter)[pindex].bits;
+    strand.tracks[track].layers[layer].pluginBits = bits;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
+
+    updateTriggerLayers(); // update trigger sources
+    updateAllTracks();     // recreate all tracks
+
+    sendEntirePattern(); // FIXME when device command handling updated
+
+    //let layerid = convTrackLayerToID(track, layer);
     //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
   }
 }
@@ -531,22 +545,25 @@ export const userSetDirect = (track) =>
 
 export const userSetTrigStart = (track, layer) =>
 {
-  if (layer === undefined) layer = 0;
+  if (layer === undefined) layer = DRAW_LAYER;
 
-  let dostart = get(pStrand).tracks[track].layers[layer].trigAutoStart;
+  let dostart = get(pStrand).tracks[track].layers[layer].trigAtStart;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart !== dostart)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart !== dostart)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart = dostart;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = dostart;
 
-    get(pStrand).tracks[track].layers[layer].trigTypeStr = (dostart ? 'once' : 'none');
-    userSetTrigType(track, layer);
+    updateLayerVals(track, layer);
+
+    let layerid = convTrackLayerToID(track, layer);
+    sendLayerCmd(layerid, cmdStr_TrigAtStart, (dostart ? undefined : 0));
+    // don't need to send value if enabling (1 is default)
   }
 }
 
 export const userSetTrigMain = (track, layer) =>
 {
-  if (layer === undefined) layer = 0;
+  if (layer === undefined) layer = DRAW_LAYER;
 
   let domain = get(pStrand).tracks[track].layers[layer].trigFromMain;
 
@@ -562,42 +579,20 @@ export const userSetTrigMain = (track, layer) =>
   }
 }
 
-// Commands from SectionFilter:
-
-export const userSetFilterEffect = (track, layer) =>
-{
-  const strand = get(pStrand);
-  let pindex = strand.tracks[track].layers[layer].pluginIndex;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
-
-    let bits = get(aEffectsFilter)[pindex].bits;
-    strand.tracks[track].layers[layer].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
-
-    updateTriggerLayers(); // update trigger sources
-    updateAllTracks();     // recreate all tracks
-
-    sendEntirePattern(); // FIXME when device command handling updated
-
-    //let layerid = convTrackLayerToID(track, layer);
-    //sendLayerCmd(layerid, cmdStr_Effect, `${pindex}`);
-  }
-}
-
 export const userSetTrigLayer = (track, layer) =>
 {
   const strand = get(pStrand);
-  let dolayer = strand.tracks[track].layers[layer].trigDoLayer;
+  let dolayer = strand.tracks[track].layers[layer].trigOnLayer;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer !== dolayer)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer !== dolayer)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = dolayer;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = dolayer;
 
     let tracknum = strand.tracks[track].layers[layer].trigTrackNum;
     let layernum = strand.tracks[track].layers[layer].trigLayerNum;
+
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tracknum;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = layernum;
 
     let tlayer = MAX_BYTE_VALUE; // indicates disabled state
     if (dolayer) tlayer = convTrackLayerToID(tracknum-1, layernum-1);
@@ -609,7 +604,7 @@ export const userSetTrigLayer = (track, layer) =>
   }
 }
 
-// if this is called then dolayer has already been enabled
+// if this is called then onLayer has already been enabled
 export const userSetTrigNums = (track, layer) =>
 {
   const strand = get(pStrand);
@@ -630,41 +625,25 @@ export const userSetTrigNums = (track, layer) =>
   }
 }
 
-// must recreate entire command string if no-triggering is chosen
-export const userSetTrigType = (track, layer) =>
+export const userSetTrigAuto = (track, layer) =>
 {
-  const strand = get(pStrand);
-  let valstr = strand.tracks[track].layers[layer].trigTypeStr;
+  if (layer === undefined) layer = DRAW_LAYER;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr !== valstr)
+  let doauto = get(pStrand).tracks[track].layers[layer].trigAutomatic;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic !== doauto)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = valstr;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic = doauto;
 
-    //console.log(`valstr=${valstr}`);
-    if (valstr === 'none')
+    updateLayerVals(track, layer);
+
+    let layerid = convTrackLayerToID(track, layer);
+    if (doauto)
     {
-      updateLayerVals(track, layer);
-
-      sendEntirePattern(); // FIXME when trigger command updated
+      let dmax = get(pStrand).tracks[track].layers[layer].trigDelayRange;
+      sendLayerCmd(layerid, cmdStr_TrigRangeTime, dmax);
     }
-    else if (valstr === 'once')
-    {
-      updateLayerVals(track, layer);
-
-      let layerid = convTrackLayerToID(track, layer);
-      sendLayerCmd(layerid, cmdStr_TrigRange); // no value is set for 'once' type
-    }
-    else if (valstr === 'auto')
-    {
-      if (!userSetTrigDrange(track, layer))
-      {
-        updateLayerVals(track, layer);
-
-        let layerid = convTrackLayerToID(track, layer);
-        let range = strand.tracks[track].layers[layer].trigDelayRange;
-        sendLayerCmd(layerid, cmdStr_TrigRange, range);
-      }
-    }
+    else sendLayerCmd(layerid, cmdStr_TrigRangeTime, undefined); // no value = disable
   }
 }
 
@@ -740,7 +719,7 @@ export const userSetTrigDrange = (track, layer) =>
     updateLayerVals(track, layer);
 
     let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdStr_TrigRange, dmax);
+    sendLayerCmd(layerid, cmdStr_TrigRangeTime, dmax);
 
     return true;
   }

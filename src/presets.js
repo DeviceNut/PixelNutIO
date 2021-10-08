@@ -19,17 +19,17 @@ export const presetsInit = () =>
     { id: 1,  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
     { id: 2,  text: 'Light Waves',        cmd: 'E10 D60 T E101 T E120 F250 I T G' },
     { id: 3,  text: 'Color Twinkles',     cmd: 'E0 B50 W20 H232 D10 Q3 T E142 F250 I E50 B80 W80 D10 T G' },
-    { id: 4,  text: 'Twinkle Comets',     cmd: 'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 T6 E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
+    { id: 4,  text: 'Twinkle Comets',     cmd: 'E50 B65 W80 H50 D10 Q3 T E20 B90 C25 D30 F0 O3 R6 T E20 U0 B90 H30 C45 D30 F0 I T E120 F1 I G' },
     { id: 5,  text: 'Comet Party',        cmd: 'E20 W25 C25 D30 Q7 I T E101 F100 T E20 U0 W25 C25 D20 Q7 I T E101 F200 T G' },
-    { id: 6,  text: 'Scanner Mix',        cmd: 'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 T5 G' },
-    { id: 7,  text: 'Ferris Wheel',       cmd: 'E30 C20 D60 Q7 T E160 I E111 F O3 T7 G' },
+    { id: 6,  text: 'Scanner Mix',        cmd: 'E40 C25 D20 Q4 T E111 A0 E40 U0 V1 H270 C5 D30 Q1 I E131 F1000 O5 R5 T G' },
+    { id: 7,  text: 'Ferris Wheel',       cmd: 'E30 C20 D60 Q7 T E160 I E111 F O3 R7 T G' },
     { id: 8,  text: 'Expanding Noise',    cmd: 'E52 W35 C25 D60 Q3 T E150 I E120 I G' },
     { id: 9,  text: 'Crazy Blinks',       cmd: 'E51 C10 D60 Q4 T E112 T E131 F1 I T G' },
     { id: 10, text: 'Blink Surges',       cmd: 'E51 C10 D60 T E112 T E131 F1000 I T G' },
-    { id: 11, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 T10 E142 F250 I T G' },
+    { id: 11, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F O10 R10 T E142 F250 I T G' },
     { id: 12, text: 'Color Melts',        cmd: 'E0 H30 D30 T E110 F600 I T E111 A1 G' },
     { id: 13, text: 'July 4th',           cmd: 'E50 J0 K33 H355 D10 T E50 J33 K34 W100 D10 T E50 J67 K34 H230 D10 T G' },
-    { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I O10 T20 G' },
+    { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 H125 D15 T E20 V1 B90 W80 H270 C25 D30 Q2 F0 I O10 R20 T G' },
     { id: 15, text: 'MashUp',             cmd: 'E50 V1 B65 W30 H100 D10 Q1 T E40 H270 C10 D50 T E20 C20 D15 F0 A1 I T G' },
   ]);
 
@@ -227,7 +227,7 @@ export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
 export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
-export const pluginBit_TRIGGER     = 0x0010;  // triggering changes the effect
+export const pluginBit_TRIGEFFECT  = 0x0010;  // triggering changes the effect
 export const pluginBit_TRIGFORCE   = 0x0020;  // trigger force used (TRIGGER must be set)
 export const pluginBit_SENDFORCE   = 0x0040;  // sends force to other plugins
                                               // only for filter effects:

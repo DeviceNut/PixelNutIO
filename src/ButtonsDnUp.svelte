@@ -39,7 +39,7 @@
     {
       for (let j = 0; j < $pStrand.tracks[i].lactives; ++j)
       {
-        if ($pStrand.tracks[i].layers[j].trigDoLayer)
+        if ($pStrand.tracks[i].layers[j].trigOnLayer)
         {
           let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
 
@@ -71,7 +71,7 @@
     {
       for (let j = 0; j < $pStrand.tracks[i].lactives; ++j)
       {
-        if ($pStrand.tracks[i].layers[j].trigDoLayer)
+        if ($pStrand.tracks[i].layers[j].trigOnLayer)
         {
           let tnum = $pStrand.tracks[i].layers[j].trigTrackNum;
           let lnum = $pStrand.tracks[i].layers[j].trigLayerNum;

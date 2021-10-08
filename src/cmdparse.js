@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  DRAW_LAYER           ,
   MAX_DELAY_VALUE      ,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
@@ -21,8 +22,8 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TrigRange     ,
-  cmdStr_Trigger       ,
+  cmdStr_TrigRangeTime ,
+  cmdStr_TrigAtStart   ,
   cmdStr_Clear         ,
   cmdStr_Go
   } from './pixcmds.js';
@@ -160,13 +161,6 @@ export const parsePattern = (pattern) =>
 
           layerbits = get(aEffectsFilter)[obj.index].bits;
           trackbits |= layerbits;
-
-          // if don't find a 'T' then disable triggering
-          get(pStrand).tracks[track].layers[layer].trigAutoStart = false;
-          get(pStrand).tracks[track].layers[layer].trigTypeStr = 'none';
-
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutoStart = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'none';
         }
         else // drawing effect
         {
@@ -189,17 +183,10 @@ export const parsePattern = (pattern) =>
           if (track >= 0) get(pStrand).tactives++;
 
           ++track;
-          layer = 0; // DRAW_LAYER
+          layer = DRAW_LAYER;
 
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
-
-          // if don't find a 'T' then disable triggering
-          get(pStrand).tracks[track].layers[0].trigAutoStart = false;
-          get(pStrand).tracks[track].layers[0].trigTypeStr = 'none';
-
-          get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[0].trigTypeStr = 'none';
         }
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
@@ -321,26 +308,6 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_TrigFromMain:
-          {
-            let doman = (isNaN(val)) ? true : valueToBool(val);
-            get(pStrand).tracks[track].layers[layer].trigFromMain = doman;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = doman;
-            break;
-          }
-          case cmdStr_TrigFromLayer:
-          {
-            let tlayer = valueToTrackLayer(val);
-
-            get(pStrand).tracks[track].layers[layer].trigDoLayer = true;
-            get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
-            get(pStrand).tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
-
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
-            break;
-          }
           case cmdStr_TrigForce:
           {
             if (isNaN(val))
@@ -380,27 +347,46 @@ export const parsePattern = (pattern) =>
             let mintime = (isNaN(val)) ? 1 : ((val < 1) ? 1 : val);
             get(pStrand).tracks[track].layers[layer].trigDelayMin = mintime;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = mintime;
-            break;
+          break;
           }
-          case cmdStr_Trigger: //FIXME Range:
+          case cmdStr_TrigRangeTime: // must have this to enable Auto mode
           {
-            if (isNaN(val))
-            {
-              //console.log(`track=${track}.layer=${layer} TrigOnce`);
-              get(pStrand).tracks[track].layers[layer].trigTypeStr = 'once';
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'once';
-            }
-            else
+            if (!isNaN(val)) // ignore if no value
             {
               let range = valueToPositive(val);
-              get(pStrand).tracks[track].layers[layer].trigTypeStr = 'auto';
+              get(pStrand).tracks[track].layers[layer].trigAutomatic = true;
               get(pStrand).tracks[track].layers[layer].trigDelayRange = range;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTypeStr = 'auto';
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = range;
             }
+            break;
+          }
+          case cmdStr_TrigFromMain:
+          {
+            get(pStrand).tracks[track].layers[layer].trigFromMain = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = true;
+            break;
+          }
+          case cmdStr_TrigFromLayer:
+          {
+            if (!isNaN(val)) // ignore if no value
+            {
+              let tlayer = valueToTrackLayer(val);
 
-            get(pStrand).tracks[track].layers[layer].trigAutoStart = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[0].trigAutoStart = true;
+              get(pStrand).tracks[track].layers[layer].trigOnLayer = true;
+              get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
+              get(pStrand).tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
+
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = true;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
+            }
+            break;
+          }
+          case cmdStr_TrigAtStart:
+          {
+            get(pStrand).tracks[track].layers[layer].trigAtStart = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = true;
             break;
           }
           case cmdStr_Go: break;

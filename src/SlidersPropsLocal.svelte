@@ -40,17 +40,18 @@
 <div style="margin-left:-10px;
             padding-top:13px; padding-bottom:8px;
             background-color: var(--bg-color-controls-area);">
-  <div>
+
+  <div style="margin-left:-5px;">
     <button
       class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
     </button>
-    <p style="display:inline-block; margin-left:25px; font-size:.9em;">
-      Check for main control overrides:</p>
+    <p style="display:inline-block; margin-left:15px; font-size:.9em;">
+      Properties with overrides</p>
 
     {#if helpon }
-        <div style="margin:15px 10px 0 10px; padding:5px;
+        <div style="margin:15px 10px 0 15px; padding:5px;
                     color: var(--color-textbox);
                     background-color: var(--bg-color-textbox);">
           <p style="font-size:.9em;">

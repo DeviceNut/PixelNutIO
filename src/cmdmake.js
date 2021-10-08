@@ -6,7 +6,7 @@ import {
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentOffset    ,
+  cmdStr_PcentOffset   ,
   cmdStr_PcentExtent   ,
   cmdStr_Effect        ,
   cmdStr_PcentBright   ,
@@ -22,8 +22,8 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
-  cmdStr_TrigRange     ,
-  cmdStr_Trigger       ,
+  cmdStr_TrigRangeTime ,
+  cmdStr_TrigAtStart   ,
   cmdStr_Go            
   } from './pixcmds.js';
 
@@ -230,7 +230,19 @@ export const makeLayerCmdStr = (track, layer) =>
     else if (player.forceValue !== MAX_FORCE_VALUE/2) // default
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-    if (player.trigDoLayer)
+    if (player.trigAutomatic)
+    {
+      if (!player.trigDoRepeat)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+
+      if (player.trigDelayMin !== 1)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+
+      if (player.trigDelayRange !== 0)
+        cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
+    }
+
+    if (player.trigOnLayer)
     {
       let tracknum = player.trigTrackNum;
       let layernum = player.trigLayerNum;
@@ -241,20 +253,8 @@ export const makeLayerCmdStr = (track, layer) =>
     if (player.trigFromMain)
       cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
-    if (player.trigTypeStr === 'auto')
-    {
-      if (!player.trigDoRepeat)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
-
-      if (player.trigDelayMin !== 1)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
-
-      cmdstr = cmdstr.concat(`${cmdStr_Trigger}${player.trigDelayRange} `);
-    }
-    else if (player.trigTypeStr === 'once')
-    {
-      cmdstr = cmdstr.concat(`${cmdStr_Trigger} `);
-    }
+    if (player.trigAtStart)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);
   }
 
   player.cmdstr = cmdstr;
@@ -309,7 +309,7 @@ export const updateTriggerLayers = () =>
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
-      if (strand.tracks[track].layers[layer].trigDoLayer)
+      if (strand.tracks[track].layers[layer].trigOnLayer)
       {
         let found = false;
         let tnum = strand.tracks[track].layers[layer].trigTrackNum;
@@ -334,10 +334,10 @@ export const updateTriggerLayers = () =>
         {
           //console.log('disabling trigger (track,layer): ', track, layer); // DEBUG
 
-          strand.tracks[track].layers[layer].trigDoLayer = false;
+          strand.tracks[track].layers[layer].trigOnLayer = false;
           strand.tracks[track].layers[layer].trigListDex = 0;
 
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoLayer = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = 0;
         }
       }

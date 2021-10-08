@@ -47,13 +47,13 @@ export const cmdStr_PcentCount    = "C";    // percent of draw length
 export const cmdStr_OrideBits     = "Q";    // property override bits
 export const cmdStr_Direction     = "U";    // 0=down, 1=up (default)
 export const cmdStr_OwritePixs    = "V";    // 0=off, 1=overwrite pixels
-export const cmdStr_TrigFromLayer = "A";    // layer index that will trigger this one
-export const cmdStr_TrigFromMain  = "I";    // 0=off, 1=triggerr from main controls
-export const cmdStr_TrigForce     = "F";    // force used in triggering (>MAX_FORCE_VALUE if random) TODO
+export const cmdStr_TrigForce     = "F";    // force used in triggering (no value if random)
 export const cmdStr_TrigCount     = "N";    // trigger count (none or 0 means forever)
 export const cmdStr_TrigMinTime   = "O";    // min time before next auto trigger (secs)
-export const cmdStr_TrigRange     = "R";    // auto trigger range time (secs) (no value if not auto)
-export const cmdStr_Trigger       = "T";    // 0=off, 1=on TODO
+export const cmdStr_TrigRangeTime = "R";    // auto trigger range time (secs)
+export const cmdStr_TrigFromLayer = "A";    // layer index that will trigger this one
+export const cmdStr_TrigFromMain  = "I";    // 0=off, 1=triggerr from main controls
+export const cmdStr_TrigAtStart   = "T";    // 0=off, 1=on TODO
 
 // Commands that causes an action (no paramenters):
 export const cmdStr_Clear         = "P";    // clears all effects

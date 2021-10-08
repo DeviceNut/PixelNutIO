@@ -2,9 +2,7 @@
 
   import {
     Checkbox,
-    Dropdown,
-    RadioButton,
-    RadioButtonGroup
+    Dropdown
   } from "carbon-components-svelte";
 
   import {
@@ -18,7 +16,7 @@
   } from './globals.js';
 
   import {
-    pluginBit_TRIGGER,
+    pluginBit_TRIGEFFECT,
     pluginBit_TRIGFORCE
   } from './presets.js';
 
@@ -27,7 +25,7 @@
     userSetTrigMain,
     userSetTrigLayer,
     userSetTrigNums,
-    userSetTrigType,
+    userSetTrigAuto,
     userSetTrigRandom,
     userSetTrigCount,
     userSetTrigDmin,
@@ -55,12 +53,12 @@
     return false;
   }
 
-  const setEnable = () =>
+  const setOnLayer = () =>
   {
     if (setNums()) userSetTrigLayer(track, layer);
   }
 
-  const setLayer = () =>
+  const setLayerNums = () =>
   {
     if (setNums()) userSetTrigNums(track, layer);
   }
@@ -70,146 +68,135 @@
     if ($aTriggers.length < 1) makeTrigSourceList();
   }
 
-  const setType   = () => { userSetTrigType(track, layer); }
+  const autoStart = () => { userSetTrigStart(track, layer); }
+  const setMain   = () => { userSetTrigMain(track, layer); }
+  const setAuto   = () => { userSetTrigAuto(track, layer); }
   const setRandom = () => { userSetTrigRandom(track, layer); }
   const setCount  = () => { userSetTrigCount(track, layer); }
   const setDmin   = () => { userSetTrigDmin(track, layer); }
   const setDrange = () => { userSetTrigDrange(track, layer); }
   const setFtype  = () => { userSetForceType(track, layer); }
   const setFvalue = () => { userSetForceValue(track, layer); }
-  
-  const autoStart = () =>
-  {
-    if ($pStrand.tracks[track].layers[layer].trigAutoStart)
-        $pStrand.tracks[track].layers[layer].trigFromMain = false;
 
-    userSetTrigStart(track, layer);
-  }
-
-  const setMain = () =>
-  {
-    if ($pStrand.tracks[track].layers[layer].trigFromMain)
-        $pStrand.tracks[track].layers[layer].trigAutoStart = false;
-
-    userSetTrigMain(track, layer);
-  }
+  let helpon = false;
 
 </script>
 
-{#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGGER) }
+<div style="margin:10px 0 7px -10px;
+            padding-top:13px; padding-bottom:5px;
+            background-color: var(--bg-color-controls-area);">
 
-  <div style="margin:10px -10px 10px -15px; padding-top:2px;
-              background-color: var(--bg-color-divider);"/>
+  <div style="margin-bottom:10px;">
+    <button
+      style="margin-left:10px;"
+      class="button-help"
+      on:click={() => {helpon = !helpon;}}
+      >?
+    </button>
+    <p style="display:inline-block; margin-left:15px; font-size:.9em;">
+      Triggering options</p>
 
-  <div style="margin-left:-10px; margin-right:-10px;">
-    <p style="margin-top:3px; font-size:.9em;">External Triggering:</p>
-    <div style="margin-top:5px; padding:5px;
-                background-color: var(--bg-color-controls-area);">
-
-      <Checkbox labelText="Trigger from main controls"
-        style="padding:3px;"
-        on:check={setMain}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
-      />
-
-      <div style="margin-bottom:7px; padding:3px;">
-        <Checkbox labelText="Trigger from Track/Layer"
-          style="display:inline-block;"
-          on:check={setEnable}
-          bind:checked={$pStrand.tracks[track].layers[layer].trigDoLayer}
-        />
-        {#if $pStrand.tracks[track].layers[layer].trigDoLayer }
-          <Dropdown
-            on:select={setLayer}
-            bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigListDex}
-            bind:items={$aTriggers}
-          />
-        {/if}
-      </div>
-    </div>
-  </div>
-
-  <div style="margin-left:-10px; margin-right:-10px;">
-    <p style="margin-top:3px; font-size:.9em;">Internal Triggering:</p>
-    <div style="margin-top:5px; padding:5px;
-                background-color: var(--bg-color-controls-area);">
-
-      <RadioButtonGroup
-        labelPosition="left"
-        on:change={setType}
-        bind:selected={$pStrand.tracks[track].layers[layer].trigTypeStr}
-        >
-        <RadioButton labelText="None" value="none" />
-        <RadioButton labelText="Once" value="once" />
-        <RadioButton labelText="Auto" value="auto" />
-      </RadioButtonGroup>
-
-      {#if ($pStrand.tracks[track].layers[layer].trigTypeStr === "auto") }
-        <div style="margin:12px 15px 0 15px;">
-          <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
-          <input type="number"
-            min=1 max=9999
-            on:change={setCount}
-            bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
-            disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-          />
-          <Checkbox labelText="Forever"
-            style="display:inline-block; margin-left:5px;"
-            on:check={setRandom}
-            bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-          />
-          <div style="margin-top:8px; ">
-            <span style="margin-right:8px">Minimum Time:&nbsp;</span>
-            <input type="number"
-              min=1 max=9999
-              on:change={setDmin}
-              bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
-            />&nbsp;&nbsp;secs
-          </div>
-          <div style="margin-top:8px; ">
-            <span style="margin-right:8px">Random Period:</span>
-            <input type="number"
-              min=0 max=9999
-              on:change={setDrange}
-              bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
-            />&nbsp;&nbsp;secs
-          </div>
+    {#if helpon }
+        <div style="margin:15px 10px 0 10px; padding:5px;
+                    color: var(--color-textbox);
+                    background-color: var(--bg-color-textbox);">
+          <p style="font-size:.9em;">
+            Explain how triggering works.
+          </p>
         </div>
-      {/if}
-
-      {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
-
-      <div style="margin:10px 0 10px; 0; background-color: var(--bg-color-divider);"/>
-
-        <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
-        <Checkbox labelText="Random"
-          on:check={setFtype}
-          bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
-        />
-        <SliderVal name='Fixed:'
-          max={MAX_FORCE_VALUE}
-          onchange={setFvalue}
-          bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
-          disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
-        />
-      {/if}
-    </div>
+    {/if}
   </div>
 
-{:else}
-
-  <div style="margin:5px -10px 0 -10px; padding:5px;
-              background-color: var(--bg-color-controls-area);">
-    <Checkbox labelText="Trigger once at start"
+  <div style="margin-left:5px;">
+    <Checkbox labelText="Once at start"
       style="padding: 3px;"
       on:check={autoStart}
-      bind:checked={$pStrand.tracks[track].layers[layer].trigAutoStart}
+      bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
     />
-    <Checkbox labelText="Trigger from main controls"
+    <Checkbox labelText="From main controls"
       style="padding: 3px;"
       on:check={setMain}
       bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
     />
+    {#if (($aTriggers).length > 0) }
+      <Checkbox labelText="From Track/Layer"
+        style="padding:3px;"
+        on:check={setOnLayer}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayer}
+      />
+      {#if $pStrand.tracks[track].layers[layer].trigOnLayer }
+        <Dropdown
+          style="margin-bottom:10px;"
+          on:select={setLayerNums}
+          bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigListDex}
+          bind:items={$aTriggers}
+        />
+      {/if}
+    {/if}
+    <Checkbox labelText="Automatically"
+      style="padding: 3px;"
+      on:check={setAuto}
+      bind:checked={$pStrand.tracks[track].layers[layer].trigAutomatic}
+    />
+    {#if ($pStrand.tracks[track].layers[layer].trigAutomatic) }
+      <div style="margin:12px 15px 0 15px;">
+        <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+        <input type="number"
+          min=1 max=9999
+          on:change={setCount}
+          bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
+          disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+        />
+        <Checkbox labelText="Forever"
+          style="display:inline-block; margin-left:5px;"
+          on:check={setRandom}
+          bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+          disabled={!($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGEFFECT)}
+        />
+        <div style="margin-top:8px; ">
+          <span style="margin-right:8px">Minimum Time:&nbsp;</span>
+          <input type="number"
+            min=1 max=9999
+            on:change={setDmin}
+            bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
+          />&nbsp;&nbsp;secs
+        </div>
+        <div style="margin-top:8px; ">
+          <span style="margin-right:8px">Random Period:</span>
+          <input type="number"
+            min=0 max=9999
+            on:change={setDrange}
+            bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
+          />&nbsp;&nbsp;secs
+        </div>
+      </div>
+      {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
+        <div style="margin:12px 15px 0 15px;">
+          <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
+          <Checkbox labelText="Random"
+            on:check={setFtype}
+            bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
+          />
+          <SliderVal name='Fixed:'
+            max={MAX_FORCE_VALUE}
+            onchange={setFvalue}
+            bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
+            disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
+          />
+        </div>
+      {/if}
+    {/if}
   </div>
+</div>
 
-{/if}
+<style>
+  .button-help {
+    font-size: .8em;
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+    margin-left: 15px;
+    border-width: 2px;
+    border-radius: 75%;
+  }
+</style>

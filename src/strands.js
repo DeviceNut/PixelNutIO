@@ -34,19 +34,19 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigAutoStart   : true,   // true to auto start effect, if not then:
+  trigAtStart     : false,  // true to trigger effect at creation
   trigFromMain    : false,  // true if can trigger from main controls
 
-  trigDoLayer     : false,  // true if can trigger from other layer:
+  trigOnLayer     : false,  // true if can trigger from other layer:
   trigListDex     : 0,      //  index into list of possible source layers
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
 
-  trigTypeStr     : 'once', // or 'once', or if 'auto' (auto triggering), then:
+  trigAutomatic   : false,  // true to trigger automatically:
+  trigDelayMin    : 1,      // min seconds before next trigger (at least 1)
+  trigDelayRange  : 0,      // range of delay values possible (min...min+range)
   trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
-  trigDelayMin    : 1,      //  min seconds before next trigger (at least 1)
-  trigDelayRange  : 0,      //  range of delay values possible (min...min+range)
 
   forceRandom     : false,  // true if a random force is applied when triggering
   forceValue      : MAX_FORCE_VALUE/2, // percent force to apply (if not random)

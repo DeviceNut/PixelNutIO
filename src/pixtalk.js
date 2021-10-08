@@ -250,7 +250,6 @@ export const onCommandReply = (msg, fsend) =>
       if (reply[0] === cmdStr_VersionStr)
       {
         reply.shift();
-        console.log('reply: ', reply);
         if (parseDeviceInfo(device, reply))
         {
           if (device.report.npatterns > 0)

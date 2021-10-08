@@ -95,48 +95,48 @@
 
   {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0) }
 
-    <Row>
-      <SliderVal name='Bright'
-        onchange={setBright}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
-      />
-    </Row>
-    <Row>
-      <SliderVal name='Delay&nbsp;'
-        onchange={setDelay}
-        min={-MAX_DELAY_VALUE}
-        max={MAX_DELAY_VALUE}
-        bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
-                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
-      />
-    </Row>
-    <Row>
-      <SliderVal name='Offset'
-        onchange={setOffset}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
-        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
-      />
-    </Row>
-    <Row>
-      <SliderVal name='Length'
-        onchange={setLength}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
-        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
-      />
-    </Row>
+    <div style="margin-left:10px; margin-bottom:10px;">
+      <Row>
+        <SliderVal name='Bright'
+          onchange={setBright}
+          bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
+        />
+      </Row>
+      <Row>
+        <SliderVal name='Delay&nbsp;'
+          onchange={setDelay}
+          min={-MAX_DELAY_VALUE}
+          max={MAX_DELAY_VALUE}
+          bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
+        />
+      </Row>
+      <Row>
+        <SliderVal name='Offset'
+          onchange={setOffset}
+          bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
+          disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
+        />
+      </Row>
+      <Row>
+        <SliderVal name='Length'
+          onchange={setLength}
+          bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
+          disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
+        />
+      </Row>
+      <Row style="margin-top:10px;">
+        <Checkbox labelText="Reverse Direction"
+          on:check={setDirect}
+          bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+          disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
+                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
+        />
+      </Row>
+    </div>
 
     <SlidersPropsLocal {track} />
-
-    <Row style="margin-top:10px; margin-bottom:5px;">
-      <Checkbox labelText="Reverse Direction"
-        on:check={setDirect}
-        bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
-        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
-                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
-      />
-    </Row>
-
     <SectionTrigger {track} />
 
   {/if}

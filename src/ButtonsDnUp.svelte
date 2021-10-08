@@ -20,12 +20,11 @@
 
   import {
     updateAllTracks,
-    updateTriggerLayers,
-    convTrackLayerToID
+    updateTriggerLayers
   } from './cmdmake.js';
 
   import { sendEntirePattern } from './cmdsend.js'; // FIXME
-  import { sendLayerCmd } from './cmdsend.js';
+  import { userSendToLayer } from './cmduser.js';
 
   export let track;
   export let layer;
@@ -104,16 +103,14 @@
       checkTrigTrack(track+1);
       updateAllTracks(); // recreate all tracks
 
-      //let layerid = convTrackLayerToID(track, DRAW_LAYER);
-      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
+      //userSendToLayer(track, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
       checkTrigLayer(layer+1);
       updateAllTracks(); // recreate all tracks
 
-      //let layerid = convTrackLayerToID(track, layer);
-      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
+      //userSendToLayer(track, layer, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
     }
 
     sendEntirePattern(); // FIXME when device command handling updated
@@ -128,16 +125,14 @@
       checkTrigTrack(track);
       updateAllTracks(); // recreate all tracks
 
-      //let layerid = convTrackLayerToID(track-1, DRAW_LAYER);
-      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
+      //userSendToLayer(track-1, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
       checkTrigLayer(layer);
       updateAllTracks(); // recreate all tracks
 
-      //let layerid = convTrackLayerToID(track, layer-1);
-      //sendLayerCmd(layerid, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
+      //userSendToLayer(track, layer-1, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
     }
 
     sendEntirePattern(); // FIXME when device command handling updated

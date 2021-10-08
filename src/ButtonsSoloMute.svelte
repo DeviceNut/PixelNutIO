@@ -14,12 +14,11 @@
   import {
     makeTrackCmdStrs,
     makeLayerCmdStr,
-    makeEntireCmdStr,
-    convTrackLayerToID
+    makeEntireCmdStr
   } from './cmdmake.js';
 
   import { sendEntirePattern } from './cmdsend.js'; // FIXME
-  import { sendLayerCmd } from './cmdsend.js';
+  import { userSendToLayer } from './cmduser.js';
 
   export let track;
   export let layer;
@@ -70,19 +69,18 @@
 
         for (let i = 0; i < $nTracks; ++i)
         {
-          //let layerid = convTrackLayerToID(i, DRAW_LAYER);
           if (i !== track)
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = true;
 
-            //sendLayerCmd(layerid, cmdStr_LayerMute, true);
+            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, true);
           }
           else
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
 
-            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
+            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, false);
           }
         }
       }
@@ -96,8 +94,7 @@
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
 
-            //let layerid = convTrackLayerToID(i, DRAW_LAYER);
-            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
+            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, false);
           }
         }
       }
@@ -115,19 +112,18 @@
 
         for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
         {
-          //let layerid = convTrackLayerToID(track, i);
           if (i !== layer)
           {
             $pStrand.tracks[track].layers[i].solo = false;
             $pStrand.tracks[track].layers[i].mute = true;
 
-            //sendLayerCmd(layerid, cmdStr_LayerMute, true);
+            //userSendToLayer(track, i, cmdStr_LayerMute, true);
           }
           else
           {
             $pStrand.tracks[track].layers[i].mute = false;
 
-            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
+            //userSendToLayer(track, i, cmdStr_LayerMute, false);
           }
         }
       }
@@ -141,8 +137,7 @@
           {
             $pStrand.tracks[track].layers[i].mute = false;
 
-            //let layerid = convTrackLayerToID(track, i);
-            //sendLayerCmd(layerid, cmdStr_LayerMute, false);
+            //userSendToLayer(track, i, cmdStr_LayerMute, false);
           }
         }
       }
@@ -156,8 +151,7 @@
     isMute = !isMute;
     $pStrand.tracks[track].layers[layer].mute = isMute;
 
-    //let layerid = convTrackLayerToID(track, layer);
-    //sendLayerCmd(layerid, cmdStr_LayerMute, `${isMute}`);
+    //userSendToLayer(track, layer, cmdStr_LayerMute, `${isMute}`);
 
     // turning off mute for a track/layer that is not on Solo
     // turns off the Solo for any other track/layer

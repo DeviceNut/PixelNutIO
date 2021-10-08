@@ -25,7 +25,7 @@
   } from './cmdmake.js';
 
   import { sendEntirePattern } from './cmdsend.js'; // FIXME
-  import { sendLayerCmd } from './cmdsend.js';
+  import { userSendToLayer } from './cmduser.js';
 
   export let track;
 
@@ -97,7 +97,7 @@
     updateAllTracks();     // recreate all tracks
 
     //let layerid = convTrackLayerToID(track, layer);
-    //sendLayerCmd(layerid, cmdStr_Operation, `${oper}`);
+    //userSendToLayer(track, layer, cmdStr_Operation, `${oper}`);
     sendEntirePattern(); // FIXME when device command handling updated
   }
 

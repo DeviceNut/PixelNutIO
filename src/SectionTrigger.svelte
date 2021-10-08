@@ -140,19 +140,20 @@
     />
     {#if ($pStrand.tracks[track].layers[layer].trigAutomatic) }
       <div style="margin:12px 15px 0 15px;">
-        <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
-        <input type="number"
-          min=1 max=9999
-          on:change={setCount}
-          bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
-          disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-        />
-        <Checkbox labelText="Forever"
-          style="display:inline-block; margin-left:5px;"
-          on:check={setRandom}
-          bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-          disabled={!($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGEFFECT)}
-        />
+        {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGEFFECT) }
+          <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+          <input type="number"
+            min=1 max=9999
+            on:change={setCount}
+            bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
+            disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+          />
+          <Checkbox labelText="Forever"
+            style="display:inline-block; margin-left:5px;"
+            on:check={setRandom}
+            bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+          />
+        {/if}
         <div style="margin-top:8px; ">
           <span style="margin-right:8px">Minimum Time:&nbsp;</span>
           <input type="number"

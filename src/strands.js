@@ -34,7 +34,7 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigAtStart     : false,  // true to trigger effect at creation
+  trigAtStart     : true,   // true to trigger effect at creation
   trigFromMain    : false,  // true if can trigger from main controls
 
   trigOnLayer     : false,  // true if can trigger from other layer:

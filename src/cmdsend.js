@@ -57,7 +57,6 @@ function sendCmdToStrands(cmdstr, dostore=false)
     if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
     sendCmdToDevice(cmdstr);
     if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
-    if (dostore) sendCmdToDevice('0'); // causes pattern to be executed not just stored
   }
 
   for (let s = 0; s < get(nStrands); ++s)
@@ -68,7 +67,6 @@ function sendCmdToStrands(cmdstr, dostore=false)
       if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
       sendCmdToDevice(cmdstr);
       if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
-      if (dostore) sendCmdToDevice('0'); // causes pattern to be executed not just stored
       didone = true;
     }
   }
@@ -77,15 +75,16 @@ function sendCmdToStrands(cmdstr, dostore=false)
 }
 
 // sends current pattern to all selected strands
-// always clears the device pattern stack first
 // optionally stores the pattern to the device
+// clears device pattern stack first if not storing
 export const sendEntirePattern = (dostore) =>
 {
   const pattern = get(pStrand).curPatternStr;
 
   if (pattern !== '')
   {
-    sendCmdToStrands(cmdStr_Clear, false);
+    if (!dostore) sendCmdToStrands(cmdStr_Clear, false);
+
     sendCmdToStrands(pattern, dostore);
   }
   else sendCmdToStrands(cmdStr_Clear, dostore);

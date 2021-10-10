@@ -265,10 +265,12 @@ export const userSetEffect = (track, layer, elist) =>
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    // if this is the last layer of the last track, just "add" the effect
-    // otherwise must send a "switch" effect to this specific layer
+    // if this is the last layer of the last track, and not clearing the effect,
+    // then just "add" the effect (and add Go to enable it), otherwise must send
+    // a "switch" effect to this specific layer
     const pval = elist[pindex].id;
-    if ((track+1 >= strand.tactives) &&
+    if ((pindex > 0) &&
+        (track+1 >= strand.tactives) &&
         (layer+1 >= strand.tracks[track].lactives))
     {
       sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);

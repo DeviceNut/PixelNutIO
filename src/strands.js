@@ -323,7 +323,7 @@ export const strandSwapLayers = (track, layer) =>
   {
     if (get(aStrands)[s].selected)
     {
-      let tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1);
+      let tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1)[0];
       get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
     }
   }

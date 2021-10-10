@@ -162,9 +162,9 @@ export const makeEntireCmdStr = () =>
   if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).curPatternStr = cmdstr;
-  get(pStrand).bitsOverride = ridebits;
-  get(pStrand).bitsEffects = splugbits;
-  get(pStrand).triggerUsed = trigused;
+  get(pStrand).bitsOverride  = ridebits;
+  get(pStrand).bitsEffects   = splugbits;
+  get(pStrand).triggerUsed   = trigused;
 
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
   //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG

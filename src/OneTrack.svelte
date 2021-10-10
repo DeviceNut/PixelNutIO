@@ -1,7 +1,10 @@
 <script>
  
   import { Row, Column } from "carbon-components-svelte";
+
   import { pStrand } from './globals.js';
+  import { DRAW_LAYER } from './pixcmds.js';
+
   import Revealer from './Revealer.svelte';
   import ButtonsDnUp from './ButtonsDnUp.svelte';
   import ButtonsSoloMute from './ButtonsSoloMute.svelte';
@@ -23,7 +26,7 @@
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
-  <ButtonsDnUp {track} layer={0} />
+  <ButtonsDnUp {track} layer={DRAW_LAYER} />
   <ButtonsSoloMute {track} layer={0} />
 </Row>
 <div style="display:{tstate};">

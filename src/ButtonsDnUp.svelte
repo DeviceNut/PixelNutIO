@@ -146,11 +146,11 @@
  
 {#if (layer === DRAW_LAYER)}
   {#if (track > 0)}
-  <button
-    class="button"
-    on:click={movedn}
-    >Dn
-  </button>
+    <button
+      class="button"
+      on:click={movedn}
+      >Dn
+    </button>
   {/if}
   <button
     class="button"
@@ -160,11 +160,12 @@
   </button>
 {:else}
   {#if (layer !== DRAW_LAYER)}
-  <button
-    class="button"
-    on:click={movedn}
-    >Dn
-  </button>
+    <button
+      class="button"
+      on:click={movedn}
+      disabled={(layer < 2)}
+      >Dn
+    </button>
   {/if}
   <button
     class="button"

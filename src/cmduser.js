@@ -99,18 +99,10 @@ export const userSendPause = (enable) =>
 }
 
 // send command (and optional value) to specific layer
-// ignore if the drawing layer for this layer is not active yet
 export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
 {
-  const strand = get(pStrand);
-  const pindex = strand.tracks[track].layers[DRAW_LAYER].pluginIndex;
-
-  if (pindex > 0)
-  {
-    let layerid = convTrackLayerToID(track, layer);
-    sendLayerCmd(layerid, cmdstr, cmdval);
-  }
-  else console.log(`ignoring layer cmd: ${cmdstr}`); // DEBUG
+  let layerid = convTrackLayerToID(track, layer);
+  sendLayerCmd(layerid, cmdstr, cmdval);
 }
 
 // Strand/Pattern selection and handling:

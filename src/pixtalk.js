@@ -17,19 +17,25 @@ import {
  
  // Query commands:
 export const cmdStr_GetDevInfo    = "?";    // returns info on device
-export const cmdStr_GetPatInfo    = "?P";   // returns info on custom patterns
-export const cmdStr_GetPlugInfo   = "?G";   // returns info on custom plugins
+export const cmdStr_GetStrands    = "?S";   // returns info on each strand
+export const cmdStr_GetPatterns   = "?P";   // returns info on device patterns
+export const cmdStr_GetPlugins    = "?G";   // returns info on device plugins
 
 const QUERY_NONE          = 0;  // invalid state
-const QUERY_DEVICE        = 1;  // waiting for device info reply
-const QUERY_PATTERNS      = 2;  // waiting for patterns info reply
-const QUERY_PLUGINS       = 3;  // waiting for plugins info reply
+const QUERY_DEVICE        = 1;  // waiting for device reply
+const QUERY_STRANDS       = 2;  // waiting for strand replies
+const QUERY_PATTERNS      = 3;  // waiting for pattern replies
+const QUERY_PLUGINS       = 4;  // waiting for plugin replies
+const CHECK_PATTERNS      = 5;  // check if need to retrieve patterns
+const CHECK_PLUGINS       = 6;  // check if need to retrieve plugins
 
-                                // stage of QUERY_PATTERNS/PLUGINS:
+                                // stage of queries:
 const QSTAGE_NONE         = 0;  // invalid state
-const QSTAGE_NAME         = 1;  // waiting for name
-const QSTAGE_DESC         = 2;  // waiting for description
-const QSTAGE_CMD          = 3;  // waiting for command str
+const QSTAGE_INFO         = 1;  // waiting for info
+const QSTAGE_NAME         = 2;  // waiting for name
+const QSTAGE_DESC         = 3;  // waiting for description
+const QSTAGE_CMD          = 4;  // waiting for command str
+const QSTAGE_DONE         = 5;  // final state
 
 export const strandState =
 {
@@ -61,8 +67,8 @@ export const deviceInfo =
                         // (only one device at a time)
 
   query:  QUERY_NONE,   // state of query commands (QUERY_xxx)
-  qcount: 0,            // patterns left to receive (QUERY_PATTERNS)
-  qstage: QSTAGE_NONE,  // stage of each pattern retrieval
+  qstage: QSTAGE_NONE,  // stage of each retrieval
+  qcount: 0,            // messages left to receive
 
   qname: '',            // holds pattern/plugin name
   qdesc: '',            // holds pattern/plugin desc
@@ -214,12 +220,13 @@ export const onNotification = (msg, fsend) =>
   device.query = QUERY_DEVICE;
 }
 
-export const onCommandReply = (msg, fsend) =>
+export const onDeviceReply = (msg, fsend) =>
 {
   console.log(`Device reply: ${msg}`) // DEBUG
 
   const reply = msg.split('\n');
   const name = reply[0];
+  reply.shift();
 
   let device = null;
   const dlist = get(deviceList);
@@ -235,95 +242,144 @@ export const onCommandReply = (msg, fsend) =>
 
   if (device === null)
   {
-    //console.log(`Ignoring reply from other device: ${name}`); // DEBUG
+    console.log(`Ignoring reply from other device: ${name}`); // DEBUG
   }
   else if (device.ready)
   {
     // MUST HAVE THIS: BUG IN SVELTE COMPILER?!?!
-    //console.log(`Ignoring reply from current device: ${name}`); // DEBUG
+    console.log(`Ignoring reply from current device: ${name}`); // DEBUG
   }
-  else switch (device.query)
+  else while(true)
   {
-    case QUERY_DEVICE:
+    switch (device.query)
     {
-      reply.shift();
-      if (reply[0] === cmdStr_VersionStr)
+      case QUERY_DEVICE:
       {
-        reply.shift();
-        if (parseDeviceInfo(device, reply))
+        //console.log('device reply: ', reply);
+        if (reply[0] === cmdStr_VersionStr)
         {
-          if (device.report.npatterns > 0)
+          reply.shift();
+          if (parseDeviceInfo(device, reply))
           {
-            fsend(name, cmdStr_GetPatInfo);
-            device.query = QUERY_PATTERNS;
-            device.qstage = QSTAGE_NAME;
+            fsend(name, cmdStr_GetStrands);
+            device.query = QUERY_STRANDS;
+            device.qstage = QSTAGE_INFO;
             device.qcount = 0;
-
-            // init device patterns/descriptions
-            const obj = { id:'0', text:'<none>', cmd:'' };
-            aDevicePats.set([obj]);
-            aDeviceDesc.set([[]]);
+            break;
           }
-          else deviceStart(device);
         }
-        else deviceStop(device);
+  
+        deviceStop(device);
+        break;
       }
-      else deviceStop(device);
-
-      break;
-    }
-    case QUERY_PATTERNS:
-    {
-      reply.shift();
-      if (parsePatternInfo(device, reply))
+      case QUERY_STRANDS:
       {
-        if (device.qstage === QSTAGE_NONE)
+        //console.log('strands reply: ', reply);
+        if (parseStrandInfo(device, reply))
         {
-          const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
-          get(aDevicePats).push(obj);
-          get(aDeviceDesc).push([device.qdesc]);
-
-          if (++device.qcount >= device.report.npatterns)
+          if (device.qstage === QSTAGE_DONE) // finished one strand
           {
-            if (device.report.nplugins > 0)
+            if (++device.qcount >= device.report.nstrands)
             {
-              fsend(name, cmdStr_GetPlugInfo);
-              device.query = QUERY_PLUGINS;
-              device.qstage = QSTAGE_NAME;
-              device.qcount = 0;
+              device.query = CHECK_PATTERNS;
+              continue;
             }
-            else deviceStart(device);
+            else device.qstage = QSTAGE_INFO;
           }
-          else device.qstage = QSTAGE_NAME;
+          // else keep parsing responses
+          break;
         }
-        // else keep parsing responses
+  
+        deviceStop(device);
+        break;
       }
-      else deviceStop(device);
-
-      break;
-    }
-    case QUERY_PLUGINS: // TODO
-    {
-      reply.shift();
-      if (parsePluginInfo(device, reply))
+      case CHECK_PATTERNS:
       {
-        if (++device.qcount >= device.report.nplugins)
-          deviceStart(device);
+        if (device.report.npatterns > 0)
+        {
+          fsend(name, cmdStr_GetPatterns);
+          device.query = QUERY_PATTERNS;
+          device.qstage = QSTAGE_NAME;
+          device.qcount = 0;
+
+          // init device patterns/descriptions
+          const obj = { id:'0', text:'<none>', cmd:'' };
+          aDevicePats.set([obj]);
+          aDeviceDesc.set([[]]);
+        }
+        else
+        {
+          device.query = CHECK_PLUGINS;
+          continue;
+        }
+        break;
       }
-      else deviceStop(device);
-      break;
+      case QUERY_PATTERNS:
+      {
+        //console.log('patterns reply: ', reply);
+        if (parsePatternInfo(device, reply))
+        {
+          if (device.qstage === QSTAGE_DONE) // finished one pattern
+          {
+            const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
+            get(aDevicePats).push(obj);
+            get(aDeviceDesc).push([device.qdesc]);
+  
+            if (++device.qcount >= device.report.npatterns)
+            {
+              device.query = CHECK_PLUGINS;
+              continue;
+            }
+            else device.qstage = QSTAGE_NAME;
+          }
+          // else keep parsing responses
+          break;
+        }
+
+        deviceStop(device);
+        break;
+      }
+      case CHECK_PLUGINS:
+      {
+        if (device.report.nplugins > 0)
+        {
+          fsend(name, cmdStr_GetPlugins);
+          device.query = QUERY_PLUGINS;
+          device.qstage = QSTAGE_NAME;
+          device.qcount = 0;
+        }
+        else deviceStart(device);
+
+        break;
+      }
+      case QUERY_PLUGINS: // TODO
+      {
+        console.log('plugins reply: ', reply);
+        if (parsePluginInfo(device, reply))
+        {
+          if (++device.qcount >= device.report.nplugins)
+          {
+            deviceStart(device);
+            break;
+          }
+        }
+
+        deviceStop(device);
+        break;
+      }
+      default:
+      {
+        console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
+        break;        
+      }
     }
-    default:
-    {
-      console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
-      break;        
-    }
+    break;
   }
 }
 
 function parseDeviceInfo(device, reply)
 {
-  let line, strs, strand;
+  let line, strs;
 
   line = reply[0];
   reply.shift();
@@ -337,10 +393,10 @@ function parseDeviceInfo(device, reply)
 
   device.report.nstrands  = strs[0];
   device.report.maxstrlen = strs[1];
-  device.report.npatterns = strs[2];
-  device.report.nplugins  = strs[3];
-  device.report.numlayers = strs[4];
-  device.report.numtracks = strs[5];
+  device.report.numlayers = strs[2];
+  device.report.numtracks = strs[3];
+  device.report.npatterns = strs[4];
+  device.report.nplugins  = strs[5];
 
   if (device.report.nstrands < 1)
   {
@@ -360,54 +416,78 @@ function parseDeviceInfo(device, reply)
     return false;
   }
 
-  // 3 parm lines per strand
-  if (reply.length !== (device.report.nstrands * 3))
+  return true;
+}
+
+// 2 parm lines + 1 pattern, per strand
+function parseStrandInfo(device, reply)
+{
+  let line, strs, strand;
+
+  switch (device.qstage)
   {
-    console.error(`Unexpected strand line count: "${reply.length}"`);
-    return false;
-  }
-
-  device.report.strands = [];
-
-  for (var i = 0; i < device.report.nstrands; ++i)
-  {
-    line = reply[0];
-    reply.shift();
-
-    strs = line.split(' ');
-    if (strs.length < 4)
+    case QSTAGE_INFO:
     {
-      console.error(`Unexpected parm count (s1): "${strs.length}"`);
+      if (reply.length < 2)
+      {
+        console.error(`Unexpected strand line count: "${reply.length}"`);
+        return false;
+      }
+
+      if (device.qcount === 0)
+        device.report.strands = [];
+
+      line = reply[0];
+      reply.shift();
+  
+      strs = line.split(' ');
+      if (strs.length < 4)
+      {
+        console.error(`Unexpected parm count (s1): "${strs.length}"`);
+        return false;
+      }
+  
+      strand = {...strandState};
+  
+      strand.pixels = parseInt(strs[0]);
+      strand.bright = parseInt(strs[1]);
+      strand.delay  = parseInt(strs[2]);
+      strand.first  = parseInt(strs[3]);
+  
+      line = reply[0];
+      reply.shift();
+  
+      strs = line.split(' ');
+      if (strs.length < 5)
+      {
+        console.error(`Unexpected parm count (s2): "${strs.length}"`);
+        return false;
+      }
+  
+      strand.xt_mode  = parseInt(strs[0]);
+      strand.xt_hue   = parseInt(strs[1]);
+      strand.xt_white = parseInt(strs[2]);
+      strand.xt_count = parseInt(strs[3]);
+      strand.force    = parseInt(strs[4]);
+
+      device.report.strands.push(strand);
+
+      device.qstage = QSTAGE_CMD;
+      break;
+    }
+    case QSTAGE_CMD:
+    {
+      device.report.strands[device.qcount].pattern = reply[0];
+      reply.shift();
+  
+      device.qstage = QSTAGE_DONE; // indicates finished
+      break;
+    }
+    default:
+    {
+      console.error(`Unexpected strand stage: ${device.qstage}`);
       return false;
     }
-
-    strand = {...strandState};
-
-    strand.pixels = parseInt(strs[0]);
-    strand.bright = parseInt(strs[1]);
-    strand.delay  = parseInt(strs[2]);
-    strand.first  = parseInt(strs[3]);
-
-    line = reply[0];
-    reply.shift();
-
-    strs = line.split(' ');
-    if (strs.length < 5)
-    {
-      console.error(`Unexpected parm count (s2): "${strs.length}"`);
-      return false;
-    }
-
-    strand.xt_mode  = parseInt(strs[0]);
-    strand.xt_hue   = parseInt(strs[1]);
-    strand.xt_white = parseInt(strs[2]);
-    strand.xt_count = parseInt(strs[3]);
-    strand.force    = parseInt(strs[4]);
-
-    strand.pattern = reply[0];
-    reply.shift();
-
-    device.report.strands.push(strand);
   }
 
   return true;
@@ -438,7 +518,7 @@ function parsePatternInfo(device, reply)
     {
       //console.log(`cmd=${line}`); // DEBUG
       device.qcmd = line;
-      device.qstage = QSTAGE_NONE;
+      device.qstage = QSTAGE_DONE; // indicates finished
       break;
     }
     default:

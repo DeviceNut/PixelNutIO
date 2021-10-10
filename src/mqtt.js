@@ -9,12 +9,12 @@ import {
 import { 
   onConnection,
   onNotification,
-  onCommandReply
+  onDeviceReply
 } from './pixtalk.js';
 
 const topicDevNotify  = 'PixelNut/Notify';
-const topicDevReply   = 'PixelNut/Reply';
 const topicCommand    = 'PixelNut/Cmd/'; // + devicename
+const topicDevReply   = 'PixelNut/Reply';
 
 let mqtt = null;
 
@@ -65,7 +65,7 @@ function onMessage(message)
       break;
 
     case topicDevReply:
-      onCommandReply(msg, mqttSend);
+      onDeviceReply(msg, mqttSend);
       break;
   }
 }

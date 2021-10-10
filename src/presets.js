@@ -157,7 +157,7 @@ export const presetsInit = () =>
   aEffectsFilter.set([
     { id: -1,  bits: 0x0000, text: '<none>' },
     { id: 100, bits: 0x0130, text: 'Hue Set' },
-    { id: 101, bits: 0x0031, text: 'Hue Rotate' },
+    { id: 101, bits: 0x0035, text: 'Hue Rotate' },
     { id: 110, bits: 0x0051, text: 'Color Meld' },
     { id: 111, bits: 0x0030, text: 'Color Modify' },
     { id: 112, bits: 0x0300, text: 'Color Random' },

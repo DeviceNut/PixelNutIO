@@ -105,7 +105,6 @@ export const presetsInit = () =>
   ]);
 
   aEffectsDraw.set([
-    { id: -1, bits: 0x0000, text: '<none>' },
     { id: 0,  bits: 0x0001, text: 'Draw All' },
     { id: 1,  bits: 0x007D, text: 'Draw Push' },
     { id: 2,  bits: 0x004D, text: 'Draw Step' },
@@ -119,7 +118,6 @@ export const presetsInit = () =>
   ]);
 
   aEffDrawDesc.set([
-    "",
 
     "Draws all pixels with the current color.",
 
@@ -155,7 +153,6 @@ export const presetsInit = () =>
   ]);
 
   aEffectsFilter.set([
-    { id: -1,  bits: 0x0000, text: '<none>' },
     { id: 100, bits: 0x0130, text: 'Hue Set' },
     { id: 101, bits: 0x0035, text: 'Hue Rotate' },
     { id: 110, bits: 0x0051, text: 'Color Meld' },
@@ -175,7 +172,6 @@ export const presetsInit = () =>
 }
 
 aEffFilterDesc.set([
-  "",
 
   "Directly sets color hue once from force value on each trigger (whiteness uneffected). " +
   "As force increases color hue changes from red->green->blue->red.",

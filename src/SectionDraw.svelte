@@ -69,7 +69,7 @@
       >?
     </button>
 
-    {#if ((track !== 0) && ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0)) }
+    {#if (track !== DRAW_LAYER) }
       <div style="margin-left:20px;">
         <Checkbox labelText="Overwrite"
           on:check={setOwrite}
@@ -84,62 +84,55 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex === 0) }
-          Explain drawing effect menu.
-        {:else}
-          {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
-        {/if}
+        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
       </p>
     </Row>
   {/if}
 
-  {#if ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex !== 0) }
+  <div style="margin-left:10px; margin-bottom:10px;">
+    <Row>
+      <SliderVal name='Bright'
+        onchange={setBright}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
+      />
+    </Row>
+    <Row>
+      <SliderVal name='Delay&nbsp;'
+        onchange={setDelay}
+        min={-MAX_DELAY_VALUE}
+        max={MAX_DELAY_VALUE}
+        bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
+      />
+    </Row>
+    <Row>
+      <SliderVal name='Offset'
+        onchange={setOffset}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
+        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
+      />
+    </Row>
+    <Row>
+      <SliderVal name='Length'
+        onchange={setLength}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
+        disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
+      />
+    </Row>
+    <Row style="margin-top:10px;">
+      <Checkbox labelText="Reverse Direction"
+        on:check={setDirect}
+        bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+        disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
+                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
+      />
+    </Row>
+  </div>
 
-    <div style="margin-left:10px; margin-bottom:10px;">
-      <Row>
-        <SliderVal name='Bright'
-          onchange={setBright}
-          bind:cur={$pStrand.tracks[track].drawProps.pcentBright}
-        />
-      </Row>
-      <Row>
-        <SliderVal name='Delay&nbsp;'
-          onchange={setDelay}
-          min={-MAX_DELAY_VALUE}
-          max={MAX_DELAY_VALUE}
-          bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
-        />
-      </Row>
-      <Row>
-        <SliderVal name='Offset'
-          onchange={setOffset}
-          bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
-          disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
-        />
-      </Row>
-      <Row>
-        <SliderVal name='Length'
-          onchange={setLength}
-          bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
-          disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
-        />
-      </Row>
-      <Row style="margin-top:10px;">
-        <Checkbox labelText="Reverse Direction"
-          on:check={setDirect}
-          bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
-          disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
-                     ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
-        />
-      </Row>
-    </div>
+  <SlidersPropsLocal {track} />
+  <SectionTrigger {track} />
 
-    <SlidersPropsLocal {track} />
-    <SectionTrigger {track} />
-
-  {/if}
 </div>
 
 <style>

@@ -46,18 +46,12 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {#if ($pStrand.tracks[track].layers[layer].pluginIndex === 0) }
-          Explain filter effect menu.
-        {:else}
-          {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
-        {/if}
+        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
       </p>
     </Row>
   {/if}
 
-  {#if ($pStrand.tracks[track].layers[layer].pluginIndex !== 0) }
-    <SectionTrigger {track} {layer} />
-  {/if}
+  <SectionTrigger {track} {layer} />
 </div>
 
 <style>

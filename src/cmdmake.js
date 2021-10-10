@@ -93,15 +93,13 @@ export const convTrackLayerToID = (track, layer) =>
   {
     for (let j = 0; j < strand.tracks[i].lactives; ++j)
     {
-      if ((strand.tracks[i].layers[j].pluginIndex > 0) &&
-          !strand.tracks[i].layers[j].mute)
+      if (!strand.tracks[i].layers[j].mute)
         ++layerid
     }
   }
   for (let j = 0; j < layer; ++j)
   {
-    if ((strand.tracks[track].layers[j].pluginIndex > 0) &&
-        !strand.tracks[track].layers[j].mute)
+    if (!strand.tracks[track].layers[j].mute)
       ++layerid
   }
 
@@ -137,7 +135,7 @@ export const makeEntireCmdStr = () =>
       // (note that draw layer does not have mute)
       if (j === DRAW_LAYER)
       {
-        drawplugin = (layer.pluginIndex > 0) && !layer.mute;
+        drawplugin = !layer.mute;
         tplugbits |= layer.pluginBits;
 
         if (drawplugin)
@@ -151,7 +149,7 @@ export const makeEntireCmdStr = () =>
         }
         //else ismute = true; // DEBUG
       }
-      else if (drawplugin && (layer.pluginIndex > 0) && !layer.mute)
+      else if (drawplugin && !layer.mute)
       {
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
         splugbits |= layer.pluginBits;
@@ -188,84 +186,81 @@ export const makeLayerCmdStr = (track, layer) =>
   let player = get(pStrand).tracks[track].layers[layer];
   let cmdstr = '';
 
-  if (player.pluginIndex > 0)
+  if (layer === 0) // drawing layer
   {
-    if (layer === 0) // drawing layer
+    let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
+    let pdraw = get(pStrand).tracks[track].drawProps;
+
+    cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
+
+    if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
     {
-      let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
-      let pdraw = get(pStrand).tracks[track].drawProps;
-
-      cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
-
-      if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
-      {
-        cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
-        cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
-      }
-
-      if (pdraw.reverseDir !== false)
-        cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
-
-      if (pdraw.orPixelVals !== false)
-        cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
-
-      if (pdraw.pcentBright !== 100)
-        cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
-
-      if (pdraw.pcentWhite !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
-
-      if (pdraw.degreeHue !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
-
-      if (pdraw.pcentCount !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
-
-      if (pdraw.msecsDelay !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
-
-      let bits = makeOrideBits(get(pStrand), track);
-      if (bits !== 0)
-        cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
-    }
-    else
-    {
-      let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
-      cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
+      cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
+      cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
     }
 
-    if (player.forceRandom)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+    if (pdraw.reverseDir !== false)
+      cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
 
-    else if (player.forceValue !== MAX_FORCE_VALUE/2) // default
-      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+    if (pdraw.orPixelVals !== false)
+      cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
 
-    if (player.trigAutomatic)
-    {
-      if (!player.trigDoRepeat)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+    if (pdraw.pcentBright !== 100)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
 
-      if (player.trigDelayMin !== 1)
-        cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+    if (pdraw.pcentWhite !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
 
-      // must always have this to enable auto-triggering, even if default value
-      cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
-    }
+    if (pdraw.degreeHue !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
 
-    if (player.trigOnLayer)
-    {
-      let tracknum = player.trigTrackNum;
-      let layernum = player.trigLayerNum;
-      let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-      cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
-    }
+    if (pdraw.pcentCount !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
 
-    if (player.trigFromMain)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
+    if (pdraw.msecsDelay !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
 
-    if (player.trigAtStart)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);
+    let bits = makeOrideBits(get(pStrand), track);
+    if (bits !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
   }
+  else
+  {
+    let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
+    cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
+  }
+
+  if (player.forceRandom)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+
+  else if (player.forceValue !== MAX_FORCE_VALUE/2) // default
+    cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+
+  if (player.trigAutomatic)
+  {
+    if (!player.trigDoRepeat)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+
+    if (player.trigDelayMin !== 1)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+
+    // must always have this to enable auto-triggering, even if default value
+    cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
+  }
+
+  if (player.trigOnLayer)
+  {
+    let tracknum = player.trigTrackNum;
+    let layernum = player.trigLayerNum;
+    let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
+    cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
+  }
+
+  if (player.trigFromMain)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
+
+  if (player.trigAtStart)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);
 
   player.cmdstr = cmdstr;
 }

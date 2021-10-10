@@ -24,23 +24,15 @@
   export let layer;
 
   let isSolo, noSolo;
-  let isMute, noMute;
+  let isMute;
 
   $: {
     isSolo = $pStrand.tracks[track].layers[layer].solo;
     isMute = $pStrand.tracks[track].layers[layer].mute;
 
     if (layer == DRAW_LAYER)
-    {
-      noMute = $pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex == 0;
-      noSolo = ($pStrand.tactives <= 1) || noMute;
-    }
-    else
-    {
-      noMute = ($pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex == 0) ||
-               ($pStrand.tracks[track].layers[layer].pluginIndex == 0);
-      noSolo = ($pStrand.tracks[track].lactives <= 2) || noMute;
-    }
+         noSolo = ($pStrand.tactives <= 1);
+    else noSolo = ($pStrand.tracks[track].lactives <= 2);
   }
 
   function rebuild()
@@ -188,7 +180,6 @@
   class="button"
   class:select={isMute}
   on:click={domute}
-  disabled={noMute}
   >Mute
 </button>
 

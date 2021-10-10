@@ -27,7 +27,7 @@ import { MAX_FORCE_VALUE } from './pixcmds.js';
 
 const oneLayer =
 {
-  pluginIndex     : 0,      // effect plugin index, not value (0=none)
+  pluginIndex     : 0,      // effect plugin index, not value
   pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
 
   open            : true,   // true if displayed

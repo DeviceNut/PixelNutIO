@@ -260,12 +260,11 @@ export const userSetEffect = (track, layer, elist) =>
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    // if this is the last layer of the last track, and not clearing the effect,
-    // then just "add" the effect (and add Go to enable it), otherwise must send
+    // if this is the last layer of the last track then just "add"
+    // the effect (and add Go to enable it), otherwise must send
     // a "switch" effect to this specific layer
     const pval = elist[pindex].id;
-    if ((pindex > 0) &&
-        (track+1 >= strand.tactives) &&
+    if ((track+1 >= strand.tactives) &&
         (layer+1 >= strand.tracks[track].lactives))
     {
       sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);
@@ -274,10 +273,9 @@ export const userSetEffect = (track, layer, elist) =>
     else
     {
       let layerid = convTrackLayerToID(track, layer);
-      sendLayerCmd(layerid, cmdStr_SwitchEffect, (pval < 0) ? undefined : `${pval}`);
+      sendLayerCmd(layerid, cmdStr_SwitchEffect, `${pval}`);
 
       const bits = before & ~after; // override bits being cleared
-      console.log('bits: ', before, after, bits);
       updateTrackOverrides(track, bits);
     }
   }

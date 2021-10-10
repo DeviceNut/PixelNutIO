@@ -6,12 +6,7 @@
     idStrand
    } from './globals.js';
  
-  import {
-    DRAW_LAYER,
-    OPER_SWAP_LAYER,
-    OPER_SWAP_TRACK,
-    cmdStr_Operation
-  } from './pixcmds.js';
+  import { DRAW_LAYER } from './pixcmds.js';
 
   import {
     strandSwapTracks,
@@ -104,15 +99,11 @@
     {
       checkTrigTrack(track);
       updateAllTracks(); // recreate all tracks
-
-      //userSendToLayer(track, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
       checkTrigLayer(layer);
       updateAllTracks(); // recreate all tracks
-
-      //userSendToLayer(track, layer, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
     }
 
     sendEntirePattern(); // FIXME when device command handling updated
@@ -126,15 +117,11 @@
     {
       checkTrigTrack(track-1);
       updateAllTracks(); // recreate all tracks
-
-      //userSendToLayer(track-1, DRAW_LAYER, cmdStr_Operation, `${OPER_SWAP_TRACK}`);
     }
     else
     {
       checkTrigLayer(layer-1);
       updateAllTracks(); // recreate all tracks
-
-      //userSendToLayer(track, layer-1, cmdStr_Operation, `${OPER_SWAP_LAYER}`);
     }
 
     sendEntirePattern(); // FIXME when device command handling updated

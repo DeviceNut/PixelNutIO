@@ -8,9 +8,7 @@
 
   import {
     DRAW_LAYER,
-    OPER_DEL_LAYER,
-    OPER_DEL_TRACK,
-    cmdStr_Operation
+    cmdStr_SelectEffect
   } from './pixcmds.js';
 
   import {
@@ -76,7 +74,6 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      oper = OPER_DEL_TRACK;
       layer = DRAW_LAYER;
 
       strandClearTrack($pStrand.tactives)
@@ -97,7 +94,7 @@
     updateAllTracks();     // recreate all tracks
 
     //let layerid = convTrackLayerToID(track, layer);
-    //userSendToLayer(track, layer, cmdStr_Operation, `${oper}`);
+    //userSendToLayer(track, layer, cmdStr_SelectEffect);
     sendEntirePattern(); // FIXME when device command handling updated
   }
 

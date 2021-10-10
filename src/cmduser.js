@@ -23,7 +23,7 @@ import {
   cmdStr_OR_Props      ,
   cmdStr_SetXmode      ,
   cmdStr_SetFirst      ,
-  cmdStr_SwitchEffect  ,
+  cmdStr_SelectEffect  ,
   cmdStr_PcentOffset   ,
   cmdStr_PcentExtent   ,
   cmdStr_PcentBright   ,
@@ -273,7 +273,7 @@ export const userSetEffect = (track, layer, elist) =>
     else
     {
       let layerid = convTrackLayerToID(track, layer);
-      sendLayerCmd(layerid, cmdStr_SwitchEffect, `${pval}`);
+      sendLayerCmd(layerid, cmdStr_SelectEffect, `${pval}`);
 
       const bits = before & ~after; // override bits being cleared
       updateTrackOverrides(track, bits);

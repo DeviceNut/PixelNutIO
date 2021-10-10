@@ -4,11 +4,6 @@ export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_FORCE_VALUE      = 1000;   // maximum force value
 export const MAX_DELAY_VALUE      = 60;     // maximum delay msecs
 
-export const OPER_DEL_LAYER       = 1;      // delete layer
-export const OPER_DEL_TRACK       = 2;      // delete track
-export const OPER_SWAP_LAYER      = 3;      // swap layer
-export const OPER_SWAP_TRACK      = 4;      // swap track
-
 export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
 export const overBit_PcentCount   = 4;      // overwrite pcentCount
@@ -33,7 +28,7 @@ export const cmdStr_AddrLayer     = "L";    // layer index
 
 // Commands that must be preceded by "L" command:
 export const cmdStr_LayerMute     = "M";    // mute layer: 0=off, 1=on
-export const cmdStr_SwitchEffect  = "S";    // plugin number (none to delete)
+export const cmdStr_SelectEffect  = "S";    // plugin number (none to delete)
 
 // Commands that affect/form patterns       // value is:
 export const cmdStr_SetEffect     = "E";    // plugin number

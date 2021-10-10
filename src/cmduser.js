@@ -12,14 +12,6 @@ import {
 } from './globals.js';
 
 import {
-  pluginBit_DELAY,
-  pluginBit_DIRECTION,
-  pluginBit_ORIDE_DELAY,
-  pluginBit_ORIDE_DIR,
-  pluginBit_ORIDE_EXT
-} from './presets.js';
-
-import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
   cmdStr_PullTrigger   ,
@@ -64,7 +56,8 @@ import {
   makeEntireCmdStr,
   updateLayerVals,
   updateAllTracks,
-  updateTriggerLayers
+  updateTriggerLayers,
+  updateTrackOverrides
 } from './cmdmake.js';
 
 import {
@@ -256,11 +249,13 @@ export const userSetEffect = (track, layer, elist) =>
 
   if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = pindex;
+    const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
+    const before = elist[lshadow.pluginIndex].bits;
+    lshadow.pluginIndex = pindex;
 
-    const bits = elist[pindex].bits;
-    strand.tracks[track].layers[layer].pluginBits = bits;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = bits;
+    const after = elist[pindex].bits;
+    strand.tracks[track].layers[layer].pluginBits = after;
+    lshadow.pluginBits = after;
 
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
@@ -280,6 +275,10 @@ export const userSetEffect = (track, layer, elist) =>
     {
       let layerid = convTrackLayerToID(track, layer);
       sendLayerCmd(layerid, cmdStr_SwitchEffect, (pval < 0) ? undefined : `${pval}`);
+
+      const bits = before & ~after; // override bits being cleared
+      console.log('bits: ', before, after, bits);
+      updateTrackOverrides(track, bits);
     }
   }
 }

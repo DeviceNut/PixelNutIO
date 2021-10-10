@@ -12,19 +12,28 @@ import {
 } from './globals.js';
 
 import {
+  pluginBit_DELAY,
+  pluginBit_DIRECTION,
+  pluginBit_ORIDE_DELAY,
+  pluginBit_ORIDE_DIR,
+  pluginBit_ORIDE_EXT
+} from './presets.js';
+
+import {
   DRAW_LAYER,
   MAX_BYTE_VALUE,
   cmdStr_PullTrigger   ,
   cmdStr_DeviceName    ,
   cmdStr_Pause         ,
   cmdStr_Resume        ,
-  cmdStr_PcentOffset   ,
-  cmdStr_PcentExtent   ,
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
   cmdStr_SetXmode      ,
   cmdStr_SetFirst      ,
+  cmdStr_SwitchEffect  ,
+  cmdStr_PcentOffset   ,
+  cmdStr_PcentExtent   ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
@@ -40,6 +49,7 @@ import {
   cmdStr_TrigFromLayer ,
   cmdStr_TrigFromMain  ,
   cmdStr_TrigAtStart   ,
+  cmdStr_Go
 } from './pixcmds.js';
 
 import {
@@ -107,7 +117,10 @@ export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
     let layerid = convTrackLayerToID(track, layer);
     sendLayerCmd(layerid, cmdstr, cmdval);
   }
+  else console.log(`ignoring layer cmd: ${cmdstr}`); // DEBUG
 }
+
+// Strand/Pattern selection and handling:
 
 export const userStrandCombine = (combine) =>
 {
@@ -252,8 +265,20 @@ export const userSetEffect = (track, layer, elist) =>
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    sendEntirePattern(); // FIXME when device command handling updated
-    //userSendToLayer(track, layer, cmdStr_SwitchEffect, `${pindex}`);
+    // if this is the last layer of the last track, just "add" the effect
+    // otherwise must send a "switch" effect to this specific layer
+    const pval = elist[pindex].id;
+    if ((track+1 >= strand.tactives) &&
+        (layer+1 >= strand.tracks[track].lactives))
+    {
+      sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);
+      sendStrandCmd(cmdStr_Go);
+    }
+    else
+    {
+      let layerid = convTrackLayerToID(track, layer);
+      sendLayerCmd(layerid, cmdStr_SwitchEffect, (pval < 0) ? undefined : `${pval}`);
+    }
   }
 }
 
@@ -433,6 +458,8 @@ export const userSetDirect = (track) =>
 {
   const layer = DRAW_LAYER;
   const rdir = get(pStrand).tracks[track].drawProps.reverseDir;
+
+  console.log(`direction: ${rdir} ${get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir}`);
 
   if (get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir !== rdir)
   {

@@ -66,7 +66,7 @@
 
   const dodel = () =>
   {
-    let layer, oper;
+    let layer;
 
     if (istrack)
     {
@@ -84,9 +84,7 @@
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
-      oper = OPER_DEL_LAYER;
       layer = $pStrand.tracks[track].lactives;
-
       strandClearLayer(track, layer);
     }
 

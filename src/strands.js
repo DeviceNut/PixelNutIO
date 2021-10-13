@@ -45,7 +45,7 @@ const oneLayer =
   trigAutomatic   : false,  // true to trigger automatically:
   trigDelayMin    : 1,      // min seconds before next trigger (at least 1)
   trigDelayRange  : 0,      // range of delay values possible (min...min+range)
-  trigDoRepeat    : false,  // true to repeat forever, else:
+  trigDoRepeat    : true,   // true to repeat forever, else:
   trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
 
   forceRandom     : false,  // true if a random force is applied when triggering
@@ -66,7 +66,7 @@ const drawProps =
   pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
 
   overCount       : false,  // true to allow global override
-  pcentCount      : 0,      // percent of pixels affected in range
+  pcentCount      : 50,     // percent of pixels affected in range
                           
   pcentOffset     : 0,      // percent of pixels for offset
   pcentExtent     : 100,    // percent of pixels to be drawn

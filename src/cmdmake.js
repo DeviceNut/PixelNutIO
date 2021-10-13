@@ -12,6 +12,8 @@ import {
 import {
   DRAW_LAYER,
   MAX_FORCE_VALUE,
+  DEF_PCENT_BRIGHT,
+  DEF_PCENT_COUNT,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
@@ -200,7 +202,7 @@ export const makeLayerCmdStr = (track, layer) =>
       cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
     }
 
-    if (pdraw.pcentBright !== 100)
+    if (pdraw.pcentBright !== DEF_PCENT_BRIGHT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
 
     if (pdraw.msecsDelay !== 0)
@@ -212,7 +214,7 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentWhite !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
 
-    if (pdraw.pcentCount !== 0)
+    if (pdraw.pcentCount !== DEF_PCENT_COUNT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
 
     let bits = makeOrideBits(get(pStrand), track);

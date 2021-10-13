@@ -52,15 +52,23 @@
   {
     if (istrack)
     {
-      let n = ++($pStrand.tactives);
+      const tindex = $pStrand.tactives;
+      const n = ++($pStrand.tactives);
+
       if (n >= $nTracks) add_disabled = true;
       del_disabled = false;
+
+      strandClearTrack(tindex)
     }
     else
     {
-      let n = ++($pStrand.tracks[track].lactives);
+      const lindex = $pStrand.tracks[track].lactives;
+      const n = ++($pStrand.tracks[track].lactives);
+
       if (n >= $tLayers) add_disabled = true;
       del_disabled = false;
+
+      strandClearLayer(track, lindex);
     }
   }
 
@@ -70,17 +78,16 @@
 
     if (istrack)
     {
-      let n = --($pStrand.tactives);
+      const n = --($pStrand.tactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 
       layer = DRAW_LAYER;
-
       strandClearTrack($pStrand.tactives)
     }
     else
     {
-      let n = --($pStrand.tracks[track].lactives);
+      const n = --($pStrand.tracks[track].lactives);
       if (n <= 1) del_disabled = true;
       add_disabled = false;
 

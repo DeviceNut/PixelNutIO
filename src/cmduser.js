@@ -238,8 +238,9 @@ export const userSetEffect = (track, layer, elist) =>
 {
   const strand = get(pStrand);
   const pindex = strand.tracks[track].layers[layer].pluginIndex;
+  const prevstr = strand.tracks[track].layers[layer].cmdstr;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex)
+  if ((prevstr == '') || (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex))
   {
     const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
     const before = elist[lshadow.pluginIndex].bits;
@@ -252,24 +253,20 @@ export const userSetEffect = (track, layer, elist) =>
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    // if this is the last layer of the last track then just "add"
-    // the effect (and add Go to enable it), otherwise must send
-    // a "switch" effect to this specific layer
-    const pval = elist[pindex].id;
-    if ((track+1 >= strand.tactives) &&
-        (layer+1 >= strand.tracks[track].lactives))
+    if (prevstr == '') // if no previous effect: create new effect
     {
       sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);
       sendStrandCmd(cmdStr_Go);
     }
-    else
+    else // else switch to new effect on this layer
     {
+      const pval = elist[pindex].id;
       let layerid = convTrackLayerToID(track, layer);
       sendLayerCmd(layerid, cmdStr_SelectEffect, `${pval}`);
-
-      const bits = before & ~after; // override bits being cleared
-      updateTrackOverrides(track, bits);
     }
+
+    const bits = before & ~after; // override bits being cleared
+    updateTrackOverrides(track, bits);
   }
 }
 
@@ -375,13 +372,13 @@ export const userSetOverMode = () =>
         let props = get(pStrand).tracks[i].drawProps;
 
         if (props.overHue)
-          userSendToLayer(track, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
+          userSendToLayer(i, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
 
         if (props.overWhite)
-          userSendToLayer(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
+          userSendToLayer(i, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
 
         if (props.overCount)
-          userSendToLayer(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
+          userSendToLayer(i, layer, cmdStr_PcentCount, `${props.pcentCount}`);
       }
     }
   }

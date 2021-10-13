@@ -17,12 +17,13 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Direction     ,
   cmdStr_OwritePixs    ,
-  cmdStr_TrigFromLayer ,
-  cmdStr_TrigFromMain  ,
   cmdStr_TrigForce     ,
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
   cmdStr_TrigRangeTime ,
+  cmdStr_TrigAutomatic ,
+  cmdStr_TrigFromLayer ,
+  cmdStr_TrigFromMain  ,
   cmdStr_TrigAtStart   ,
   cmdStr_Clear         ,
   cmdStr_Go
@@ -191,7 +192,7 @@ export const parsePattern = (pattern) =>
           // turn off default triggering-on-start to allow it to be missing in pattern
           get(pStrand).tracks[track].layers[layer].trigAtStart = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
-      }
+        }
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
@@ -358,11 +359,15 @@ export const parsePattern = (pattern) =>
             if (!isNaN(val)) // ignore if no value
             {
               let range = valueToPositive(val);
-              get(pStrand).tracks[track].layers[layer].trigAutomatic = true;
               get(pStrand).tracks[track].layers[layer].trigDelayRange = range;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = range;
             }
+            break;
+          }
+          case cmdStr_TrigAutomatic:
+          {
+            get(pStrand).tracks[track].layers[layer].trigAutomatic = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic = true;
             break;
           }
           case cmdStr_TrigFromLayer:

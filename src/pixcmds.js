@@ -27,7 +27,7 @@ export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "L";    // layer index
 
 // Commands that must be preceded by "L" command:
-export const cmdStr_LayerMute     = "M";    // mute layer: 0=off, 1=on
+export const cmdStr_LayerMute     = "Z";    // mute layer: 0=off, 1=on
 export const cmdStr_SelectEffect  = "S";    // plugin number (none to delete)
 
 // Commands that affect/form patterns       // value is:
@@ -46,16 +46,16 @@ export const cmdStr_TrigForce     = "F";    // force used in triggering (no valu
 export const cmdStr_TrigCount     = "N";    // trigger count (none or 0 means forever)
 export const cmdStr_TrigMinTime   = "O";    // min time before next auto trigger (secs)
 export const cmdStr_TrigRangeTime = "R";    // auto trigger range time (secs)
+export const cmdStr_TrigAutomatic = "M";    // 0=off, 1=on (uses other trigger options)
 export const cmdStr_TrigFromLayer = "A";    // layer index that will trigger this one
-export const cmdStr_TrigFromMain  = "I";    // 0=off, 1=triggerr from main controls
-export const cmdStr_TrigAtStart   = "T";    // 0=off, 1=on TODO
+export const cmdStr_TrigFromMain  = "I";    // 0=off, 1=trigger from main controls
+export const cmdStr_TrigAtStart   = "T";    // 0=off, 1=trigger once when starting
 
 // Commands that causes an action (no paramenters):
 export const cmdStr_Clear         = "P";    // clears all effects
 export const cmdStr_Go            = "G";    // display all effects
 
 // ++ these affect all tracks in the strand
-// Note: all alpha chars defined except for "Z"
 // Note: not using X,Y commands (start/length of extent in pixels)
 // Note: commands not starting with alpha char must be on separate line
 ///////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@ import {
   cmdStr_TrigCount     ,
   cmdStr_TrigMinTime   ,
   cmdStr_TrigRangeTime ,
+  cmdStr_TrigAutomatic ,
   cmdStr_TrigAtStart   ,
   cmdStr_Go            
   } from './pixcmds.js';
@@ -199,30 +200,30 @@ export const makeLayerCmdStr = (track, layer) =>
       cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
     }
 
+    if (pdraw.pcentBright !== 100)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
+
+    if (pdraw.msecsDelay !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
+
+    if (pdraw.degreeHue !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
+
+    if (pdraw.pcentWhite !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
+
+    if (pdraw.pcentCount !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
+
+    let bits = makeOrideBits(get(pStrand), track);
+    if (bits !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
+
     if (pdraw.reverseDir !== false)
       cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
 
     if (pdraw.orPixelVals !== false)
       cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
-
-    if (pdraw.pcentBright !== 100)
-      cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
-
-    if (pdraw.pcentWhite !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);
-
-    if (pdraw.degreeHue !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
-
-    if (pdraw.pcentCount !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
-
-    if (pdraw.msecsDelay !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
-
-    let bits = makeOrideBits(get(pStrand), track);
-    if (bits !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
   }
   else
   {
@@ -233,20 +234,20 @@ export const makeLayerCmdStr = (track, layer) =>
   if (player.forceRandom)
     cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
 
-  else if (player.forceValue !== MAX_FORCE_VALUE/2) // default
+  else if (player.forceValue !== MAX_FORCE_VALUE/2)
     cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-  if (player.trigAutomatic)
-  {
-    if (!player.trigDoRepeat)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+  if (!player.trigDoRepeat)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
 
-    if (player.trigDelayMin !== 1)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
+  if (player.trigDelayMin !== 1)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
 
-    // must always have this to enable auto-triggering, even if default value
+  if (player.trigDelayRange != 0)
     cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
-  }
+
+  if (player.trigAutomatic)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigAutomatic} `);
 
   if (player.trigOnLayer)
   {

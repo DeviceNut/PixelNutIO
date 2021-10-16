@@ -103,9 +103,9 @@ function deviceStart(device)
 function deviceStop(device=null)
 {
   let curdev = get(curDevice);
-  if (curdev != null)
+  if (curdev !== null)
   {
-    if (get(curPageMode) != PAGEMODE_DEVICES)
+    if (get(curPageMode) !== PAGEMODE_DEVICES)
       curPageMode.set(PAGEMODE_DEVICES);
 
     curdev.active = false;

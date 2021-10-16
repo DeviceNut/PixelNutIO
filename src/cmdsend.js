@@ -39,9 +39,9 @@ export const sendStrandSwitch = (s) =>
 export const sendPatternToStrand = (s) =>
 {
   let sid = get(idStrand);
-  if (sid != s) sendStrandSwitch(s);
+  if (sid !== s) sendStrandSwitch(s);
   sendCmdToDevice( get(pStrand).curPatternStr );
-  if (sid != s) sendStrandSwitch(sid);
+  if (sid !== s) sendStrandSwitch(sid);
 }
 
 // sends command to all selected strands

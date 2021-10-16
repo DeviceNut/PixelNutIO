@@ -10,15 +10,16 @@ import {
 } from './globals.js';
 
 import {
-  DRAW_LAYER,
-  MAX_FORCE_VALUE,
-  DEF_PCENT_BRIGHT,
-  DEF_PCENT_COUNT,
+  DRAW_LAYER           ,
+  MAX_FORCE_VALUE      ,
+  DEF_PCENT_BRIGHT     ,
+  DEF_PCENT_COUNT      ,
+  DEF_FORCE_VALUE      ,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentOffset   ,
-  cmdStr_PcentExtent   ,
+  cmdStr_PcentXoffset  ,
+  cmdStr_PcentXlength  ,
   cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
@@ -26,16 +27,15 @@ import {
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
-  cmdStr_Direction     ,
-  cmdStr_OwritePixs    ,
-  cmdStr_TrigFromLayer ,
-  cmdStr_TrigFromMain  ,
-  cmdStr_TrigForce     ,
-  cmdStr_TrigCount     ,
-  cmdStr_TrigMinTime   ,
-  cmdStr_TrigRangeTime ,
-  cmdStr_TrigAutomatic ,
+  cmdStr_Backwards     ,
+  cmdStr_CombinePixs   ,
   cmdStr_TrigAtStart   ,
+  cmdStr_TrigByEffect  ,
+  cmdStr_TrigFromMain  ,
+  cmdStr_TrigRepeating ,
+  cmdStr_TrigOffset    ,
+  cmdStr_TrigRange     ,
+  cmdStr_TrigForce     ,
   cmdStr_Go            
   } from './pixcmds.js';
 
@@ -196,10 +196,10 @@ export const makeLayerCmdStr = (track, layer) =>
 
     cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
 
-    if ((pdraw.pcentOffset !== 0) || (pdraw.pcentExtent !== 100))
+    if ((pdraw.pcentXoffset !== 0) || (pdraw.pcentXlength !== 100))
     {
-      cmdstr = cmdstr.concat(`${cmdStr_PcentOffset}${pdraw.pcentOffset} `);
-      cmdstr = cmdstr.concat(`${cmdStr_PcentExtent}${pdraw.pcentExtent} `);
+      cmdstr = cmdstr.concat(`${cmdStr_PcentXoffset}${pdraw.pcentXoffset} `);
+      cmdstr = cmdstr.concat(`${cmdStr_PcentXlength}${pdraw.pcentXlength} `);
     }
 
     if (pdraw.pcentBright !== DEF_PCENT_BRIGHT)
@@ -221,11 +221,11 @@ export const makeLayerCmdStr = (track, layer) =>
     if (bits !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
 
-    if (pdraw.reverseDir !== false)
-      cmdstr = cmdstr.concat(`${cmdStr_Direction}0 `);
+    if (pdraw.dirBackwards === true)
+      cmdstr = cmdstr.concat(`${cmdStr_Backwards} `);
 
-    if (pdraw.orPixelVals !== false)
-      cmdstr = cmdstr.concat(`${cmdStr_OwritePixs}1 `);
+    if (pdraw.orPixelVals === true)
+      cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
   }
   else
   {
@@ -235,35 +235,36 @@ export const makeLayerCmdStr = (track, layer) =>
 
   if (player.forceRandom)
     cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
-
-  else if (player.forceValue !== MAX_FORCE_VALUE/2)
+  else if (player.forceValue !== DEF_FORCE_VALUE)
     cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
 
-  if (!player.trigDoRepeat)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigCount}${player.trigRepCount} `);
+  if (player.trigAtStart)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);
 
-  if (player.trigDelayMin !== 1)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigMinTime}${player.trigDelayMin} `);
-
-  if (player.trigDelayRange != 0)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigRangeTime}${player.trigDelayRange} `);
-
-  if (player.trigAutomatic)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigAutomatic} `);
+  if (player.trigFromMain)
+    cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
   if (player.trigOnLayer)
   {
     let tracknum = player.trigTrackNum;
     let layernum = player.trigLayerNum;
     let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-    cmdstr = cmdstr.concat(`${cmdStr_TrigFromLayer}${tlayer} `);
+    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${tlayer} `);
   }
 
-  if (player.trigFromMain)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
+  if (player.trigDoRepeat)
+  {
+    if (player.trigForever)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating}0 `);
+    else if (player.trigRepCount !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating}${player.trigRepRange} `);
 
-  if (player.trigAtStart)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);
+    if (player.trigRepOffset !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigOffset}${player.trigRepOffset} `);
+
+    if (player.trigRepRange !== 0)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigRange}${player.trigRepRange} `);
+  }
 
   player.cmdstr = cmdstr;
 }
@@ -389,11 +390,11 @@ export const updateTrackOverrides = (track, bits) =>
     userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.msecsDelay);
 
   if (bits & pluginBit_ORIDE_DIR)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_Direction, props.reverseDir);
+    userSendToLayer(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
 
   if (bits & pluginBit_ORIDE_EXT)
   {
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentOffset, props.pcentOffset);
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentExtent, props.pcentExtent);
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
   }
 }

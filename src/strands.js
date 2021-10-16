@@ -42,11 +42,11 @@ const oneLayer =
   trigTrackNum    : 1,      //  the track number that will trigger (from 1)
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
 
-  trigAutomatic   : false,  // true to trigger automatically:
-  trigDelayMin    : 1,      // min seconds before next trigger (at least 1)
-  trigDelayRange  : 0,      // range of delay values possible (min...min+range)
-  trigDoRepeat    : true,   // true to repeat forever, else:
-  trigRepCount    : 1,      //  number of times to repeat trigger (at least 1)
+  trigDoRepeat    : false,  // true for auto-generated trigger:
+  trigForever     : true,   //   false to select specific count
+  trigRepCount    : 1,      //   number of times to trigger (from 1)
+  trigRepOffset   : 0,      //   offset seconds before range (from 0)
+  trigRepRange    : 0,      //   range of random seconds (from 0)
 
   forceRandom     : false,  // true if a random force is applied when triggering
   forceValue      : MAX_FORCE_VALUE/2, // percent force to apply (if not random)
@@ -68,10 +68,10 @@ const drawProps =
   overCount       : false,  // true to allow global override
   pcentCount      : 50,     // percent of pixels affected in range
                           
-  pcentOffset     : 0,      // percent of pixels for offset
-  pcentExtent     : 100,    // percent of pixels to be drawn
+  pcentXoffset    : 0,      // percent of pixels for offset
+  pcentXlength    : 100,    // percent of pixels to be drawn
 
-  reverseDir      : false,  // reverse drawing direction (false for increasing pixel index)
+  dirBackwards    : false,  // backwards drawing direction (decreasing pixel index)
   orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
 }
 

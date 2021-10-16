@@ -16,7 +16,7 @@
   } from './globals.js';
 
   import {
-    pluginBit_TRIGEFFECT,
+    pluginBit_REPTRIGS,
     pluginBit_TRIGFORCE
   } from './presets.js';
 
@@ -25,11 +25,11 @@
     userSetTrigMain,
     userSetTrigLayer,
     userSetTrigNums,
-    userSetTrigAuto,
-    userSetTrigRandom,
+    userSetTrigRepeat,
     userSetTrigCount,
-    userSetTrigDmin,
-    userSetTrigDrange,
+    userSetTrigForever,
+    userSetTrigOffset,
+    userSetTrigRange,
     userSetForceType,
     userSetForceValue
   } from './cmduser.js';
@@ -68,15 +68,15 @@
     if ($aTriggers.length < 1) makeTrigSourceList();
   }
 
-  const autoStart = () => { userSetTrigStart(track, layer); }
-  const setMain   = () => { userSetTrigMain(track, layer); }
-  const setAuto   = () => { userSetTrigAuto(track, layer); }
-  const setRandom = () => { userSetTrigRandom(track, layer); }
-  const setCount  = () => { userSetTrigCount(track, layer); }
-  const setDmin   = () => { userSetTrigDmin(track, layer); }
-  const setDrange = () => { userSetTrigDrange(track, layer); }
-  const setFtype  = () => { userSetForceType(track, layer); }
-  const setFvalue = () => { userSetForceValue(track, layer); }
+  const autoStart  = () => { userSetTrigStart(  track, layer); }
+  const setMain    = () => { userSetTrigMain(   track, layer); }
+  const setRepeat  = () => { userSetTrigRepeat( track, layer); }
+  const setCount   = () => { userSetTrigCount(  track, layer); }
+  const setForever = () => { userSetTrigForever(track, layer); }
+  const setOffset  = () => { userSetTrigOffset( track, layer); }
+  const setRange   = () => { userSetTrigRange(  track, layer); }
+  const setFtype   = () => { userSetForceType(  track, layer); }
+  const setFvalue  = () => { userSetForceValue( track, layer); }
 
   let helpon = false;
 
@@ -109,83 +109,90 @@
 
   <div style="margin-left:5px;">
     <Checkbox labelText="Once at start"
-      style="padding: 3px;"
+      style="padding:3px;"
       on:check={autoStart}
       bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
     />
-    <Checkbox labelText="From main controls"
-      style="padding: 3px;"
-      on:check={setMain}
-      bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
-    />
-    {#if (($aTriggers).length > 0) }
-      <Checkbox labelText="From Track/Layer"
+    {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
+         ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
+      <Checkbox labelText="From main controls"
         style="padding:3px;"
-        on:check={setOnLayer}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayer}
+        on:check={setMain}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
       />
-      {#if $pStrand.tracks[track].layers[layer].trigOnLayer }
-        <Dropdown
-          style="margin-bottom:10px;"
-          on:select={setLayerNums}
-          bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigListDex}
-          bind:items={$aTriggers}
+      {#if (($aTriggers).length > 0) }
+        <Checkbox labelText="From other effect"
+          style="padding:3px;"
+          on:check={setOnLayer}
+          bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayer}
         />
-      {/if}
-    {/if}
-    <Checkbox labelText="Automatically"
-      style="padding: 3px;"
-      on:check={setAuto}
-      bind:checked={$pStrand.tracks[track].layers[layer].trigAutomatic}
-    />
-    {#if ($pStrand.tracks[track].layers[layer].trigAutomatic) }
-      <div style="margin:12px 15px 0 15px;">
-        {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGEFFECT) }
-          <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
-          <input type="number"
-            min=1 max=9999
-            on:change={setCount}
-            bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
-            disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
-          />
-          <Checkbox labelText="Forever"
-            style="display:inline-block; margin-left:5px;"
-            on:check={setRandom}
-            bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+        {#if $pStrand.tracks[track].layers[layer].trigOnLayer }
+          <Dropdown
+            style="margin-bottom:10px;"
+            on:select={setLayerNums}
+            bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigListDex}
+            bind:items={$aTriggers}
           />
         {/if}
-        <div style="margin-top:8px; ">
-          <span style="margin-right:8px">Minimum Time:&nbsp;</span>
-          <input type="number"
-            min=1 max=9999
-            on:change={setDmin}
-            bind:value={$pStrand.tracks[track].layers[layer].trigDelayMin}
-          />&nbsp;&nbsp;secs
-        </div>
-        <div style="margin-top:8px; ">
-          <span style="margin-right:8px">Random Period:</span>
-          <input type="number"
-            min=0 max=9999
-            on:change={setDrange}
-            bind:value={$pStrand.tracks[track].layers[layer].trigDelayRange}
-          />&nbsp;&nbsp;secs
-        </div>
-      </div>
-      {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) }
+      {/if}
+      <Checkbox labelText="Auto generated"
+        style="padding:3px;"
+        on:check={setRepeat}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+      />
+      {#if ($pStrand.tracks[track].layers[layer].trigDoRepeat) }
         <div style="margin:12px 15px 0 15px;">
-          <p style="margin:10px 0 10px 0; font-size:.9em;">Trigger Force:</p>
-          <Checkbox labelText="Random"
-            on:check={setFtype}
-            bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
-          />
-          <SliderVal name='Fixed:'
-            max={MAX_FORCE_VALUE}
-            onchange={setFvalue}
-            bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
-            disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
-          />
+          {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
+            <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+            <input type="number"
+              min=1 max=9999
+              on:change={setCount}
+              bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
+              disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+            />
+            <Checkbox labelText="Forever"
+              style="display:inline-block; margin-left:5px;"
+              on:check={setForever}
+              bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+            />
+          {/if}
+          <div style="margin-top:8px; ">
+            <span style="margin-right:8px">Minimum Time:&nbsp;</span>
+            <input type="number"
+              min=1 max=9999
+              on:change={setOffset}
+              bind:value={$pStrand.tracks[track].layers[layer].trigRepOffset}
+            />&nbsp;&nbsp;secs
+          </div>
+          <div style="margin-top:8px; ">
+            <span style="margin-right:8px">Random Period:</span>
+            <input type="number"
+              min=0 max=9999
+              on:change={setRange}
+              bind:value={$pStrand.tracks[track].layers[layer].trigRepRange}
+            />&nbsp;&nbsp;secs
+          </div>
         </div>
       {/if}
+    {/if}
+    {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) &&
+         ($pStrand.tracks[track].layers[layer].trigAtStart  ||
+          $pStrand.tracks[track].layers[layer].trigFromMain ||
+          $pStrand.tracks[track].layers[layer].trigOnLayer  ||
+          $pStrand.tracks[track].layers[layer].trigDoRepeat) }
+      <Checkbox labelText="Random force"
+        style="padding:3px;"
+        on:check={setFtype}
+        bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
+      />
+      <div style="margin-top:12px;">
+        <SliderVal name='Force:'
+          max={MAX_FORCE_VALUE}
+          onchange={setFvalue}
+          bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
+          disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
+        />
+      </div>
     {/if}
   </div>
 </div>

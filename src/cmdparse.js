@@ -6,25 +6,24 @@ import {
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
-  cmdStr_PcentOffset   ,
-  cmdStr_PcentExtent   ,
-  cmdStr_SetEffect        ,
+  cmdStr_PcentXoffset  ,
+  cmdStr_PcentXlength  ,
+  cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
   cmdStr_DegreeHue     ,
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
-  cmdStr_Direction     ,
-  cmdStr_OwritePixs    ,
-  cmdStr_TrigForce     ,
-  cmdStr_TrigCount     ,
-  cmdStr_TrigMinTime   ,
-  cmdStr_TrigRangeTime ,
-  cmdStr_TrigAutomatic ,
-  cmdStr_TrigFromLayer ,
-  cmdStr_TrigFromMain  ,
+  cmdStr_Backwards     ,
+  cmdStr_CombinePixs   ,
   cmdStr_TrigAtStart   ,
+  cmdStr_TrigFromMain  ,
+  cmdStr_TrigByEffect  ,
+  cmdStr_TrigRepeating ,
+  cmdStr_TrigOffset    ,
+  cmdStr_TrigRange     ,
+  cmdStr_TrigForce     ,
   cmdStr_Clear         ,
   cmdStr_Go
   } from './pixcmds.js';
@@ -189,7 +188,7 @@ export const parsePattern = (pattern) =>
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
 
-          // turn off default triggering-on-start to allow it to be missing in pattern
+          // turn off triggering-on-start because disabled if missing
           get(pStrand).tracks[track].layers[layer].trigAtStart = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
         }
@@ -210,74 +209,53 @@ export const parsePattern = (pattern) =>
         }
         else switch (ch)
         {
-          case cmdStr_PcentOffset:
+          case cmdStr_PcentXoffset:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              const offset = valueToPercent(val);
-              get(pStrand).tracks[track].drawProps.pcentOffset = offset;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentOffset = offset;
-            }
+            const offset = isNaN(val) ? 0 : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentXoffset = offset;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXoffset = offset;
             break;
           }
-          case cmdStr_PcentExtent:
+          case cmdStr_PcentXlength:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              const extent = valueToPercent(val);
-              get(pStrand).tracks[track].drawProps.pcentExtent = extent;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentExtent = extent;
-            }
+            const extent = isNaN(val) ? 100 : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentXlength = extent;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXlength = extent;
             break;
           }
           case cmdStr_PcentBright:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let bright = valueToPercent(val);
-              get(pStrand).tracks[track].drawProps.pcentBright = bright;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
-            }
+            const bright = isNaN(val) ? DEF_PCENT_BRIGHT : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentBright = bright;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
             break;
           }
           case cmdStr_MsecsDelay:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let delay = valueInRange(val, MAX_DELAY_VALUE);
-              get(pStrand).tracks[track].drawProps.msecsDelay = delay;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
-            }
+            let delay = isNaN(val) ? 0 : valueInRange(val, MAX_DELAY_VALUE);
+            get(pStrand).tracks[track].drawProps.msecsDelay = delay;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
             break;
           }
           case cmdStr_DegreeHue:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let hue = valueToDegree(val);
-              get(pStrand).tracks[track].drawProps.degreeHue = hue;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
-            }
+            const hue = isNaN(val) ? 0 : valueToDegree(val);
+            get(pStrand).tracks[track].drawProps.degreeHue = hue;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
             break;
           }
           case cmdStr_PcentWhite:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let white = valueToPercent(val);
-              get(pStrand).tracks[track].drawProps.pcentWhite = white;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
-            }
+            const white = isNaN(val) ? 0 : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentWhite = white;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
             break;
           }
           case cmdStr_PcentCount:
           {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let count = valueToPercent(val);
-              get(pStrand).tracks[track].drawProps.pcentCount = count;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
-            }
+            const count = isNaN(val) ? DEF_PCENT_COUNT : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentCount = count;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
             break;
           }
           case cmdStr_OrideBits:
@@ -293,24 +271,18 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_Direction:
+          case cmdStr_Backwards: // enabled if no value
           {
-            if (!isNaN(val)) // ignore if no value (device toggles in this case)
-            {
-              let rdir = !valueToBool(val); // reverse is 0, default is 1
-              get(pStrand).tracks[track].drawProps.reverseDir = rdir;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.reverseDir = rdir;
-            }
+            const enable = isNaN(val) ? true : valueToBool(val);
+            get(pStrand).tracks[track].drawProps.dirBackwards = rdir;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = rdir;
             break;
           }
-          case cmdStr_OwritePixs:
+          case cmdStr_CombinePixs: // enabled if no value
           {
-            if (!isNaN(val)) // ignore if no value (device toggles in this case)
-            {
-              let owrite = valueToBool(val);
-              get(pStrand).tracks[track].drawProps.orPixelVals = owrite;
-              get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = owrite;
-            }
+            const enable = isNaN(val) ? true : valueToBool(val);
+            get(pStrand).tracks[track].drawProps.orPixelVals = enable;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
             break;
           }
           case cmdStr_TrigForce:
@@ -322,7 +294,7 @@ export const parsePattern = (pattern) =>
             }
             else
             {
-              let force = valueToPositive(val);
+              const force = valueToPositive(val);
               get(pStrand).tracks[track].layers[layer].forceRandom = false;
               get(pStrand).tracks[track].layers[layer].forceValue = force;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceRandom = false;
@@ -330,51 +302,11 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_TrigCount:
-          {
-            let count = (isNaN(val)) ? 0 : valueToPositive(val);
-            if (count <= 0)
-            {
-              get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
-            }
-            else
-            {
-              get(pStrand).tracks[track].layers[layer].trigDoRepeat = false;
-              get(pStrand).tracks[track].layers[layer].trigRepCount = count;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = false;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
-            }
-            break;
-          }
-          case cmdStr_TrigMinTime:
-          {
-            let mintime = (isNaN(val)) ? 1 : ((val < 1) ? 1 : val);
-            get(pStrand).tracks[track].layers[layer].trigDelayMin = mintime;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayMin = mintime;
-          break;
-          }
-          case cmdStr_TrigRangeTime: // must have this to enable Auto mode
+          case cmdStr_TrigByEffect:
           {
             if (!isNaN(val)) // ignore if no value
             {
-              let range = valueToPositive(val);
-              get(pStrand).tracks[track].layers[layer].trigDelayRange = range;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDelayRange = range;
-            }
-            break;
-          }
-          case cmdStr_TrigAutomatic:
-          {
-            get(pStrand).tracks[track].layers[layer].trigAutomatic = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAutomatic = true;
-            break;
-          }
-          case cmdStr_TrigFromLayer:
-          {
-            if (!isNaN(val)) // ignore if no value
-            {
-              let tlayer = valueToTrackLayer(val);
+              const tlayer = valueToTrackLayer(val);
 
               get(pStrand).tracks[track].layers[layer].trigOnLayer = true;
               get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
@@ -396,6 +328,47 @@ export const parsePattern = (pattern) =>
           {
             get(pStrand).tracks[track].layers[layer].trigAtStart = true;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = true;
+            break;
+          }
+          case cmdStr_TrigRepeating:
+          {
+            if (isNaN(val))
+            {
+              get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
+              get(pStrand).tracks[track].layers[layer].trigForever = true;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigForever = true;
+              get(pStrand).tracks[track].layers[layer].trigRepCount = 1;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = 1;
+            }
+            if (count > 0)
+            {
+              get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
+              get(pStrand).tracks[track].layers[layer].trigForever = false;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigForever = false;
+              get(pStrand).tracks[track].layers[layer].trigRepCount = count;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
+            }
+            else
+            {
+              get(pStrand).tracks[track].layers[layer].trigDoRepeat = false;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = false;
+            }
+            break;
+          }
+          case cmdStr_TrigOffset:
+          {
+            const offset = isNaN(val) ? 0 : valueToPositive(val);
+            get(pStrand).tracks[track].layers[layer].trigRepOffset = offset;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepOffset = offset;
+            break;
+          }
+          case cmdStr_TrigRange:
+          {
+            const range = isNaN(val) ? 0 : valueToPositive(val);
+            get(pStrand).tracks[track].layers[layer].trigRepRange = range;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepRange = range;
             break;
           }
           case cmdStr_Go: break;

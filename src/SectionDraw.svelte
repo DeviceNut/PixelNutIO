@@ -31,8 +31,8 @@
     userSetDelay,
     userSetOffset,
     userSetLength,
-    userSetOwrite,
-    userSetDirect
+    userSetOrPixs,
+    userSetBackwards
   } from './cmduser.js'
 
   import SectionTrigger from './SectionTrigger.svelte';
@@ -41,13 +41,13 @@
 
   export let track;
 
-  const setEffect = () => { userSetEffect(track, DRAW_LAYER, $aEffectsDraw); }
-  const setBright = () => { userSetBright(track); }
-  const setDelay  = () => { userSetDelay( track); }
-  const setOwrite = () => { userSetOwrite(track); }
-  const setOffset = () => { userSetOffset(track); }
-  const setLength = () => { userSetLength(track); }
-  const setDirect = () => { userSetDirect(track); }
+  const setEffect = () => { userSetEffect(  track, DRAW_LAYER, $aEffectsDraw); }
+  const setBright = () => { userSetBright(  track); }
+  const setDelay  = () => { userSetDelay(   track); }
+  const setOrPixs = () => { userSetOrPixs(  track); }
+  const setOffset = () => { userSetOffset(  track); }
+  const setLength = () => { userSetLength(  track); }
+  const setBwards = () => { userSetBackwards(track); }
 
   let helpon = false;
 
@@ -69,10 +69,10 @@
       >?
     </button>
 
-    {#if (track !== DRAW_LAYER) }
+    {#if (track > 0) }
       <div style="margin-left:20px;">
-        <Checkbox labelText="Overwrite"
-          on:check={setOwrite}
+        <Checkbox labelText="Combine Pixels"
+          on:check={setOrPixs}
           bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
         />
       </div>
@@ -103,29 +103,29 @@
         max={MAX_DELAY_VALUE}
         bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
         disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
-                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
+                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
       />
     </Row>
     <Row>
       <SliderVal name='Offset'
         onchange={setOffset}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentOffset}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentXoffset}
         disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
       />
     </Row>
     <Row>
       <SliderVal name='Length'
         onchange={setLength}
-        bind:cur={$pStrand.tracks[track].drawProps.pcentExtent}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentXlength}
         disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
       />
     </Row>
     <Row style="margin-top:10px;">
-      <Checkbox labelText="Reverse Direction"
-        on:check={setDirect}
-        bind:checked={$pStrand.tracks[track].drawProps.reverseDir}
+      <Checkbox labelText="Backwards"
+        on:check={setBwards}
+        bind:checked={$pStrand.tracks[track].drawProps.dirBackwards}
         disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
-                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
+                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
       />
     </Row>
   </div>

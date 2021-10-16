@@ -223,7 +223,7 @@ export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
 export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
-export const pluginBit_TRIGEFFECT  = 0x0010;  // triggering changes the effect
+export const pluginBit_REPTRIGS    = 0x0010;  // repeat triggers changes effect
 export const pluginBit_TRIGFORCE   = 0x0020;  // trigger force used (TRIGGER must be set)
 export const pluginBit_SENDFORCE   = 0x0040;  // sends force to other plugins
                                               // only for filter effects:
@@ -232,7 +232,7 @@ export const pluginBit_ORIDE_WHITE = 0x0200;  // effect overrides white property
 export const pluginBit_ORIDE_COUNT = 0x0400;  // effect overrides count property
 export const pluginBit_ORIDE_DELAY = 0x0800;  // effect overrides delay property
 export const pluginBit_ORIDE_DIR   = 0x1000;  // effect overrides direction property
-export const pluginBit_ORIDE_EXT   = 0x2000;  // effect overrides offset/extent properties
+export const pluginBit_ORIDE_EXT   = 0x2000;  // effect overrides start/extent properties
 
 export const presetsFindEffect = (plugnum) =>
 {

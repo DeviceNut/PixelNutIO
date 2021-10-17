@@ -255,9 +255,8 @@ export const makeLayerCmdStr = (track, layer) =>
   if (player.trigDoRepeat)
   {
     if (player.trigForever)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating}0 `);
-    else if (player.trigRepCount !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating}${player.trigRepRange} `);
+         cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating} `);
+    else cmdstr = cmdstr.concat(`${cmdStr_TrigRepeating}${player.trigRepCount} `);
 
     if (player.trigRepOffset !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_TrigOffset}${player.trigRepOffset} `);

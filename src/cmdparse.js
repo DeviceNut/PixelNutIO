@@ -187,11 +187,11 @@ export const parsePattern = (pattern) =>
 
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
-
-          // turn off triggering-on-start because disabled if missing
-          get(pStrand).tracks[track].layers[layer].trigAtStart = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
         }
+
+        // turn off triggering-on-start because disabled if missing
+        get(pStrand).tracks[track].layers[layer].trigAtStart = false;
+        get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
@@ -274,8 +274,8 @@ export const parsePattern = (pattern) =>
           case cmdStr_Backwards: // enabled if no value
           {
             const enable = isNaN(val) ? true : valueToBool(val);
-            get(pStrand).tracks[track].drawProps.dirBackwards = rdir;
-            get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = rdir;
+            get(pStrand).tracks[track].drawProps.dirBackwards = enable;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = enable;
             break;
           }
           case cmdStr_CombinePixs: // enabled if no value
@@ -339,8 +339,6 @@ export const parsePattern = (pattern) =>
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
               get(pStrand).tracks[track].layers[layer].trigForever = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigForever = true;
-              get(pStrand).tracks[track].layers[layer].trigRepCount = 1;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = 1;
             }
             else if (count > 0)
             {

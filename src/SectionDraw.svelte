@@ -121,7 +121,7 @@
       />
     </Row>
     <Row style="margin-top:10px;">
-      <Checkbox labelText="Backwards"
+      <Checkbox labelText="Move Backwards"
         on:check={setBwards}
         bind:checked={$pStrand.tracks[track].drawProps.dirBackwards}
         disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||

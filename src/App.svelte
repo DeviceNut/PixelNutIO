@@ -1,5 +1,7 @@
 <script>
 
+  import "carbon-components-svelte/css/g100.css";
+
   import {
     PAGEMODE_DEVICES,
     PAGEMODE_CONTROLS,

@@ -54,8 +54,6 @@ import {
   strandCopyTracks
 } from './strands.js';
 
-import { userSendToLayer } from './cmduser.js';
-
 ///////////////////////////////////////////////////////////
 
 export const makeOrideBits = (p, track) =>
@@ -370,30 +368,4 @@ export const updateLayerVals = (track, layer) =>
   makeLayerCmdStr(track, layer);
   strandCopyLayer(track, layer);
   makeEntireCmdStr();
-}
-
-export const updateTrackOverrides = (track, bits) =>
-{
-  const props = get(pStrand).tracks[track].drawProps;
-
-  if (bits & pluginBit_ORIDE_HUE)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
-
-  if (bits & pluginBit_ORIDE_WHITE)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
-
-  if (bits & pluginBit_ORIDE_COUNT)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
-
-  if (bits & pluginBit_ORIDE_DELAY)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.msecsDelay);
-
-  if (bits & pluginBit_ORIDE_DIR)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
-
-  if (bits & pluginBit_ORIDE_EXT)
-  {
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
-  }
 }

@@ -56,8 +56,7 @@ import {
   makeEntireCmdStr,
   updateLayerVals,
   updateAllTracks,
-  updateTriggerLayers,
-  updateTrackOverrides
+  updateTriggerLayers
 } from './cmdmake.js';
 
 import {
@@ -232,6 +231,32 @@ export const userClearPattern = () =>
 
   get(pStrand).showCustom = false;
   get(pStrand).showMenu = true;
+}
+
+function updateTrackOverrides(track, bits)
+{
+  const props = get(pStrand).tracks[track].drawProps;
+
+  if (bits & pluginBit_ORIDE_HUE)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
+
+  if (bits & pluginBit_ORIDE_WHITE)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
+
+  if (bits & pluginBit_ORIDE_COUNT)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
+
+  if (bits & pluginBit_ORIDE_DELAY)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.msecsDelay);
+
+  if (bits & pluginBit_ORIDE_DIR)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
+
+  if (bits & pluginBit_ORIDE_EXT)
+  {
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
+  }
 }
 
 export const userSetEffect = (track, layer, elist) =>

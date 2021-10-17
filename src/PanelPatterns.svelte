@@ -126,8 +126,6 @@
 
   $updateSources = true;
 
-  $: margintop = ($aListSources.length > 1) ? -20 : 10;
-
 </script>
 
 {#if !$pStrand.showMenu}
@@ -159,7 +157,7 @@
           />
         </div>
       {/if}
-      <div style="margin-top:{margintop}px; margin-left:7px;">
+      <div style="margin-top:10px; margin-left:7px;">
         <Dropdown
           size="lg"
           type="inline"
@@ -168,7 +166,7 @@
           bind:items={$aCurListPats}
         />
       </div>
-      <div style="margin:-7px;">
+      <div style="margin:20px;">
         <div style="margin-left:20px;">
           <ButtonsPatterns/>
         </div>
@@ -192,7 +190,7 @@
           />
         </div>
       {/if}
-      <div style="margin-top:{margintop}px; text-align:center;">
+      <div style="margin-top:10px; text-align:center;">
         <Dropdown
           size="lg"
           type="inline"
@@ -201,7 +199,7 @@
           bind:items={$aCurListPats}
         />
       </div>
-      <Row style="margin:-7px;">
+      <Row style="margin:20px;">
         <div style="margin: 0 auto;">
           <ButtonsPatterns/>
         </div>
@@ -235,7 +233,7 @@
           />
         </div>
       </div>
-      <Row style="margin:-7px;">
+      <Row style="margin:20px;">
         <div style="margin: 0 auto;">
           <ButtonsPatterns/>
         </div>

@@ -147,7 +147,7 @@
         Select new pattern:</p>
   
         {#if $aListSources.length > 1}
-        <div style="margin-top:10px; margin-left:7px;">
+        <div style="margin-top:12px; margin-left:7px;">
           <Dropdown
             size="lg"
             type="inline"
@@ -157,7 +157,7 @@
           />
         </div>
       {/if}
-      <div style="margin-top:10px; margin-left:7px;">
+      <div style="margin-top:7px; margin-left:7px;">
         <Dropdown
           size="lg"
           type="inline"
@@ -167,7 +167,7 @@
         />
       </div>
       <div style="margin:20px;">
-        <div style="margin-left:20px;">
+        <div style="margin-left:-15px;">
           <ButtonsPatterns/>
         </div>
       </div>

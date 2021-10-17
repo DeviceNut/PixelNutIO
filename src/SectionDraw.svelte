@@ -56,7 +56,7 @@
 <div style="margin-top:5px; padding-left:5px;">
   <Row>
     <Dropdown
-      style="margin-bottom:-13px;"
+      style="margin-bottom:10px;"
       size="sm"
       type="inline"
       on:select={setEffect}
@@ -80,7 +80,7 @@
   </Row>
 
   {#if helpon }
-    <Row style="margin-right:-10px; padding:5px;
+    <Row style="margin-left:-10px; margin-right:1px; padding:5px;
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">

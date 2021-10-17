@@ -68,15 +68,6 @@
       on:click={() => {helpon = !helpon;}}
       >?
     </button>
-
-    {#if (track > 0) }
-      <div style="margin-left:20px;">
-        <Checkbox labelText="Combine Pixels"
-          on:check={setOrPixs}
-          bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
-        />
-      </div>
-    {/if}
   </Row>
 
   {#if helpon }
@@ -89,7 +80,7 @@
     </Row>
   {/if}
 
-  <div style="margin-left:10px; margin-bottom:10px;">
+  <div style="margin-left:10px; margin-bottom:13px;">
     <Row>
       <SliderVal name='Bright'
         onchange={setBright}
@@ -120,6 +111,14 @@
         disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
       />
     </Row>
+    {#if (track > 0) }
+      <Row style="margin-top:10px;">
+        <Checkbox labelText="Combine Pixels"
+          on:check={setOrPixs}
+          bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
+        />
+      </Row>
+    {/if}
     <Row style="margin-top:10px;">
       <Checkbox labelText="Move Backwards"
         on:check={setBwards}

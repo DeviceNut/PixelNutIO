@@ -43,7 +43,7 @@ const oneLayer =
   trigLayerNum    : 1,      //  the layer number of that track (from 1)
 
   trigDoRepeat    : false,  // true for auto-generated trigger:
-  trigForever     : true,   //   false to select specific count
+  trigForever     : false,  //   false to select specific count
   trigRepCount    : 1,      //   number of times to trigger (from 1)
   trigRepOffset   : 0,      //   offset seconds before range (from 0)
   trigRepRange    : 0,      //   range of random seconds (from 0)

@@ -27,6 +27,7 @@
 
   import {
     userSetEffect,
+    userDoRestart,
     userSetBright,
     userSetDelay,
     userSetOffset,
@@ -42,6 +43,7 @@
   export let track;
 
   const setEffect = () => { userSetEffect(  track, DRAW_LAYER, $aEffectsDraw); }
+  const restart   = () => { userDoRestart(  track, DRAW_LAYER, $aEffectsDraw); }
   const setBright = () => { userSetBright(  track); }
   const setDelay  = () => { userSetDelay(   track); }
   const setOrPixs = () => { userSetOrPixs(  track); }
@@ -67,6 +69,11 @@
       class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
+    </button>
+    <button
+      class="button-restart"
+      on:click={restart}
+      >Restart
     </button>
   </Row>
 
@@ -135,6 +142,11 @@
 </div>
 
 <style>
+   .button-restart {
+     height: 30px;
+     margin-left: 15px;
+     padding: 3px;
+   }
   .button-help {
     width: 30px;
     height: 30px;

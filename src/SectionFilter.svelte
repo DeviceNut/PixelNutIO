@@ -11,14 +11,18 @@
     aEffFilterDesc
   } from './globals.js';
 
-  import { userSetEffect } from './cmduser.js';
+  import {
+    userSetEffect,
+    userDoRestart
+  } from './cmduser.js';
 
   import SectionTrigger from './SectionTrigger.svelte';
 
   export let track;
   export let layer;
 
-  const seteffect = () => { userSetEffect(track, layer, $aEffectsFilter); }
+  const setEffect = () => { userSetEffect(track, layer, $aEffectsFilter); }
+  const restart   = () => { userDoRestart(track, layer, $aEffectsFilter); }
 
   let helpon = false;
 
@@ -30,7 +34,7 @@
       style="margin-bottom:10px;"
       size="sm"
       type="inline"
-      on:select={seteffect}
+      on:select={setEffect}
       bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
       bind:items={$aEffectsFilter}
     />
@@ -38,6 +42,11 @@
       class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
+    </button>
+    <button
+      class="button-restart"
+      on:click={restart}
+      >Restart
     </button>
   </Row>
 
@@ -55,6 +64,11 @@
 </div>
 
 <style>
+   .button-restart {
+     height: 30px;
+     margin-left: 15px;
+     padding: 3px;
+   }
   .button-help {
     width: 30px;
     height: 30px;

@@ -45,6 +45,15 @@ import {
 } from './pixcmds.js';
 
 import {
+  pluginBit_ORIDE_HUE,
+  pluginBit_ORIDE_WHITE,
+  pluginBit_ORIDE_COUNT,
+  pluginBit_ORIDE_DELAY,
+  pluginBit_ORIDE_DIR,
+  pluginBit_ORIDE_EXT
+} from './presets.js';
+
+import {
   strandClearAll,
   strandCopyAll,
   strandCopyTop
@@ -294,6 +303,15 @@ export const userSetEffect = (track, layer, elist) =>
     updateTrackOverrides(track, bits);
   }
 }
+
+export const userDoRestart = (track, layer, elist) =>
+{
+  const pindex = get(pStrand).tracks[track].layers[layer].pluginIndex;
+  const pval = elist[pindex].id;
+  let layerid = convTrackLayerToID(track, layer);
+  sendLayerCmd(layerid, cmdStr_SelectEffect, `${pval}`);
+}
+
 
 export const userSetOrPixs = (track) =>
 {

@@ -332,7 +332,8 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_TrigRepeating:
           {
-            if (isNaN(val))
+            const count = isNaN(val) ? -1 : valueToPositive(val);
+            if (count < 0)
             {
               get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
@@ -341,7 +342,7 @@ export const parsePattern = (pattern) =>
               get(pStrand).tracks[track].layers[layer].trigRepCount = 1;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = 1;
             }
-            if (count > 0)
+            else if (count > 0)
             {
               get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;

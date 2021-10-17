@@ -148,15 +148,15 @@
               min=1 max=9999
               on:change={setCount}
               bind:value={$pStrand.tracks[track].layers[layer].trigRepCount}
-              disabled={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+              disabled={$pStrand.tracks[track].layers[layer].trigForever}
             />
             <Checkbox labelText="Forever"
               style="display:inline-block; margin-left:5px;"
               on:check={setForever}
-              bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
+              bind:checked={$pStrand.tracks[track].layers[layer].trigForever}
             />
           {/if}
-          <div style="margin-top:8px; ">
+          <div style="margin-top:8px;">
             <span style="margin-right:8px">Minimum Time:&nbsp;</span>
             <input type="number"
               min=1 max=9999
@@ -164,7 +164,7 @@
               bind:value={$pStrand.tracks[track].layers[layer].trigRepOffset}
             />&nbsp;&nbsp;secs
           </div>
-          <div style="margin-top:8px; ">
+          <div style="margin-top:8px; margin-bottom:10px;">
             <span style="margin-right:8px">Random Period:</span>
             <input type="number"
               min=0 max=9999
@@ -185,7 +185,7 @@
         on:check={setFtype}
         bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
       />
-      <div style="margin-top:12px;">
+      <div style="margin-left:7px; margin-top:-10px;">
         <SliderVal name='Force:'
           max={MAX_FORCE_VALUE}
           onchange={setFvalue}

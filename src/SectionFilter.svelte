@@ -28,7 +28,7 @@
 
 </script>
 
-<div style="margin-top:5px; padding-left:5px;">
+<div style="margin-top:15px; padding-left:5px;">
   <Row>
     <Dropdown
       style="margin-bottom:10px;"

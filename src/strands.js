@@ -11,7 +11,12 @@ import {
   tLayers
 } from './globals.js';
 
-import { MAX_FORCE_VALUE } from './pixcmds.js';
+import {
+  MAX_FORCE_VALUE,
+  DEF_PCENT_BRIGHT,
+  DEF_PCENT_COUNT,
+  DEF_FORCE_VALUE
+  } from './pixcmds.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
@@ -177,7 +182,7 @@ export const strandCopyTop = () =>
 
         strand.pcentBright    = ps.pcentBright;
         strand.msecsDelay     = ps.msecsDelay;
-        strand.pixelOffset     = ps.pixelOffset;
+        strand.pixelOffset    = ps.pixelOffset;
         strand.doOverride     = ps.doOverride;
         strand.degreeHue      = ps.degreeHue;
         strand.pcentWhite     = ps.pcentWhite;
@@ -267,6 +272,20 @@ export const strandCopyAll = () =>
   //console.log(get(aStrands)); // DEBUG
 }
 
+// clears all main property values for the current strand to defaults
+export const strandClearTop = () =>
+{
+  const strand = get(pStrand);
+  strand.pcentBright    = 50; // diffeent default for global control FIXME
+  strand.msecsDelay     = 0;
+  strand.pixelOffset    = 0;
+  strand.doOverride     = false;
+  strand.degreeHue      = 0;
+  strand.pcentWhite     = 0;
+  strand.pcentCount     = DEF_PCENT_COUNT;
+  strand.forceValue     = DEF_FORCE_VALUE;
+}
+
 // clears all values for all tracks in the current strand
 export const strandClearAll = (track) =>
 {
@@ -277,6 +296,7 @@ export const strandClearAll = (track) =>
   get(dStrands)[sid].tactives = 1;
   get(dStrands)[sid].tracks = makeNewTracks();
 
+  strandClearTop();
   strandCopyAll();
 }
 

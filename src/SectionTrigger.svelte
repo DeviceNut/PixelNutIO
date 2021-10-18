@@ -96,7 +96,7 @@
     </button>
     <button
       style="margin-left:15px;"
-      class="button-restart"
+      class="button-trigger"
       on:click={() => {trigon = !trigon;}}
       >Triggering Options
     </button>

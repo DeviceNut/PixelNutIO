@@ -276,8 +276,9 @@ export const strandCopyAll = () =>
 export const strandClearTop = () =>
 {
   const strand = get(pStrand);
-  strand.pcentBright    = 50; // diffeent default for global control FIXME
-  strand.msecsDelay     = 0;
+  // Don't reset global brightness and delay FIXME?
+  //strand.pcentBright    = 50; // diffeent default for global control
+  //strand.msecsDelay     = 0;
   strand.pixelOffset    = 0;
   strand.doOverride     = false;
   strand.degreeHue      = 0;

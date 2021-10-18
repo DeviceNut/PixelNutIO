@@ -55,7 +55,7 @@ function sendCmdToStrands(cmdstr, dostore=false)
   if (get(pStrand).selected)
   {
     if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
-    sendCmdToDevice(cmdstr);
+    else sendCmdToDevice(cmdstr);
   }
 
   for (let s = 0; s < get(nStrands); ++s)
@@ -64,7 +64,7 @@ function sendCmdToStrands(cmdstr, dostore=false)
     {
       sendStrandSwitch(s)
       if (dostore) sendCmdToDevice(cmdStr_SaveFlash);
-      sendCmdToDevice(cmdstr);
+      else sendCmdToDevice(cmdstr);
       didone = true;
     }
   }

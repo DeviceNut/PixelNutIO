@@ -45,7 +45,7 @@ export const presetsInit = () =>
       "Triggering restarts the effect, with the amount of Force determining how fast the colors change. At the maximum Force the entire spectrum is displayed again."
     ],
     [
-      "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, in a single color.",
+      "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, with the colors rotating.",
       "Triggering changes the frequency of the waves, with larger Forces making longer waves."
     ],
     [

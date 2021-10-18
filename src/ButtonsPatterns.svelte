@@ -129,7 +129,7 @@
 <button
   class="button button-pattern"
   on:click={doclear}
-  disabled={ (($pStrand.curPatternStr === '') && !$pStrand.showCustom) }
+  disabled={ ($pStrand.curPatternStr === '') }
   >Clear
 </button>
 

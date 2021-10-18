@@ -20,8 +20,7 @@ export const cmdStr_PullTrigger   = "!";    // trigger: value is trigger force
 export const cmdStr_Pause         = "[";    // pauses operation
 export const cmdStr_Resume        = "]";    // resumes operation
 export const cmdStr_GetPattern    = "+";    // retrieve entire pattern (no value)
-//export const cmdStr_SaveFlash     = "*";    // save pattern to flash (no value) FIXME
-export const cmdStr_SaveFlash     = ".";    // none (begins/ends saving to flash)
+export const cmdStr_SaveFlash     = "*";    // save pattern to flash (no value)
 
 // Override properties:                     // value is:
 export const cmdStr_OR_Bright     = "%";    // percent of max ++

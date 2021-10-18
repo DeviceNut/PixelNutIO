@@ -224,7 +224,7 @@
     border-radius: 75%;
   }
   .button-pattern {
-    width: 55px;
+    width: 50px;
     margin-right: 10px;
   }
 </style>

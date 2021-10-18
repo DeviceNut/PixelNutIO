@@ -412,7 +412,7 @@ function parseDeviceInfo(device, reply)
 
   if (device.report.numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
   {
-    console.error(`Not enough tracks: ${device.report.numlayers}`);
+    console.error(`Not enough layers: ${device.report.numlayers}`);
     return false;
   }
 

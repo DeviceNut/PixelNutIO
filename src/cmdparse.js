@@ -3,6 +3,8 @@ import { get } from 'svelte/store';
 import {
   DRAW_LAYER           ,
   MAX_DELAY_VALUE      ,
+  DEF_PCENT_BRIGHT     ,
+  DEF_PCENT_COUNT      ,
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,

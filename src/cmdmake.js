@@ -11,7 +11,6 @@ import {
 
 import {
   DRAW_LAYER           ,
-  MAX_FORCE_VALUE      ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_COUNT      ,
   DEF_FORCE_VALUE      ,

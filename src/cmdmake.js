@@ -187,11 +187,11 @@ export const makeLayerCmdStr = (track, layer) =>
 
     cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
 
-    if ((pdraw.pcentXoffset !== 0) || (pdraw.pcentXlength !== 100))
-    {
+    if (pdraw.pcentXoffset !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_PcentXoffset}${pdraw.pcentXoffset} `);
+
+    if (pdraw.pcentXlength !== 100)
       cmdstr = cmdstr.concat(`${cmdStr_PcentXlength}${pdraw.pcentXlength} `);
-    }
 
     if (pdraw.pcentBright !== DEF_PCENT_BRIGHT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);

@@ -28,12 +28,12 @@
 
       <MediaQuery query="(max-width: 800px)" let:matches>
         {#if matches}
-          <Row style="width:100%; margin: 0 auto;">
+          <Row style="width:100%; margin:0 auto;">
             <Column style="">
               <PanelHelpMenu/>
             </Column>
           </Row>
-          <Row style="width:100%; margin: 0 auto;">
+          <Row style="width:100%; margin:0 auto;">
             <Column style="text-align:center; margin-top:20px;">
               <TextArea
                 style="font-family:'Courier New'"

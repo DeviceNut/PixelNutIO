@@ -101,6 +101,7 @@ const oneStrand =
   browserSource   : false,  // true if that is the browser list
 
   curPatternIdx   : 0,      // index into current patterns list
+  curPatternName  : '',     // name of current pattern, editable
   curPatternStr   : '',     // current pattern command string
                             // (as created from current settings)
 
@@ -177,6 +178,7 @@ export const strandCopyTop = () =>
         strand.curSourceIdx   = ps.curSourceIdx;
         strand.curPatternIdx  = ps.curPatternIdx;
         strand.curPatternStr  = ps.curPatternStr;
+        strand.curPatternName = ps.curPatternName;
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;
 

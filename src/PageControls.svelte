@@ -11,7 +11,7 @@
   import PanelCustom from './PanelCustom.svelte';
 
   let pstr = '';
-  $: pstr = ($pStrand.showCustom ? "^" : "Customizer");
+  $: pstr = ($pStrand.showCustom ? "^" : "Customize");
 
   const toggleshow = () =>
   {

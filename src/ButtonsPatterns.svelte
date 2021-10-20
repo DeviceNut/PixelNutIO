@@ -13,9 +13,7 @@
 
   import {
     pStrand,
-    aListSources,
     aCurListPats,
-    aCurListDesc,
     updateSources,
     storedPattern
   } from './globals.js';
@@ -29,32 +27,16 @@
   import { userClearPattern } from './cmduser.js';
   import { sendEntirePattern } from './cmdsend.js';
 
-  let heading, listdesc;
-  $:
-  {
-    if ($pStrand.curSourceIdx !== 0)
-    {
-      heading = $aCurListPats[$pStrand.curPatternIdx].text;
-      listdesc = $aCurListDesc[$pStrand.curPatternIdx];
-    }
-    if ($aListSources.length > 1)
-         heading = 'Source and Pattern Menus'
-    else heading = 'Pattern Menu'
-  }
-
-  let openHelp = false;
-  const dohelp = () => { openHelp = !openHelp; }
-
   const doclear = () => { userClearPattern(); }
   const dostore = () => { sendEntirePattern(true); } // store pattern
 
   let openSave = false;
-  let savename, savedesc;
+  let savedesc;
   let copyclip = false;
 
   const dosave = () =>
   {
-    storePatternSave(savename, savedesc, $pStrand.curPatternStr);
+    storePatternSave($pStrand.curPatternName, savedesc, $pStrand.curPatternStr);
     storePatternsInit();
 
     $updateSources = true;
@@ -66,8 +48,8 @@
       copyclip = false;
     }
 
-    savename = savedesc = '';
-    openStore = false;
+    savedesc = '';
+    openSave = false;
   }
 
   let openDelete = false;
@@ -121,55 +103,31 @@
 </script>
 
 <button
-  class="button button-help"
-  on:click={dohelp}
-  >?
-</button>
-
-<button
-  class="button button-pattern"
+  class="button-pattern"
   on:click={doclear}
   disabled={ ($pStrand.curPatternStr === '') }
   >Clear
 </button>
 
 <button
-  class="button button-pattern"
+  class="button-pattern"
   on:click={dostore}
   >Store
 </button>
 
 <button
-  class="button button-pattern"
-  on:click={() => { openSave = !openSave; }}
+class="button-pattern"
+on:click={() => {openSave = !openSave;}}
   disabled={$pStrand.curPatternStr === ''}
   >Save
 </button>
 
 <button
-  class="button button-pattern"
-  on:click={delstart}
+class="button-pattern"
+on:click={delstart}
   disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
   >Delete
 </button>
-
-<Modal
-  passiveModal
-  modalHeading={heading}
-  bind:open={openHelp}
-  on:close
-  >
-  {#if ($pStrand.curSourceIdx === 0) }
-    {#if ($aListSources.length > 1) }
-      <p>Explain use of source menu.</p>
-    {/if}
-    <p>Explain use of pattern menu.</p>
-  {:else}
-    {#each listdesc as para,n}
-      <p>{para}</p><br>
-    {/each}
-  {/if}
-</Modal>
 
 <Modal
   passiveModal
@@ -181,7 +139,7 @@
     <FormGroup>
       <TextInput
         labelText="Name"
-        bind:value={savename}
+        bind:value={$pStrand.curPatternName}
       />
       <div style="margin-top:10px;"></div>
       <TextArea
@@ -213,18 +171,10 @@
 </Modal>
   
 <style>
-  .button {
+  .button-pattern {
+    width: 55px;
     height: 35px;
     padding: 3px;
-  }
-  .button-help {
-    width: 35px;
-    margin-right: 10px;
-    border-width: 2px;
-    border-radius: 75%;
-  }
-  .button-pattern {
-    width: 50px;
-    margin-right: 10px;
+    margin-left: 10px;
   }
 </style>

@@ -50,8 +50,6 @@ export let aStoredDesc    = writable([]);     //  and list of help strings for t
 export let aBuiltinPats   = writable([]);     // list of all built-in patterns
 export let aBuiltinDesc   = writable([]);     //  and list of help strings for them
 export let aCurListPats   = writable([]);     // "points" to current patterns list
-export let aCurListDesc   = writable([]);     // "points" to current descriptions list
-export let aListSources   = writable([]);     // list of pattern source menu items
 
 export let updateSources  = writable(false);  // true to force update of sources list
 export let storedPattern  = writable(false);  // true to set pattern to last stored one

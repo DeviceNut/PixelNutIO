@@ -28,7 +28,7 @@ export const presetsInit = () =>
     { id: 10, text: 'Blink Surges',       cmd: 'E51 D60 C10 T E112 T E131 F1000 I T G' },
     { id: 11, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F R10 O10 E142 F250 I T G' },
     { id: 12, text: 'Color Melts',        cmd: 'E0 D30 H30 T E110 F600 I T E111 A1 G' },
-    { id: 13, text: 'July 4th',           cmd: 'E50 J0 K33 D10 H355 T E50 J33 K34 D10 W100 T E50 J67 K34 D10 H230 T G' },
+    { id: 13, text: 'July 4th',           cmd: 'E50 K33 B65 D10 H355 C100 T E50 J33 K34 B65 D10 W100 C100 T E50 J67 K34 D10 H230 C100 T G' },
     { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 D15 H125 T E20 V B90 D30 H270 W80 C25 Q2 F0 I R20 O10 G' },
     { id: 15, text: 'MashUp',             cmd: 'E50 B65 D10 H100 W30 Q1 V T E40 D50 H270 C10 T E20 D15 C20 F0 A1 I T G' },
   ]);

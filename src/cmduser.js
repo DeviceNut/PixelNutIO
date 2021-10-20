@@ -209,6 +209,10 @@ export const userSetPattern = () =>
 
     const patitem = get(aCurListPats)[index];
     const pattern = patitem.cmd;
+
+    const name = index ? patitem.text : '';
+    get(pStrand).curPatternName = name;
+    get(dStrands)[get(idStrand)].curPatternName = name;
   
     //console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
 
@@ -227,19 +231,23 @@ export const userSetPattern = () =>
 
 export const userClearPattern = () =>
 {
+  const strand = get(pStrand);
+
   //console.log('Clear Pattern'); // DEBUG
+
+  strand.curPatternName = '';
 
   strandClearAll();
   makeEntireCmdStr();
 
-  if (get(pStrand).curPatternIdx === 0)
+  if (strand.curPatternIdx === 0)
     sendEntirePattern(); // clear pattern
 
   // else userSetPattern() will be called
-  else get(pStrand).curPatternIdx = 0;
+  else strand.curPatternIdx = 0;
 
-  get(pStrand).showCustom = false;
-  get(pStrand).showMenu = true;
+  strand.showCustom = false;
+  strand.showMenu = true;
 }
 
 function updateTrackOverrides(track, bits)

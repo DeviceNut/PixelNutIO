@@ -155,10 +155,9 @@ function updatePatternLists()
   <TextInput
     style="width:250px; margin:0 auto;"
     placeholder='Enter name of pattern here'
-    value={$pStrand.curPatternName}
+    bind:value={$pStrand.curPatternName}
     maxlength="32"
-  >
-  </TextInput>
+  />
 </div>
 
 <div style="margin-top:20px; text-align:center;">

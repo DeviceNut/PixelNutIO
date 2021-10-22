@@ -50,7 +50,8 @@ export const strandState =
   xt_white: 0,          //  white property (percent)
   xt_count: 0,          //  count property (percent)
 
-  pattern: ''           // pattern string
+  patstr: '',           // pattern string
+  patname: ''           // pattern name
 };
 
 export const deviceInfo =
@@ -477,7 +478,15 @@ function parseStrandInfo(device, reply)
     }
     case QSTAGE_CMD:
     {
-      device.report.strands[device.qcount].pattern = reply[0];
+      device.report.strands[device.qcount].patstr = reply[0];
+      reply.shift();
+  
+      device.qstage = QSTAGE_NAME;
+      break;
+    }
+    case QSTAGE_NAME:
+    {
+      device.report.strands[device.qcount].patname = reply[0];
       reply.shift();
   
       device.qstage = QSTAGE_DONE; // indicates finished
@@ -495,7 +504,7 @@ function parseStrandInfo(device, reply)
 
 function parsePatternInfo(device, reply)
 {
-  let line = reply[0];
+  const line = reply[0];
   reply.shift();
 
   switch (device.qstage)

@@ -16,7 +16,6 @@ import {
   aDevicePats,
   aDeviceDesc,
   aStoredPats,
-  aBuiltinPats,
   selectSource,
   selectPattern
 } from './globals.js';
@@ -27,27 +26,11 @@ import { makeEntireCmdStr } from './cmdmake.js';
 
 ///////////////////////////////////////////////////////////
 
-// returns index of match in list, or -1
-function matchCmdInItemList(cmd, list)
-{
-  for (let i = 0; i < list.length; ++i)
-  {
-    //console.log('\n\nmatch: ');
-    //console.log(`"${cmd}"`);
-    //console.log(`"${list[i].cmd}"`);
-
-    if (list[i].cmd === cmd)
-      return i;
-  }
-
-  return -1;
-}
-
 function setStrandTop(strand, dvals)
 {
   strand.pcentBright = dvals.bright;
   strand.msecsDelay  = dvals.delay;
-  strand.pixelOffset  = dvals.first;
+  strand.pixelOffset = dvals.first;
   strand.numPixels   = dvals.pixels;
 
   strand.doOverride  = dvals.xt_mode;
@@ -58,7 +41,7 @@ function setStrandTop(strand, dvals)
 
 export let deviceSetup = (device) =>
 {
-  //console.log(`Connecting to: "${device.curname}"...`); // DEBUG
+  console.log(`Connecting to: "${device.curname}"...`); // DEBUG
 
   let numstrands = device.report.nstrands;
 
@@ -120,76 +103,28 @@ export let deviceSetup = (device) =>
     let strand = get(aStrands)[s];
     pStrand.set(strand);
 
-    if (parsePattern(device.report.strands[s].pattern))
+    if (parsePattern(device.report.strands[s].patstr))
     {
       makeEntireCmdStr();
 
-      let cmdstr = strand.curPatternStr;
-      let sindex = 0;
-      let match, slist;
-      let found = false;
+      const cmdstr = strand.curPatternStr;
+      let cmdname = device.report.strands[s].patname;
+      strand.curPatternName = cmdname;
 
-      console.log(`Device pattern: "${cmdstr}"`); // DEBUG
-
-      if (cmdstr !== '')
+      if (cmdstr != '')
       {
-        // search for match in any of the pattern lists
+        if (cmdname == '') cmdname = 'Unknown'
+        console.log(`Now playing: ${cmdname}: "${cmdstr}"`);
 
-        slist = get(aDevicePats);
-        if (slist.length > 0)
-        {
-          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
-          {
-            strand.curSourceIdx = sindex;
-            strand.curPatternIdx = match;
-            found = true;
-          }
-          ++sindex;
-        }
+        const devlen = get(aDevicePats).length;
+        const obj = { id:devlen, text:cmdname, cmd:cmdstr };
+        const desc = 'This is what\'s currently playing on the device.';
 
-        slist = get(aStoredPats);
-        if (!found && (slist.length > 0))
-        {
-          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
-          {
-            strand.curSourceIdx = sindex;
-            strand.curPatternIdx = match;
-            found = true;
-          }
-          ++sindex;
-        }
+        get(aDevicePats).push(obj);
+        get(aDeviceDesc).push([desc]);
 
-        slist = get(aBuiltinPats);
-        if (!found && (slist.length > 0))
-        {
-          if ((match = matchCmdInItemList(cmdstr, slist)) >= 0)
-          {
-            strand.curSourceIdx = sindex;
-            strand.curPatternIdx = match;
-            found = true;
-          }
-          //++sindex;
-        }
-
-        if (!found)
-        {
-          const devlen = get(aDevicePats).length;
-
-          if (devlen === 0)
-          {
-            aDevicePats.set([{ id:'0', text:'<none>', cmd:'' }]);
-            aDeviceDesc.set([[]]);
-          }
-
-          const obj = { id:devlen, text:'found-on-device', cmd:cmdstr };
-          const desc = 'This pattern was found on the device.';
-
-          get(aDevicePats).push(obj);
-          get(aDeviceDesc).push([desc]);
-
-          strand.curSourceIdx = 0;
-          strand.curPatternIdx = devlen;
-        }
+        strand.curSourceIdx = 0;
+        strand.curPatternIdx = devlen;
       }
       else doreset = true; // if no pattern string
     }

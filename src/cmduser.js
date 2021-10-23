@@ -408,7 +408,6 @@ export const userSetRotate = () =>
 
 export const userSetOverMode = () =>
 {
-  const layer = DRAW_LAYER;
   const oride = get(pStrand).doOverride;
 
   if (get(dStrands)[get(idStrand)].doOverride !== oride)
@@ -423,13 +422,13 @@ export const userSetOverMode = () =>
         let props = get(pStrand).tracks[i].drawProps;
 
         if (props.overHue)
-          userSendToLayer(i, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
+          userSendToLayer(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
 
         if (props.overWhite)
-          userSendToLayer(i, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
+          userSendToLayer(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
 
         if (props.overCount)
-          userSendToLayer(i, layer, cmdStr_PcentCount, `${props.pcentCount}`);
+          userSendToLayer(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
       }
     }
   }

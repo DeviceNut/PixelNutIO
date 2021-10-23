@@ -13,7 +13,6 @@ import {
 
 import {
   MAX_FORCE_VALUE,
-  DEF_PCENT_BRIGHT,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE
   } from './pixcmds.js';
@@ -62,7 +61,7 @@ const oneLayer =
 const drawProps =
 {
   pcentBright     : 100,    // percent brightness (0-MAX_PERCENTAGE)
-  msecsDelay      : 0,      // determines msecs delay after each redraw
+  pcentDelay      : 0,      // determines msecs delay after each redraw
 
   overHue         : false,  // true to allow global override
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
@@ -109,8 +108,8 @@ const oneStrand =
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
-  pcentBright     : 80,     // percent brightness (0-MAX_PERCENTAGE)
-  msecsDelay      : 0,      // msecs delay after each redraw
+  pcentBright     : 0,      // percent bright (0-MAX_PERCENTAGE)
+  pcentDelay      : 0,      // percent delay (0-MAX_PERCENTAGE)
   pixelOffset     : 0,      // pixel offset to start drawing from
 
   doOverride      : false,  // true to override local properties with:
@@ -183,7 +182,7 @@ export const strandCopyTop = () =>
         strand.bitsEffects    = ps.bitsEffects;
 
         strand.pcentBright    = ps.pcentBright;
-        strand.msecsDelay     = ps.msecsDelay;
+        strand.pcentDelay     = ps.pcentDelay;
         strand.pixelOffset    = ps.pixelOffset;
         strand.doOverride     = ps.doOverride;
         strand.degreeHue      = ps.degreeHue;
@@ -280,7 +279,7 @@ export const strandClearTop = () =>
   const strand = get(pStrand);
   // Don't reset global brightness and delay FIXME?
   //strand.pcentBright    = 50; // diffeent default for global control
-  //strand.msecsDelay     = 0;
+  //strand.pcentDelay     = 0;
   strand.pixelOffset    = 0;
   strand.doOverride     = false;
   strand.degreeHue      = 0;

@@ -96,12 +96,13 @@
       <Loading style="margin-left:42%;" withOverlay={false} />
     {:else}
       <button
+        style="width:100px;"
         on:click={dochange}
         class="button"
         >Change
     </button>
       <button
-        style="margin-left:10px;"
+        style="width:100px; margin-left:10px;"
         on:click={doretry}
         class="button"
         disabled={$isConnected}

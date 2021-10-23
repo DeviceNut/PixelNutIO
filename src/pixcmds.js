@@ -2,10 +2,10 @@
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_FORCE_VALUE      = 1000;   // maximum force value
-export const MAX_DELAY_VALUE      = 60;     // maximum delay msecs
 
                                             // default values:
 export const DEF_PCENT_BRIGHT     = 100;    // percent brightness
+export const DEF_PCENT_DELAY      = 0;      // percent delay msecs
 export const DEF_PCENT_COUNT      = 50;     // percent pixel count
 export const DEF_FORCE_VALUE      = (MAX_FORCE_VALUE/2); // force value
                                             // all other are 0

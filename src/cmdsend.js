@@ -82,9 +82,12 @@ export const sendEntirePattern = (dostore) =>
 
   if (patstr !== '')
   {
-    if (dostore)
-         sendCmdToStrands(patname, true);
-    else sendCmdToStrands(patstr, false);
+    if (!dostore)
+    {
+      sendCmdToStrands(cmdStr_Clear, false);
+      sendCmdToStrands(patstr, false);
+    }
+    else sendCmdToStrands(patname, true);
   }
   else sendCmdToStrands(cmdStr_Clear, dostore);
 

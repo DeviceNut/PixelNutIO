@@ -12,6 +12,7 @@ import {
 import {
   DRAW_LAYER           ,
   DEF_PCENT_BRIGHT     ,
+  DEF_PCENT_DELAY      ,
   DEF_PCENT_COUNT      ,
   DEF_FORCE_VALUE      ,
   overBit_DegreeHue    ,
@@ -196,8 +197,8 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentBright !== DEF_PCENT_BRIGHT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentBright}${pdraw.pcentBright} `);
 
-    if (pdraw.msecsDelay !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.msecsDelay} `);
+    if (pdraw.pcentDelay !== DEF_PCENT_DELAY)
+      cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.pcentDelay} `);
 
     if (pdraw.degreeHue !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);

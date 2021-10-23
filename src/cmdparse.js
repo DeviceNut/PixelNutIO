@@ -2,7 +2,6 @@ import { get } from 'svelte/store';
 
 import {
   DRAW_LAYER           ,
-  MAX_DELAY_VALUE      ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_COUNT      ,
   overBit_DegreeHue    ,
@@ -37,7 +36,7 @@ import {
   dStrands,
   idStrand,
   aEffectsDraw,
-  aEffectsFilter,
+  aEffectsFilter
 } from './globals.js';
 
 import {
@@ -76,13 +75,6 @@ function valueToDegree(value)
 function valueToPositive(value)
 {
   if (value < 0) return 0;
-  return value;
-}
-
-function valueInRange(value, limit)
-{
-  if (value < -limit) return -limit;
-  if (value >  limit) return  limit;
   return value;
 }
 
@@ -234,9 +226,9 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_MsecsDelay:
           {
-            let delay = isNaN(val) ? 0 : valueInRange(val, MAX_DELAY_VALUE);
-            get(pStrand).tracks[track].drawProps.msecsDelay = delay;
-            get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
+            let delay = isNaN(val) ? DEF_PCENT_DELAY : valueToPercent(val);
+            get(pStrand).tracks[track].drawProps.pcentDelay = delay;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentDelay = delay;
             break;
           }
           case cmdStr_DegreeHue:

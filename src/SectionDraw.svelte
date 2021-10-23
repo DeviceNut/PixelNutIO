@@ -6,10 +6,7 @@
     Checkbox
   } from "carbon-components-svelte";
 
-  import {
-    DRAW_LAYER,
-    MAX_DELAY_VALUE
-  } from './pixcmds.js';
+  import { DRAW_LAYER } from './pixcmds.js';
 
   import {
     pStrand,
@@ -97,9 +94,7 @@
     <Row>
       <SliderVal name='Delay&nbsp;'
         onchange={setDelay}
-        min={-MAX_DELAY_VALUE}
-        max={MAX_DELAY_VALUE}
-        bind:cur={$pStrand.tracks[track].drawProps.msecsDelay}
+        bind:cur={$pStrand.tracks[track].drawProps.pcentDelay}
         disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
                    ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
       />

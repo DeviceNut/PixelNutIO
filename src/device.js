@@ -29,7 +29,7 @@ import { makeEntireCmdStr } from './cmdmake.js';
 function setStrandTop(strand, dvals)
 {
   strand.pcentBright = dvals.bright;
-  strand.msecsDelay  = dvals.delay;
+  strand.pcentDelay  = dvals.delay;
   strand.pixelOffset = dvals.first;
   strand.numPixels   = dvals.pixels;
 

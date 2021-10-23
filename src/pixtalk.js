@@ -84,6 +84,7 @@ export const deviceInfo =
     maxstrlen: 0,       // max length for cmds/patterns
     numtracks: 0,       // number of tracks available
     numlayers: 0,       // number of layers available
+
     strands: [],        // list of 'strandState'
   }
 };
@@ -161,6 +162,19 @@ function startcheck()
   checker = setTimeout(startcheck, (1000 * SECS_NOTIFY_TIMEOUT));
 }
 
+// set/cancel timeout on reply to device - TODO
+function timeout_reply(dostart)
+{
+  if (dostart)
+  {
+
+  }
+  else
+  {
+
+  }
+}
+
 export const onConnection = (enabled) =>
 {
   if (enabled) startcheck();
@@ -218,6 +232,8 @@ export const onNotification = (msg, fsend) =>
   console.log('Requesting device info...'); // DEBUG
 
   fsend(name, cmdStr_GetDevInfo);
+  timeout_reply(true);
+
   device.query = QUERY_DEVICE;
 }
 
@@ -263,6 +279,8 @@ export const onDeviceReply = (msg, fsend) =>
           if (parseDeviceInfo(device, reply))
           {
             fsend(name, cmdStr_GetStrands);
+            timeout_reply(true);
+
             device.query = QUERY_STRANDS;
             device.qstage = QSTAGE_INFO;
             device.qcount = 0;
@@ -299,6 +317,8 @@ export const onDeviceReply = (msg, fsend) =>
         if (device.report.npatterns > 0)
         {
           fsend(name, cmdStr_GetPatterns);
+          timeout_reply(true);
+
           device.query = QUERY_PATTERNS;
           device.qstage = QSTAGE_NAME;
           device.qcount = 0;
@@ -345,6 +365,8 @@ export const onDeviceReply = (msg, fsend) =>
         if (device.report.nplugins > 0)
         {
           fsend(name, cmdStr_GetPlugins);
+          timeout_reply(true);
+
           device.query = QUERY_PLUGINS;
           device.qstage = QSTAGE_NAME;
           device.qcount = 0;

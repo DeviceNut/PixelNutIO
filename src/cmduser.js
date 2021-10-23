@@ -264,7 +264,7 @@ function updateTrackOverrides(track, bits)
     userSendToLayer(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
 
   if (bits & pluginBit_ORIDE_DELAY)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.msecsDelay);
+    userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
 
   if (bits & pluginBit_ORIDE_DIR)
     userSendToLayer(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
@@ -369,10 +369,10 @@ export const userSetDelay = (track) =>
 {
   if (track === undefined)
   {
-    let delay = get(pStrand).msecsDelay;
-    if (get(dStrands)[get(idStrand)].msecsDelay !== delay)
+    let delay = get(pStrand).pcentDelay;
+    if (get(dStrands)[get(idStrand)].pcentDelay !== delay)
     {
-      get(dStrands)[get(idStrand)].msecsDelay = delay;
+      get(dStrands)[get(idStrand)].pcentDelay = delay;
 
       strandCopyTop();
       sendStrandCmd(cmdStr_OR_Delay, delay);
@@ -381,11 +381,11 @@ export const userSetDelay = (track) =>
   else
   {
     const layer = DRAW_LAYER;
-    const delay = get(pStrand).tracks[track].drawProps.msecsDelay;
+    const delay = get(pStrand).tracks[track].drawProps.pcentDelay;
 
-    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay !== delay)
+    if (get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentDelay !== delay)
     {
-      get(dStrands)[get(idStrand)].tracks[track].drawProps.msecsDelay = delay;
+      get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentDelay = delay;
 
       updateLayerVals(track, layer);
       userSendToLayer(track, layer, cmdStr_MsecsDelay, delay);

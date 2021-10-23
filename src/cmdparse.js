@@ -31,7 +31,7 @@ import {
 
 import {
   nTracks,
-  tLayers,
+  nLayers,
   pStrand,
   dStrands,
   idStrand,
@@ -144,7 +144,7 @@ export const parsePattern = (pattern) =>
 
           makeLayerCmdStr(track, layer);
 
-          if (get(pStrand).tactives >= get(tLayers))
+          if (get(pStrand).tactives >= get(nLayers))
           {
             console.error('Too many layers');
             return false;

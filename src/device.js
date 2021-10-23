@@ -6,7 +6,7 @@ import {
   curPageMode,
   curDevice,
   nTracks,
-  tLayers,
+  nLayers,
   nStrands,
   idStrand,
   pStrand,
@@ -57,7 +57,7 @@ export let deviceSetup = (device) =>
 
   nStrands.set(numstrands);
   nTracks.set(numtracks);
-  tLayers.set(tracklayers);
+  nLayers.set(tracklayers);
 
   const sid = 0;
   let slist = [];

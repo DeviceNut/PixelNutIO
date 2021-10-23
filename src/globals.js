@@ -41,7 +41,7 @@ export let idStrand       = writable(0);      // current strand index (0...nStra
 export let pStrand        = writable([]);     // "points" to current strand in aStrands
 
 export let nTracks        = writable(0);      // total number of tracks
-export let tLayers        = writable(0);      // total layers for each track
+export let nLayers        = writable(0);      // total layers for each track
 
 export let aDevicePats    = writable([]);     // list of all device custom patterns
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them

@@ -8,7 +8,7 @@ import {
   aStrands,
   dStrands,
   nTracks,
-  tLayers
+  nLayers
 } from './globals.js';
 
 import {
@@ -131,7 +131,7 @@ function makeOneTrack()
 
   track.drawProps = {...drawProps};
 
-  for (let j = 0; j < get(tLayers); ++j)
+  for (let j = 0; j < get(nLayers); ++j)
     layers.push( {...oneLayer} );
 
   track.layers = layers;

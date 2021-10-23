@@ -3,7 +3,7 @@
   import {
     pStrand,
     nTracks,
-    tLayers
+    nLayers
   } from './globals.js';
 
   import {
@@ -40,7 +40,7 @@
     }
     else
     {
-      add_disabled = ($pStrand.tracks[track].lactives >= $tLayers);
+      add_disabled = ($pStrand.tracks[track].lactives >= $nLayers);
       del_disabled = ($pStrand.tracks[track].lactives <= 1);
     }
   }
@@ -65,7 +65,7 @@
       const lindex = $pStrand.tracks[track].lactives;
       const n = ++($pStrand.tracks[track].lactives);
 
-      if (n >= $tLayers) add_disabled = true;
+      if (n >= $nLayers) add_disabled = true;
       del_disabled = false;
 
       strandClearLayer(track, lindex);

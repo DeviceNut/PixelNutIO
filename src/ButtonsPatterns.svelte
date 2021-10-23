@@ -172,9 +172,10 @@ on:click={delstart}
   
 <style>
   .button-pattern {
-    width: 55px;
+    width: 50px;
     height: 35px;
     padding: 3px;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 </style>

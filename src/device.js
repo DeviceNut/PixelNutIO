@@ -143,7 +143,8 @@ export let deviceSetup = (device) =>
     //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
 
     get(dStrands)[s].curSourceIdx = strand.curSourceIdx;
-    get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
+    if (!doselect)
+      get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
   }
 
   // reset to use first strand

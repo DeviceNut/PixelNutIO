@@ -1,7 +1,6 @@
 <script>
 
   import { pStrand } from './globals.js';
-  import { pluginBit_DELAY } from './presets.js';
 
   import {
     userSetBright,
@@ -21,7 +20,6 @@
 <SliderVal name='Delay&nbsp;'
   onchange={userSetDelay}
   bind:cur={$pStrand.pcentDelay}
-  disabled={!($pStrand.bitsEffects & pluginBit_DELAY)}
   />
 
 <SliderVal name='Rotate'

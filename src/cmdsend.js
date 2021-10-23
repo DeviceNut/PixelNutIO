@@ -80,16 +80,17 @@ export const sendEntirePattern = (dostore) =>
   const patstr  = get(pStrand).curPatternStr;
   const patname = get(pStrand).curPatternName;
 
-  if (patstr !== '')
+  if (patstr === '')
   {
-    if (!dostore)
-    {
-      sendCmdToStrands(cmdStr_Clear, false);
-      sendCmdToStrands(patstr, false);
-    }
-    else sendCmdToStrands(patname, true);
+    sendCmdToStrands(cmdStr_Clear, dostore);
+    if (dostore) sendCmdToStrands('', true); // clear pattern name
   }
-  else sendCmdToStrands(cmdStr_Clear, dostore);
+  else if (!dostore)
+  {
+    sendCmdToStrands(cmdStr_Clear, false);
+    sendCmdToStrands(patstr, false);
+  }
+  else sendCmdToStrands(patname, true);
 
   pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
 }

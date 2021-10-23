@@ -10,16 +10,19 @@ import {
   deviceList,
   isConnected,
   aDevicePats,
-  aDeviceDesc
+  aDeviceDesc,
+  justRebooted
  } from './globals.js';
 
- export const cmdStr_VersionStr    = "P!!"   // specifies response format version
+ // Device Responses:
+ export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
+ export const respStr_VersionStr  = "P!!"       // specifies response format version
  
  // Query commands:
-export const cmdStr_GetDevInfo    = "?";    // returns info on device
-export const cmdStr_GetStrands    = "?S";   // returns info on each strand
-export const cmdStr_GetPatterns   = "?P";   // returns info on device patterns
-export const cmdStr_GetPlugins    = "?G";   // returns info on device plugins
+export const cmdStr_GetDevInfo    = "?";        // returns info on device
+export const cmdStr_GetStrands    = "?S";       // returns info on each strand
+export const cmdStr_GetPatterns   = "?P";       // returns info on device patterns
+export const cmdStr_GetPlugins    = "?G";       // returns info on device plugins
 
 const QUERY_NONE          = 0;  // invalid state
 const QUERY_DEVICE        = 1;  // waiting for device reply
@@ -257,146 +260,158 @@ export const onDeviceReply = (msg, fsend) =>
     }
   }
 
-  if (device === null)
+  if (reply[0] === respStr_Rebooted)
+  {
+    console.log('>> Received reboot from device');
+    if (device != null)
+    {
+      deviceStop();
+      justRebooted.set(true);
+    }
+  }
+  else if (device === null)
   {
     console.log(`Ignoring reply from other device: ${name}`); // DEBUG
   }
   else if (device.ready)
   {
-    // MUST HAVE THIS: BUG IN SVELTE COMPILER?!?!
     console.log(`Ignoring reply from current device: ${name}`); // DEBUG
   }
-  else while(true)
+  else
   {
-    switch (device.query)
+    while(true) // used with continue to change query
     {
-      case QUERY_DEVICE:
+      switch (device.query)
       {
-        //console.log('device reply: ', reply);
-        if (reply[0] === cmdStr_VersionStr)
+        case QUERY_DEVICE:
         {
-          reply.shift();
-          if (parseDeviceInfo(device, reply))
+          //console.log('device reply: ', reply);
+          if (reply[0] === respStr_VersionStr)
           {
-            fsend(name, cmdStr_GetStrands);
+            reply.shift();
+            if (parseDeviceInfo(device, reply))
+            {
+              fsend(name, cmdStr_GetStrands);
+              timeout_reply(true);
+  
+              device.query = QUERY_STRANDS;
+              device.qstage = QSTAGE_INFO;
+              device.qcount = 0;
+              break;
+            }
+          }
+    
+          deviceStop(device);
+          break;
+        }
+        case QUERY_STRANDS:
+        {
+          //console.log('strands reply: ', reply);
+          if (parseStrandInfo(device, reply))
+          {
+            if (device.qstage === QSTAGE_DONE) // finished one strand
+            {
+              if (++device.qcount >= device.report.nstrands)
+              {
+                device.query = CHECK_PATTERNS;
+                continue;
+              }
+              else device.qstage = QSTAGE_INFO;
+            }
+            // else keep parsing responses
+            break;
+          }
+    
+          deviceStop(device);
+          break;
+        }
+        case CHECK_PATTERNS:
+        {
+          if (device.report.npatterns > 0)
+          {
+            fsend(name, cmdStr_GetPatterns);
             timeout_reply(true);
-
-            device.query = QUERY_STRANDS;
-            device.qstage = QSTAGE_INFO;
+  
+            device.query = QUERY_PATTERNS;
+            device.qstage = QSTAGE_NAME;
             device.qcount = 0;
-            break;
-          }
-        }
   
-        deviceStop(device);
-        break;
-      }
-      case QUERY_STRANDS:
-      {
-        //console.log('strands reply: ', reply);
-        if (parseStrandInfo(device, reply))
-        {
-          if (device.qstage === QSTAGE_DONE) // finished one strand
-          {
-            if (++device.qcount >= device.report.nstrands)
-            {
-              device.query = CHECK_PATTERNS;
-              continue;
-            }
-            else device.qstage = QSTAGE_INFO;
+            // init device patterns/descriptions
+            const obj = { id:'0', text:'<none>', cmd:'' };
+            aDevicePats.set([obj]);
+            aDeviceDesc.set([[]]);
           }
-          // else keep parsing responses
+          else
+          {
+            device.query = CHECK_PLUGINS;
+            continue;
+          }
           break;
         }
-  
-        deviceStop(device);
-        break;
-      }
-      case CHECK_PATTERNS:
-      {
-        if (device.report.npatterns > 0)
+        case QUERY_PATTERNS:
         {
-          fsend(name, cmdStr_GetPatterns);
-          timeout_reply(true);
-
-          device.query = QUERY_PATTERNS;
-          device.qstage = QSTAGE_NAME;
-          device.qcount = 0;
-
-          // init device patterns/descriptions
-          const obj = { id:'0', text:'<none>', cmd:'' };
-          aDevicePats.set([obj]);
-          aDeviceDesc.set([[]]);
-        }
-        else
-        {
-          device.query = CHECK_PLUGINS;
-          continue;
-        }
-        break;
-      }
-      case QUERY_PATTERNS:
-      {
-        //console.log('patterns reply: ', reply);
-        if (parsePatternInfo(device, reply))
-        {
-          if (device.qstage === QSTAGE_DONE) // finished one pattern
+          //console.log('patterns reply: ', reply);
+          if (parsePatternInfo(device, reply))
           {
-            const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
-            get(aDevicePats).push(obj);
-            get(aDeviceDesc).push([device.qdesc]);
-  
-            if (++device.qcount >= device.report.npatterns)
+            if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
-              device.query = CHECK_PLUGINS;
-              continue;
+              const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
+              get(aDevicePats).push(obj);
+              get(aDeviceDesc).push([device.qdesc]);
+    
+              if (++device.qcount >= device.report.npatterns)
+              {
+                device.query = CHECK_PLUGINS;
+                continue;
+              }
+              else device.qstage = QSTAGE_NAME;
             }
-            else device.qstage = QSTAGE_NAME;
-          }
-          // else keep parsing responses
-          break;
-        }
-
-        deviceStop(device);
-        break;
-      }
-      case CHECK_PLUGINS:
-      {
-        if (device.report.nplugins > 0)
-        {
-          fsend(name, cmdStr_GetPlugins);
-          timeout_reply(true);
-
-          device.query = QUERY_PLUGINS;
-          device.qstage = QSTAGE_NAME;
-          device.qcount = 0;
-        }
-        else deviceStart(device);
-
-        break;
-      }
-      case QUERY_PLUGINS: // TODO
-      {
-        console.log('plugins reply: ', reply);
-        if (parsePluginInfo(device, reply))
-        {
-          if (++device.qcount >= device.report.nplugins)
-          {
-            deviceStart(device);
+            // else keep parsing responses
             break;
           }
+  
+          deviceStop(device);
+          break;
         }
+        case CHECK_PLUGINS:
+        {
+          if (device.report.nplugins > 0)
+          {
+            fsend(name, cmdStr_GetPlugins);
+            timeout_reply(true);
+  
+            device.query = QUERY_PLUGINS;
+            device.qstage = QSTAGE_NAME;
+            device.qcount = 0;
+          }
+          else deviceStart(device);
+  
+          break;
+        }
+        case QUERY_PLUGINS: // TODO
+        {
+          console.log('plugins reply: ', reply);
+          if (parsePluginInfo(device, reply))
+          {
+            if (++device.qcount >= device.report.nplugins)
+            {
+              deviceStart(device);
+              break;
+            }
+          }
+  
+          deviceStop(device);
+          break;
+        }
+        default:
+        {
+          console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
+          break;        
+        }
+      }
 
-        deviceStop(device);
-        break;
-      }
-      default:
-      {
-        console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
-        break;        
-      }
+      break; // exit from while()
     }
-    break;
   }
 }
 

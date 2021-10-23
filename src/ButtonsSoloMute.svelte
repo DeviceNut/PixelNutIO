@@ -7,8 +7,7 @@
 
   import {
     pStrand,
-    nTracks,
-    tLayers
+    nTracks
   } from './globals.js';
 
   import {
@@ -17,7 +16,6 @@
     makeEntireCmdStr
   } from './cmdmake.js';
 
-  import { sendEntirePattern } from './cmdsend.js'; // FIXME
   import { userSendToLayer } from './cmduser.js';
 
   export let track;
@@ -42,8 +40,6 @@
     else makeLayerCmdStr(track, layer);
 
     makeEntireCmdStr();  // build new pattern string
-
-    sendEntirePattern(); // FIXME when device command handling updated
   }
 
   const dosolo = () =>
@@ -65,14 +61,12 @@
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = true;
-
-            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, true);
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 1);
           }
           else
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
-
-            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, false);
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
           }
         }
       }
@@ -85,14 +79,13 @@
           if (i !== track)
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = false;
-
-            //userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, false);
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
           }
         }
       }
     }
     // setting a layer to Solo turns it off all other layers (in the same track),
-    // and turns on the mute for all pre-draw layers in the same track (but not
+    // and turns on the mute for all filter layers in the same track (but not
     // the drawing layer, which is always on).
     //
     // turning off a layer Solo turns off all Mutes for other layers in this track.
@@ -102,20 +95,18 @@
       {
         $pStrand.tracks[track].layers[layer].solo = true;
 
-        for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
+        for (let i = 1; i < $pStrand.tracks[track].lactives; ++i) // note layer 0 is not affected
         {
           if (i !== layer)
           {
             $pStrand.tracks[track].layers[i].solo = false;
             $pStrand.tracks[track].layers[i].mute = true;
-
-            //userSendToLayer(track, i, cmdStr_LayerMute, true);
+            userSendToLayer(track, i, cmdStr_LayerMute, 1);
           }
           else
           {
             $pStrand.tracks[track].layers[i].mute = false;
-
-            //userSendToLayer(track, i, cmdStr_LayerMute, false);
+            userSendToLayer(track, i, cmdStr_LayerMute, 0);
           }
         }
       }
@@ -123,13 +114,12 @@
       {
         $pStrand.tracks[track].layers[layer].solo = false;
 
-        for (let i = 1; i < $tLayers; ++i) // note layer 0 is not affected
+        for (let i = 1; i < $pStrand.tracks[track].lactives; ++i) // note layer 0 is not affected
         {
           if (i !== layer)
           {
             $pStrand.tracks[track].layers[i].mute = false;
-
-            //userSendToLayer(track, i, cmdStr_LayerMute, false);
+            userSendToLayer(track, i, cmdStr_LayerMute, 0);
           }
         }
       }
@@ -143,7 +133,7 @@
     isMute = !isMute;
     $pStrand.tracks[track].layers[layer].mute = isMute;
 
-    //userSendToLayer(track, layer, cmdStr_LayerMute, `${isMute}`);
+    userSendToLayer(track, layer, cmdStr_LayerMute, `${isMute ? 1 : 0}`);
 
     // turning off mute for a track/layer that is not on Solo
     // turns off the Solo for any other track/layer
@@ -157,7 +147,7 @@
       }
       else
       {
-        for (let i = 1; i < $tLayers; ++i) // note layer 0 (DRAW_LAYER) not affected
+        for (let i = 1; i < $pStrand.tracks[track].lactives; ++i) // DRAW_LAYER not affected
           if (i !== layer)
             $pStrand.tracks[track].layers[i].solo = false;
       }

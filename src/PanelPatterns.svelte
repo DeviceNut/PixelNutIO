@@ -75,7 +75,7 @@
   let listSources = [];
   let listDescrips = [];
 
-function updatePatternLists()
+  function updatePatternLists()
   {
       //console.log('updating patterns: idx=', $pStrand.curSourceIdx); // DEBUG
 
@@ -124,10 +124,6 @@ function updatePatternLists()
     // prevent changing pattern when return from docs
     if (!$selectPattern) $selectPattern = true;
     else if (!userSetPattern()) openError = true;
-    else
-    {
-      // TODO: change to pattern name edit field
-    }
   }
 
   $updateSources = true;
@@ -142,6 +138,8 @@ function updatePatternLists()
   }
 
   $: pstr = (showHelp ? "^" : "?");
+
+  const selectPrompt = 'Select source, then pattern:';
 
 </script>
 
@@ -169,7 +167,7 @@ function updatePatternLists()
   <MediaQuery query="(max-width: 620px)" let:matches>
     {#if matches}
       <p style="font-size:.9em; margin-top:10px; text-align:center;">
-        Select new pattern:</p>
+        {selectPrompt}</p>
 
       {#if listSources.length > 1}
         <div style="margin-top:10px; text-align:center;">
@@ -197,7 +195,7 @@ function updatePatternLists()
   <MediaQuery query="(min-width: 621px)" let:matches>
     {#if matches}
       <p style="font-size:.9em; margin-top:10px; text-align:center;">
-        Select new pattern:</p>
+        {selectPrompt}</p>
       <div style="margin-top:10px; text-align:center;">
         {#if listSources.length > 1}
           <div style="width:120px; display:inline-block;">

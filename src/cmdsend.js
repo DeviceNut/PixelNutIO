@@ -9,10 +9,11 @@ import {
 } from './globals.js';
 
 import {
-  cmdStr_SaveFlash     ,
-  cmdStr_AddrStrand    ,
-  cmdStr_AddrLayer     ,
-  cmdStr_Clear         ,
+  cmdStr_FlashPatStr,
+  cmdStr_FlashPatName,
+  cmdStr_AddrStrand,
+  cmdStr_AddrLayer,
+  cmdStr_Clear
 } from './pixcmds.js';
 
 import { mqttSend } from './mqtt.js';
@@ -47,14 +48,18 @@ export const sendPatternToStrand = (s) =>
 // sends command to all selected strands
 // optionally skips the current strand
 // optionally stores the pattern on the device
-function sendCmdToStrands(cmdstr, dostore=false)
+function sendCmdToStrands(cmdstr, cmdname='', dostore=false)
 {
   const sid = get(idStrand);
   let didone = false;
 
   if (get(pStrand).selected)
   {
-    if (dostore) sendCmdToDevice(cmdStr_SaveFlash + cmdstr);
+    if (dostore)
+    {
+      sendCmdToDevice(cmdStr_FlashPatStr  + cmdstr);
+      sendCmdToDevice(cmdStr_FlashPatName + cmdname);
+    }
     else sendCmdToDevice(cmdstr);
   }
 
@@ -63,8 +68,14 @@ function sendCmdToStrands(cmdstr, dostore=false)
     if ((s !== sid) && get(aStrands)[s].selected)
     {
       sendStrandSwitch(s)
-      if (dostore) sendCmdToDevice(cmdStr_SaveFlash + cmdstr);
+
+      if (dostore)
+      {
+        sendCmdToDevice(cmdStr_FlashPatStr  + cmdstr);
+        sendCmdToDevice(cmdStr_FlashPatName + cmdname);
+      }
       else sendCmdToDevice(cmdstr);
+
       didone = true;
     }
   }
@@ -73,24 +84,16 @@ function sendCmdToStrands(cmdstr, dostore=false)
 }
 
 // sends current pattern to all selected strands
-// optionally stores the pattern to the device
-// clears device pattern stack first if not storing
-export const sendEntirePattern = (dostore) =>
+// always stores this pattern to the device flash
+// must clear the device pattern stack first
+export const sendEntirePattern = () =>
 {
-  const patstr  = get(pStrand).curPatternStr;
-  const patname = get(pStrand).curPatternName;
+  const patstr = get(pStrand).curPatternStr;
+  let patname = get(pStrand).curPatternName;
+  if (patstr === '') patname = '';
 
-  if (patstr === '')
-  {
-    sendCmdToStrands(cmdStr_Clear, dostore);
-    if (dostore) sendCmdToStrands('', true); // clear pattern name
-  }
-  else if (!dostore)
-  {
-    sendCmdToStrands(cmdStr_Clear, false);
-    sendCmdToStrands(patstr, false);
-  }
-  else sendCmdToStrands(patname, true);
+  sendCmdToStrands(cmdStr_Clear);
+  sendCmdToStrands(patstr, patname, true);
 
   pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
 }

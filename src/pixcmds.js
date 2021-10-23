@@ -34,7 +34,7 @@ export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "L";    // layer index
 
 // Commands that must be preceded by "L" command (value is):
-export const cmdStr_LayerMute     = "Z";    // mute layer: 0=off, 1=on
+export const cmdStr_LayerMute     = "Z";    // mute layer: none/0=off, 1=on
 export const cmdStr_SelectEffect  = "S";    // plugin number to create (none to swap)
 export const cmdStr_ModifyEffect  = "M";    // plugin number to insert (none to delete)
 

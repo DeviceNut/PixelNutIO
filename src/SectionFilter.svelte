@@ -11,6 +11,8 @@
     aEffFilterDesc
   } from './globals.js';
 
+  import { DRAW_LAYER  } from './pixcmds.js';
+
   import {
     userSetEffect,
     userDoRestart
@@ -46,6 +48,8 @@
     <button
       class="button-restart"
       on:click={restart}
+      disabled={$pStrand.tracks[track].layers[layer].mute ||
+                $pStrand.tracks[track].layers[DRAW_LAYER].mute}
       >Restart
     </button>
   </Row>

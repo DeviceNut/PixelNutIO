@@ -75,28 +75,21 @@ export const convTrackLayerToID = (track, layer) =>
   if (track >= strand.tactives)
   {
     console.error(`No track=${track+1}`);
-    return 255; // clearly invalid layer
+    return 255; // clearly invalid layer FIXME?
   }
 
   if (layer >= strand.tracks[track].lactives)
   {
     console.error(`No layer=${layer+1}`);
-    return 255; // clearly invalid layer
+    return 255; // clearly invalid layer FIXME?
   }
 
   for (let i = 0; i < track; ++i)
-  {
     for (let j = 0; j < strand.tracks[i].lactives; ++j)
-    {
-      if (!strand.tracks[i].layers[j].mute)
-        ++layerid
-    }
-  }
-  for (let j = 0; j < layer; ++j)
-  {
-    if (!strand.tracks[track].layers[j].mute)
       ++layerid
-  }
+
+  for (let j = 0; j < layer; ++j)
+    ++layerid
 
   //console.log('conv: ', track, layer, ' => ', layerid); // DEBUG
   return layerid;

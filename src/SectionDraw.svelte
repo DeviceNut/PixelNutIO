@@ -70,6 +70,7 @@
     <button
       class="button-restart"
       on:click={restart}
+      disabled={$pStrand.tracks[track].layers[DRAW_LAYER].mute}
       >Restart
     </button>
   </Row>

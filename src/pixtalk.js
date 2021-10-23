@@ -45,7 +45,7 @@ export const strandState =
   force: 0,             // force (0-MAX_FORCE_VALUE)
   first: 1,             // first pixel to draw (from 1)
                         // extern mode:
-  xt_mode: 0,           //  enabled=1
+  xt_mode: false,       //  enabled=1
   xt_hue: 0,            //  hue property (0-359)
   xt_white: 0,          //  white property (percent)
   xt_count: 0,          //  count property (percent)
@@ -487,7 +487,7 @@ function parseStrandInfo(device, reply)
         return false;
       }
   
-      strand.xt_mode  = parseInt(strs[0]);
+      strand.xt_mode  = parseInt(strs[0]) === 1; // must convert to boolean
       strand.xt_hue   = parseInt(strs[1]);
       strand.xt_white = parseInt(strs[2]);
       strand.xt_count = parseInt(strs[3]);

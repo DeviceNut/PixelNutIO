@@ -17,7 +17,8 @@ import {
   aDeviceDesc,
   aStoredPats,
   selectSource,
-  selectPattern
+  selectPattern,
+  maxLenPattern
 } from './globals.js';
 
 import { makeNewStrand } from './strands.js';
@@ -48,6 +49,8 @@ export let deviceSetup = (device) =>
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;
   let tracklayers = numlayers / numtracks;
+
+  maxLenPattern.set(device.report.maxstrlen);
 
   if (tracklayers < MIN_TRACK_LAYERS)
   {

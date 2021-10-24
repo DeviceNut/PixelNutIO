@@ -43,6 +43,7 @@ export let pStrand        = writable([]);     // "points" to current strand in a
 
 export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track
+export let maxLenPattern  = writable(0);      // max length of pattern by device
 
 export let aDevicePats    = writable([]);     // list of all device custom patterns
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them

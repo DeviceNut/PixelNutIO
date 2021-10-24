@@ -155,12 +155,15 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
-  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
+  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);x
 
   get(pStrand).curPatternStr = cmdstr;
   get(pStrand).bitsOverride  = ridebits;
   get(pStrand).bitsEffects   = splugbits;
   get(pStrand).triggerUsed   = trigused;
+
+  if (cmdstr.length() > get(maxLenPattern))
+    deviceError('Exceeded max pattern length');
 
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
   //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG

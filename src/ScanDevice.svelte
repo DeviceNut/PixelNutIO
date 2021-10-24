@@ -48,8 +48,13 @@
             <span class="infotext2">FirstPos={strand.first}</span>
             <span class="infotext2" class:disprops={!strand.xt_mode}>Count={strand.xt_count}%</span>
           </div>
-          <div class="pattern">
-            <span>{strand.pattern}</span>
+          {#if (strand.patname !== '')}
+            <div class="pattern-name">
+              <span>{strand.patname}:</span>
+            </div>
+          {/if}
+          <div class="pattern-string">
+            <span>{strand.patstr}</span>
           </div>
         </div>          
       </div>
@@ -115,7 +120,10 @@
   .strand {
     font-style: italic;
   }
-  .pattern {
+  .pattern-name {
+    margin-top: 10px;
+  }
+  .pattern-string {
     margin-top: 10px;
     font-size: 0.8em;
   }

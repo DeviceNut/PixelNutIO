@@ -8,6 +8,7 @@ export const MQTT_BROKER_PORT       = 9001;   // MUST be 9001 for websocket
 export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
 export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
 export const SECS_NOTIFY_TIMEOUT    = 7;      // secs since last notify for connection timeout
+export const SECS_REPLY_TIMEOUT     = 3;      // secs since sent command for reply timeout
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
@@ -56,10 +57,12 @@ export let storedPattern  = writable(false);  // true to set pattern to last sto
                                               // prevents device update from dropdown init:
 export let selectSource   = writable(false);  // false to ignore source selection
 export let selectPattern  = writable(false);  // false to ignore pattern selection
-export let justRebooted   = writable(false);  // true to show popup message to user
 
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions
 export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 export let aTriggers      = writable([]);     // list of track/layers that cause triggers
+
+export let msgTitle       = writable('');     // non-empty to cause user message popup
+export let msgDesc        = writable('');     // description text for that message

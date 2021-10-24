@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 
 import {
   SECS_NOTIFY_TIMEOUT,
+  SECS_REPLY_TIMEOUT,
   MIN_TRACKS,
   MIN_TRACK_LAYERS,
   PAGEMODE_DEVICES,
@@ -11,7 +12,8 @@ import {
   isConnected,
   aDevicePats,
   aDeviceDesc,
-  justRebooted
+  msgTitle,
+  msgDesc
  } from './globals.js';
 
  // Device Responses:
@@ -133,8 +135,9 @@ function curTimeSecs()
   return Math.floor(Date.now() / 1000); // convert to seconds
 }
 
-let checker = 0;
-function startcheck()
+// create timer for receiving a connection notification
+let timer_notify = 0;
+function notify_check()
 {
   let curlist = get(deviceList);
   if (curlist.length > 0)
@@ -162,35 +165,47 @@ function startcheck()
     deviceList.set(newlist);
   }
 
-  checker = setTimeout(startcheck, (1000 * SECS_NOTIFY_TIMEOUT));
+  timer_notify = setTimeout(notify_check, (1000 * SECS_NOTIFY_TIMEOUT));
 }
 
-// set/cancel timeout on reply to device - TODO
-function timeout_reply(dostart)
+// create timer for receiving a reply to a device query
+let timer_reply = 0;
+let reply_query = '';
+let reply_device = null;
+
+function timeout_reply()
 {
-  if (dostart)
-  {
+  console.error(`No response from: ${reply_query}`);
 
-  }
-  else
-  {
+  // if device is currently being controlled,
+  // return to the device discovery page
+  deviceStop(reply_device);
 
-  }
+  msgTitle.set('No Device Response');
+  msgDesc.set(`Device "${reply_device.curname}" failed to answer query.`);
+}
+
+function sendquery(device, fsend, name, query)
+{
+  reply_device = device;
+  reply_query = query;
+  fsend(name, query);
+
+  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
 }
 
 export const onConnection = (enabled) =>
 {
-  if (enabled) startcheck();
+  if (enabled) notify_check();
   else
   {
-    if (checker)
+    if (timer_notify)
     {
-      clearTimeout(checker);
-      checker = 0;
+      clearTimeout(timer_notify);
+      timer_notify = 0;
     } 
 
     deviceStop();
-
     deviceList.set([]);
   }
 
@@ -234,8 +249,7 @@ export const onNotification = (msg, fsend) =>
 
   console.log('Requesting device info...'); // DEBUG
 
-  fsend(name, cmdStr_GetDevInfo);
-  timeout_reply(true);
+  sendquery(device, fsend, name, cmdStr_GetDevInfo);
 
   device.query = QUERY_DEVICE;
 }
@@ -243,6 +257,12 @@ export const onNotification = (msg, fsend) =>
 export const onDeviceReply = (msg, fsend) =>
 {
   console.log(`Device reply: ${msg}`) // DEBUG
+
+  if (timer_reply)
+  {
+    clearTimeout(timer_reply);
+    timer_reply = 0;
+  } 
 
   const reply = msg.split('\n');
   const name = reply[0];
@@ -262,11 +282,12 @@ export const onDeviceReply = (msg, fsend) =>
 
   if (reply[0] === respStr_Rebooted)
   {
-    console.log('>> Received reboot from device');
+    console.log(`>> Received reboot from: ${name}`);
     if (device != null)
     {
-      deviceStop();
-      justRebooted.set(true);
+      deviceStop(device);
+      msgTitle.set('Device Rebooted');
+      msgDesc.set('The device you were connected to just rebooted.');
     }
   }
   else if (device === null)
@@ -291,8 +312,7 @@ export const onDeviceReply = (msg, fsend) =>
             reply.shift();
             if (parseDeviceInfo(device, reply))
             {
-              fsend(name, cmdStr_GetStrands);
-              timeout_reply(true);
+              sendquery(device, fsend, name, cmdStr_GetStrands);
   
               device.query = QUERY_STRANDS;
               device.qstage = QSTAGE_INFO;
@@ -329,8 +349,7 @@ export const onDeviceReply = (msg, fsend) =>
         {
           if (device.report.npatterns > 0)
           {
-            fsend(name, cmdStr_GetPatterns);
-            timeout_reply(true);
+            sendquery(device, fsend, name, cmdStr_GetPatterns);
   
             device.query = QUERY_PATTERNS;
             device.qstage = QSTAGE_NAME;
@@ -377,8 +396,7 @@ export const onDeviceReply = (msg, fsend) =>
         {
           if (device.report.nplugins > 0)
           {
-            fsend(name, cmdStr_GetPlugins);
-            timeout_reply(true);
+            sendquery(device, fsend, name, cmdStr_GetPlugins);
   
             device.query = QUERY_PLUGINS;
             device.qstage = QSTAGE_NAME;

@@ -17,7 +17,8 @@
     mqttBrokerFail,
     isConnected,
     deviceList,
-    justRebooted
+    msgTitle,
+    msgDesc
   } from './globals.js';
 
   import { storeBrokerWrite } from './browser.js';
@@ -85,7 +86,8 @@
   else if (!$isConnected || ($deviceList.length < 1))
     doscan();
 
-  let openWarning = $justRebooted ? true : false;
+  let openMessage;
+  $: openMessage = $msgTitle !== '';
 
 </script>
 
@@ -161,12 +163,12 @@
 
 <Modal
   passiveModal
-  modalHeading={"Device Rebooted"}
-  bind:open={openWarning}
+  modalHeading={$msgTitle}
+  bind:open={openMessage}
   on:close
   >
-  <p>The device you were connected to just rebooted. Select again to continue.</p><br>
-  <Button kind="secondary" on:click={() => {openWarning = false;}}>Continue</Button>
+  <p>{$msgDesc}</p><br>
+  <Button kind="secondary" on:click={() => {openMessage = false; $msgTitle = '';}}>Continue</Button>
 </Modal>
 
 <style>

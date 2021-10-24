@@ -38,7 +38,7 @@ function onLostConnect(rsp)
 {
   if (rsp.errorCode !== 0)
   {
-    console.error(`MQTT Lost Connection: ${rsp.errorMessage}`);
+    console.warn(`MQTT Lost Connection: ${rsp.errorMessage}`);
     onConnection(false);
     mqtt = null; // prevent disconnecting (crash & hang)
   }
@@ -46,7 +46,7 @@ function onLostConnect(rsp)
 
 function onFailure(rsp)
 {
-  console.error(`MQTT Broker Failed: ${rsp.errorMessage}`);
+  console.warn(`MQTT Broker Failed: ${rsp.errorMessage}`);
   onConnection(false);
   mqtt = null; // prevent disconnecting (crash & hang)
 

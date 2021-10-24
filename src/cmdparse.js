@@ -123,7 +123,7 @@ export const parsePattern = (pattern) =>
         let obj = presetsFindEffect(val);
         if (obj === undefined)
         {
-          console.error(`Unknown effect: #${val}`);
+          console.warn(`Unknown effect: #${val}`);
           return false;
         }
 
@@ -131,7 +131,7 @@ export const parsePattern = (pattern) =>
         {
           if (firstone)
           {
-            console.error('Must have draw effect before filter effect');
+            console.warn('Must have draw effect before filter effect');
             return false;
           }
 
@@ -139,7 +139,7 @@ export const parsePattern = (pattern) =>
 
           if (get(pStrand).tactives >= get(nLayers))
           {
-            console.error('Too many layers');
+            console.warn('Too many layers');
             return false;
           }
           get(pStrand).tracks[track].lactives++;
@@ -153,7 +153,7 @@ export const parsePattern = (pattern) =>
         {
           if (get(pStrand).tactives >= get(nTracks))
           {
-            console.error('Too many tracks');
+            console.warn('Too many tracks');
             return false;
           }
 
@@ -191,7 +191,7 @@ export const parsePattern = (pattern) =>
       {
         if ((track < 0) || (layer < 0))
         {
-          console.error(`Must define draw effect before: ${cmd}`);
+          console.warn(`Must define draw effect before: ${cmd}`);
           return false;
         }
         else switch (ch)
@@ -361,7 +361,7 @@ export const parsePattern = (pattern) =>
 
           default:
           {
-            console.error(`Unknown command: ${ch}`); break;
+            console.warn(`Unknown command: ${ch}`); break;
             return false;
           }
         }

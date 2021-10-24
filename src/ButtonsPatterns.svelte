@@ -95,7 +95,7 @@
       errstr = error;
       ok = false;
     }
-    if (!ok) console.error(`Failed copying to clipboard: ${errstr}`);
+    if (!ok) console.warn(`Failed copying to clipboard: ${errstr}`);
 
     document.body.removeChild(textArea);
   }

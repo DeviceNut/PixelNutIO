@@ -123,11 +123,26 @@ function deviceStop(device=null)
 
   if (device !== null)
   {
-    console.error(`Device failed: ${device.curname}`);
+    deviceError(`Device failed: ${device.curname}`);
 
     device.failed = true;
     deviceList.set(get(deviceList)); // trigger UI update
   }
+}
+
+export let deviceError = (text, title=null, device=null) =>
+{
+  if (title === null) title = 'Program Error';
+
+  console.error(text);
+
+  // if device is currently being controlled,
+  // return to the device discovery page
+  deviceStop(device);
+
+  // setup error message title/text
+  msgTitle.set(title);
+  msgDesc.set(text);
 }
 
 function curTimeSecs()
@@ -175,14 +190,11 @@ let reply_device = null;
 
 function timeout_reply()
 {
-  console.error(`No response from: ${reply_query}`);
+  console.log(`No response from: ${reply_query}`);
 
-  // if device is currently being controlled,
-  // return to the device discovery page
-  deviceStop(reply_device);
-
-  msgTitle.set('No Device Response');
-  msgDesc.set(`Device "${reply_device.curname}" failed to answer query.`);
+  deviceError('No Device Response',
+    `Device "${reply_device.curname}" failed to answer query.`,
+    reply_device);
 }
 
 function sendquery(device, fsend, name, query)
@@ -423,7 +435,7 @@ export const onDeviceReply = (msg, fsend) =>
         }
         default:
         {
-          console.error(`Unexpected query state: ${device.query} for reply: ${msg}`)
+          deviceError(`Unexpected query state: ${device.query} for reply: ${msg}`)
           break;        
         }
       }
@@ -443,7 +455,7 @@ function parseDeviceInfo(device, reply)
   strs = line.split(' ');
   if (strs.length < 6)
   {
-    console.error(`Unexpected parm count (line 2): ${strs.length}`);
+    deviceError(`Unexpected parm count (line 2): ${strs.length}`);
     return false;
   }
 
@@ -456,19 +468,19 @@ function parseDeviceInfo(device, reply)
 
   if (device.report.nstrands < 1)
   {
-    console.error(`Bad strand count: "${device.report.nstrands}"`);
+    deviceError(`Bad strand count: "${device.report.nstrands}"`);
     return false;
   }
 
   if (device.report.numtracks < MIN_TRACKS)
   {
-    console.error(`Not enough tracks: ${device.report.numtracks}`);
+    deviceError(`Not enough tracks: ${device.report.numtracks}`);
     return false;
   }
 
   if (device.report.numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
   {
-    console.error(`Not enough layers: ${device.report.numlayers}`);
+    deviceError(`Not enough layers: ${device.report.numlayers}`);
     return false;
   }
 
@@ -486,7 +498,7 @@ function parseStrandInfo(device, reply)
     {
       if (reply.length < 2)
       {
-        console.error(`Unexpected strand line count: "${reply.length}"`);
+        deviceError(`Unexpected strand line count: "${reply.length}"`);
         return false;
       }
 
@@ -499,7 +511,7 @@ function parseStrandInfo(device, reply)
       strs = line.split(' ');
       if (strs.length < 4)
       {
-        console.error(`Unexpected parm count (s1): "${strs.length}"`);
+        deviceError(`Unexpected parm count (s1): "${strs.length}"`);
         return false;
       }
   
@@ -516,7 +528,7 @@ function parseStrandInfo(device, reply)
       strs = line.split(' ');
       if (strs.length < 5)
       {
-        console.error(`Unexpected parm count (s2): "${strs.length}"`);
+        deviceError(`Unexpected parm count (s2): "${strs.length}"`);
         return false;
       }
   
@@ -549,7 +561,7 @@ function parseStrandInfo(device, reply)
     }
     default:
     {
-      console.error(`Unexpected strand stage: ${device.qstage}`);
+      deviceError(`Unexpected strand stage: ${device.qstage}`);
       return false;
     }
   }
@@ -587,7 +599,7 @@ function parsePatternInfo(device, reply)
     }
     default:
     {
-      console.error(`Unexpected pattern stage: ${device.qstage}`);
+      deviceError(`Unexpected pattern stage: ${device.qstage}`);
       return false;
     }
   }

@@ -129,5 +129,5 @@ export const storePatternRemove = (name) =>
     }
   }
 
-  if (!found) console.error(`Failed to remove pattern: ${name}`);
+  if (!found) console.warn(`Failed to remove pattern: ${name}`);
 }

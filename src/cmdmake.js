@@ -40,10 +40,12 @@ import {
 } from './pixcmds.js';
 
 import {
-    strandCopyLayer,
-    strandCopyTracks
+  strandCopyLayer,
+  strandCopyTracks
 } from './strands.js';
-  
+
+import { deviceError } from './pixtalk.js';
+
 import { pluginBit_SENDFORCE } from './presets.js';
 
 ///////////////////////////////////////////////////////////
@@ -72,13 +74,13 @@ export const convTrackLayerToID = (track, layer) =>
 
   if (track >= strand.tactives)
   {
-    console.error(`No track=${track+1}`);
-    return 255; // clearly invalid layer FIXME?
+    deviceError(`No track=${track+1}`);
+    return 255; // clearly invalid layer
   }
 
   if (layer >= strand.tracks[track].lactives)
   {
-    console.error(`No layer=${layer+1}`);
+    deviceError(`No layer=${layer+1}`);
     return 255; // clearly invalid layer FIXME?
   }
 

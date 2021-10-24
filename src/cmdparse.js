@@ -35,6 +35,7 @@ import {
   cmdStr_TrigOffset    ,
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
+  cmdStr_LayerMute     ,
   cmdStr_Clear         ,
   cmdStr_Go
 } from './pixcmds.js';
@@ -196,6 +197,13 @@ export const parsePattern = (pattern) =>
         }
         else switch (ch)
         {
+          case cmdStr_LayerMute:
+          {
+            const mute = isNaN(val) ? true : valueToBool(val);
+            get(pStrand).tracks[track].layers[layer].mute = mute;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].mute = mute;
+            break;
+          }
           case cmdStr_PcentXoffset:
           {
             const offset = isNaN(val) ? 0 : valueToPercent(val);

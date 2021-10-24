@@ -8,7 +8,7 @@
   import {
     DRAW_LAYER,
     MAX_FORCE_VALUE
-  } from './pixcmds.js';
+  } from './devcmds.js';
 
   import {
     pStrand,

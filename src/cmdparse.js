@@ -38,7 +38,7 @@ import {
   cmdStr_LayerMute     ,
   cmdStr_Clear         ,
   cmdStr_Go
-} from './pixcmds.js';
+} from './devcmds.js';
 
 import { presetsFindEffect } from './presets.js';
 import { strandClearAll } from './strands.js';

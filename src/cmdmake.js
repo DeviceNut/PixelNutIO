@@ -38,14 +38,14 @@ import {
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
   cmdStr_Go            
-} from './pixcmds.js';
+} from './devcmds.js';
 
 import {
   strandCopyLayer,
   strandCopyTracks
 } from './strands.js';
 
-import { deviceError } from './pixtalk.js';
+import { deviceError } from './devtalk.js';
 
 import { pluginBit_SENDFORCE } from './presets.js';
 

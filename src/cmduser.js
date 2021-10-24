@@ -42,7 +42,7 @@ import {
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
   cmdStr_Go
-} from './pixcmds.js';
+} from './devcmds.js';
 
 import {
   pluginBit_ORIDE_HUE,

@@ -6,7 +6,7 @@
     overBit_DegreeHue,
     overBit_PcentWhite,
     overBit_PcentCount,
-  } from './pixcmds.js';
+  } from './devcmds.js';
 
   import {
     pluginBit_COLOR,

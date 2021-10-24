@@ -3,7 +3,7 @@
   import {
     DRAW_LAYER,
     cmdStr_LayerMute
-  } from './pixcmds.js';
+  } from './devcmds.js';
 
   import {
     pStrand,

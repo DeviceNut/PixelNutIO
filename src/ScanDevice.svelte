@@ -1,7 +1,7 @@
 <script>
 
   import { Loading } from "carbon-components-svelte";
-  import { deviceSetup } from './device.js';
+  import { deviceSetup } from './devinit.js';
 
   export let device;
 

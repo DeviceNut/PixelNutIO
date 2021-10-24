@@ -11,7 +11,7 @@
     aEffFilterDesc
   } from './globals.js';
 
-  import { DRAW_LAYER  } from './pixcmds.js';
+  import { DRAW_LAYER  } from './devcmds.js';
 
   import {
     userSetEffect,

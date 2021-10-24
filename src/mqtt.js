@@ -10,7 +10,7 @@ import {
   onConnection,
   onNotification,
   onDeviceReply
-} from './pixtalk.js';
+} from './devtalk.js';
 
 const topicDevNotify  = 'PixelNut/Notify';
 const topicCommand    = 'PixelNut/Cmd/'; // + devicename

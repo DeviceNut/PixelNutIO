@@ -13,7 +13,7 @@ import {
   cmdStr_FlashPatName,
   cmdStr_AddrStrand,
   cmdStr_AddrLayer
-} from './pixcmds.js';
+} from './devcmds.js';
 
 import { mqttSend } from './mqtt.js';
 

@@ -6,7 +6,7 @@
     Checkbox
   } from "carbon-components-svelte";
 
-  import { DRAW_LAYER } from './pixcmds.js';
+  import { DRAW_LAYER } from './devcmds.js';
 
   import {
     pStrand,

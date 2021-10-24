@@ -6,7 +6,7 @@
     Column
   } from "carbon-components-svelte";
 
-  import { MAX_FORCE_VALUE } from './pixcmds.js';
+  import { MAX_FORCE_VALUE } from './devcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
   import { pStrand } from './globals.js';
   import { userSendTrigger } from './cmduser.js'

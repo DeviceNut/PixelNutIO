@@ -3,7 +3,7 @@
   import { Row, Column } from "carbon-components-svelte";
 
   import { pStrand } from './globals.js';
-  import { DRAW_LAYER } from './pixcmds.js';
+  import { DRAW_LAYER } from './devcmds.js';
 
   import Revealer from './Revealer.svelte';
   import ButtonsDnUp from './ButtonsDnUp.svelte';

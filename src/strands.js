@@ -15,7 +15,7 @@ import {
   MAX_FORCE_VALUE,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE
-  } from './pixcmds.js';
+  } from './devcmds.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.

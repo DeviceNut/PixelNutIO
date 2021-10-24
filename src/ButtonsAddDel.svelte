@@ -9,7 +9,7 @@
   import {
     DRAW_LAYER,
     cmdStr_SelectEffect
-  } from './pixcmds.js';
+  } from './devcmds.js';
 
   import {
     strandClearTrack,

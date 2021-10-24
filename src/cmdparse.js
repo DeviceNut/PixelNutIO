@@ -1,6 +1,16 @@
 import { get } from 'svelte/store';
 
 import {
+  nTracks,
+  nLayers,
+  pStrand,
+  dStrands,
+  idStrand,
+  aEffectsDraw,
+  aEffectsFilter
+} from './globals.js';
+
+import {
   DRAW_LAYER           ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_COUNT      ,
@@ -27,28 +37,11 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_Clear         ,
   cmdStr_Go
-  } from './pixcmds.js';
+} from './pixcmds.js';
 
-import {
-  nTracks,
-  nLayers,
-  pStrand,
-  dStrands,
-  idStrand,
-  aEffectsDraw,
-  aEffectsFilter
-} from './globals.js';
-
-import {
-  presetsFindEffect,
-} from './presets.js';
-
-import {
-  makeLayerCmdStr,
-  makeEntireCmdStr
-} from './cmdmake.js';
-
+import { presetsFindEffect } from './presets.js';
 import { strandClearAll } from './strands.js';
+import { makeLayerCmdStr } from './cmdmake.js';
 
 ///////////////////////////////////////////////////////////
 

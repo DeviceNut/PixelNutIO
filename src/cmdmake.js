@@ -37,16 +37,14 @@ import {
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
   cmdStr_Go            
-  } from './pixcmds.js';
+} from './pixcmds.js';
 
 import {
-  pluginBit_SENDFORCE,
-} from './presets.js';
-
-import {
-  strandCopyLayer,
-  strandCopyTracks
+    strandCopyLayer,
+    strandCopyTracks
 } from './strands.js';
+  
+import { pluginBit_SENDFORCE } from './presets.js';
 
 ///////////////////////////////////////////////////////////
 

@@ -94,6 +94,52 @@ export const deviceInfo =
   }
 };
 
+export let deviceError = (text, title=null, device=null) =>
+{
+  if (title === null) title = 'Program Error';
+
+  console.error(text == '' ? title : text);
+
+  deviceStop(device);
+
+  // setup error message title/text
+  msgTitle.set(title);
+  msgDesc.set(text);
+}
+
+// create timer for receiving a reply to a device query
+let timer_reply = 0;
+let reply_query = '';
+let reply_device = null;
+
+function timeout_reply()
+{
+  console.log(`No response from: ${reply_query}`);
+
+  deviceError('', `Device "${reply_device.curname}" failed to answer query.`, reply_device);
+}
+
+function sendQuery(device, fsend, query)
+{
+  reply_device = device;
+  reply_query = query;
+  fsend(device.curname, query);
+
+  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
+}
+
+function deviceQueryBegin(device, fsend)
+{
+  console.log('Requesting device info...'); // DEBUG
+
+  device.ready = false;
+  device.active = false;
+  device.failed = false;
+  device.query = QUERY_DEVICE;
+
+  sendQuery(device, fsend, cmdStr_GetDevInfo);
+}
+
 function deviceStart(device)
 {
   console.log(`Device ready: "${device.curname}"`) // DEBUG
@@ -109,6 +155,9 @@ function deviceStart(device)
 
 function deviceStop(device=null)
 {
+  // if device is currently being controlled,
+  // return to the device discovery page
+
   let curdev = get(curDevice);
   if (curdev !== null)
   {
@@ -128,21 +177,6 @@ function deviceStop(device=null)
     device.failed = true;
     deviceList.set(get(deviceList)); // trigger UI update
   }
-}
-
-export let deviceError = (text, title=null, device=null) =>
-{
-  if (title === null) title = 'Program Error';
-
-  console.error(text);
-
-  // if device is currently being controlled,
-  // return to the device discovery page
-  deviceStop(device);
-
-  // setup error message title/text
-  msgTitle.set(title);
-  msgDesc.set(text);
 }
 
 function curTimeSecs()
@@ -181,29 +215,6 @@ function notify_check()
   }
 
   timer_notify = setTimeout(notify_check, (1000 * SECS_NOTIFY_TIMEOUT));
-}
-
-// create timer for receiving a reply to a device query
-let timer_reply = 0;
-let reply_query = '';
-let reply_device = null;
-
-function timeout_reply()
-{
-  console.log(`No response from: ${reply_query}`);
-
-  deviceError('No Device Response',
-    `Device "${reply_device.curname}" failed to answer query.`,
-    reply_device);
-}
-
-function sendquery(device, fsend, name, query)
-{
-  reply_device = device;
-  reply_query = query;
-  fsend(name, query);
-
-  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
 }
 
 export const onConnection = (enabled) =>
@@ -259,11 +270,7 @@ export const onNotification = (msg, fsend) =>
   get(deviceList).push(device);
   deviceList.set(get(deviceList)); // trigger UI update
 
-  console.log('Requesting device info...'); // DEBUG
-
-  sendquery(device, fsend, name, cmdStr_GetDevInfo);
-
-  device.query = QUERY_DEVICE;
+  deviceQueryBegin(device, fsend);
 }
 
 export const onDeviceReply = (msg, fsend) =>
@@ -297,18 +304,28 @@ export const onDeviceReply = (msg, fsend) =>
     console.log(`>> Received reboot from: ${name}`);
     if (device != null)
     {
-      deviceStop(device);
-      msgTitle.set('Device Rebooted');
-      msgDesc.set('The device you were connected to just rebooted.');
+      if (device.active)
+      {
+        deviceStop();
+        msgTitle.set('Device Rebooted');
+        msgDesc.set('The device you were connected to just rebooted.');
+        deviceQueryBegin(device, fsend);
+      }
+      else if (device.ready)
+      {
+        deviceStop(device);
+        deviceQueryBegin(device, fsend);
+      }
+      // else continue with current query
     }
   }
   else if (device === null)
   {
-    console.log(`Ignoring reply from other device: ${name}`); // DEBUG
+    console.warn(`Ignoring reply from other device: ${name}`);
   }
   else if (device.ready)
   {
-    console.log(`Ignoring reply from current device: ${name}`); // DEBUG
+    console.warn(`Ignoring reply from current device: ${name}`);
   }
   else
   {
@@ -324,16 +341,13 @@ export const onDeviceReply = (msg, fsend) =>
             reply.shift();
             if (parseDeviceInfo(device, reply))
             {
-              sendquery(device, fsend, name, cmdStr_GetStrands);
+              sendQuery(device, fsend, cmdStr_GetStrands);
   
               device.query = QUERY_STRANDS;
               device.qstage = QSTAGE_INFO;
               device.qcount = 0;
-              break;
             }
           }
-    
-          deviceStop(device);
           break;
         }
         case QUERY_STRANDS:
@@ -351,17 +365,14 @@ export const onDeviceReply = (msg, fsend) =>
               else device.qstage = QSTAGE_INFO;
             }
             // else keep parsing responses
-            break;
           }
-    
-          deviceStop(device);
           break;
         }
         case CHECK_PATTERNS:
         {
           if (device.report.npatterns > 0)
           {
-            sendquery(device, fsend, name, cmdStr_GetPatterns);
+            sendQuery(device, fsend, cmdStr_GetPatterns);
   
             device.query = QUERY_PATTERNS;
             device.qstage = QSTAGE_NAME;
@@ -398,24 +409,20 @@ export const onDeviceReply = (msg, fsend) =>
               else device.qstage = QSTAGE_NAME;
             }
             // else keep parsing responses
-            break;
           }
-  
-          deviceStop(device);
           break;
         }
         case CHECK_PLUGINS:
         {
           if (device.report.nplugins > 0)
           {
-            sendquery(device, fsend, name, cmdStr_GetPlugins);
+            sendQuery(device, fsend, cmdStr_GetPlugins);
   
             device.query = QUERY_PLUGINS;
             device.qstage = QSTAGE_NAME;
             device.qcount = 0;
           }
           else deviceStart(device);
-  
           break;
         }
         case QUERY_PLUGINS: // TODO
@@ -424,13 +431,9 @@ export const onDeviceReply = (msg, fsend) =>
           if (parsePluginInfo(device, reply))
           {
             if (++device.qcount >= device.report.nplugins)
-            {
               deviceStart(device);
-              break;
-            }
+            // else keep parsing responses
           }
-  
-          deviceStop(device);
           break;
         }
         default:

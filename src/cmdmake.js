@@ -6,7 +6,8 @@ import {
   idStrand,
   aEffectsDraw,
   aEffectsFilter,
-  aTriggers
+  aTriggers,
+  maxLenPattern
 } from './globals.js';
 
 import {
@@ -155,14 +156,14 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
-  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);x
+  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
 
   get(pStrand).curPatternStr = cmdstr;
   get(pStrand).bitsOverride  = ridebits;
   get(pStrand).bitsEffects   = splugbits;
   get(pStrand).triggerUsed   = trigused;
 
-  if (cmdstr.length() > get(maxLenPattern))
+  if (cmdstr.length > get(maxLenPattern))
     deviceError('Exceeded max pattern length');
 
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG

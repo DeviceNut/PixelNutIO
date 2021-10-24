@@ -21,7 +21,7 @@ import {
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
-  cmdStr_SetXmode      ,
+  cmdStr_SetOride      ,
   cmdStr_SetFirst      ,
   cmdStr_SelectEffect  ,
   cmdStr_PcentXoffset  ,
@@ -243,7 +243,7 @@ export const userClearPattern = () =>
   if (strand.curPatternIdx === 0)
     sendEntirePattern(); // clear pattern
 
-  // else userSetPattern() will be called
+  // userSetPattern() with empty string
   else strand.curPatternIdx = 0;
 
   strand.showCustom = false;
@@ -414,7 +414,7 @@ export const userSetOverMode = () =>
   {
     get(dStrands)[get(idStrand)].doOverride = oride;
 
-    sendStrandCmd(cmdStr_SetXmode, oride ? 1 : 0);
+    sendStrandCmd(cmdStr_SetOride, oride ? 1 : 0);
     if (!oride) // must resend any props that were overriden
     {
       for (let i = 0; i < get(pStrand).tactives; ++i)

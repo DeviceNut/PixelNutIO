@@ -61,7 +61,7 @@
           {
             $pStrand.tracks[i].layers[DRAW_LAYER].solo = false;
             $pStrand.tracks[i].layers[DRAW_LAYER].mute = true;
-            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 1);
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute);
           }
           else
           {
@@ -101,7 +101,7 @@
           {
             $pStrand.tracks[track].layers[i].solo = false;
             $pStrand.tracks[track].layers[i].mute = true;
-            userSendToLayer(track, i, cmdStr_LayerMute, 1);
+            userSendToLayer(track, i, cmdStr_LayerMute);
           }
           else
           {
@@ -133,7 +133,7 @@
     isMute = !isMute;
     $pStrand.tracks[track].layers[layer].mute = isMute;
 
-    userSendToLayer(track, layer, cmdStr_LayerMute, `${isMute ? 1 : 0}`);
+    userSendToLayer(track, layer, cmdStr_LayerMute, isMute ? undefined : 0);
 
     // turning off mute for a track/layer that is not on Solo
     // turns off the Solo for any other track/layer

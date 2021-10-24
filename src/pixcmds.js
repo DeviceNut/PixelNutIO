@@ -14,21 +14,21 @@ export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
 export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
-// Device commands:                         // 
-export const cmdStr_DeviceName    = "@";    // renames: value is new name
-export const cmdStr_PullTrigger   = "!";    // trigger: value is trigger force
-export const cmdStr_Pause         = "[";    // pauses operation
-export const cmdStr_Resume        = "]";    // resumes operation
-export const cmdStr_GetPattern    = "+";    // retrieve entire pattern (no value)
-export const cmdStr_FlashPatStr   = "*";    // save pattern string to flash
-export const cmdStr_FlashPatName  = "+";    // save pattern name to flash
+// Device commands:                         // value is:
+export const cmdStr_DeviceName    = "@";    // new name of device
+export const cmdStr_PullTrigger   = "!";    // trigger force applied
+export const cmdStr_Pause         = "[";    // none: pauses operation
+export const cmdStr_Resume        = "]";    // none: resumes operation
+export const cmdStr_FlashCurPat   = "$";    // none: saves current pattern
+export const cmdStr_FlashPatStr   = "=";    // pattern string to flash
+export const cmdStr_FlashPatName  = "~";    // pattern name to flash
 
-// Override properties:                     // value is:
-export const cmdStr_OR_Bright     = "%";    // percent of max ++
-export const cmdStr_OR_Delay      = ":";    // msecs of delay ++
-export const cmdStr_OR_Props      = "=";    // hue white count ++
-export const cmdStr_SetXmode      = "_";    // 0=disable 1=enable override ++
-export const cmdStr_SetFirst      = "^";    // first pixel to draw ++
+// Override properties:                     // value is: (affects all strands)
+export const cmdStr_OR_Bright     = "%";    // brightness percent of max
+export const cmdStr_OR_Delay      = "&";    // delay percent to apply
+export const cmdStr_OR_Props      = "+";    // hue white count
+export const cmdStr_SetOride      = "-";    // 0=disable 1=enable override
+export const cmdStr_SetFirst      = "^";    // first pixel to draw
 
 // Determines what is addressed             // value is:
 export const cmdStr_AddrStrand    = "#";    // strand index
@@ -63,7 +63,6 @@ export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=
 export const cmdStr_Clear         = "P";    // clears all effects
 export const cmdStr_Go            = "G";    // display all effects
 
-// ++ these affect all tracks in the strand
 // Note: not using X,Y commands (start/length of extent in pixels)
-// Note: commands not starting with alpha char must be on separate line
-///////////////////////////////////////////////////////////////////////
+// Note: commands not starting with alpha char must at the start of the line
+////////////////////////////////////////////////////////////////////////////////

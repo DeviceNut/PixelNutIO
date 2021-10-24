@@ -12,8 +12,7 @@ import {
   cmdStr_FlashPatStr,
   cmdStr_FlashPatName,
   cmdStr_AddrStrand,
-  cmdStr_AddrLayer,
-  cmdStr_Clear
+  cmdStr_AddrLayer
 } from './pixcmds.js';
 
 import { mqttSend } from './mqtt.js';
@@ -92,7 +91,6 @@ export const sendEntirePattern = () =>
   let patname = get(pStrand).curPatternName;
   if (patstr === '') patname = '';
 
-  sendCmdToStrands(cmdStr_Clear);
   sendCmdToStrands(patstr, patname, true);
 
   pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS

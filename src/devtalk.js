@@ -339,7 +339,7 @@ export const onDeviceReply = (msg, fsend) =>
           if (reply[0] === respStr_VersionStr)
           {
             reply.shift();
-            if (parseDeviceInfo(device, reply))
+            if (readDeviceInfo(device, reply))
             {
               sendQuery(device, fsend, cmdStr_GetStrands);
   
@@ -353,7 +353,7 @@ export const onDeviceReply = (msg, fsend) =>
         case QUERY_STRANDS:
         {
           //console.log('strands reply: ', reply);
-          if (parseStrandInfo(device, reply))
+          if (readStrandInfo(device, reply))
           {
             if (device.qstage === QSTAGE_DONE) // finished one strand
             {
@@ -393,7 +393,7 @@ export const onDeviceReply = (msg, fsend) =>
         case QUERY_PATTERNS:
         {
           //console.log('patterns reply: ', reply);
-          if (parsePatternInfo(device, reply))
+          if (readPatternInfo(device, reply))
           {
             if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
@@ -428,7 +428,7 @@ export const onDeviceReply = (msg, fsend) =>
         case QUERY_PLUGINS: // TODO
         {
           console.log('plugins reply: ', reply);
-          if (parsePluginInfo(device, reply))
+          if (readPluginInfo(device, reply))
           {
             if (++device.qcount >= device.report.nplugins)
               deviceStart(device);
@@ -448,7 +448,7 @@ export const onDeviceReply = (msg, fsend) =>
   }
 }
 
-function parseDeviceInfo(device, reply)
+function readDeviceInfo(device, reply)
 {
   let line, strs;
 
@@ -491,7 +491,7 @@ function parseDeviceInfo(device, reply)
 }
 
 // 2 parm lines + 1 pattern, per strand
-function parseStrandInfo(device, reply)
+function readStrandInfo(device, reply)
 {
   let line, strs, strand;
 
@@ -572,7 +572,7 @@ function parseStrandInfo(device, reply)
   return true;
 }
 
-function parsePatternInfo(device, reply)
+function readPatternInfo(device, reply)
 {
   const line = reply[0];
   reply.shift();
@@ -610,7 +610,7 @@ function parsePatternInfo(device, reply)
   return true;
 }
 
-function parsePluginInfo(device, reply)
+function readPluginInfo(device, reply)
 {
   return false;
 }

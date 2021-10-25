@@ -72,7 +72,7 @@ function onMessage(message)
 
 function genUniqueID()
 {
-  const id = '!' + Math.random().toString(36).substr(2, 9);
+  const id = '!' + (Math.random() + 1).toString(36).substr(-10);
   console.log(`MQTT ID: ${id}`);
   return id;
 };

@@ -47,7 +47,7 @@ const oneLayer =
   trigSrcListDex  : 0,      //  source list index currently selected (0=none)
                             //  if the above is >0 (user has selected one):
   trigSourceID    : 0,      //  uniqueID for that chosen source layer
-  trigDevLayer    : 0,      //  device layer index for trigger source
+  trigDevIndex    : 0,      //  device layer index for trigger source
                             //  (set by parser before source list created)
                             //  (must recalculate this when create pattern)
 
@@ -379,7 +379,7 @@ export const convIndexToTrackLayer = (index) =>
   {
     if (index < get(pStrand).tracks[i].lactives)
     {
-      console.log(`conv: ${index} => ${track}:${layer}`); // DEBUG
+      //console.log(`conv: ${index} => ${track}:${layer}`); // DEBUG
       return { track:track, layer:index };
     }
 
@@ -418,7 +418,7 @@ export const convTrackLayerToIndex = (track, layer) =>
   for (let j = 0; j < layer; ++j)
     ++index;
 
-  console.log(`conv: ${track}:${layer} => ${index}`); // DEBUG
+  //console.log(`conv: ${track}:${layer} => ${index}`); // DEBUG
   return index;
 }
 

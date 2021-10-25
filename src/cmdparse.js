@@ -311,13 +311,15 @@ export const parsePattern = (pattern) =>
           case cmdStr_TrigByEffect:
           {
             // disable if no value follows command, else value is layer index
-            const devindex = isNaN(val) ? false : valueToBool(val);
+            let enable = false;
+            if (isNaN(val)) val = 0;
+            else enable = true;
 
-            get(pStrand).tracks[track].layers[layer].trigOnLayer = true;
-            get(pStrand).tracks[track].layers[layer].trigDevLayer = devindex;
+            get(pStrand).tracks[track].layers[layer].trigOnLayer = enable;
+            get(pStrand).tracks[track].layers[layer].trigDevIndex = val;
 
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevLayer = devindex;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevIndex = val;
             break;
           }
           case cmdStr_TrigRepeating:
@@ -385,7 +387,7 @@ export const parsePattern = (pattern) =>
   const strand = get(pStrand);
   let slist = strand.trigSources;
 
-  // set list index and layerID for any layers that have a layer trigger set
+  // set list index and source ID for any layers that have a layer trigger set
   // disable the layer trigger if it fails to match one in the list
   for (let track = 0; track < strand.tactives; ++track)
   {
@@ -393,18 +395,19 @@ export const parsePattern = (pattern) =>
     {
       if (strand.tracks[track].layers[layer].trigOnLayer)
       {
-        const devindex = strand.tracks[track].layers[layer].trigDevLayer;
+        const devindex = strand.tracks[track].layers[layer].trigDevIndex;
         let found = false;
 
         for (const [i, item] of slist.entries())
         {
-          if (item.devindex == devindex)
+          if ((i > 0) && (item.devindex == devindex))
           {
             strand.tracks[track].layers[layer].trigSrcListDex = i;
             strand.tracks[track].layers[layer].trigSourceID = 
-              strand.tracks[ item.track ].layers[ item.layer ].layerID;
+              strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
-            console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            //console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            //console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSourceID}`)
             found = true;
             break;
           }

@@ -204,7 +204,7 @@ export const makeLayerCmdStr = (track, layer) =>
     cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
   if (player.trigOnLayer)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigDevLayer} `);
+    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigDevIndex} `);
 
   if (player.trigDoRepeat)
   {
@@ -225,6 +225,7 @@ export const makeLayerCmdStr = (track, layer) =>
 // create partial command strings for all layers in a track
 export const makeTrackCmdStrs = (track) =>
 {
+  console.log('make: ', get(pStrand));
   let ptrack = get(pStrand).tracks[track];
   for (let i = 0; i < ptrack.lactives; ++i)
     makeLayerCmdStr(track, i);
@@ -249,7 +250,7 @@ export const makeTrigSourceList = () =>
     {
       if (strand.tracks[track].layers[layer].pluginBits & pluginBit_SENDFORCE)
       {
-        let sourceid = strand.tracks[track].layers[layer].trigSourceID;
+        let sourceid = strand.tracks[track].layers[layer].uniqueID;
         let index = strand.tracks[track].layers[layer].pluginIndex;
         let name = (layer === 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
 
@@ -258,6 +259,8 @@ export const makeTrigSourceList = () =>
                      devindex:devindex, sourceid:sourceid,
                      track:track, layer:layer,
                      text: `Track(${track+1}) Layer(${layer+1}) - ${name}` });
+
+        //console.log('tsource: ', items[count]);
       }
 
       ++devindex;
@@ -296,7 +299,10 @@ export const updateTriggerLayers = () =>
               strand.tracks[track].layers[layer].trigSrcListDex = i;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = i;
 
-              console.log(`update: devindex=${devindex} => ${item.track}:${item.layer}`); // DEBUG
+              strand.tracks[track].layers[layer].trigDevIndex = item.devindex;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevIndex = item.devindex;
+
+              //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`); // DEBUG
             }
           }
         }
@@ -304,6 +310,7 @@ export const updateTriggerLayers = () =>
         if (!found)
         {
           console.warn(`Failed to find trigger source for: ${track}:${layer}`);
+          console.log(`parse: ID=${sourceid}`)
 
           strand.tracks[track].layers[layer].trigOnLayer = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0;

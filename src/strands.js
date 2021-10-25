@@ -15,24 +15,26 @@ import {
   MAX_FORCE_VALUE,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE
-  } from './devcmds.js';
+} from './devcmds.js';
+
+import { deviceError } from './devtalk.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
-// 3) The device's pixel engine keeps a stack of layers indexed by a layer id, the value
-//    of which is used for assigning trigger targets, and since that depends on the number
-//    of active tracks/layers, it needs to be re-calculated each time a pattern is generated.
-// 4) Active tracks/layers are the ones displayed that can be modified. The user can change
-//    these with the Add/Del buttons, up to the limits of the device.
-// 5) Tracks/layers can be individually enabled/disabled (except for the first layer of each track)
-//    with the Solo/Mute buttons.
+// 3) The device keeps a stack of layers indexed by a layer index value, which is used for
+//    identifying trigger sources. Since that depends on the number of active tracks/layers,
+//    it needs to be re-calculated each time a pattern is created. And when tracks/layers
+//    are added, deleted or moved, a new pattern must be created. A unique ID is used for
+//    each layer to facilitate this re-calculation.
+// 4) Tracks/layers can be individually enabled/disabled for displaying with the Solo/Mute
+//    functions. Disabling a track is functionally the same as disabling the first layer,
+//    so there are no such functions available for the first layer of each track.
 
 ///////////////////////////////////////////////////////////
 
 const oneLayer =
 {
-  pluginIndex     : 0,      // effect plugin index, not value
-  pluginBits      : 0x00,   // bits describing plugin (pluginBit_ values)
+  uniqueID        : 0,      // unique ID for this layer
 
   open            : true,   // true if displayed
   solo            : false,  // true if currently solo
@@ -42,9 +44,12 @@ const oneLayer =
   trigFromMain    : false,  // true if can trigger from main controls
 
   trigOnLayer     : false,  // true if can trigger from other layer:
-  trigListDex     : 0,      //  index into list of possible source layers
-  trigTrackNum    : 1,      //  the track number that will trigger (from 1)
-  trigLayerNum    : 1,      //  the layer number of that track (from 1)
+  trigSrcListDex  : 0,      //  source list index currently selected (0=none)
+                            //  if the above is >0 (user has selected one):
+  trigSourceID    : 0,      //  uniqueID for that chosen source layer
+  trigDevLayer    : 0,      //  device layer index for trigger source
+                            //  (set by parser before source list created)
+                            //  (must recalculate this when create pattern)
 
   trigDoRepeat    : false,  // true for auto-generated trigger:
   trigForever     : false,  //   false to select specific count
@@ -54,6 +59,9 @@ const oneLayer =
 
   forceRandom     : false,  // true if a random force is applied when triggering
   forceValue      : MAX_FORCE_VALUE/2, // percent force to apply (if not random)
+
+  pluginIndex     : 0,      // effect plugin index, not value
+  pluginBits      : 0x00,   // describes plugin (pluginBit_xxx)
 
   cmdstr          : ''      // command string for the current settings
 }
@@ -122,6 +130,16 @@ const oneStrand =
 
   tactives        : 1,      // current number of active tracks (>=1)
   tracks          : [],     // list of 'oneTrack's for this strand
+
+  trigSources     : [],     // list of trigger source layer info
+}
+
+function makeOneLayer()
+{
+  let layer = {...oneLayer};
+  layer.uniqueID = 'LID' + (Math.random() + 1).toString(36).substr(-6);
+  //console.log('ID=', layer.uniqueID);
+  return layer;
 }
 
 function makeOneTrack()
@@ -132,7 +150,7 @@ function makeOneTrack()
   track.drawProps = {...drawProps};
 
   for (let j = 0; j < get(nLayers); ++j)
-    layers.push( {...oneLayer} );
+    layers.push( makeOneLayer() );
 
   track.layers = layers;
 
@@ -318,8 +336,8 @@ export const strandClearTrack = (track) =>
 export const strandClearLayer = (track, layer) =>
 {
   let sid = get(idStrand);
-  get(aStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
-  get(dStrands)[sid].tracks[track].layers.splice(layer, 1, {...oneLayer});
+  get(aStrands)[sid].tracks[track].layers.splice(layer, 1, makeOneLayer());
+  get(dStrands)[sid].tracks[track].layers.splice(layer, 1, makeOneLayer());
 
   strandCopyLayer(track, layer);
 }
@@ -350,3 +368,57 @@ export const strandSwapLayers = (track, layer) =>
     }
   }
 }
+
+// convert device layer index to track,layer
+// returns null if index not valid, else object
+export const convIndexToTrackLayer = (index) =>
+{
+  let track = 0;
+
+  for (let i = 0; i < get(pStrand).tactives; ++i)
+  {
+    if (index < get(pStrand).tracks[i].lactives)
+    {
+      console.log(`conv: ${index} => ${track}:${layer}`); // DEBUG
+      return { track:track, layer:index };
+    }
+
+    index -= get(pStrand).tracks[i].lactives;
+    ++track;
+  }
+
+  return null;
+}
+
+// convert track,layer to device layer index
+// returns null if track/layer is invalid
+// and creates program error message which
+// forces user back to the devices page
+export const convTrackLayerToIndex = (track, layer) =>
+{
+  let index = 0;
+  let strand = get(pStrand);
+
+  if (track >= strand.tactives)
+  {
+    deviceError(`No layer=${layer+1}`);
+    return null;
+  }
+
+  if (layer >= strand.tracks[track].lactives)
+  {
+    deviceError(`No layer=${layer+1}`);
+    return null;
+  }
+
+  for (let i = 0; i < track; ++i)
+    for (let j = 0; j < strand.tracks[i].lactives; ++j)
+      ++index;
+
+  for (let j = 0; j < layer; ++j)
+    ++index;
+
+  console.log(`conv: ${track}:${layer} => ${index}`); // DEBUG
+  return index;
+}
+

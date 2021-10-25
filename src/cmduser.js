@@ -56,11 +56,11 @@ import {
 import {
   strandClearAll,
   strandCopyAll,
-  strandCopyTop
+  strandCopyTop,
+  convTrackLayerToIndex,
 } from './strands.js';
 
 import {
-  convTrackLayerToID,
   makeOrideBits,
   makeEntireCmdStr,
   updateLayerVals,
@@ -78,6 +78,7 @@ import {
 } from './cmdsend.js';
 
 import { parsePattern } from './cmdparse.js';
+import { deviceError } from './devtalk.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -109,8 +110,10 @@ export const userSendPause = (enable) =>
 // send command (and optional value) to specific layer
 export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
 {
-  let layerid = convTrackLayerToID(track, layer);
-  sendLayerCmd(layerid, cmdstr, cmdval);
+  let devindex = convTrackLayerToIndex(track, layer);
+  if (devindex == null) return; // error pending
+
+  sendLayerCmd(devindex, cmdstr, cmdval);
 }
 
 // Strand/Pattern selection and handling:
@@ -198,7 +201,7 @@ export const userStrandSelect = (combine) =>
 }
 
 // user just selected pattern to use
-// return false if pattern parse failed
+// triggers program error if parse fails
 export const userSetPattern = () =>
 {
   const index = get(pStrand).curPatternIdx;
@@ -224,9 +227,8 @@ export const userSetPattern = () =>
       makeEntireCmdStr();
       sendEntirePattern(); // set new pattern
     }
-    else return false;
+    else deviceError(`Failed parsing pattern: ${name}`);
   }
-  return true;
 }
 
 export const userClearPattern = () =>
@@ -302,9 +304,10 @@ export const userSetEffect = (track, layer, elist) =>
     }
     else // else switch to new effect on this layer
     {
-      const pval = elist[pindex].id;
-      let layerid = convTrackLayerToID(track, layer);
-      sendLayerCmd(layerid, cmdStr_SelectEffect, `${pval}`);
+      let devindex = convTrackLayerToIndex(track, layer);
+      if (devindex == null) return; // error pending
+
+      sendLayerCmd(devindex, cmdStr_SelectEffect, `${elist[pindex].id}`);
     }
 
     const bits = before & ~after; // override bits being cleared
@@ -314,10 +317,13 @@ export const userSetEffect = (track, layer, elist) =>
 
 export const userDoRestart = (track, layer, elist) =>
 {
+  let devindex = convTrackLayerToIndex(track, layer);
+  if (devindex == null) return; // error pending
+
   const pindex = get(pStrand).tracks[track].layers[layer].pluginIndex;
   const pval = elist[pindex].id;
-  let layerid = convTrackLayerToID(track, layer);
-  sendLayerCmd(layerid, cmdStr_SelectEffect, `${pval}`);
+
+  sendLayerCmd(devindex, cmdStr_SelectEffect, `${pval}`);
 }
 
 
@@ -628,43 +634,49 @@ export const userSetTrigMain = (track, layer) =>
 export const userSetTrigLayer = (track, layer) =>
 {
   const strand = get(pStrand);
-  const dolayer = strand.tracks[track].layers[layer].trigOnLayer;
+  const enable = strand.tracks[track].layers[layer].trigOnLayer;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer !== dolayer)
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer !== enable)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = dolayer;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = enable;
 
-    let tracknum = strand.tracks[track].layers[layer].trigTrackNum;
-    let layernum = strand.tracks[track].layers[layer].trigLayerNum;
-
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tracknum;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = layernum;
-
-    let tlayer = MAX_BYTE_VALUE; // indicates disabled state
-    if (dolayer) tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-    
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigByEffect, tlayer);
+
+    let devindex; // set to undefined, valid parm to userSendToLayer()
+    if (enable && (strand.tracks[track].layers[layer].trigSourceDex > 0))
+      devindex = strand.tracks[track].layers[layer].trigDevLayer;
+
+    userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);
   }
 }
 
 // if this is called then onLayer has already been enabled
-export const userSetTrigNums = (track, layer) =>
+export const userSetTrigSource = (track, layer) =>
 {
   const strand = get(pStrand);
-  const tracknum = strand.tracks[track].layers[layer].trigTrackNum;
-  const layernum = strand.tracks[track].layers[layer].trigLayerNum;
+  const index = strand.tracks[track].layers[layer].trigSourceDex;
 
-  if ((get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum !== tracknum) ||
-      (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum !== layernum))
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSourceDex !== index)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tracknum;
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = layernum;
-
-    const tlayer = convTrackLayerToID(tracknum-1, layernum-1);
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSourceDex = index;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigByEffect, tlayer);
+
+    let devindex; // set to undefined, valid parm to userSendToLayer()
+    if (index > 0)
+    {
+      const item = strand.trigSources[index];
+
+      const devindex = convTrackLayerToIndex(item.track, item.layer);
+      if (devindex == null) return; // error pending
+
+      strand.tracks[track].layers[layer].trigDevLayer = devindex;
+
+      const layerID = strand.tracks[item.track].layers[item.layer].uniqueID;
+      strand.tracks[track].layers[layer].trigSourceID = layerID;
+    }
+
+    userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);
   }
 }
 

@@ -42,7 +42,11 @@ import {
 
 import { presetsFindEffect } from './presets.js';
 import { strandClearAll } from './strands.js';
-import { makeLayerCmdStr } from './cmdmake.js';
+
+import {
+  makeTrigSourceList,
+  makeLayerCmdStr
+} from './cmdmake.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -70,24 +74,6 @@ function valueToPositive(value)
 {
   if (value < 0) return 0;
   return value;
-}
-
-function valueToTrackLayer(value)
-{
-  if (isNaN(value)) return {track:0, layer:0};
-
-  let track = 0;
-
-  for (let i = 0; i < get(pStrand).tactives; ++i)
-  {
-    if (value < get(pStrand).tracks[i].lactives)
-      break;
-
-    value -= get(pStrand).tracks[i].lactives;
-    ++track;
-  }
-
-  return { track:track, layer:value };
 }
 
 // parse the given pattern command string
@@ -199,6 +185,7 @@ export const parsePattern = (pattern) =>
         {
           case cmdStr_LayerMute:
           {
+            // enable if no value follows command
             const mute = isNaN(val) ? true : valueToBool(val);
             get(pStrand).tracks[track].layers[layer].mute = mute;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].mute = mute;
@@ -206,6 +193,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_PcentXoffset:
           {
+            // set to default if no value follows command
             const offset = isNaN(val) ? 0 : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentXoffset = offset;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXoffset = offset;
@@ -213,6 +201,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_PcentXlength:
           {
+            // set to default if no value follows command
             const extent = isNaN(val) ? 100 : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentXlength = extent;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXlength = extent;
@@ -220,6 +209,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_PcentBright:
           {
+            // set to default if no value follows command
             const bright = isNaN(val) ? DEF_PCENT_BRIGHT : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentBright = bright;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
@@ -227,6 +217,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_MsecsDelay:
           {
+            // set to default if no value follows command
             let delay = isNaN(val) ? DEF_PCENT_DELAY : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentDelay = delay;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentDelay = delay;
@@ -234,6 +225,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_DegreeHue:
           {
+            // set to default if no value follows command
             const hue = isNaN(val) ? 0 : valueToDegree(val);
             get(pStrand).tracks[track].drawProps.degreeHue = hue;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
@@ -241,6 +233,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_PcentWhite:
           {
+            // set to default if no value follows command
             const white = isNaN(val) ? 0 : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentWhite = white;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
@@ -248,6 +241,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_PcentCount:
           {
+            // set to default if no value follows command
             const count = isNaN(val) ? DEF_PCENT_COUNT : valueToPercent(val);
             get(pStrand).tracks[track].drawProps.pcentCount = count;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
@@ -266,15 +260,17 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_Backwards: // enabled if no value
+          case cmdStr_Backwards:
           {
+            // enable if no value follows command
             const enable = isNaN(val) ? true : valueToBool(val);
             get(pStrand).tracks[track].drawProps.dirBackwards = enable;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = enable;
             break;
           }
-          case cmdStr_CombinePixs: // enabled if no value
+          case cmdStr_CombinePixs:
           {
+            // enable if no value follows command
             const enable = isNaN(val) ? true : valueToBool(val);
             get(pStrand).tracks[track].drawProps.orPixelVals = enable;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
@@ -282,6 +278,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_TrigForce:
           {
+            // enable if no value follows command, else sets to value
             if (isNaN(val))
             {
               get(pStrand).tracks[track].layers[layer].forceRandom = true;
@@ -297,36 +294,35 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
-          case cmdStr_TrigByEffect:
-          {
-            if (!isNaN(val)) // ignore if no value
-            {
-              const tlayer = valueToTrackLayer(val);
-
-              get(pStrand).tracks[track].layers[layer].trigOnLayer = true;
-              get(pStrand).tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
-              get(pStrand).tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
-
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = true;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigTrackNum = tlayer.track+1;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigLayerNum = tlayer.layer+1;
-            }
-            break;
-          }
-          case cmdStr_TrigFromMain:
-          {
-            get(pStrand).tracks[track].layers[layer].trigFromMain = true;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = true;
-            break;
-          }
           case cmdStr_TrigAtStart:
           {
+            // alway enable (should never receive value)
             get(pStrand).tracks[track].layers[layer].trigAtStart = true;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = true;
             break;
           }
+          case cmdStr_TrigFromMain:
+          {
+            // alway enable (should never receive value)
+            get(pStrand).tracks[track].layers[layer].trigFromMain = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = true;
+            break;
+          }
+          case cmdStr_TrigByEffect:
+          {
+            // disable if no value follows command, else value is layer index
+            const devindex = isNaN(val) ? false : valueToBool(val);
+
+            get(pStrand).tracks[track].layers[layer].trigOnLayer = true;
+            get(pStrand).tracks[track].layers[layer].trigDevLayer = devindex;
+
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = true;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevLayer = devindex;
+            break;
+          }
           case cmdStr_TrigRepeating:
           {
+            // enable if no value follows command, and trigger forever
             const count = isNaN(val) ? -1 : valueToPositive(val);
             if (count < 0)
             {
@@ -344,7 +340,7 @@ export const parsePattern = (pattern) =>
               get(pStrand).tracks[track].layers[layer].trigRepCount = count;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
             }
-            else
+            else // disable if value is 0
             {
               get(pStrand).tracks[track].layers[layer].trigDoRepeat = false;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = false;
@@ -353,6 +349,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_TrigOffset:
           {
+            // set to 0 if no value follows command
             const offset = isNaN(val) ? 0 : valueToPositive(val);
             get(pStrand).tracks[track].layers[layer].trigRepOffset = offset;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepOffset = offset;
@@ -360,6 +357,7 @@ export const parsePattern = (pattern) =>
           }
           case cmdStr_TrigRange:
           {
+            // set to 0 if no value follows command
             const range = isNaN(val) ? 0 : valueToPositive(val);
             get(pStrand).tracks[track].layers[layer].trigRepRange = range;
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepRange = range;
@@ -380,6 +378,47 @@ export const parsePattern = (pattern) =>
   // make sure to finish last layer
   if ((track >= 0) && (layer >= 0))
     makeLayerCmdStr(track, layer);
+
+  // must create trigger source list,
+  makeTrigSourceList();
+
+  const strand = get(pStrand);
+  let slist = strand.trigSources;
+
+  // set list index and layerID for any layers that have a layer trigger set
+  // disable the layer trigger if it fails to match one in the list
+  for (let track = 0; track < strand.tactives; ++track)
+  {
+    for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
+    {
+      if (strand.tracks[track].layers[layer].trigOnLayer)
+      {
+        const devindex = strand.tracks[track].layers[layer].trigDevLayer;
+        let found = false;
+
+        for (const [i, item] of slist.entries())
+        {
+          if (item.devindex == devindex)
+          {
+            strand.tracks[track].layers[layer].trigSrcListDex = i;
+            strand.tracks[track].layers[layer].trigSourceID = 
+              strand.tracks[ item.track ].layers[ item.layer ].layerID;
+
+            console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            found = true;
+            break;
+          }
+        }
+
+        if (!found)
+        {
+          strand.tracks[track].layers[layer].trigOnLayer = false;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
+          console.warn(`Failed to find trigger source for: ${devindex}`);
+        }
+      }
+    }
+  }
 
   return true;
 }

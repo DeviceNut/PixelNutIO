@@ -10,10 +10,7 @@
     MAX_FORCE_VALUE
   } from './devcmds.js';
 
-  import {
-    pStrand,
-    aTriggers
-  } from './globals.js';
+  import { pStrand } from './globals.js';
 
   import {
     pluginBit_REPTRIGS,
@@ -24,7 +21,7 @@
     userSetTrigStart,
     userSetTrigMain,
     userSetTrigLayer,
-    userSetTrigNums,
+    userSetTrigSource,
     userSetTrigRepeat,
     userSetTrigCount,
     userSetTrigForever,
@@ -34,42 +31,15 @@
     userSetForceValue
   } from './cmduser.js';
 
-  import { makeTrigSourceList } from './cmdmake.js';
-
   import SliderVal from './SliderVal.svelte';
 
   export let track;
   export let layer = DRAW_LAYER;
 
-  function setNums()
-  {
-    let item = $aTriggers[$pStrand.tracks[track].layers[layer].trigListDex];
-    if (item.id > 0)
-    {
-      $pStrand.tracks[track].layers[layer].trigTrackNum = item.tnum;
-      $pStrand.tracks[track].layers[layer].trigLayerNum = item.lnum;
-      return true;
-    }
-    return false;
-  }
-
-  const setOnLayer = () =>
-  {
-    if (setNums()) userSetTrigLayer(track, layer);
-  }
-
-  const setLayerNums = () =>
-  {
-    if (setNums()) userSetTrigNums(track, layer);
-  }
-
-  $: {
-    // make sure there's at least one entry
-    if ($aTriggers.length < 1) makeTrigSourceList();
-  }
-
   const autoStart  = () => { userSetTrigStart(  track, layer); }
   const setMain    = () => { userSetTrigMain(   track, layer); }
+  const setOnLayer = () => { userSetTrigLayer(  track, layer); }
+  const setSource  = () => { userSetTrigSource( track, layer); }
   const setRepeat  = () => { userSetTrigRepeat( track, layer); }
   const setCount   = () => { userSetTrigCount(  track, layer); }
   const setForever = () => { userSetTrigForever(track, layer); }
@@ -120,13 +90,13 @@
         bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
       />
       {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
-          ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
+           ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
         <Checkbox labelText="From main controls"
           style="padding:3px;"
           on:check={setMain}
           bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
         />
-        {#if (($aTriggers).length > 0) }
+        {#if (($pStrand.trigSources).length > 1) }
           <Checkbox labelText="From other effect"
             style="padding:3px;"
             on:check={setOnLayer}
@@ -135,9 +105,9 @@
           {#if $pStrand.tracks[track].layers[layer].trigOnLayer }
             <Dropdown
               style="margin-bottom:10px;"
-              on:select={setLayerNums}
-              bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigListDex}
-              bind:items={$aTriggers}
+              on:select={setSource}
+              bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigSrcListDex}
+              bind:items={$pStrand.trigSources}
             />
           {/if}
         {/if}

@@ -118,12 +118,12 @@
     else $selectSource = true;
   }
 
-  let openError = false;
   const selpattern = () =>
   {
     // prevent changing pattern when return from docs
     if (!$selectPattern) $selectPattern = true;
-    else if (!userSetPattern()) openError = true;
+
+    else userSetPattern();
   }
 
   $updateSources = true;
@@ -236,16 +236,6 @@
   </div>
 
 {/if}
-
-<Modal
-  passiveModal
-  modalHeading={"Pattern Error"}
-  bind:open={openError}
-  on:close
-  >
-  <p>Failed to interpret pattern commands.</p><br>
-  <Button kind="secondary" on:click={() => {openError = false;}}>Continue</Button>
-</Modal>
 
 <style>
   .bdiv {

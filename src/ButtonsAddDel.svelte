@@ -18,8 +18,7 @@
 
   import {
     updateAllTracks,
-    updateTriggerLayers,
-    convTrackLayerToID
+    updateTriggerLayers
   } from './cmdmake.js';
 
   import { sendEntirePattern } from './cmdsend.js'; // FIXME
@@ -98,7 +97,6 @@
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    //let layerid = convTrackLayerToID(track, layer);
     //userSendToLayer(track, layer, cmdStr_SelectEffect);
     sendEntirePattern(); // FIXME when device command handling updated
   }

@@ -104,11 +104,12 @@ export const sendStrandCmd = (cmdstr, cmdval) =>
   else sendCmdToStrands(cmdstr);
 }
 
-// send command (and optional value) to specific layer for all selected strands
-export const sendLayerCmd = (id, cmdstr, cmdval) =>
+// send command (and optional value) to specific layer
+// for all selected strands
+export const sendLayerCmd = (devindex, cmdstr, cmdval) =>
 {
   if (cmdval !== undefined)
     cmdstr = cmdstr.concat(cmdval);
 
-  sendCmdToStrands(`${cmdStr_AddrLayer}${id} ${cmdstr}`);
+  sendCmdToStrands(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
 }

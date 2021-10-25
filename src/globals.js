@@ -63,7 +63,6 @@ export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions
 export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
-export let aTriggers      = writable([]);     // list of track/layers that cause triggers
 
 export let msgTitle       = writable('');     // non-empty to cause user message popup
 export let msgDesc        = writable('');     // description text for that message

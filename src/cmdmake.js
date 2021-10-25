@@ -6,7 +6,6 @@ import {
   idStrand,
   aEffectsDraw,
   aEffectsFilter,
-  aTriggers,
   maxLenPattern
 } from './globals.js';
 
@@ -67,35 +66,6 @@ export const makeOrideBits = (p, track) =>
   return bits;
 }
   
-// convert track,layer to device layerID
-export const convTrackLayerToID = (track, layer) =>
-{
-  let layerid = 0;
-  let strand = get(pStrand);
-
-  if (track >= strand.tactives)
-  {
-    deviceError(`No track=${track+1}`);
-    return 255; // clearly invalid layer
-  }
-
-  if (layer >= strand.tracks[track].lactives)
-  {
-    deviceError(`No layer=${layer+1}`);
-    return 255; // clearly invalid layer FIXME?
-  }
-
-  for (let i = 0; i < track; ++i)
-    for (let j = 0; j < strand.tracks[i].lactives; ++j)
-      ++layerid
-
-  for (let j = 0; j < layer; ++j)
-    ++layerid
-
-  //console.log('conv: ', track, layer, ' => ', layerid); // DEBUG
-  return layerid;
-}
-
 // combine all layer cmds into command output string
 export const makeEntireCmdStr = () =>
 {
@@ -234,12 +204,7 @@ export const makeLayerCmdStr = (track, layer) =>
     cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
   if (player.trigOnLayer)
-  {
-    let tracknum = player.trigTrackNum;
-    let layernum = player.trigLayerNum;
-    let tlayer = convTrackLayerToID(tracknum-1, layernum-1);
-    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${tlayer} `);
-  }
+    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigDevLayer} `);
 
   if (player.trigDoRepeat)
   {
@@ -267,29 +232,39 @@ export const makeTrackCmdStrs = (track) =>
 
 export const makeTrigSourceList = () =>
 {
-  let strand = get(pStrand);
+  const strand = get(pStrand);
   let items = [];
   let count = 0;
+  let devindex = 0;
 
-  // create list of track/layers that send triggers
+  items.push({ id:0,
+               devindex:0, sourceid:0,
+               track:0, layer:0,
+               text:'<none>' });
+
+  // create list of track/layers that can cause triggering
   for (let track = 0; track < strand.tactives; ++track)
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
       if (strand.tracks[track].layers[layer].pluginBits & pluginBit_SENDFORCE)
       {
+        let sourceid = strand.tracks[track].layers[layer].trigSourceID;
         let index = strand.tracks[track].layers[layer].pluginIndex;
         let name = (layer === 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
 
         ++count;
-        items.push({ id: `${count}`, tnum:track+1, lnum:layer+1, 
+        items.push({ id:count,
+                     devindex:devindex, sourceid:sourceid,
+                     track:track, layer:layer,
                      text: `Track(${track+1}) Layer(${layer+1}) - ${name}` });
-      } 
+      }
+
+      ++devindex;
     }
   }
-  if (count === 0) items.push({ id: 0, text: 'none'});
 
-  aTriggers.set(items);
+  strand.trigSources = items;
 }
 
 // must be called after any changes to the number
@@ -299,7 +274,7 @@ export const updateTriggerLayers = () =>
   makeTrigSourceList();
 
   const strand = get(pStrand);
-  let atrigs = get(aTriggers);
+  let slist = strand.trigSources;
 
   // update index into trigger source list for all enabled layers
   for (let track = 0; track < strand.tactives; ++track)
@@ -308,34 +283,33 @@ export const updateTriggerLayers = () =>
     {
       if (strand.tracks[track].layers[layer].trigOnLayer)
       {
+        let sourceid = strand.tracks[track].layers[layer].trigSourceID;
         let found = false;
-        let tnum = strand.tracks[track].layers[layer].trigTrackNum;
-        let lnum = strand.tracks[track].layers[layer].trigLayerNum;
 
-        for (const [i, item] of atrigs.entries())
+        for (const [i, item] of slist.entries())
         {
-          if (item.id > 0) // not placeholder entry
+          if (i > 0) // not <none>
           {
-            if ((item.tnum === tnum) && (item.lnum === lnum))
+            if (item.sourceid === sourceid)
             {
               found = true;
-              strand.tracks[track].layers[layer].trigListDex = i;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = i;
+              strand.tracks[track].layers[layer].trigSrcListDex = i;
+              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = i;
 
-              //console.log('updated: ', track, layer, tnum, lnum, i, item); // DEBUG
+              console.log(`update: devindex=${devindex} => ${item.track}:${item.layer}`); // DEBUG
             }
           }
         }
 
         if (!found)
         {
-          //console.log('disabling trigger (track,layer): ', track, layer); // DEBUG
+          console.warn(`Failed to find trigger source for: ${track}:${layer}`);
 
           strand.tracks[track].layers[layer].trigOnLayer = false;
-          strand.tracks[track].layers[layer].trigListDex = 0;
+          strand.tracks[track].layers[layer].trigSrcListDex = 0;
 
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigListDex = 0;
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = 0;
         }
       }
     }

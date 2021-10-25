@@ -19,7 +19,9 @@ export const cmdStr_DeviceName    = "@";    // new name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force applied
 export const cmdStr_Pause         = "[";    // none: pauses operation
 export const cmdStr_Resume        = "]";    // none: resumes operation
-export const cmdStr_FlashCurPat   = "$";    // none: saves current pattern
+export const cmdStr_GetCurPat     = "<";    // none: returns current pattern (unused)
+export const cmdStr_FlashCurPat   = ">";    // none: flash current pattern (unused)
+export const cmdStr_FlashClrPat   = "$";    // pattern to flash/clear/exec
 export const cmdStr_FlashPatStr   = "=";    // pattern string to flash
 export const cmdStr_FlashPatName  = "~";    // pattern name to flash
 
@@ -41,6 +43,8 @@ export const cmdStr_ModifyEffect  = "M";    // plugin number to insert (none to 
 
 // Commands that affect/form patterns       // value is:
 export const cmdStr_SetEffect     = "E";    // plugin number
+export const cmdStr_PixXoffset    = "X";    // pixel count of extent offset (unused)
+export const cmdStr_PixXlength    = "Y";    // pixel count of extent length (unused)
 export const cmdStr_PcentXoffset  = "J";    // percent of pixels for extent offset
 export const cmdStr_PcentXlength  = "K";    // percent of pixels for extent length
 export const cmdStr_PcentBright   = "B";    // percent of max
@@ -63,6 +67,5 @@ export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=
 export const cmdStr_Clear         = "P";    // clears all effects
 export const cmdStr_Go            = "G";    // display all effects
 
-// Note: not using X,Y commands (start/length of extent in pixels)
-// Note: commands not starting with alpha char must at the start of the line
+// Note: commands not starting with alpha char must be at the start of the line
 ////////////////////////////////////////////////////////////////////////////////

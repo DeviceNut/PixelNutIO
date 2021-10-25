@@ -1,14 +1,14 @@
 <script>
 
   import { Loading } from "carbon-components-svelte";
-  import { deviceSetup } from './devinit.js';
+  import { deviceStartup } from './devstart.js';
 
   export let device;
 
   let showinfo = false;
   const moreinfo = () => { showinfo = !showinfo; }
 
-  const doctrls = () => { deviceSetup(device) }
+  const doctrls = () => { deviceStartup(device) }
 
 </script>
 

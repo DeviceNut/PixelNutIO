@@ -283,10 +283,10 @@ export const userSetEffect = (track, layer, elist) =>
   const strand = get(pStrand);
   const pindex = strand.tracks[track].layers[layer].pluginIndex;
   const prevstr = strand.tracks[track].layers[layer].cmdstr;
+  const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
-  if ((prevstr == '') || (get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex !== pindex))
+  if ((prevstr == '') || (lshadow.pluginIndex !== pindex))
   {
-    const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
     const before = elist[lshadow.pluginIndex].bits;
     lshadow.pluginIndex = pindex;
 
@@ -644,7 +644,7 @@ export const userSetTrigLayer = (track, layer) =>
 
     let devindex; // set to undefined, valid parm to userSendToLayer()
     if (enable && (strand.tracks[track].layers[layer].trigSourceDex > 0))
-      devindex = strand.tracks[track].layers[layer].trigDevLayer;
+      devindex = strand.tracks[track].layers[layer].trigDevIndex;
 
     userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);
   }
@@ -670,10 +670,10 @@ export const userSetTrigSource = (track, layer) =>
       const devindex = convTrackLayerToIndex(item.track, item.layer);
       if (devindex == null) return; // error pending
 
-      strand.tracks[track].layers[layer].trigDevLayer = devindex;
+      strand.tracks[track].layers[layer].trigDevIndex = devindex;
 
-      const layerID = strand.tracks[item.track].layers[item.layer].uniqueID;
-      strand.tracks[track].layers[layer].trigSourceID = layerID;
+      const idval = strand.tracks[item.track].layers[item.layer].uniqueID;
+      strand.tracks[track].layers[layer].trigSourceID = idval;
     }
 
     userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);

@@ -160,17 +160,17 @@
 
 <button
   class="button"
-  class:select={isSolo}
-  on:click={dosolo}
-  disabled={noSolo}
-  >Solo
+  class:select={isMute}
+  on:click={domute}
+  >Mute
 </button>
 
 <button
   class="button"
-  class:select={isMute}
-  on:click={domute}
-  >Mute
+  class:select={isSolo}
+  on:click={dosolo}
+  disabled={noSolo}
+  >Solo
 </button>
 
 <style>

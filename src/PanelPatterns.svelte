@@ -3,10 +3,8 @@
   import MediaQuery from "svelte-media-query";
 
   import {
-    Button,
     Dropdown,
-    TextInput,
-    Modal
+    TextInput
   } from "carbon-components-svelte";
 
   import {
@@ -139,15 +137,15 @@
 
   $: pstr = (showHelp ? "^" : "?");
 
-  const selectPrompt = 'Select source, then pattern:';
+  const promptSelect  = 'Select source, then pattern:';
+  const promptToClear = 'Clear to select new pattern';
 
 </script>
 
 {#if !$pStrand.showMenu}
 
 <p style="margin-top:10px; text-align:center; font-size:.9em;">
-  Clear to select new pattern
-</p>
+  {promptToClear}</p>
 
 <div style="margin-top:20px; text-align:center;">
   <TextInput
@@ -167,7 +165,7 @@
   <MediaQuery query="(max-width: 620px)" let:matches>
     {#if matches}
       <p style="font-size:.9em; margin-top:10px; text-align:center;">
-        {selectPrompt}</p>
+        {promptSelect}</p>
 
       {#if listSources.length > 1}
         <div style="margin-top:10px; text-align:center;">
@@ -195,7 +193,7 @@
   <MediaQuery query="(min-width: 621px)" let:matches>
     {#if matches}
       <p style="font-size:.9em; margin-top:10px; text-align:center;">
-        {selectPrompt}</p>
+        {promptSelect}</p>
       <div style="margin-top:10px; text-align:center;">
         {#if listSources.length > 1}
           <div style="width:120px; display:inline-block;">

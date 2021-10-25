@@ -27,7 +27,7 @@
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
   <ButtonsDnUp {track} layer={DRAW_LAYER} />
-  <ButtonsSoloMute {track} layer={0} />
+  <ButtonsSoloMute {track} layer={DRAW_LAYER} />
 </Row>
 <div style="display:{tstate};">
   {#each Array($pStrand.tracks[track].lactives) as _,layer}

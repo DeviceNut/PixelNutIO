@@ -225,7 +225,8 @@ export const makeLayerCmdStr = (track, layer) =>
 // create partial command strings for all layers in a track
 export const makeTrackCmdStrs = (track) =>
 {
-  console.log('make: ', get(pStrand));
+  console.log('maketrackcmd: track=', track);
+  console.log(get(pStrand));
   let ptrack = get(pStrand).tracks[track];
   for (let i = 0; i < ptrack.lactives; ++i)
     makeLayerCmdStr(track, i);
@@ -328,7 +329,7 @@ export const updateAllTracks = () =>
   // rebuild all tracks to account for changes
   // to tracks/layers or trigger sources
 
-  for (let i = 0; i <= get(pStrand).tactives; ++i)
+  for (let i = 0; i < get(pStrand).tactives; ++i)
     makeTrackCmdStrs(i);
 
   strandCopyTracks();

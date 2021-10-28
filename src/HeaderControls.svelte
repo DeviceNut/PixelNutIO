@@ -21,7 +21,7 @@
   import {
     userSetDevname,
     userSendPause
-  } from './cmduser.js';
+  } from './cmduser2.js';
 
   import ModalLinks from './ModalLinks.svelte';
 

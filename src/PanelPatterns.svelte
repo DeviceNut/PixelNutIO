@@ -22,7 +22,7 @@
     selectPattern
   } from './globals.js';
 
-  import { userSetPattern  } from './cmduser.js';
+  import { userSetPattern  } from './cmduser2.js';
 
   import ButtonsPatterns from './ButtonsPatterns.svelte';
 

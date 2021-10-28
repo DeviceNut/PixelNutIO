@@ -148,7 +148,7 @@ export const makeLayerCmdStr = (track, layer) =>
   let player = get(pStrand).tracks[track].layers[layer];
   let cmdstr = '';
 
-  if (layer === 0) // drawing layer
+  if (layer === DRAW_LAYER)
   {
     let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
     let pdraw = get(pStrand).tracks[track].drawProps;

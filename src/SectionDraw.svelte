@@ -31,7 +31,7 @@
     userSetLength,
     userSetOrPixs,
     userSetBackwards
-  } from './cmduser.js'
+  } from './cmduser1.js'
 
   import SectionTrigger from './SectionTrigger.svelte';
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';

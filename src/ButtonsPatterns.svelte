@@ -24,7 +24,7 @@
     storePatternRemove
   } from './browser.js';
 
-  import { userClearPattern } from './cmduser.js';
+  import { userClearPattern } from './cmduser2.js';
   import { sendEntirePattern } from './cmdsend.js';
 
   const doclear = () => { userClearPattern(); }

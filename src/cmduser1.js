@@ -1,23 +1,14 @@
 import { get } from 'svelte/store';
 
 import {
-  curDevice,
-  nStrands,
   idStrand,
   pStrand,
-  aStrands,
-  eStrands,
   dStrands,
-  aCurListPats
 } from './globals.js';
 
 import {
   DRAW_LAYER           ,
-  MAX_BYTE_VALUE       ,
   cmdStr_PullTrigger   ,
-  cmdStr_DeviceName    ,
-  cmdStr_Pause         ,
-  cmdStr_Resume        ,
   cmdStr_OR_Bright     ,
   cmdStr_OR_Delay      ,
   cmdStr_OR_Props      ,
@@ -54,58 +45,23 @@ import {
 } from './presets.js';
 
 import {
-  strandClearAll,
-  strandCopyAll,
   strandCopyTop,
   convTrackLayerToIndex,
 } from './strands.js';
 
 import {
   makeOrideBits,
-  makeEntireCmdStr,
   updateLayerVals,
   updateAllTracks,
   updateTriggerLayers
 } from './cmdmake.js';
 
 import {
-  sendCmdToDevice,
   sendStrandCmd,
-  sendEntirePattern,
-  sendPatternToStrand,
-  sendStrandSwitch,
   sendLayerCmd
 } from './cmdsend.js';
 
-import { parsePattern } from './cmdparse.js';
-import { deviceError } from './devtalk.js';
-
 ///////////////////////////////////////////////////////////
-
-export const userSetDevname = (devname) =>
-{
-  const device = get(curDevice);
-  if (device !== null)
-  {
-    if (devname !== device.curname)
-    {
-      if (!/[`,/\\]/.test(devname))
-      {
-        device.newname = devname;
-        sendCmdToDevice(cmdStr_DeviceName.concat(devname));
-        return true;
-      }
-      else return false;
-    }
-  }
-
-  return true;
-}
-
-export const userSendPause = (enable) =>
-{
-  sendStrandCmd(enable ? cmdStr_Pause : cmdStr_Resume);
-}
 
 // send command (and optional value) to specific layer
 export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
@@ -114,142 +70,6 @@ export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
   if (devindex == null) return; // error pending
 
   sendLayerCmd(devindex, cmdstr, cmdval);
-}
-
-// Strand/Pattern selection and handling:
-
-export const userStrandCombine = (combine) =>
-{
-  if (!combine) // user turned off combine
-  {
-    // must disable all but the current one
-    for (let i = 0; i < get(nStrands); ++i)
-    {
-      if (i === get(idStrand))
-      {
-        get(aStrands)[i].selected = true;
-        get(eStrands)[i] = true;
-      }
-      else
-      {
-        get(aStrands)[i].selected = false;
-        get(eStrands)[i] = false;
-      }
-    }
-
-    aStrands.set(get(aStrands)); // triggers update
-  }
-}
-
-export const userStrandSelect = (combine) =>
-{
-  let cur = get(idStrand);
-  for (let s = 0; s < get(nStrands); ++s)
-  {
-    let wason = get(eStrands)[s];
-    let nowon = get(aStrands)[s].selected;
-
-    if (wason !== nowon)
-    {
-      if (nowon && !combine && (s !== cur))
-      {
-        // user selected a different strand
-        get(aStrands)[cur].selected = false;
-        idStrand.set(s);
-        pStrand.set(get(aStrands)[s]);
-        sendStrandSwitch(s);
-        get(eStrands)[cur] = false;
-        get(eStrands)[s] = true;
-      }
-      else if (nowon && combine && (s !== cur))
-      {
-        get(eStrands)[cur] = true;
-        strandCopyAll();
-
-        // mirror current strand by sending current pattern to newly selected strand
-        sendPatternToStrand(s);
-      }
-      else if (!nowon && combine && (s === cur))
-      {
-        // disabled the current strand, so set to first enabled one
-        for (let ss = 0; ss < get(nStrands); ++ss)
-        {
-          if (get(aStrands)[ss].selected)
-          {
-            idStrand.set(s);
-            pStrand.set(get(aStrands)[s]);
-            sendStrandSwitch(ss);
-            break;
-          }
-        }
-        get(eStrands)[s] = false;
-      }
-      else if (nowon && (s === cur))
-      {
-        // must resend entire current pattern
-        // after having all strands disabled
-        sendPatternToStrand(s);
-      }
-      else
-      {
-        // else just update current enables, but do nothing
-        // when just disabling one when others still enabled
-        get(eStrands)[s] = get(aStrands)[s].selected;
-      }
-    }
-  }
-}
-
-// user just selected pattern to use
-// triggers program error if parse fails
-export const userSetPattern = () =>
-{
-  const index = get(pStrand).curPatternIdx;
-
-  if (get(dStrands)[get(idStrand)].curPatternIdx !== index)
-  {
-    get(dStrands)[get(idStrand)].curPatternIdx = index;
-
-    const patitem = get(aCurListPats)[index];
-    const pattern = patitem.cmd;
-
-    const name = index ? patitem.text : '';
-    get(pStrand).curPatternName = name;
-    get(dStrands)[get(idStrand)].curPatternName = name;
-  
-    //console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
-
-    strandClearAll();
-
-    if (parsePattern(pattern)) // sets vars for current strand
-    {
-      strandCopyAll();
-      makeEntireCmdStr();
-      sendEntirePattern(); // set new pattern
-    }
-    else deviceError(`Failed parsing pattern: ${name}`);
-  }
-}
-
-export const userClearPattern = () =>
-{
-  const strand = get(pStrand);
-
-  //console.log('Clear Pattern'); // DEBUG
-
-  strand.curPatternName = '';
-
-  strandClearAll();
-  makeEntireCmdStr();
-
-  if (strand.curPatternIdx === 0)
-    sendEntirePattern(); // clear pattern
-
-  // userSetPattern() with empty string
-  else strand.curPatternIdx = 0;
-
-  strand.showCustom = false;
-  strand.showMenu = true;
 }
 
 function updateTrackOverrides(track, bits)

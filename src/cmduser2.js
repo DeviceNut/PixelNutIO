@@ -1,0 +1,404 @@
+import { get } from 'svelte/store';
+
+import {
+  curDevice,
+  nTracks,
+  nLayers,
+  nStrands,
+  idStrand,
+  pStrand,
+  aStrands,
+  eStrands,
+  dStrands,
+  aCurListPats
+} from './globals.js';
+
+import {
+  DRAW_LAYER,
+  cmdStr_LayerMute,
+  cmdStr_DeviceName,
+  cmdStr_Pause,
+  cmdStr_Resume,
+  cmdStr_SelectEffect
+} from './devcmds.js';
+
+import {
+  strandCopyAll,
+  strandClearAll,
+  strandClearTrack,
+  strandClearLayer,
+  strandSwapTracks,
+  strandSwapLayers
+} from './strands.js';
+
+import {
+  makeEntireCmdStr,
+  makeLayerCmdStr,
+  updateAllTracks,
+  updateTriggerLayers
+} from './cmdmake.js';
+
+import {
+  sendCmdToDevice,
+  sendStrandSwitch,
+  sendEntirePattern,
+  sendPatternToStrand,
+  sendStrandCmd
+} from './cmdsend.js';
+
+import { userSendToLayer } from './cmduser1.js';
+import { parsePattern } from './cmdparse.js';
+import { deviceError } from './devtalk.js';
+
+///////////////////////////////////////////////////////////
+
+export const userSetDevname = (devname) =>
+{
+  const device = get(curDevice);
+  if (device !== null)
+  {
+    if (devname !== device.curname)
+    {
+      if (!/[`,/\\]/.test(devname))
+      {
+        device.newname = devname;
+        sendCmdToDevice(cmdStr_DeviceName.concat(devname));
+        return true;
+      }
+      else return false;
+    }
+  }
+
+  return true;
+}
+
+export const userSendPause = (enable) =>
+{
+  sendStrandCmd(enable ? cmdStr_Pause : cmdStr_Resume);
+}
+
+// Strand/Pattern selection and handling:
+
+export const userStrandCombine = (combine) =>
+{
+  if (!combine) // user turned off combine
+  {
+    // must disable all but the current one
+    for (let i = 0; i < get(nStrands); ++i)
+    {
+      if (i === get(idStrand))
+      {
+        get(aStrands)[i].selected = true;
+        get(eStrands)[i] = true;
+      }
+      else
+      {
+        get(aStrands)[i].selected = false;
+        get(eStrands)[i] = false;
+      }
+    }
+
+    aStrands.set(get(aStrands)); // triggers update
+  }
+}
+
+export const userStrandSelect = (combine) =>
+{
+  let cur = get(idStrand);
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    let wason = get(eStrands)[s];
+    let nowon = get(aStrands)[s].selected;
+
+    if (wason !== nowon)
+    {
+      if (nowon && !combine && (s !== cur))
+      {
+        // user selected a different strand
+        get(aStrands)[cur].selected = false;
+        idStrand.set(s);
+        pStrand.set(get(aStrands)[s]);
+        sendStrandSwitch(s);
+        get(eStrands)[cur] = false;
+        get(eStrands)[s] = true;
+      }
+      else if (nowon && combine && (s !== cur))
+      {
+        get(eStrands)[cur] = true;
+        strandCopyAll();
+
+        // mirror current strand by sending current pattern to newly selected strand
+        sendPatternToStrand(s);
+      }
+      else if (!nowon && combine && (s === cur))
+      {
+        // disabled the current strand, so set to first enabled one
+        for (let ss = 0; ss < get(nStrands); ++ss)
+        {
+          if (get(aStrands)[ss].selected)
+          {
+            idStrand.set(s);
+            pStrand.set(get(aStrands)[s]);
+            sendStrandSwitch(ss);
+            break;
+          }
+        }
+        get(eStrands)[s] = false;
+      }
+      else if (nowon && (s === cur))
+      {
+        // must resend entire current pattern
+        // after having all strands disabled
+        sendPatternToStrand(s);
+      }
+      else
+      {
+        // else just update current enables, but do nothing
+        // when just disabling one when others still enabled
+        get(eStrands)[s] = get(aStrands)[s].selected;
+      }
+    }
+  }
+}
+
+// user just selected pattern to use
+// triggers program error if parse fails
+export const userSetPattern = () =>
+{
+  const index = get(pStrand).curPatternIdx;
+
+  if (get(dStrands)[get(idStrand)].curPatternIdx !== index)
+  {
+    get(dStrands)[get(idStrand)].curPatternIdx = index;
+
+    const patitem = get(aCurListPats)[index];
+    const pattern = patitem.cmd;
+
+    const name = index ? patitem.text : '';
+    get(pStrand).curPatternName = name;
+    get(dStrands)[get(idStrand)].curPatternName = name;
+  
+    //console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
+
+    strandClearAll();
+
+    if (parsePattern(pattern)) // sets vars for current strand
+    {
+      strandCopyAll();
+      makeEntireCmdStr();
+      sendEntirePattern(); // set new pattern
+    }
+    else deviceError(`Failed parsing pattern: ${name}`);
+  }
+}
+
+export const userClearPattern = () =>
+{
+  const strand = get(pStrand);
+
+  //console.log('Clear Pattern'); // DEBUG
+
+  strand.curPatternName = '';
+
+  strandClearAll();
+  makeEntireCmdStr();
+
+  if (strand.curPatternIdx === 0)
+    sendEntirePattern(); // clear pattern
+
+  // userSetPattern() with empty string
+  else strand.curPatternIdx = 0;
+
+  strand.showCustom = false;
+  strand.showMenu = true;
+}
+
+// assume cannot get called number of T/L's at max
+export const userAddTrackLayer = (track, layer) =>
+{
+  const strand = get(pStrand);
+
+  if (layer == DRAW_LAYER)
+  {
+    strandClearTrack(strand.tactives);
+    ++(strand.tactives);
+  }
+  else
+  {
+    strandClearLayer(track, strand.tracks[track].lactives);
+    ++(strand.tracks[track].lactives);
+  }
+
+  updateTriggerLayers(); // update trigger sources
+  updateAllTracks();     // recreate all tracks
+
+  //userSendToLayer(track, layer, cmdStr_SelectEffect);
+  sendEntirePattern(); // FIXME when device command handling updated
+}
+
+// assume cannot get called if only one T/L
+export const userRemTrackLayer = (track, layer) =>
+{
+  const strand = get(pStrand);
+
+  if (layer == DRAW_LAYER)
+  {
+    --(strand.tactives);
+    strandClearTrack(strand.tactives)
+  }
+  else
+  {
+    --(strand.tracks[track].lactives);
+    layer = strand.tracks[track].lactives;
+    strandClearLayer(track, layer);
+  }
+
+  updateTriggerLayers(); // update trigger sources
+  updateAllTracks();     // recreate all tracks
+
+  //userSendToLayer(track, layer, cmdStr_SelectEffect);
+  sendEntirePattern(); // FIXME when device command handling updated
+}
+
+// assume cannot get called if the T/L is the last
+export const userSwapTrackLayer = (track, layer) =>
+{
+  const strand = get(pStrand);
+
+  if (layer === DRAW_LAYER)
+  {
+    strandSwapTracks(track);
+    updateTriggerLayers();
+    updateAllTracks(); // recreate all tracks
+  }
+  else
+  {
+    strandSwapLayers(track, layer);
+    updateTriggerLayers();
+    updateAllTracks(); // recreate all tracks
+  }
+
+  sendEntirePattern(); // FIXME when device command handling updated
+
+  //strand = strand; // refresh screen
+}
+
+export const userSoloTrackLayer = (track, layer) =>
+{
+  const strand = get(pStrand);
+  const enable = !strand.tracks[track].layers[layer].solo;
+  strand.tracks[track].layers[layer].solo = enable; // toggle
+
+  // setting a track to Solo turns off its Mute but turns it on for all other
+  // tracks, but turning off the Solos for all other tracks, whereas turning
+  // off the Solo turns off Mutes for all other tracks.
+  if (layer === DRAW_LAYER)
+  {
+    if (enable)
+    {
+      for (let i = 0; i < get(nTracks); ++i)
+      {
+        if (i !== track)
+        {
+          strand.tracks[i].layers[DRAW_LAYER].solo = false;
+          strand.tracks[i].layers[DRAW_LAYER].mute = true;
+
+          if (i < strand.tactives)
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute);
+        }
+        else if (strand.tracks[i].layers[DRAW_LAYER].mute === true)
+        {
+          strand.tracks[i].layers[DRAW_LAYER].mute = false;
+          userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
+        }
+      }
+    }
+    else
+    {
+      for (let i = 0; i < get(nTracks); ++i)
+      {
+        if (i !== track)
+        {
+          strand.tracks[i].layers[DRAW_LAYER].mute = false;
+
+          if (i < strand.tactives)
+            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
+        }
+      }
+    }
+  }
+  // setting a layer to Solo turns it off all other layers (in the same track),
+  // and turns on the mute for all filter layers in the same track (but not
+  // the drawing layer, which is always on).
+  //
+  // turning off a layer Solo turns off all Mutes for other layers in this track.
+  else
+  {
+    if (enable)
+    {
+      for (let i = 1; i < get(nLayers); ++i) // note layer 0 is not affected
+      {
+        if (i !== layer)
+        {
+          strand.tracks[track].layers[i].solo = false;
+          strand.tracks[track].layers[i].mute = true;
+
+          if (i < strand.tracks[track].lactives)
+            userSendToLayer(track, i, cmdStr_LayerMute);
+        }
+        else if (strand.tracks[track].layers[i].mute === true)
+        {
+          strand.tracks[track].layers[i].mute = false;
+          userSendToLayer(track, i, cmdStr_LayerMute, 0);
+        }
+      }
+    }
+    else
+    {
+      for (let i = 1; i < get(nLayers); ++i) // note layer 0 is not affected
+      {
+        if (i !== layer)
+        {
+          strand.tracks[track].layers[i].mute = false;
+
+          if (i < strand.tracks[track].lactives)
+            userSendToLayer(track, i, cmdStr_LayerMute, 0);
+        }
+      }
+    }
+  }
+
+  makeLayerCmdStr(track, layer);
+  makeEntireCmdStr();
+}
+
+export const userMuteTrackLayer = (track, layer) =>
+{
+  const strand = get(pStrand);
+  const enable = !strand.tracks[track].layers[layer].mute;
+  strand.tracks[track].layers[layer].mute = enable; // toggle
+
+  userSendToLayer(track, layer, cmdStr_LayerMute, enable ? undefined : 0);
+
+  // turning off mute for a track/layer that is not on Solo
+  // turns off the Solo for any other track/layer
+  if (!enable)
+  {
+    if (layer === DRAW_LAYER)
+    {
+      for (let i = 0; i < get(nTracks); ++i)
+        if (i !== track)
+          strand.tracks[i].layers[DRAW_LAYER].solo = false;
+    }
+    else
+    {
+      for (let i = 1; i < get(nLayers); ++i) // DRAW_LAYER not affected
+        if (i !== layer)
+          strand.tracks[track].layers[i].solo = false;
+    }
+  }
+
+  makeLayerCmdStr(track, layer);
+  makeEntireCmdStr();
+}
+

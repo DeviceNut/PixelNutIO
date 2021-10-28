@@ -16,7 +16,7 @@
   import {
     userSetEffect,
     userDoRestart
-  } from './cmduser.js';
+  } from './cmduser1.js';
 
   import SectionTrigger from './SectionTrigger.svelte';
 

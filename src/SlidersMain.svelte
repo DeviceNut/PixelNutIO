@@ -6,7 +6,7 @@
     userSetBright,
     userSetDelay,
     userSetRotate
-  } from './cmduser.js';
+  } from './cmduser1.js';
 
   import SliderVal from './SliderVal.svelte';
 

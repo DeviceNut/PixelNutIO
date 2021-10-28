@@ -7,7 +7,7 @@
   import {
     userStrandSelect,
     userStrandCombine
-  } from './cmduser.js';
+  } from './cmduser2.js';
 
   let combine = false;
 

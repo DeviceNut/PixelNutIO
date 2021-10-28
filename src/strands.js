@@ -401,13 +401,13 @@ export const convTrackLayerToIndex = (track, layer) =>
 
   if (track >= strand.tactives)
   {
-    deviceError(`No layer=${layer+1}`);
+    deviceError(`No track=${track+1}`);
     return null;
   }
 
   if (layer >= strand.tracks[track].lactives)
   {
-    deviceError(`No layer=${layer+1}`);
+    deviceError(`No layer=${layer+1}, track=${track+1}`);
     return null;
   }
 

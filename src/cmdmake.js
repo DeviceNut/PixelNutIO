@@ -225,8 +225,6 @@ export const makeLayerCmdStr = (track, layer) =>
 // create partial command strings for all layers in a track
 export const makeTrackCmdStrs = (track) =>
 {
-  console.log('maketrackcmd: track=', track);
-  console.log(get(pStrand));
   let ptrack = get(pStrand).tracks[track];
   for (let i = 0; i < ptrack.lactives; ++i)
     makeLayerCmdStr(track, i);

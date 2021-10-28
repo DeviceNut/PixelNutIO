@@ -16,7 +16,7 @@
 
   let bgc;
   $: bgc = $pStrand.tracks[track].layers[layer].open ? '#222522' : '#111'
-  // cannot use css vars here, and <style> cannot access globals
+  // cannot use css vars here, and style cannot access globals
 
 </script>
 

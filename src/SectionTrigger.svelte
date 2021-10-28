@@ -29,7 +29,7 @@
     userSetTrigRange,
     userSetForceType,
     userSetForceValue
-  } from './cmduser.js';
+  } from './cmduser1.js';
 
   import SliderVal from './SliderVal.svelte';
 
@@ -53,7 +53,7 @@
 
 </script>
 
-<div style="margin:5px 0 13px -10px;
+<div style="margin:5px 0 10px -10px;
             padding-top:13px; padding-bottom:5px;
             background-color: var(--bg-color-controls-area);">
 

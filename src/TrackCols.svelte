@@ -1,12 +1,20 @@
 <script>
 
   import { Grid, Row, Column } from "carbon-components-svelte";
-  import { pStrand } from './globals.js';
-
+  import { pStrand, nTracks } from './globals.js';
+  import { strandClearTrack } from './strands.js';
   import OneTrack from './OneTrack.svelte';
-  import ButtonsAddDel from './ButtonsAddDel.svelte';
 
   export let numcols;
+
+  let add_disabled;
+  $: add_disabled = ($pStrand.tactives >= $nTracks);
+
+  const doadd = () =>
+  {
+    strandClearTrack($pStrand.tactives);
+    ++($pStrand.tactives);
+  }
 
 </script>
 
@@ -39,10 +47,16 @@
         </Column>
       {/if}
     </Row>
-    <div style="margin-top:10px; margin-bottom:10px; text-align:center;">
-      <ButtonsAddDel track={-1}/>
-    </div>
   </Grid>
+  {#if ($pStrand.tactives < $nTracks)}
+    <div style="margin:10px 5px 5px 5px;">
+      <button class="button-add"
+        on:click={doadd}
+        disabled={add_disabled}
+        >Add New Track
+      </button>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -57,5 +71,9 @@
   .col2 {
     min-width:1100px;
     max-width:1100px;
+  }
+  .button-add {
+    width: 100%;
+    padding: 2px;
   }
 </style>

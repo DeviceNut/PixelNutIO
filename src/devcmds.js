@@ -5,7 +5,7 @@ export const MAX_FORCE_VALUE      = 1000;   // maximum force value
 
                                             // default values:
 export const DEF_PCENT_BRIGHT     = 100;    // percent brightness
-export const DEF_PCENT_DELAY      = 0;      // percent delay msecs
+export const DEF_PCENT_DELAY      = 50;     // percent delay of max
 export const DEF_PCENT_COUNT      = 50;     // percent pixel count
 export const DEF_FORCE_VALUE      = (MAX_FORCE_VALUE/2); // force value
                                             // all other are 0
@@ -37,9 +37,9 @@ export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "L";    // layer index
 
 // Commands that must be preceded by "L" command (value is):
-export const cmdStr_LayerMute     = "Z";    // mute layer: none/0=off, 1=on
-export const cmdStr_SelectEffect  = "S";    // plugin number to create (none to swap)
-export const cmdStr_ModifyEffect  = "M";    // plugin number to insert (none to delete)
+export const cmdStr_LayerMute     = "M";    // mute layer: none/0=off, 1=on
+export const cmdStr_SelectEffect  = "S";    // plugin number to switch (none to swap)
+export const cmdStr_RemAppEffect  = "Z";    // plugin number to append (none to delete)
 
 // Commands that affect/form patterns       // value is:
 export const cmdStr_SetEffect     = "E";    // plugin number

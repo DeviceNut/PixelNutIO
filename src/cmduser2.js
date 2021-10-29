@@ -2,8 +2,6 @@ import { get } from 'svelte/store';
 
 import {
   curDevice,
-  nTracks,
-  nLayers,
   nStrands,
   idStrand,
   pStrand,
@@ -19,7 +17,7 @@ import {
   cmdStr_DeviceName,
   cmdStr_Pause,
   cmdStr_Resume,
-  cmdStr_SelectEffect
+  cmdStr_RemAppEffect
 } from './devcmds.js';
 
 import {
@@ -27,6 +25,10 @@ import {
   strandClearAll,
   strandClearTrack,
   strandClearLayer,
+  strandDeleteTrack,
+  strandDeleteLayer,
+  strandAppendTrack,
+  strandAppendLayer,
   strandSwapTracks,
   strandSwapLayers
 } from './strands.js';
@@ -213,26 +215,25 @@ export const userClearPattern = () =>
   strand.showMenu = true;
 }
 
-// assume cannot get called number of T/L's at max
+// assume cannot get called if number of T/L's at max
 export const userAddTrackLayer = (track, layer) =>
 {
-  const strand = get(pStrand);
-
   if (layer == DRAW_LAYER)
   {
-    strandClearTrack(strand.tactives);
-    ++(strand.tactives);
+    strandAppendTrack(track);
+    ++track;
   }
   else
   {
-    strandClearLayer(track, strand.tracks[track].lactives);
-    ++(strand.tracks[track].lactives);
+    strandAppendLayer(track, layer);
+    ++layer;
   }
 
   updateTriggerLayers(); // update trigger sources
-  updateAllTracks();     // recreate all tracks
+  updateAllTracks();     // rebuild all tracks
 
-  //userSendToLayer(track, layer, cmdStr_SelectEffect);
+  // send append command to append new track/layer and set effect #0
+  //userSendToLayer(track, layer, cmdStr_RemAppEffect, 0);
   sendEntirePattern(); // FIXME when device command handling updated
 }
 
@@ -243,46 +244,49 @@ export const userRemTrackLayer = (track, layer) =>
 
   if (layer == DRAW_LAYER)
   {
-    --(strand.tactives);
-    strandClearTrack(strand.tactives)
+    strandClearTrack(track); // clear it first
+    strandDeleteTrack(track);
   }
   else
   {
-    --(strand.tracks[track].lactives);
-    layer = strand.tracks[track].lactives;
-    strandClearLayer(track, layer);
+    strandClearLayer(track, layer); // clear it first
+    strandDeleteLayer(track, layer);
   }
 
-  updateTriggerLayers(); // update trigger sources
-  updateAllTracks();     // recreate all tracks
+  console.log('remtrack, count=', strand.tactives);
 
-  //userSendToLayer(track, layer, cmdStr_SelectEffect);
+  updateTriggerLayers(); // update trigger sources
+  updateAllTracks();     // rebuild command string
+
+  // send append command to append new track/layer
+  //userSendToLayer(track, layer, cmdStr_RemAppEffect);
   sendEntirePattern(); // FIXME when device command handling updated
+
+  console.log('remtrack, count=', strand.tactives);
 }
 
 // assume cannot get called if the T/L is the last
 export const userSwapTrackLayer = (track, layer) =>
 {
-  const strand = get(pStrand);
-
   if (layer === DRAW_LAYER)
   {
     strandSwapTracks(track);
     updateTriggerLayers();
-    updateAllTracks(); // recreate all tracks
+    updateAllTracks();     // rebuild command string
   }
   else
   {
     strandSwapLayers(track, layer);
     updateTriggerLayers();
-    updateAllTracks(); // recreate all tracks
+    updateAllTracks();     // rebuild command string
   }
 
   sendEntirePattern(); // FIXME when device command handling updated
 
-  //strand = strand; // refresh screen
+  //strand = strand; // refresh screen FIXME?
 }
 
+// Note: does NOT update shadow values FIXME?
 export const userSoloTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);
@@ -296,15 +300,13 @@ export const userSoloTrackLayer = (track, layer) =>
   {
     if (enable)
     {
-      for (let i = 0; i < get(nTracks); ++i)
+      for (let i = 0; i < strand.tactives; ++i)
       {
         if (i !== track)
         {
           strand.tracks[i].layers[DRAW_LAYER].solo = false;
           strand.tracks[i].layers[DRAW_LAYER].mute = true;
-
-          if (i < strand.tactives)
-            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute);
+          userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute);
         }
         else if (strand.tracks[i].layers[DRAW_LAYER].mute === true)
         {
@@ -315,14 +317,12 @@ export const userSoloTrackLayer = (track, layer) =>
     }
     else
     {
-      for (let i = 0; i < get(nTracks); ++i)
+      for (let i = 0; i < strand.tactives; ++i)
       {
         if (i !== track)
         {
           strand.tracks[i].layers[DRAW_LAYER].mute = false;
-
-          if (i < strand.tactives)
-            userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
+          userSendToLayer(i, DRAW_LAYER, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -336,15 +336,13 @@ export const userSoloTrackLayer = (track, layer) =>
   {
     if (enable)
     {
-      for (let i = 1; i < get(nLayers); ++i) // note layer 0 is not affected
+      for (let i = 1; i < strand.tracks[track].lactives; ++i) // note layer 0 is not affected
       {
         if (i !== layer)
         {
           strand.tracks[track].layers[i].solo = false;
           strand.tracks[track].layers[i].mute = true;
-
-          if (i < strand.tracks[track].lactives)
-            userSendToLayer(track, i, cmdStr_LayerMute);
+          userSendToLayer(track, i, cmdStr_LayerMute);
         }
         else if (strand.tracks[track].layers[i].mute === true)
         {
@@ -355,14 +353,12 @@ export const userSoloTrackLayer = (track, layer) =>
     }
     else
     {
-      for (let i = 1; i < get(nLayers); ++i) // note layer 0 is not affected
+      for (let i = 1; i < strand.tracks[track].lactives; ++i) // note layer 0 is not affected
       {
         if (i !== layer)
         {
           strand.tracks[track].layers[i].mute = false;
-
-          if (i < strand.tracks[track].lactives)
-            userSendToLayer(track, i, cmdStr_LayerMute, 0);
+          userSendToLayer(track, i, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -372,6 +368,7 @@ export const userSoloTrackLayer = (track, layer) =>
   makeEntireCmdStr();
 }
 
+// Note: does NOT update shadow values FIXME?
 export const userMuteTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);
@@ -386,13 +383,13 @@ export const userMuteTrackLayer = (track, layer) =>
   {
     if (layer === DRAW_LAYER)
     {
-      for (let i = 0; i < get(nTracks); ++i)
+      for (let i = 0; i < strand.tactives; ++i)
         if (i !== track)
           strand.tracks[i].layers[DRAW_LAYER].solo = false;
     }
     else
     {
-      for (let i = 1; i < get(nLayers); ++i) // DRAW_LAYER not affected
+      for (let i = 1; i < strand.tracks[track].lactives; ++i) // DRAW_LAYER not affected
         if (i !== layer)
           strand.tracks[track].layers[i].solo = false;
     }
@@ -401,4 +398,3 @@ export const userMuteTrackLayer = (track, layer) =>
   makeLayerCmdStr(track, layer);
   makeEntireCmdStr();
 }
-

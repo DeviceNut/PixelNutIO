@@ -21,7 +21,7 @@ import {
   maxLenPattern
 } from './globals.js';
 
-import { makeNewStrand } from './strands.js';
+import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
 
@@ -68,7 +68,7 @@ export let deviceStartup = (device) =>
 
   for (let s = 0; s < numstrands; ++s)
   {
-    const strand = makeNewStrand(s);
+    const strand = strandCreateNew(s);
     const select = (s === sid) ? true : false;
 
     strand.selected = select;
@@ -86,7 +86,7 @@ export let deviceStartup = (device) =>
   slist = [];
   for (let s = 0; s < numstrands; ++s)
   {
-    const strand = makeNewStrand(s);
+    const strand = strandCreateNew(s);
     setStrandTop(strand, device.report.strands[s]);
     slist.push(strand);
   }

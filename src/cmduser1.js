@@ -323,8 +323,6 @@ export const userSetBackwards = (track) =>
   const layer = DRAW_LAYER;
   const enable = get(pStrand).tracks[track].drawProps.dirBackwards;
 
-  console.log(`direction: ${rdir} ${get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards}`);
-
   if (get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards !== enable)
   {
     get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = enable;

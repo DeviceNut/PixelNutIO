@@ -12,6 +12,8 @@ import {
 } from './globals.js';
 
 import {
+  DEF_PCENT_BRIGHT,
+  DEF_PCENT_DELAY,
   MAX_FORCE_VALUE,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE
@@ -68,14 +70,14 @@ const oneLayer =
 
 const drawProps =
 {
-  pcentBright     : 100,    // percent brightness (0-MAX_PERCENTAGE)
-  pcentDelay      : 0,      // determines msecs delay after each redraw
+  pcentBright     : DEF_PCENT_BRIGHT, // percent brightness
+  pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
   overHue         : false,  // true to allow global override
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
 
   overWhite       : false,  // true to allow global override
-  pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
+  pcentWhite      : 0,      // percent whiteness
 
   overCount       : false,  // true to allow global override
   pcentCount      : 50,     // percent of pixels affected in range
@@ -116,13 +118,13 @@ const oneStrand =
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
-  pcentBright     : 0,      // percent bright (0-MAX_PERCENTAGE)
-  pcentDelay      : 0,      // percent delay (0-MAX_PERCENTAGE)
+  pcentBright     : 0,      // percent bright
+  pcentDelay      : 0,      // percent delay
   pixelOffset     : 0,      // pixel offset to start drawing from
 
   doOverride      : false,  // true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
-  pcentWhite      : 0,      // percent whiteness (0-MAX_PERCENTAGE)
+  pcentWhite      : 0,      // percent whiteness
   pcentCount      : 0,      // percent of pixels affected in range
 
   forceValue      : MAX_FORCE_VALUE/2, // force value for triggering
@@ -167,7 +169,7 @@ function makeNewTracks(s)
   return tracks;
 }
 
-export const makeNewStrand = (s) =>
+export const strandCreateNew = (s) =>
 {
   let strand = {...oneStrand};
   strand.tracks = makeNewTracks();
@@ -342,29 +344,131 @@ export const strandClearLayer = (track, layer) =>
   strandCopyLayer(track, layer);
 }
 
-// swaps specified track for the one after in all selected strands
-export const strandSwapTracks = (track) =>
+// inserts new track after the one specified in all selected strands
+export const strandAppendTrack = (track) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
   {
+    ++(get(aStrands)[s].tactives);
+    ++(get(dStrands)[s].tactives);
+
     if (get(aStrands)[s].selected)
     {
-      let tsave = get(aStrands)[s].tracks.splice(track, 1)[0];
-      get(aStrands)[s].tracks.splice(track+1, 0, tsave);
+      if (track < get(aStrands)[s].tactives) // not last one
+      {
+        // delete track from end and splice in new one after current
+        let lasttrack = get(nTracks)-1;
+        get(aStrands)[s].tracks.splice(lasttrack+1, 1);
+        get(dStrands)[s].tracks.splice(lasttrack+1, 1);
+
+        get(aStrands)[s].tracks.splice(track+1, 0, makeOneTrack());
+        get(dStrands)[s].tracks.splice(track+1, 0, makeOneTrack());
+      }
     }
   }
 }
 
-// swaps specified track layer for the one after in the current strand
-// and copies both layers to all other selected strands
-export const strandSwapLayers = (track, layer) =>
+// inserts specified layer after one specified in the current strand
+export const strandAppendLayer = (track, layer) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
   {
     if (get(aStrands)[s].selected)
     {
-      let tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1)[0];
+      ++(get(aStrands)[s].tracks[track].lactives);
+      ++(get(dStrands)[s].tracks[track].lactives);
+
+      if (layer < get(aStrands)[s].tracks[track].lactives) // not last one
+      {
+        // delete layer from end and splice in new one after current
+        let lastlayer = get(nLayers)-1;
+        get(aStrands)[s].tracks[track].layers.splice(lastlayer, 1);
+        get(dStrands)[s].tracks[track].layers.splice(lastlayer, 1);
+
+        get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, makeOneLayer() );
+        get(dStrands)[s].tracks[track].layers.splice(layer+1, 0, makeOneLayer() );
+      }
+    }
+  }
+}
+
+// removes track and appends new one at the end for all selected strands
+export const strandDeleteTrack = (track) =>
+{
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      console.log('delete track: ', track);
+      --(get(aStrands)[s].tactives);
+      --(get(dStrands)[s].tactives);
+      console.log('deltrack, count=', get(pStrand).tactives);
+
+      if (track < get(aStrands)[s].tactives) // not last one
+      {
+        console.log('delete track splicing...');
+        get(aStrands)[s].tracks.splice(track, 1);
+        get(aStrands)[s].tracks.push( makeOneTrack() );
+
+        get(dStrands)[s].tracks.splice(track, 1);
+        get(dStrands)[s].tracks.push( makeOneTrack() );
+      }
+    }
+  }
+}
+
+// removes specified layer and appends new one at the end in the current strand
+export const strandDeleteLayer = (track, layer) =>
+{
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      --(get(aStrands)[s].tracks[track].lactives);
+      --(get(dStrands)[s].tracks[track].lactives);
+
+      if (layer < get(aStrands)[s].tracks[track].lactives) // not last one
+      {
+        get(aStrands)[s].tracks[track].layers.splice(layer, 1);
+        get(aStrands)[s].tracks[track].layers.push( makeOneLayer() );
+  
+        get(dStrands)[s].tracks[track].layers.splice(layer, 1);
+        get(dStrands)[s].tracks[track].layers.push( makeOneLayer() );
+      }
+    }
+  }
+}
+
+// swaps specified track for the one after in all selected strands
+export const strandSwapTracks = (track) =>
+{
+  let tsave;
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      tsave = get(aStrands)[s].tracks.splice(track, 1)[0];
+      get(aStrands)[s].tracks.splice(track+1, 0, tsave);
+
+      tsave = get(dStrands)[s].tracks.splice(track, 1)[0];
+      get(dStrands)[s].tracks.splice(track+1, 0, tsave);
+    }
+  }
+}
+
+// swaps specified track layer for the one after in all selected strands
+export const strandSwapLayers = (track, layer) =>
+{
+  let tsave;
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1)[0];
       get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
+
+      tsave = get(dStrands)[s].tracks[track].layers.splice(layer, 1)[0];
+      get(dStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
     }
   }
 }

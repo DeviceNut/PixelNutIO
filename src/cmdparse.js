@@ -369,7 +369,7 @@ export const parsePattern = (pattern) =>
 
           default:
           {
-            console.warn(`Unknown command: ${ch}`); break;
+            console.warn(`Unexpected command: ${ch}`);
             return false;
           }
         }

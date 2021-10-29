@@ -9,7 +9,7 @@ import {
 } from './globals.js';
 
 import {
-  cmdStr_FlashPatStr,
+  cmdStr_FlashClrPat,
   cmdStr_FlashPatName,
   cmdStr_AddrStrand,
   cmdStr_AddrLayer
@@ -56,7 +56,7 @@ function sendCmdToStrands(cmdstr, cmdname='', dostore=false)
   {
     if (dostore)
     {
-      sendCmdToDevice(cmdStr_FlashPatStr  + cmdstr);
+      sendCmdToDevice(cmdStr_FlashClrPat  + cmdstr);
       sendCmdToDevice(cmdStr_FlashPatName + cmdname);
     }
     else sendCmdToDevice(cmdstr);
@@ -70,7 +70,7 @@ function sendCmdToStrands(cmdstr, cmdname='', dostore=false)
 
       if (dostore)
       {
-        sendCmdToDevice(cmdStr_FlashPatStr  + cmdstr);
+        sendCmdToDevice(cmdStr_FlashClrPat  + cmdstr);
         sendCmdToDevice(cmdStr_FlashPatName + cmdname);
       }
       else sendCmdToDevice(cmdstr);

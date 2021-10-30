@@ -4,6 +4,7 @@ export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_FORCE_VALUE      = 1000;   // maximum force value
 
                                             // default values:
+export const DEF_HUE_DEGREE       = 275;    // hue degree (purple)
 export const DEF_PCENT_BRIGHT     = 100;    // percent brightness
 export const DEF_PCENT_DELAY      = 50;     // percent delay of max
 export const DEF_PCENT_COUNT      = 50;     // percent pixel count

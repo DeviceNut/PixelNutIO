@@ -11,6 +11,7 @@ import {
 
 import {
   DRAW_LAYER           ,
+  DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_DELAY      ,
   DEF_PCENT_COUNT      ,
@@ -167,7 +168,7 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentDelay !== DEF_PCENT_DELAY)
       cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.pcentDelay} `);
 
-    if (pdraw.degreeHue !== 0)
+    if (pdraw.degreeHue !== DEF_HUE_DEGREE)
       cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
 
     if (pdraw.pcentWhite !== 0)

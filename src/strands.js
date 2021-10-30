@@ -12,6 +12,7 @@ import {
 } from './globals.js';
 
 import {
+  DEF_HUE_DEGREE,
   DEF_PCENT_BRIGHT,
   DEF_PCENT_DELAY,
   MAX_FORCE_VALUE,
@@ -74,7 +75,7 @@ const drawProps =
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
   overHue         : false,  // true to allow global override
-  degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
+  degreeHue       : DEF_HUE_DEGREE, // hue in degrees (0-MAX_DEGREES_HUE)
 
   overWhite       : false,  // true to allow global override
   pcentWhite      : 0,      // percent whiteness

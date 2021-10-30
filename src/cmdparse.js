@@ -12,6 +12,7 @@ import {
 
 import {
   DRAW_LAYER           ,
+  DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_COUNT      ,
   overBit_DegreeHue    ,
@@ -226,7 +227,7 @@ export const parsePattern = (pattern) =>
           case cmdStr_DegreeHue:
           {
             // set to default if no value follows command
-            const hue = isNaN(val) ? 0 : valueToDegree(val);
+            const hue = isNaN(val) ? DEF_HUE_DEGREE : valueToDegree(val);
             get(pStrand).tracks[track].drawProps.degreeHue = hue;
             get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
             break;

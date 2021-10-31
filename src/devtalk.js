@@ -311,12 +311,7 @@ export const onDeviceReply = (msg, fsend) =>
         msgDesc.set('The device you were connected to just rebooted.');
         deviceQueryBegin(device, fsend);
       }
-      else if (device.ready)
-      {
-        deviceStop(device);
-        deviceQueryBegin(device, fsend);
-      }
-      // else continue with current query
+      else deviceQueryBegin(device, fsend); // restart query process
     }
   }
   else if (device === null)

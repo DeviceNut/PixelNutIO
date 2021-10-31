@@ -1,5 +1,8 @@
 <script>
 
+  import CaretUp32 from "carbon-icons-svelte/lib/CaretUp32";
+  import CaretDown32 from "carbon-icons-svelte/lib/CaretDown32";
+
   import {
     Checkbox,
     Dropdown
@@ -48,42 +51,31 @@
   const setFtype   = () => { userSetForceType(  track, layer); }
   const setFvalue  = () => { userSetForceValue( track, layer); }
 
-  let helpon = false;
-  let trigon = false;
+  let isopen = true;
+
+  let bgc;
+  $: bgc = isopen ? '#222522' : '#222';
 
 </script>
 
-<div style="margin:5px 0 10px -10px;
-            padding-top:13px; padding-bottom:5px;
-            background-color: var(--bg-color-controls-area);">
+<div style="margin:5px 0 10px -10px; background-color: var(--bg-color-controls-area);">
 
-  <div style="margin-bottom:15px;">
-    <button
-      style="margin-left:10px;"
-      class="button-help"
-      on:click={() => {helpon = !helpon;}}
-      >?
-    </button>
-    <button
-      style="margin-left:15px;"
-      class="button-trigger"
-      on:click={() => {trigon = !trigon;}}
-      >Triggering Options
-    </button>
-
-    {#if helpon }
-        <div style="margin:15px 10px 0 10px; padding:5px;
-                    color: var(--color-textbox);
-                    background-color: var(--bg-color-textbox);">
-          <p style="font-size:.9em;">
-            Explain how triggering works.
-          </p>
-        </div>
+  <div style="cursor:pointer; margin-bottom:10px;
+              padding-top:7px; padding-bottom:10px;
+              background-color: {bgc};"
+       on:click={()=>{isopen = !isopen}}>
+    {#if isopen }
+      <CaretUp32 style="float:left; margin-left:10px;"/>
+    {:else}
+      <CaretDown32 style="float:left; margin-left:10px;"/>
     {/if}
+    <button class="button"
+      > Triggering Options
+    </button>
   </div>
 
-  {#if trigon }
-    <div style="margin-left:8px;">
+  {#if isopen }
+    <div style="margin-left:10px; padding-bottom:8px;">
       <Checkbox labelText="Once at start"
         style="padding:3px;"
         on:check={autoStart}
@@ -155,11 +147,11 @@
            ($pStrand.tracks[track].layers[layer].trigAtStart ||
             $pStrand.tracks[track].layers[layer].trigDoRepeat) }
         <Checkbox labelText="Random force"
-          style="padding:3px;"
+          style="margin-left:5px; margin-top:20px;"
           on:check={setFtype}
           bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
         />
-        <div style="margin-left:7px; margin-top:-10px;">
+        <div style="margin-left:10px; margin-top:5px;">
           <SliderVal name='Force:'
             max={MAX_FORCE_VALUE}
             onchange={setFvalue}
@@ -173,18 +165,9 @@
 </div>
 
 <style>
-  .button-trigger {
-     height: 30px;
-     margin-left: 15px;
-     padding: 3px;
-   }
-  .button-help {
-    font-size: .8em;
-    width: 25px;
-    height: 25px;
-    padding: 3px;
-    margin-left: 15px;
-    border-width: 2px;
-    border-radius: 75%;
+  .button {
+    border: none;
+    padding: 5px;
+    background-color: inherit;
   }
 </style>

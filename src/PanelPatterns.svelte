@@ -24,7 +24,8 @@
 
   import { userSetPattern  } from './cmduser2.js';
 
-  import ButtonsPatterns from './ButtonsPatterns.svelte';
+  import ButtonsPats1 from './ButtonsPats1.svelte';
+  import ButtonsPats2 from './ButtonsPats2.svelte';
 
   const SOURCE_DEVICE      = 0;    // read from current device
   const SOURCE_BROWSER     = 1;    // user stored to this browser
@@ -156,10 +157,6 @@
   />
 </div>
 
-<div style="margin-top:20px; text-align:center;">
-  <ButtonsPatterns/>
-</div>
-
 {:else}
 
   <MediaQuery query="(max-width: 620px)" let:matches>
@@ -219,7 +216,9 @@
     {/if}
   </MediaQuery>
 
-  <div class="bdiv" class:select={$pStrand.showCustom} on:click={() => { showHelp = !showHelp; }} >
+  <div class="bdiv"
+    class:select={$pStrand.showCustom}
+    on:click={() => { showHelp = !showHelp; }} >
     <span class="btext" >{pstr}</span>
   </div>
   {#if showHelp }
@@ -229,11 +228,14 @@
       {/each}
     </div>
   {/if}
-  <div style="margin-top:20px; text-align:center;">
-    <ButtonsPatterns/>
-  </div>
-
 {/if}
+
+<div style="margin-top:20px; text-align:center;">
+  <ButtonsPats1/>
+</div>
+<div style="margin-top:20px; text-align:center;">
+  <ButtonsPats2/>
+</div>
 
 <style>
   .bdiv {

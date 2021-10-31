@@ -22,7 +22,9 @@
 
 <Grid>
   <PanelPatterns/>
+
   <div class="divider" style="margin-top:20px;"></div>
+
   <Row style="margin-top:10px; margin-bottom:15px;">
 
     <Column style="margin-left:-5px;">

@@ -6,7 +6,7 @@
   import { DRAW_LAYER } from './devcmds.js';
 
   import Revealer from './Revealer.svelte';
-  import ButtonsTrackCols from './ButtonsTrackCols.svelte';
+  import ButtonsLTs from './ButtonsLTs.svelte';
   import OneLayer from './OneLayer.svelte';
 
   export let track;
@@ -24,7 +24,7 @@
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
-  <ButtonsTrackCols {track} layer={DRAW_LAYER} />
+  <ButtonsLTs {track} layer={DRAW_LAYER} />
 </Row>
 <div style="display:{tstate};">
   {#each Array($pStrand.tracks[track].lactives) as _,layer}

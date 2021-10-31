@@ -15,7 +15,10 @@
   {:else}
     <CaretDown32 style="float:left; margin:0 0 3px -15px;"/>
   {/if}
-  <button class="button"> {name} {num} </button>
+  <button
+    class="button"
+    > {name} {num}
+  </button>
 </span>
 
 <style>

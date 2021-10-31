@@ -25,10 +25,6 @@
   } from './browser.js';
 
   import { userClearPattern } from './cmduser2.js';
-  import { sendEntirePattern } from './cmdsend.js';
-
-  const doclear = () => { userClearPattern(); }
-  const dostore = () => { sendEntirePattern(false); } // don't restart
 
   let openSave = false;
   let savedesc;
@@ -63,8 +59,6 @@
 
   const dodelete = () =>
   {
-    console.log('remove:', remname);
-
     storePatternRemove(remname);
     storePatternsInit();
     userClearPattern();
@@ -104,27 +98,14 @@
 
 <button
   class="button-pattern"
-  on:click={doclear}
-  disabled={ ($pStrand.curPatternStr === '') }
-  >Clear
-</button>
-
-<button
-  class="button-pattern"
-  on:click={dostore}
-  >Store
-</button>
-
-<button
-class="button-pattern"
-on:click={() => {openSave = !openSave;}}
+  on:click={() => {openSave = !openSave;}}
   disabled={$pStrand.curPatternStr === ''}
   >Save
 </button>
 
 <button
-class="button-pattern"
-on:click={delstart}
+  class="button-pattern"
+  on:click={delstart}
   disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
   >Delete
 </button>
@@ -172,10 +153,10 @@ on:click={delstart}
   
 <style>
   .button-pattern {
-    width: 50px;
-    height: 35px;
-    padding: 3px;
-    margin-left: 5px;
-    margin-right: 5px;
+    width: 60px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 7px;
+    margin-right: 7px;
   }
 </style>

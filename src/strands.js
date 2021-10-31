@@ -114,6 +114,8 @@ const oneStrand =
   curPatternName  : '',     // name of current pattern, editable
   curPatternStr   : '',     // current pattern command string
                             // (as created from current settings)
+  savePatternName : '',     // saves what was stored in flash
+                            // needed to restore name on Restart
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
@@ -394,7 +396,7 @@ export const strandAppendLayer = (track, layer) =>
 }
 
 // removes track and appends new one at the end for all selected strands
-export const strandDeleteTrack = (track) =>
+export const strandRemoveTrack = (track) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
   {
@@ -419,7 +421,7 @@ export const strandDeleteTrack = (track) =>
 }
 
 // removes specified layer and appends new one at the end in the current strand
-export const strandDeleteLayer = (track, layer) =>
+export const strandRemoveLayer = (track, layer) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
   {

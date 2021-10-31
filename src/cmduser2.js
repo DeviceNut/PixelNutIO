@@ -17,7 +17,8 @@ import {
   cmdStr_DeviceName,
   cmdStr_Pause,
   cmdStr_Resume,
-  cmdStr_RemAppEffect
+  cmdStr_SelectEffect,
+  cmdStr_AppRemEffect
 } from './devcmds.js';
 
 import {
@@ -25,8 +26,8 @@ import {
   strandClearAll,
   strandClearTrack,
   strandClearLayer,
-  strandDeleteTrack,
-  strandDeleteLayer,
+  strandRemoveTrack,
+  strandRemoveLayer,
   strandAppendTrack,
   strandAppendLayer,
   strandSwapTracks,
@@ -218,6 +219,9 @@ export const userClearPattern = () =>
 // assume cannot get called if number of T/L's at max
 export const userAddTrackLayer = (track, layer) =>
 {
+  // send command to apped new track/layer, set effect #0
+  userSendToLayer(track, layer, cmdStr_AppRemEffect, 0);
+
   if (layer == DRAW_LAYER)
   {
     strandAppendTrack(track);
@@ -232,42 +236,35 @@ export const userAddTrackLayer = (track, layer) =>
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild all tracks
 
-  // send append command to append new track/layer and set effect #0
-  //userSendToLayer(track, layer, cmdStr_RemAppEffect, 0);
-  sendEntirePattern(); // FIXME when device command handling updated
 }
 
 // assume cannot get called if only one T/L
 export const userRemTrackLayer = (track, layer) =>
 {
-  const strand = get(pStrand);
+  // send command to delete current track/layer (no effect #)
+  userSendToLayer(track, layer, cmdStr_AppRemEffect);
 
   if (layer == DRAW_LAYER)
   {
     strandClearTrack(track); // clear it first
-    strandDeleteTrack(track);
+    strandRemoveTrack(track);
   }
   else
   {
     strandClearLayer(track, layer); // clear it first
-    strandDeleteLayer(track, layer);
+    strandRemoveLayer(track, layer);
   }
-
-  console.log('remtrack, count=', strand.tactives);
 
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild command string
-
-  // send append command to append new track/layer
-  //userSendToLayer(track, layer, cmdStr_RemAppEffect);
-  sendEntirePattern(); // FIXME when device command handling updated
-
-  console.log('remtrack, count=', strand.tactives);
 }
 
 // assume cannot get called if the T/L is the last
 export const userSwapTrackLayer = (track, layer) =>
 {
+  // send command to swap track/layer (no effect #)
+  userSendToLayer(track, layer, cmdStr_SelectEffect);
+
   if (layer === DRAW_LAYER)
   {
     strandSwapTracks(track);
@@ -280,10 +277,6 @@ export const userSwapTrackLayer = (track, layer) =>
     updateTriggerLayers();
     updateAllTracks();     // rebuild command string
   }
-
-  sendEntirePattern(); // FIXME when device command handling updated
-
-  //strand = strand; // refresh screen FIXME?
 }
 
 // Note: does NOT update shadow values FIXME?

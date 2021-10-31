@@ -20,11 +20,11 @@ export const cmdStr_DeviceName    = "@";    // new name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force applied
 export const cmdStr_Pause         = "[";    // none: pauses operation
 export const cmdStr_Resume        = "]";    // none: resumes operation
-export const cmdStr_GetCurPat     = "<";    // none: returns current pattern (unused)
+export const cmdStr_ReadCurPat    = "<";    // none: returns current pattern (unused)
 export const cmdStr_FlashCurPat   = ">";    // none: flash current pattern (unused)
-export const cmdStr_FlashClrPat   = "$";    // pattern to flash/clear/exec
 export const cmdStr_FlashPatStr   = "=";    // pattern string to flash
 export const cmdStr_FlashPatName  = "~";    // pattern name to flash
+export const cmdStr_ExecFromFlash = "$";    // clear and exec pattern from flash
 
 // Override properties:                     // value is: (affects all strands)
 export const cmdStr_OR_Bright     = "%";    // brightness percent of max
@@ -40,7 +40,7 @@ export const cmdStr_AddrLayer     = "L";    // layer index
 // Commands that must be preceded by "L" command (value is):
 export const cmdStr_LayerMute     = "M";    // mute layer: none/0=off, 1=on
 export const cmdStr_SelectEffect  = "S";    // plugin number to switch (none to swap)
-export const cmdStr_RemAppEffect  = "Z";    // plugin number to append (none to delete)
+export const cmdStr_AppRemEffect  = "Z";    // plugin number to append (none to remove)
 
 // Commands that affect/form patterns       // value is:
 export const cmdStr_SetEffect     = "E";    // plugin number

@@ -9,8 +9,9 @@ import {
 } from './globals.js';
 
 import {
-  cmdStr_FlashClrPat,
+  cmdStr_FlashPatStr,
   cmdStr_FlashPatName,
+  cmdStr_ExecFromFlash,
   cmdStr_AddrStrand,
   cmdStr_AddrLayer
 } from './devcmds.js';
@@ -34,78 +35,82 @@ export const sendStrandSwitch = (s) =>
   sendCmdToDevice(cmdStr_AddrStrand.concat(s));
 }
 
+// stores both the current pattern string and name
+// to the device flash, and optionally starts it
+function sendStoreExecPattern(dostart=true)
+{
+  const patstr = get(pStrand).curPatternStr;
+  let patname = get(pStrand).curPatternName;
+  if (patstr === '') patname = '';
+
+  sendCmdToDevice(cmdStr_FlashPatStr  + patstr);
+  sendCmdToDevice(cmdStr_FlashPatName + patname);
+
+  if (dostart) sendCmdToDevice(cmdStr_ExecFromFlash);
+}
+
 // sends current pattern to just the specified strand
 // if not currently selected one switch back and forth
 export const sendPatternToStrand = (s) =>
 {
   let sid = get(idStrand);
   if (sid !== s) sendStrandSwitch(s);
-  sendCmdToDevice( get(pStrand).curPatternStr );
+  sendStoreExecPattern();
   if (sid !== s) sendStrandSwitch(sid);
 }
 
-// sends command to all selected strands
-// optionally skips the current strand
-// optionally stores the pattern on the device
-function sendCmdToStrands(cmdstr, cmdname='', dostore=false)
+// sends command/pattern to all selected strands
+// optionally stores/executes current pattern/name
+function sendCmdToStrands(cmdstr, dostart=true)
 {
   const sid = get(idStrand);
-  let didone = false;
-
-  if (get(pStrand).selected)
-  {
-    if (dostore)
-    {
-      sendCmdToDevice(cmdStr_FlashClrPat  + cmdstr);
-      sendCmdToDevice(cmdStr_FlashPatName + cmdname);
-    }
-    else sendCmdToDevice(cmdstr);
-  }
+  let didswitch = false;
+  let lastid = sid;
 
   for (let s = 0; s < get(nStrands); ++s)
   {
-    if ((s !== sid) && get(aStrands)[s].selected)
+    if (get(aStrands)[s].selected)
     {
-      sendStrandSwitch(s)
-
-      if (dostore)
+      if ((s != sid) || didswitch)
       {
-        sendCmdToDevice(cmdStr_FlashClrPat  + cmdstr);
-        sendCmdToDevice(cmdStr_FlashPatName + cmdname);
+        sendStrandSwitch(s)
+        didswitch = true;
+        lastid = s;
       }
-      else sendCmdToDevice(cmdstr);
 
-      didone = true;
+      if (cmdstr === null)
+           sendStoreExecPattern(dostart);
+      else sendCmdToDevice(cmdstr);
     }
   }
 
-  if (didone) sendStrandSwitch(sid)
+  if (didswitch && (lastid != sid))
+    sendStrandSwitch(sid)
 }
 
-// sends current pattern to all selected strands
-// always stores this pattern to the device flash
-// must clear the device pattern stack first
-export const sendEntirePattern = () =>
+// sends current pattern to all selected strands,
+// stores the pattern/name to the device flash,
+// and optionaly executes that pattern
+export const sendEntirePattern = (dostart=true) =>
 {
-  const patstr = get(pStrand).curPatternStr;
-  let patname = get(pStrand).curPatternName;
-  if (patstr === '') patname = '';
+  sendCmdToStrands(null, dostart);
 
-  sendCmdToStrands(patstr, patname, true);
-
-  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+  // MUST HAVE THIS: triggers UI update to everything
+  pStrand.set(get(pStrand));
 }
 
-// send top level command (and optional value) to all selected strands
+// send top level command (and optional value)
+// to all selected strands
 export const sendStrandCmd = (cmdstr, cmdval) =>
 {
   if (cmdval !== undefined)
-       sendCmdToStrands(cmdstr.concat(cmdval));
-  else sendCmdToStrands(cmdstr);
+    cmdstr = cmdstr.concat(cmdval);
+
+  sendCmdToStrands(cmdstr);
 }
 
-// send command (and optional value) to specific layer
-// for all selected strands
+// send layer-specific command (and optional value)
+// to all selected strands
 export const sendLayerCmd = (devindex, cmdstr, cmdval) =>
 {
   if (cmdval !== undefined)

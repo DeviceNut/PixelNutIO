@@ -20,6 +20,7 @@ export const cmdStr_DeviceName    = "@";    // new name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force applied
 export const cmdStr_Pause         = "[";    // none: pauses operation
 export const cmdStr_Resume        = "]";    // none: resumes operation
+export const cmdStr_ClearPattern  = "*";    // none: clears pattern (unused)
 export const cmdStr_ReadCurPat    = "<";    // none: returns current pattern (unused)
 export const cmdStr_FlashCurPat   = ">";    // none: flash current pattern (unused)
 export const cmdStr_FlashPatStr   = "=";    // pattern string to flash
@@ -65,8 +66,8 @@ export const cmdStr_TrigOffset    = "O";    // offset secs before range (def/non
 export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=default)
 
 // Commands that causes an action (no paramenters):
-export const cmdStr_Clear         = "P";    // clears all effects
-export const cmdStr_Go            = "G";    // display all effects
+export const cmdStr_Clear         = "P";    // clears all effects (unused)
+export const cmdStr_Go            = "G";    // must be at end of sequence to activate
 
-// Note: commands not starting with alpha char must be at the start of the line
+// Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////

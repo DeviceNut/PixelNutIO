@@ -37,12 +37,10 @@ import {
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
   cmdStr_LayerMute     ,
-  cmdStr_Clear         ,
   cmdStr_Go
 } from './devcmds.js';
 
 import { presetsFindEffect } from './presets.js';
-import { strandClearAll } from './strands.js';
 
 import {
   makeTrigSourceList,
@@ -98,11 +96,6 @@ export const parsePattern = (pattern) =>
 
     switch (ch)
     {
-      case cmdStr_Clear:
-      {
-        strandClearAll();
-        break;
-      }
       case cmdStr_SetEffect:
       {
         let firstone = ((track < 0) || (layer < 0));
@@ -366,7 +359,7 @@ export const parsePattern = (pattern) =>
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepRange = range;
             break;
           }
-          case cmdStr_Go: break;
+          case cmdStr_Go: break; // ignored
 
           default:
           {

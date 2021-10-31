@@ -151,7 +151,7 @@
 <div style="margin-top:20px; text-align:center;">
   <TextInput
     style="width:250px; margin:0 auto;"
-    placeholder='Enter name of pattern here'
+    placeholder='Name of your pattern'
     bind:value={$pStrand.curPatternName}
     maxlength="32"
   />
@@ -230,12 +230,25 @@
   {/if}
 {/if}
 
-<div style="margin-top:20px; text-align:center;">
-  <ButtonsPats1/>
-</div>
-<div style="margin-top:20px; text-align:center;">
-  <ButtonsPats2/>
-</div>
+<MediaQuery query="(max-width: 620px)" let:matches>
+  {#if matches}
+    <div style="margin-top:20px; text-align:center;">
+      <ButtonsPats1/>
+    </div>
+    <div style="margin-top:20px; text-align:center;">
+      <ButtonsPats2/>
+    </div>
+  {/if}
+</MediaQuery>
+
+<MediaQuery query="(min-width: 621px)" let:matches>
+  {#if matches}
+    <div style="margin-top:20px; text-align:center;">
+      <ButtonsPats1/>
+      <ButtonsPats2/>
+    </div>
+  {/if}
+</MediaQuery>
 
 <style>
   .bdiv {

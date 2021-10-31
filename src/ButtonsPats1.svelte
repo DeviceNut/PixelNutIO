@@ -20,12 +20,14 @@
 <button
   class="button-pattern"
   on:click={dostore}
+  disabled={ ($pStrand.curPatternStr === '') }
   >Store
 </button>
 
 <button
   class="button-pattern"
   on:click={dorestart}
+  disabled={ ($pStrand.curPatternStr === '') }
   >Restart
 </button>
 

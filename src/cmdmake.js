@@ -10,6 +10,11 @@ import {
 } from './globals.js';
 
 import {
+  pluginBit_TRIGFORCE,
+  pluginBit_SENDFORCE
+} from './presets.js';
+
+import {
   DRAW_LAYER           ,
   DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
@@ -46,8 +51,6 @@ import {
 } from './strands.js';
 
 import { deviceError } from './devtalk.js';
-
-import { pluginBit_SENDFORCE } from './presets.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -193,10 +196,14 @@ export const makeLayerCmdStr = (track, layer) =>
     cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
   }
 
-  if (player.forceRandom)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
-  else if (player.forceValue !== DEF_FORCE_VALUE)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+  // don't include force value if effect doesn't use it
+  if (player.pluginBits & pluginBit_TRIGFORCE)
+  {
+    if (player.forceRandom)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
+    else if (player.forceValue !== DEF_FORCE_VALUE)
+      cmdstr = cmdstr.concat(`${cmdStr_TrigForce}${player.forceValue} `);
+  }
 
   if (player.trigAtStart)
     cmdstr = cmdstr.concat(`${cmdStr_TrigAtStart} `);

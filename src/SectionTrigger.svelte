@@ -145,14 +145,14 @@
               <input type="number"
                 min=0 max=9999
                 on:change={setRange}
-                value={$pStrand.tracks[track].layers[layer].trigRepRange}
+                bind:value={$pStrand.tracks[track].layers[layer].trigRepRange}
               />&nbsp;&nbsp;secs
             </div>
           </div>
         {/if}
       {/if}
       {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) &&
-          ($pStrand.tracks[track].layers[layer].trigAtStart  ||
+           ($pStrand.tracks[track].layers[layer].trigAtStart ||
             $pStrand.tracks[track].layers[layer].trigDoRepeat) }
         <Checkbox labelText="Random force"
           style="padding:3px;"

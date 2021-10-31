@@ -226,7 +226,7 @@ export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
 export const pluginBit_ROTATION    = 0x0010;  // changing rotation changes effect
 export const pluginBit_REPTRIGS    = 0x0020;  // repeat triggers changes effect
-export const pluginBit_TRIGFORCE   = 0x0040;  // trigger force used (TRIGGER must be set)
+export const pluginBit_TRIGFORCE   = 0x0040;  // force used in triggering
 export const pluginBit_SENDFORCE   = 0x0080;  // sends force to other plugins
                                               // only for filter effects:
 export const pluginBit_ORIDE_HUE   = 0x0100;  // effect overrides hue property

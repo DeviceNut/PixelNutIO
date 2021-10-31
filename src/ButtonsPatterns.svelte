@@ -28,7 +28,7 @@
   import { sendEntirePattern } from './cmdsend.js';
 
   const doclear = () => { userClearPattern(); }
-  const dostore = () => { sendEntirePattern(); }
+  const dostore = () => { sendEntirePattern(false); } // don't restart
 
   let openSave = false;
   let savedesc;

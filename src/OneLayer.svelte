@@ -13,6 +13,8 @@
   export let track;
   export let layer;
 
+  let name = `Layer ${layer+1}`;
+
   let bgc;
   $: bgc = $pStrand.tracks[track].layers[layer].open ? '#222522' : '#111'
   // cannot use css vars here, and style cannot access globals
@@ -21,7 +23,7 @@
 
 <Row style="margin-left:-15px; margin-top:7px; background-color: {bgc};">
   <Column>
-    <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
+    <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} {name} />
   </Column>
   {#if (layer !== DRAW_LAYER) }
     <ButtonsLTs {track} {layer} />

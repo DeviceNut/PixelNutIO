@@ -23,9 +23,9 @@ export const cmdStr_Resume        = "]";    // none: resumes operation
 export const cmdStr_ClearPattern  = "*";    // none: clears pattern (unused)
 export const cmdStr_ReadCurPat    = "<";    // none: returns current pattern (unused)
 export const cmdStr_FlashCurPat   = ">";    // none: flash current pattern (unused)
-export const cmdStr_FlashPatStr   = "=";    // pattern string to flash
-export const cmdStr_FlashPatName  = "~";    // pattern name to flash
-export const cmdStr_ExecFromFlash = "$";    // clear and exec pattern from flash
+export const cmdStr_FlashPatStr   = "=";    // flash sent pattern string
+export const cmdStr_FlashPatName  = "~";    // flash sent pattern name
+export const cmdStr_ExecFromFlash = "$";    // clear/exec pattern from flash
 
 // Override properties:                     // value is: (affects all strands)
 export const cmdStr_OR_Bright     = "%";    // brightness percent of max

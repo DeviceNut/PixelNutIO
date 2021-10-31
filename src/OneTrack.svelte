@@ -11,6 +11,8 @@
 
   export let track;
 
+  let name = `Track ${track+1}`;
+
   let tstate;
   $: tstate = $pStrand.tracks[track].open ? 'block' : 'none';
 
@@ -22,7 +24,7 @@
 
 <Row style="margin-top:10px; background-color: {bgc};">
   <Column>
-    <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
+    <Revealer bind:isopen={$pStrand.tracks[track].open} {name} />
   </Column>
   <ButtonsLTs {track} layer={DRAW_LAYER} />
 </Row>

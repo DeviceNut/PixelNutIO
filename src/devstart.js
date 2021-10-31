@@ -123,11 +123,19 @@ export let deviceStartup = (device) =>
         const obj = { id:devlen, text:cmdname, cmd:cmdstr };
         const desc = 'This is what\'s currently playing on the device.';
 
+        if (devlen === 0)
+        {
+          // init device patterns/descriptions
+          const obj = { id:'0', text:'<none>', cmd:'' };
+          aDevicePats.set([obj]);
+          aDeviceDesc.set([[]]);
+        }
+
         get(aDevicePats).push(obj);
         get(aDeviceDesc).push([desc]);
 
         strand.curSourceIdx = 0;
-        strand.curPatternIdx = devlen;
+        strand.curPatternIdx = get(aDevicePats).length-1;
       }
       else doreset = true; // if no pattern string
     }

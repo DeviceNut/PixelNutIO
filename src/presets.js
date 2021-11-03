@@ -106,16 +106,16 @@ export const presetsInit = () =>
   ]);
 
   aEffectsDraw.set([
-    { id: 0,  bits: 0x0001, text: 'Draw All' },
-    { id: 1,  bits: 0x00FD, text: 'Draw Push' },
-    { id: 2,  bits: 0x009D, text: 'Draw Step' },
-    { id: 10, bits: 0x000F, text: 'Light Wave' },
-    { id: 20, bits: 0x00EF, text: 'Comet Heads' },
-    { id: 30, bits: 0x000F, text: 'Ferris Wheel' },
-    { id: 40, bits: 0x0097, text: 'Block Scanner' },
-    { id: 50, bits: 0x0007, text: 'Twinkle' },
-    { id: 51, bits: 0x0007, text: 'Blinky' },
-    { id: 52, bits: 0x0007, text: 'Noise' },
+    { id: 0,  bits: 0x8001, text: 'Draw All' },
+    { id: 1,  bits: 0x80FD, text: 'Draw Push' },
+    { id: 2,  bits: 0x809D, text: 'Draw Step' },
+    { id: 10, bits: 0x800F, text: 'Light Wave' },
+    { id: 20, bits: 0x80EF, text: 'Comet Heads' },
+    { id: 30, bits: 0x800F, text: 'Ferris Wheel' },
+    { id: 40, bits: 0x8097, text: 'Block Scanner' },
+    { id: 50, bits: 0x8007, text: 'Twinkle' },
+    { id: 51, bits: 0x8007, text: 'Blinky' },
+    { id: 52, bits: 0x8007, text: 'Noise' },
   ]);
 
   aEffDrawDesc.set([
@@ -235,6 +235,7 @@ export const pluginBit_ORIDE_COUNT = 0x0400;  // effect overrides count property
 export const pluginBit_ORIDE_DELAY = 0x0800;  // effect overrides delay property
 export const pluginBit_ORIDE_DIR   = 0x1000;  // effect overrides direction property
 export const pluginBit_ORIDE_EXT   = 0x2000;  // effect overrides start/extent properties
+export const pluginBit_REDRAW      = 0x8000;  // set if redraw effect, else filter
 
 export const presetsFindEffect = (plugnum) =>
 {

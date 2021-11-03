@@ -12,11 +12,17 @@ import {
   isConnected,
   aDevicePats,
   aDeviceDesc,
+  aEffectsDraw,
+  aEffDrawDesc,
+  aEffectsFilter,
+  aEffFilterDesc,
   msgTitle,
   msgDesc
  } from './globals.js';
 
- // Device Responses:
+ import { pluginBit_REDRAW } from './presets.js';
+
+// Device Responses:
  export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
  export const respStr_VersionStr  = "P!!"       // specifies response format version
  
@@ -78,7 +84,7 @@ export const deviceInfo =
 
   qname: '',            // holds pattern/plugin name
   qdesc: '',            // holds pattern/plugin desc
-  qcmd:  '',            // holds pattern/plugin cmd
+  qcmd:  '',            // holds pattern/plugin str
 
   report:               // reported capabilities & state
   {
@@ -136,6 +142,7 @@ function deviceQueryBegin(device, fsend)
   device.active = false;
   device.failed = false;
   device.query = QUERY_DEVICE;
+  device.qstage = QSTAGE_NONE;
 
   sendQuery(device, fsend, cmdStr_GetDevInfo);
 }
@@ -158,6 +165,7 @@ function deviceStop(device=null)
   // if device is currently being controlled,
   // return to the device discovery page
 
+  console.log('devstop=', device);
   let curdev = get(curDevice);
   if (curdev !== null)
   {
@@ -268,6 +276,7 @@ export const onNotification = (msg, fsend) =>
   device.curname = name;
   device.tstamp = curTimeSecs();
   get(deviceList).push(device);
+
   deviceList.set(get(deviceList)); // trigger UI update
 
   deviceQueryBegin(device, fsend);
@@ -302,17 +311,14 @@ export const onDeviceReply = (msg, fsend) =>
   if (reply[0] === respStr_Rebooted)
   {
     console.log(`>> Received reboot from: ${name}`);
-    if (device != null)
+    if ((device != null) && device.active)
     {
-      if (device.active)
-      {
-        deviceStop();
-        msgTitle.set('Device Rebooted');
-        msgDesc.set('The device you were connected to just rebooted.');
-        deviceQueryBegin(device, fsend);
-      }
-      else deviceQueryBegin(device, fsend); // restart query process
+      deviceStop();
+      msgTitle.set('Device Rebooted');
+      msgDesc.set('The device you were connected to just rebooted.');
+      deviceQueryBegin(device, fsend); // restart query process
     }
+    // else cannot interrupt query in progress
   }
   else if (device === null)
   {
@@ -357,7 +363,7 @@ export const onDeviceReply = (msg, fsend) =>
                 device.query = CHECK_PATTERNS;
                 continue;
               }
-              else device.qstage = QSTAGE_INFO;
+              else device.qstage = QSTAGE_INFO; // setup for next strand
             }
             // else keep parsing responses
           }
@@ -401,7 +407,7 @@ export const onDeviceReply = (msg, fsend) =>
                 device.query = CHECK_PLUGINS;
                 continue;
               }
-              else device.qstage = QSTAGE_NAME;
+              else device.qstage = QSTAGE_NAME; // setup for next pattern
             }
             // else keep parsing responses
           }
@@ -422,11 +428,38 @@ export const onDeviceReply = (msg, fsend) =>
         }
         case QUERY_PLUGINS: // TODO
         {
-          console.log('plugins reply: ', reply);
+          //console.log('plugins reply: ', reply);
           if (readPluginInfo(device, reply))
           {
-            if (++device.qcount >= device.report.nplugins)
-              deviceStart(device);
+            if (device.qstage === QSTAGE_DONE) // finished one pattern
+            {
+              const strs = device.qcmd.split(' ');
+              if (strs.length < 2)
+              {
+                deviceError(`Unexpected plugin cmd: "${device.qcmd}"`);
+                break;
+              }
+              const pvalue = parseInt(strs[0]);
+              const bvalue = parseInt(strs[1], 16);
+              // TODO: check that pvalue is not already in effect list
+              const obj = { id:pvalue, bits:bvalue, text:device.qname };
+
+              if (bvalue & pluginBit_REDRAW)
+              {
+                get(aEffectsDraw).push(obj);
+                get(aEffDrawDesc).push([device.qdesc]);  
+              }
+              else
+              {
+                get(aEffectsFilter).push(obj);
+                get(aEffFilterDesc).push([device.qdesc]);
+              }
+    
+              if (++device.qcount >= device.report.nplugins)
+                deviceStart(device);
+
+              else device.qstage = QSTAGE_NAME; // setup for next plugin
+            }
             // else keep parsing responses
           }
           break;
@@ -496,7 +529,7 @@ function readStrandInfo(device, reply)
     {
       if (reply.length < 2)
       {
-        deviceError(`Unexpected strand line count: "${reply.length}"`);
+        deviceError(`Unexpected strand line count: ${reply.length}`);
         return false;
       }
 
@@ -509,7 +542,7 @@ function readStrandInfo(device, reply)
       strs = line.split(' ');
       if (strs.length < 4)
       {
-        deviceError(`Unexpected parm count (s1): "${strs.length}"`);
+        deviceError(`Unexpected parm count (s1): ${strs.length}`);
         return false;
       }
   
@@ -526,7 +559,7 @@ function readStrandInfo(device, reply)
       strs = line.split(' ');
       if (strs.length < 5)
       {
-        deviceError(`Unexpected parm count (s2): "${strs.length}"`);
+        deviceError(`Unexpected parm count (s2): ${strs.length}`);
         return false;
       }
   
@@ -576,21 +609,18 @@ function readPatternInfo(device, reply)
   {
     case QSTAGE_NAME:
     {
-      //console.log(`name=${line}`); // DEBUG
       device.qname = line;
       device.qstage = QSTAGE_DESC;
       break;
     }
     case QSTAGE_DESC:
     {
-      //console.log(`desc=${line}`); // DEBUG
       device.desc = line;
       device.qstage = QSTAGE_CMD;
       break;
     }
     case QSTAGE_CMD:
     {
-      //console.log(`cmd=${line}`); // DEBUG
       device.qcmd = line;
       device.qstage = QSTAGE_DONE; // indicates finished
       break;
@@ -607,5 +637,35 @@ function readPatternInfo(device, reply)
 
 function readPluginInfo(device, reply)
 {
-  return false;
+  const line = reply[0];
+  reply.shift();
+
+  switch (device.qstage)
+  {
+    case QSTAGE_NAME:
+    {
+      device.qname = line;
+      device.qstage = QSTAGE_DESC;
+      break;
+    }
+    case QSTAGE_DESC:
+    {
+      device.desc = line;
+      device.qstage = QSTAGE_CMD;
+      break;
+    }
+    case QSTAGE_CMD:
+    {
+      device.qcmd = line;
+      device.qstage = QSTAGE_DONE; // indicates finished
+      break;
+    }
+    default:
+    {
+      deviceError(`Unexpected plugin stage: ${device.qstage}`);
+      return false;
+    }
+  }
+
+  return true;
 }

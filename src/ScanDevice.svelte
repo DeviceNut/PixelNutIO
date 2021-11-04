@@ -32,6 +32,12 @@
       <span class="infotext1">Tracks={device.report.numtracks}</span>
       <span class="infotext1">Layers={device.report.numlayers}</span>
     </div>
+    {#if (device.report.nplugins > 0 || device.report.npatterns > 0)}
+      <div>
+        <span class="infotext1">Custom Effects={device.report.nplugins}</span>
+        <span class="infotext1">Custom Patterns={device.report.npatterns}</span>
+      </div>
+    {/if}
     {#each device.report.strands as strand,i }
       <div style="margin-top:10px;">
         <span class="strand">Strand: {i+1}</span>
@@ -100,7 +106,7 @@
   .infobox {
     margin: 0 auto;
     width: 300px;
-    padding: 10px;
+    padding: 0 10px 10px 10px;
     color: var(--color-devicename);
     background-color: var(--bg-color-dropdown);
     border: 1px solid var(--color-textbox);
@@ -110,7 +116,7 @@
   }
   .infotext1 {
     display: inline-block;
-    margin-top: 5px;
+    margin-top: 10px;
     margin-right: 10px;
   }
   .infotext2 {

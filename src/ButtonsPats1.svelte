@@ -1,13 +1,12 @@
 <script>
 
   import { pStrand } from './globals.js';
-  import { cmdStr_ExecFromFlash } from './devcmds.js';
   import { userClearPattern } from './cmduser2.js';
-  import { sendCmdToDevice, sendEntirePattern } from './cmdsend.js';
+  import { sendEntirePattern } from './cmdsend.js';
 
   const doclear   = () => { userClearPattern(); }
   const dostore   = () => { sendEntirePattern(false); } // don't restart
-  const dorestart = () => { sendCmdToDevice(cmdStr_ExecFromFlash); }
+  const dorestart = () => { sendEntirePattern(true); }  // do restart
 
 </script>
 

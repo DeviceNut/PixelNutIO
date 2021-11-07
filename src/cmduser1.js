@@ -513,11 +513,11 @@ export const userSetTrigRepeat = (track, layer) =>
     if (trepeat)
     {
       let count;
-      if (get(pStrand).tracks[track].layers[layer].trigForever) count = 0;
+      if (get(pStrand).tracks[track].layers[layer].trigForever) count = undefined;
       else count = get(pStrand).tracks[track].layers[layer].trigRepCount;
       userSendToLayer(track, layer, cmdStr_TrigRepeating, count);
     }
-    else userSendToLayer(track, layer, cmdStr_TrigRepeating, undefined); // disable
+    else userSendToLayer(track, layer, cmdStr_TrigRepeating, 0); // disable
   }
 }
 

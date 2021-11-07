@@ -217,20 +217,19 @@ export const userClearPattern = () =>
 }
 
 // assume cannot get called if number of T/L's at max
-export const userAddTrackLayer = (track, layer) =>
+export const userAddTrackLayer = (track, layer, dofilter=false) =>
 {
-  // send command to apped new track/layer, set effect #0
-  userSendToLayer(track, layer, cmdStr_AppRemEffect, 0);
-
-  if (layer == DRAW_LAYER)
+  if (!dofilter && (layer === DRAW_LAYER))
   {
+    // send command to apped new track and redraw layer, set effect #0
+    userSendToLayer(track, DRAW_LAYER, cmdStr_AppRemEffect, 0);
     strandAppendTrack(track);
-    ++track;
   }
   else
   {
+    // send command to apped new filter layer, set effect #100 - FIXME
+    userSendToLayer(track, layer, cmdStr_AppRemEffect, 100);
     strandAppendLayer(track, layer);
-    ++layer;
   }
 
   updateTriggerLayers(); // update trigger sources

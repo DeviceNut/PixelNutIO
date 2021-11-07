@@ -6,7 +6,8 @@
   import { DRAW_LAYER } from './devcmds.js';
 
   import Revealer from './Revealer.svelte';
-  import ButtonsLTs from './ButtonsLTs.svelte';
+  import ButtonAddFilterLayer from './ButtonAddFilterLayer.svelte';
+  import ButtonsFiltersAndTracks from './ButtonsTracksFilters.svelte';
   import SectionDraw from './SectionDraw.svelte';
   import SectionFilter from './SectionFilter.svelte';
 
@@ -25,8 +26,10 @@
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} {name} />
   </Column>
-  {#if (layer !== DRAW_LAYER) }
-    <ButtonsLTs {track} {layer} />
+  {#if (layer === DRAW_LAYER) }
+    <ButtonAddFilterLayer {track} />
+  {:else}
+    <ButtonsFiltersAndTracks {track} {layer} />
   {/if}
 </Row>
 <Row style="margin-left:-15px;">

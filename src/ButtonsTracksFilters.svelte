@@ -19,27 +19,28 @@
   export let track;
   export let layer;
 
-  let noadd, norem, noswap;
+  let noadd, norem, noswap, nosolo;
 
   $: {
-    if (layer === DRAW_LAYER)
+    if (layer === DRAW_LAYER) // apply to track
     {
       noadd  = ($pStrand.tactives >= $nTracks);
       norem  = ($pStrand.tactives <= 1);
       noswap = (track+1 >= $pStrand.tactives);
+      nosolo = norem;
     }
     else
     {
       noadd  = ($pStrand.tracks[track].lactives >= $nLayers);
       norem  = ($pStrand.tracks[track].lactives <= 1);
       noswap = (layer+1 >= $pStrand.tracks[track].lactives);
+      nosolo = norem;
     }
   }
 
   const doadd  = () => { userAddTrackLayer(track, layer); }
   const dorem  = () => { userRemTrackLayer(track, layer); }
   const doswap = () => { userSwapTrackLayer(track, layer); }
-
   const dosolo = () => { userSoloTrackLayer(track, layer); }
   const domute = () => { userMuteTrackLayer(track, layer); }
 
@@ -70,6 +71,7 @@
   class="button"
   class:select={$pStrand.tracks[track].layers[layer].solo}
   on:click={dosolo}
+  disabled={nosolo}
   >Solo
 </button>
 

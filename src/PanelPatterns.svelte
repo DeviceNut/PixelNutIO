@@ -24,8 +24,8 @@
 
   import { userSetPattern  } from './cmduser2.js';
 
-  import ButtonsPats1 from './ButtonsPats1.svelte';
-  import ButtonsPats2 from './ButtonsPats2.svelte';
+  import ButtonsPaterns1 from './ButtonsPaterns1.svelte';
+  import ButtonsPaterns2 from './ButtonsPaterns2.svelte';
 
   const SOURCE_DEVICE      = 0;    // read from current device
   const SOURCE_BROWSER     = 1;    // user stored to this browser
@@ -233,10 +233,10 @@
 <MediaQuery query="(max-width: 620px)" let:matches>
   {#if matches}
     <div style="margin-top:20px; text-align:center;">
-      <ButtonsPats1/>
+      <ButtonsPaterns1/>
     </div>
     <div style="margin-top:20px; text-align:center;">
-      <ButtonsPats2/>
+      <ButtonsPaterns2/>
     </div>
   {/if}
 </MediaQuery>
@@ -244,8 +244,8 @@
 <MediaQuery query="(min-width: 621px)" let:matches>
   {#if matches}
     <div style="margin-top:20px; text-align:center;">
-      <ButtonsPats1/>
-      <ButtonsPats2/>
+      <ButtonsPaterns1/>
+      <ButtonsPaterns2/>
     </div>
   {/if}
 </MediaQuery>

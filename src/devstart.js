@@ -106,11 +106,12 @@ export let deviceStartup = (device) =>
     let strand = get(aStrands)[s];
     pStrand.set(strand);
 
-    if (parsePattern(device.report.strands[s].patstr))
+    let cmdstr = device.report.strands[s].patstr;
+    if (parsePattern(cmdstr))
     {
       makeEntireCmdStr();
 
-      const cmdstr = strand.curPatternStr;
+      //const cmdstr = strand.curPatternStr;
       let cmdname = device.report.strands[s].patname;
       strand.curPatternName = cmdname;
 

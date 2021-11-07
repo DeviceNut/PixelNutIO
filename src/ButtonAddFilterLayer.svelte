@@ -1,5 +1,6 @@
 <script>
  
+   import { get } from 'svelte/store';
   import { DRAW_LAYER } from './devcmds.js';
   import { pStrand, nTracks } from './globals.js';
   import { userAddTrackLayer } from './cmduser2.js';
@@ -10,7 +11,29 @@
   $: noadd  = ($pStrand.tactives >= $nTracks);
 
   // adding filter layer only here
-  const doadd  = () => { userAddTrackLayer(track, DRAW_LAYER, true); }
+  const doadd = () => { userAddTrackLayer(track, DRAW_LAYER, true); }
+
+  let actstr;
+  let expanded;
+  $: {
+    let oneopen = false;
+    const t = $pStrand.tracks[track];
+    for (let i = 0; i < t.lactives; ++i)
+      if (t.layers[i].open) oneopen = true;
+
+    expanded = oneopen;
+  }
+  $: actstr = expanded ? "Collapse" : "Expand";
+
+  const doact = () =>
+  {
+    expanded = !expanded;
+    const t = $pStrand.tracks[track];
+    for (let i = 0; i < t.lactives; ++i)
+      t.layers[i].open = expanded;
+
+    pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+  }
 
 </script>
 
@@ -18,13 +41,19 @@
   class="button"
   on:click={doadd}
   disabled={noadd}
-  >Add Filter
+  >Add
+</button>
+
+<button
+  class="button"
+  on:click={doact}
+  >{actstr}
 </button>
 
 <style>
   .button {
     float: right;
-    width: 85px;
+    width: 60px;
     margin: 5px 5px 7px 0;
     padding: 4px;
   }

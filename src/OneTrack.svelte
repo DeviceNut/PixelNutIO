@@ -16,13 +16,9 @@
   let tstate;
   $: tstate = $pStrand.tracks[track].open ? 'block' : 'none';
 
-  let bgc;
-  $: bgc = $pStrand.tracks[track].open ? '#222522' : '#111';
-  // cannot use css vars here, and style cannot access globals
-
 </script> 
 
-<Row style="margin-top:10px; background-color: {bgc};">
+<Row style="margin-top:10px; background-color:var(--bg-color-tracklayer-head);">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} {name} />
   </Column>

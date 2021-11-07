@@ -43,6 +43,7 @@
 <style>
   .panel {
     margin: 0 auto;
+    padding-bottom: 10px;
     border: 2px solid var(--bg-color-panel-border);
     background-color: var(--bg-color-panel);
   }

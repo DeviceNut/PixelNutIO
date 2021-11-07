@@ -5,40 +5,37 @@
     Dropdown
   } from "carbon-components-svelte";
 
+  import { DRAW_LAYER } from './devcmds.js';
+
   import {
     pStrand,
-    aEffectsFilter,
-    aEffFilterDesc
+    aEffectsDraw,
+    aEffDrawDesc
   } from './globals.js';
-
-  import { DRAW_LAYER  } from './devcmds.js';
 
   import {
     userSetEffect,
     userDoRestart
-  } from './cmduser1.js';
-
-  import SectionTrigger from './SectionTrigger.svelte';
+  } from './cmduser1.js'
 
   export let track;
-  export let layer;
 
-  const setEffect = () => { userSetEffect(track, layer, $aEffectsFilter); }
-  const restart   = () => { userDoRestart(track, layer, $aEffectsFilter); }
+  const setEffect = () => { userSetEffect(  track, DRAW_LAYER, $aEffectsDraw); }
+  const restart   = () => { userDoRestart(  track, DRAW_LAYER, $aEffectsDraw); }
 
   let helpon = false;
 
 </script>
 
-<div style="margin-top:15px; padding-left:5px;">
+<div style="margin-top:10px; padding-left:5px;">
   <Row>
     <Dropdown
       style="margin-bottom:10px;"
       size="sm"
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
-      bind:items={$aEffectsFilter}
+      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
+      bind:items={$aEffectsDraw}
     />
     <button
       class="button-help"
@@ -48,8 +45,7 @@
     <button
       class="button-restart"
       on:click={restart}
-      disabled={$pStrand.tracks[track].layers[layer].mute ||
-                $pStrand.tracks[track].layers[DRAW_LAYER].mute}
+      disabled={$pStrand.tracks[track].layers[DRAW_LAYER].mute}
       >Restart
     </button>
   </Row>
@@ -59,12 +55,11 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
       </p>
     </Row>
   {/if}
 
-  <SectionTrigger {track} {layer} />
 </div>
 
 <style>

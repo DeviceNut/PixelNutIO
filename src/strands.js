@@ -133,7 +133,7 @@ const oneStrand =
   forceValue      : MAX_FORCE_VALUE/2, // force value for triggering
   numPixels       : 0,      // number of pixels in this strand
 
-  tactives        : 1,      // current number of active tracks (>=1)
+  tactives        : 0,      // current number of active tracks
   tracks          : [],     // list of 'oneTrack's for this strand
 
   trigSources     : [],     // list of trigger source layer info
@@ -315,10 +315,10 @@ export const strandClearTop = () =>
 export const strandClearAll = (track) =>
 {
   let sid = get(idStrand);
-  get(aStrands)[sid].tactives = 1;
+  get(aStrands)[sid].tactives = 0;
   get(aStrands)[sid].tracks = makeNewTracks();
 
-  get(dStrands)[sid].tactives = 1;
+  get(dStrands)[sid].tactives = 0;
   get(dStrands)[sid].tracks = makeNewTracks();
 
   strandClearTop();

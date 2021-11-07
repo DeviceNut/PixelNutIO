@@ -118,7 +118,7 @@ export const parsePattern = (pattern) =>
 
           makeLayerCmdStr(track, layer);
 
-          if (get(pStrand).tactives >= get(nLayers))
+          if (get(pStrand).tracks[track].lactives >= get(nLayers))
           {
             console.warn('Too many layers');
             return false;
@@ -146,10 +146,7 @@ export const parsePattern = (pattern) =>
             get(dStrands)[get(idStrand)].tracks[track].trackBits = trackbits;
           }
 
-          // there is always at least one track
-          // and the default value is 1
-          if (track >= 0) get(pStrand).tactives++;
-
+          get(pStrand).tactives++;
           ++track;
           layer = DRAW_LAYER;
 

@@ -350,6 +350,8 @@ export const onDeviceReply = (msg, fsend) =>
               device.query = QUERY_STRANDS;
               device.qstage = QSTAGE_INFO;
               device.qcount = 0;
+
+              device.report.strands = [];
             }
           }
           break;
@@ -381,8 +383,8 @@ export const onDeviceReply = (msg, fsend) =>
             device.query = QUERY_PATTERNS;
             device.qstage = QSTAGE_NAME;
             device.qcount = 0;
-  
-            // init device patterns/descriptions
+
+            // init device patterns/descriptions FIXME - must be local to device!!!
             const obj = { id:'0', text:'<none>', cmd:'' };
             aDevicePats.set([obj]);
             aDeviceDesc.set([[]]);
@@ -425,11 +427,14 @@ export const onDeviceReply = (msg, fsend) =>
             device.query = QUERY_PLUGINS;
             device.qstage = QSTAGE_NAME;
             device.qcount = 0;
+
+            device.effects_items = [];
+            device.effects_descs = [];
           }
           else deviceStart(device);
           break;
         }
-        case QUERY_PLUGINS: // TODO
+        case QUERY_PLUGINS:
         {
           //console.log('plugins reply: ', reply);
           if (readPluginInfo(device, reply))
@@ -527,9 +532,6 @@ function readStrandInfo(device, reply)
         deviceError(`Unexpected strand line count: ${reply.length}`);
         return false;
       }
-
-      if (device.qcount === 0)
-        device.report.strands = [];
 
       line = reply[0];
       reply.shift();

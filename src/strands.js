@@ -406,7 +406,7 @@ export const strandRemoveTrack = (track) =>
       console.log('delete track: ', track);
       --(get(aStrands)[s].tactives);
       --(get(dStrands)[s].tactives);
-      console.log('deltrack, count=', get(aStrands).tactives);
+      console.log('deltrack, count=', get(aStrands)[s].tactives);
 
       if (track < get(aStrands)[s].tactives) // not last one
       {

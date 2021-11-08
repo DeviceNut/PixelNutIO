@@ -48,7 +48,7 @@ export let deviceStartup = (device) =>
 {
   console.log(`Connecting to: "${device.curname}"...`); // DEBUG
 
-  let numstrands = device.report.nstrands;
+  let numstrands = device.report.strands.length; // TODO: error if 0
 
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;

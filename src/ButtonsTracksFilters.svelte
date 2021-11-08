@@ -46,29 +46,25 @@
 
 </script>
 
-<button
-  class="button"
+<button class="button"
   on:click={doadd}
   disabled={noadd}
   >Add
 </button>
 
-<button
-  class="button"
+<button class="button"
   on:click={dorem}
   disabled={norem}
   >Rem
 </button>
 
-<button
-  class="button"
+<button class="button"
   on:click={doswap}
   disabled={noswap}
   >Swap
 </button>
 
-<button
-  class="button"
+<button class="button"
   class:select={$pStrand.tracks[track].layers[layer].solo}
   on:click={dosolo}
   disabled={nosolo}

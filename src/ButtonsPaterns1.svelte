@@ -10,22 +10,19 @@
 
 </script>
 
-<button
-  class="button-pattern"
+<button class="button-pattern"
   on:click={doclear}
   disabled={ ($pStrand.tactives === 0) }
   >Clear
 </button>
 
-<button
-  class="button-pattern"
+<button class="button-pattern"
   on:click={dostore}
   disabled={ ($pStrand.curPatternStr === '') }
   >Store
 </button>
 
-<button
-  class="button-pattern"
+<button class="button-pattern"
   on:click={dorestart}
   disabled={ ($pStrand.curPatternStr === '') }
   >Restart

@@ -37,13 +37,11 @@
       bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
       bind:items={$aEffectsDraw}
     />
-    <button
-      class="button-help"
+    <button class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
     </button>
-    <button
-      class="button-restart"
+    <button class="button-restart"
       on:click={restart}
       disabled={$pStrand.tracks[track].layers[DRAW_LAYER].mute}
       >Restart

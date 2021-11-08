@@ -42,8 +42,7 @@
             background-color: var(--bg-color-controls-area);">
 
   <div style="margin-left:-5px;">
-    <button
-      class="button-help"
+    <button class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
     </button>

@@ -40,8 +40,7 @@
       bind:checked={$pStrand.doOverride}
       disabled={$pStrand.bitsOverride === 0}
     />
-    <button
-      class="button-help"
+    <button class="button-help"
       on:click={() => {helpon = !helpon;}}
       >?
     </button>

@@ -96,15 +96,13 @@
 
 </script>
 
-<button
-  class="button-pattern"
+<button class="button-pattern"
   on:click={() => {openSave = !openSave;}}
   disabled={$pStrand.curPatternStr === ''}
   >Save
 </button>
 
-<button
-  class="button-pattern"
+<button class="button-pattern"
   on:click={delstart}
   disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
   >Delete

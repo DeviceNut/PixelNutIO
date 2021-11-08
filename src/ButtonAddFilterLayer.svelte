@@ -37,15 +37,13 @@
 
 </script>
 
-<button
-  class="button"
+<button class="button"
   on:click={doadd}
   disabled={noadd}
   >Add
 </button>
 
-<button
-  class="button"
+<button class="button"
   on:click={doact}
   >{actstr}
 </button>

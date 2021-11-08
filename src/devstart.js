@@ -18,7 +18,11 @@ import {
   aStoredPats,
   selectSource,
   selectPattern,
-  maxLenPattern
+  maxLenPattern,
+  aEffectsDraw,
+  aEffDrawDesc,
+  aEffectsFilter,
+  aEffFilterDesc
 } from './globals.js';
 
 import { strandCreateNew } from './strands.js';
@@ -91,6 +95,20 @@ export let deviceStartup = (device) =>
     slist.push(strand);
   }
   dStrands.set(slist);
+
+  // TODO: make device specific effects item lists
+  /*
+      if (bvalue & pluginBit_REDRAW)
+      {
+        get(aEffectsDraw).push(obj);
+        get(aEffDrawDesc).push([device.qdesc]);  
+      }
+      else
+      {
+        get(aEffectsFilter).push(obj);
+        get(aEffFilterDesc).push([device.qdesc]);
+      }
+  */
 
   device.active = true;
   curDevice.set(device);

@@ -86,6 +86,9 @@ export const deviceInfo =
   qdesc: '',            // holds pattern/plugin desc
   qcmd:  '',            // holds pattern/plugin str
 
+  effects_items: [],    // custom effect item list array
+  effects_descs: [],    // custom effect description array
+
   report:               // reported capabilities & state
   {
     nstrands: 0,        // strand count (>= 1)
@@ -441,20 +444,12 @@ export const onDeviceReply = (msg, fsend) =>
               }
               const pvalue = parseInt(strs[0]);
               const bvalue = parseInt(strs[1], 16);
-              // TODO: check that pvalue is not already in effect list
               const obj = { id:pvalue, bits:bvalue, text:device.qname };
 
-              if (bvalue & pluginBit_REDRAW)
-              {
-                get(aEffectsDraw).push(obj);
-                get(aEffDrawDesc).push([device.qdesc]);  
-              }
-              else
-              {
-                get(aEffectsFilter).push(obj);
-                get(aEffFilterDesc).push([device.qdesc]);
-              }
-    
+              device.effects_items.push(obj);
+              device.effects_descs.push(device.qdesc);
+              console.log(device.effects_items); // DEBUG
+
               if (++device.qcount >= device.report.nplugins)
                 deviceStart(device);
 

@@ -234,7 +234,6 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
 
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild all tracks
-
 }
 
 // assume cannot get called if only one T/L

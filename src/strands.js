@@ -247,10 +247,11 @@ export const strandCopyLayer = (track, layer) =>
 export const strandCopyTrack = (track, doall) =>
 {
   const sid = get(idStrand);
-  const props = get(pStrand).tracks[track].drawProps;
-  const lactives = get(pStrand).tracks[track].lactives;
-  const trackbits = get(pStrand).tracks[track].trackBits;
-  const isopen = get(pStrand).tracks[track].open;
+  const strand = get(pStrand);
+  const isopen = strand.tracks[track].open;
+  const trackbits = strand.tracks[track].trackBits;
+  const lactives = strand.tracks[track].lactives;
+  const props = strand.tracks[track].drawProps;
 
   for (let s = 0; s < get(nStrands); ++s)
   {
@@ -259,7 +260,7 @@ export const strandCopyTrack = (track, doall) =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        if (doall && !track) strand.tactives = get(pStrand).tactives;
+        if (doall && !track) strand.tactives = strand.tactives;
 
         const ptrack = strand.tracks[track];
 
@@ -270,7 +271,7 @@ export const strandCopyTrack = (track, doall) =>
 
         for (let layer = 0; layer < lactives; ++layer)
         {
-          const player = get(pStrand).tracks[track].layers[layer];
+          const player = strand.tracks[track].layers[layer];
           ptrack.layers.splice(layer, 1, {...player});
         }
       }
@@ -405,7 +406,7 @@ export const strandRemoveTrack = (track) =>
       console.log('delete track: ', track);
       --(get(aStrands)[s].tactives);
       --(get(dStrands)[s].tactives);
-      console.log('deltrack, count=', get(pStrand).tactives);
+      console.log('deltrack, count=', get(aStrands).tactives);
 
       if (track < get(aStrands)[s].tactives) // not last one
       {

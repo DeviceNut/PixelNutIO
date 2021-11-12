@@ -25,6 +25,14 @@ import {
   aEffFilterDesc
 } from './globals.js';
 
+import {
+  preset_DrawEffectItems,
+  preset_DrawEffectDescs,
+  preset_FilterEffectItems,
+  preset_FilterEffectDescs,
+  pluginBit_REDRAW
+} from './presets.js';
+
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
@@ -140,7 +148,7 @@ export let deviceStartup = (device) =>
 
         const devlen = get(aDevicePats).length;
         const obj = { id:devlen, text:cmdname, cmd:cmdstr };
-        const desc = 'This is what\'s currently playing on the device.';
+        const desc = `This is what\'s currently playing on strand ${s}.`;
 
         if (devlen === 0)
         {

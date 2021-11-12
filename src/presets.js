@@ -1,19 +1,7 @@
-import { get } from 'svelte/store';
-
-import {
-  aBuiltinPats,
-  aBuiltinDesc,
-  aEffectsDraw,
-  aEffDrawDesc,
-  aEffectsFilter,
-  aEffFilterDesc
-} from './globals.js';
-
 ///////////////////////////////////////////////////////////
 
-export const presetsInit = () =>
-{
-  aBuiltinPats.set([
+export const preset_PatStrs =
+  [
     { id: -1, text: '<none>',             cmd: '' },
     { id: 0,  text: 'Rainbow Ripple',     cmd: 'E2 D20 T E101 F1000 I T G' },
     { id: 1,  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
@@ -31,9 +19,10 @@ export const presetsInit = () =>
     { id: 13, text: 'July 4th',           cmd: 'E50 K33 B65 D10 H355 C100 T E50 J33 K34 B65 D10 W100 C100 T E50 J67 K34 D10 H230 C100 T G' },
     { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 D15 H125 T E20 V B90 D30 H270 W80 C25 Q2 F0 I R20 O10 G' },
     { id: 15, text: 'MashUp',             cmd: 'E50 B65 D10 H100 W30 Q1 V T E40 D50 H270 C10 T E20 D15 C20 H0 F0 A1 I T G' },
-  ]);
+  ];
 
-  aBuiltinDesc.set([
+export const preset_PatDescs =
+  [
     [],
     [
       "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
@@ -103,9 +92,10 @@ export const presetsInit = () =>
       "bounces off the end of the strip, or when Triggered.",
       "The 'Hue' property only affects the color of the twinkling."
     ],
-  ]);
+  ];
 
-  aEffectsDraw.set([
+export const preset_DrawEffectItems =
+  [
     { id: 0,  bits: 0x8001, text: 'Draw All' },
     { id: 1,  bits: 0x80FD, text: 'Draw Push' },
     { id: 2,  bits: 0x809D, text: 'Draw Step' },
@@ -116,10 +106,10 @@ export const presetsInit = () =>
     { id: 50, bits: 0x8007, text: 'Twinkle' },
     { id: 51, bits: 0x8007, text: 'Blinky' },
     { id: 52, bits: 0x8007, text: 'Noise' },
-  ]);
+  ];
 
-  aEffDrawDesc.set([
-
+export const preset_DrawEffectDescs =
+  [
     "Draws all pixels with the current color.",
 
     "Draws one pixel at a time with current color/brightness, inserting at the head. " +
@@ -151,9 +141,10 @@ export const presetsInit = () =>
 
     "Sets randomly chosen pixels with current color but random brightness. " +
     "The count property determines number of pixels changed each step."
-  ]);
+  ];
 
-  aEffectsFilter.set([
+export const preset_FilterEffectItems =
+  [
     { id: 100, bits: 0x0160, text: 'Hue Set' },
     { id: 101, bits: 0x0065, text: 'Hue Rotate' },
     { id: 110, bits: 0x00A5, text: 'Color Meld' },
@@ -169,56 +160,55 @@ export const presetsInit = () =>
     { id: 142, bits: 0x00E4, text: 'Bright Wave' },
     { id: 150, bits: 0x2096, text: 'Window Expander' },
     { id: 160, bits: 0x1020, text: 'Flip Direction' },
-  ]);
-}
+  ];
 
-aEffFilterDesc.set([
+export const preset_FilterEffectDescs =
+  [
+    "Directly sets color hue once from force value on each trigger (whiteness uneffected). " +
+    "As force increases color hue changes from red->green->blue->red.",
 
-  "Directly sets color hue once from force value on each trigger (whiteness uneffected). " +
-  "As force increases color hue changes from red->green->blue->red.",
+    "Rotates color hue around color wheel on each drawing step (whiteness unaffected). " +
+    "Amount of change each time determined by trigger force.",
 
-  "Rotates color hue around color wheel on each drawing step (whiteness unaffected). " +
-  "Amount of change each time determined by trigger force.",
+    "Smoothly melds from current color (hue/white) into another whenever color values are changed. " +
+    "Can trigger other effects.",
 
-  "Smoothly melds from current color (hue/white) into another whenever color values are changed. " +
-  "Can trigger other effects.",
+    "Rotates color hue and whiteness on each trigger, with the force determining how much change is made.",
 
-  "Rotates color hue and whiteness on each trigger, with the force determining how much change is made.",
+    "Sets color hue and whiteness to random values on each drawing step.",
 
-  "Sets color hue and whiteness to random values on each drawing step.",
+    "Directly sets pixel count property once from the force value on every trigger. A force of 0 is ignored.",
 
-  "Directly sets pixel count property once from the force value on every trigger. A force of 0 is ignored.",
+    "Increases pixel count property using the trigger force, then decreases it in even steps back to its original value. " +
+    "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
-  "Increases pixel count property using the trigger force, then decreases it in even steps back to its original value. " +
-  "The original value (when triggered the first time) must be less than the maximum to have any effect.",
+    "Modulates pixel count property with a cosine function. The wave height is half the maximum. " +
+    "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Can trigger other effects.",
 
-  "Modulates pixel count property with a cosine function. The wave height is half the maximum. " +
-  "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
-  "Can trigger other effects.",
+    "Directly sets delay time property from the force value on every trigger. Increased force reduces the delay; " +
+    "at maximum force the delay is minimal; a force of 0 means a maximum delay.",
 
-  "Directly sets delay time property from the force value on every trigger. Increased force reduces the delay; " +
-  "at maximum force the delay is minimal; a force of 0 means a maximum delay.",
+    "Decreases delay time property using the trigger force, then increases it in even steps back to its original value." +
+    "The original value (when triggered the first time) must be greater than the minimum to have any effect.",
 
-  "Decreases delay time property using the trigger force, then increases it in even steps back to its original value." +
-  "The original value (when triggered the first time) must be greater than the minimum to have any effect.",
+    "Modulates delay time property with a cosine function, down to its minimum and back. The trigger force " +
+    "determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Can trigger other effects.",
 
-  "Modulates delay time property with a cosine function, down to its minimum and back. The trigger force " +
-  "determines the number of steps in the wave: larger forces for quicker changes. " +
-  "Can trigger other effects.",
+    "Increases brightness property using the trigger force, then decreases it in even steps back to its original value. " +
+    "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
-  "Increases brightness property using the trigger force, then decreases it in even steps back to its original value. " +
-  "The original value (when triggered the first time) must be less than the maximum to have any effect.",
+    "Modulates brightness property with a cosine function. The wave height is a third of the maximum. " +
+    "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Can trigger other effects.",
 
-  "Modulates brightness property with a cosine function. The wave height is a third of the maximum. " +
-  "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
-  "Can trigger other effects.",
+    "Expands/contracts the drawing window continuously, centered on the middle of the strand. " +
+    "The pixel count property determines the size of the window on every step. " +
+    "Can trigger other effects.",
 
-  "Expands/contracts the drawing window continuously, centered on the middle of the strand. " +
-  "The pixel count property determines the size of the window on every step. " +
-  "Can trigger other effects.",
-
-  "Toggles the drawing direction property on each trigger.",
-]);
+    "Toggles the drawing direction property on each trigger.",
+  ];
 
 export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect

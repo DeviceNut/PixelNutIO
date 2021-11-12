@@ -10,17 +10,9 @@ import {
   curDevice,
   deviceList,
   isConnected,
-  aDevicePats,
-  aDeviceDesc,
-  aEffectsDraw,
-  aEffDrawDesc,
-  aEffectsFilter,
-  aEffFilterDesc,
   msgTitle,
   msgDesc
  } from './globals.js';
-
- import { pluginBit_REDRAW } from './presets.js';
 
 // Device Responses:
  export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
@@ -86,8 +78,11 @@ export const deviceInfo =
   qdesc: '',            // holds pattern/plugin desc
   qcmd:  '',            // holds pattern/plugin str
 
-  effects_items: [],    // custom effect item list array
-  effects_descs: [],    // custom effect description array
+  patterns_items: [],   // custom effects item list array
+  patterns_descs: [],   // custom effects description array
+
+  effects_items: [],    // custom effects item list array
+  effects_descs: [],    // custom effects description array
 
   report:               // reported capabilities & state
   {
@@ -384,10 +379,8 @@ export const onDeviceReply = (msg, fsend) =>
             device.qstage = QSTAGE_NAME;
             device.qcount = 0;
 
-            // init device patterns/descriptions FIXME - must be local to device!!!
-            const obj = { id:'0', text:'<none>', cmd:'' };
-            aDevicePats.set([obj]);
-            aDeviceDesc.set([[]]);
+            device.patterns_items = [];
+            device.patterns_descs = [];
           }
           else
           {
@@ -404,8 +397,8 @@ export const onDeviceReply = (msg, fsend) =>
             if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
               const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
-              get(aDevicePats).push(obj);
-              get(aDeviceDesc).push([device.qdesc]);
+              device.patterns_items.push(obj);
+              device.patterns_descs.push([device.qdesc]);
     
               if (++device.qcount >= device.report.npatterns)
               {

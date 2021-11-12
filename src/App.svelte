@@ -15,14 +15,12 @@
   } from './browser.js';
 
   import { helpInit } from './helpmain.js';
-  import { presetsInit } from './presets.js';
 
   import PageDevices from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
   import PageHelpDocs from './PageHelpDocs.svelte';
 
   helpInit();
-  presetsInit();
   storePatternsInit();
   storeBrokerRead();
 

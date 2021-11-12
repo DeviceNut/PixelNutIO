@@ -13,14 +13,17 @@
     aDeviceDesc,
     aStoredPats,
     aStoredDesc,
-    aBuiltinPats,
-    aBuiltinDesc,
     aCurListPats,
     updateSources,
     storedPattern,
     selectSource,
     selectPattern
   } from './globals.js';
+
+  import {
+    preset_PatStrs,
+    preset_PatDescs
+  } from './presets.js';
 
   import { userSetPattern  } from './cmduser2.js';
 
@@ -82,8 +85,8 @@
     {
       default:
       {
-        $aCurListPats = $aBuiltinPats;
-        listDescrips  = $aBuiltinDesc;
+        $aCurListPats = preset_PatStrs;
+        listDescrips  = preset_PatDescs;
         $pStrand.browserSource = false;
         break;
       }

@@ -37,9 +37,3 @@
     <PageDevices/>
   {/if}
 </main>
-
-<style>
-  main {
-    min-width: 320px;
-  }
-</style>

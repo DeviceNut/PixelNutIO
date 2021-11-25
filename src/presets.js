@@ -1,3 +1,7 @@
+import { get } from 'svelte/store';
+
+import { aEffectsDraw, aEffectsFilter } from './globals.js';
+
 ///////////////////////////////////////////////////////////
 
 export const preset_PatStrs =

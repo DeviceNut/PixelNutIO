@@ -58,6 +58,67 @@ export let deviceStartup = (device) =>
 
   let numstrands = device.report.strands.length; // TODO: error if 0
 
+  // init device patterns/descriptions
+
+  const patlen = device.patterns_items.length;
+  if (patlen > 0)
+  {
+    let items = [];
+    let descs = [];
+  
+    const obj = { id:0, text:'<none>', cmd:'' };
+    items.push(obj);
+    descs.push([]);
+
+    for (let i = 0; i < patlen; ++i)
+    {
+      items.push( device.patterns_items[i] );
+      descs.push( device.patterns_descs[i] );
+    }
+
+    aDevicePats.set(items);
+    aDeviceDesc.set(descs);
+  }
+
+  let items_draw = [];
+  let descs_draw = [];
+
+  let items_filter = [];
+  let descs_filter = [];
+
+  for (let i = 0; i < preset_DrawEffectItems.length; ++i)
+  {
+    items_draw.push( preset_DrawEffectItems[i] );
+    descs_draw.push( preset_DrawEffectDescs[i] );
+  }
+
+  for (let i = 0; i < preset_FilterEffectItems.length; ++i)
+  {
+    items_filter.push( preset_FilterEffectItems[i] );
+    descs_filter.push( preset_FilterEffectDescs[i] );
+  }
+
+  for (let i = 0; i < device.effects_items.length; ++i)
+  {
+    let bvalue = device.effects_items[i].bits;
+    if (bvalue & pluginBit_REDRAW)
+    {
+      items_draw.push( device.effects_items[i] );
+      descs_draw.push( device.effects_descs[i] );
+    }
+    else
+    {
+      items_filter.push( device.effects_items[i] );
+      descs_filter.push( device.effects_descs[i] );
+    }
+  }
+
+  aEffectsDraw.set(items_draw);
+  aEffDrawDesc.set(descs_draw);
+
+  aEffectsFilter.set(items_filter);
+  aEffFilterDesc.set(descs_filter);
+
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;
   let tracklayers = numlayers / numtracks;
@@ -104,20 +165,6 @@ export let deviceStartup = (device) =>
   }
   dStrands.set(slist);
 
-  // TODO: make device specific effects item lists
-  /*
-      if (bvalue & pluginBit_REDRAW)
-      {
-        get(aEffectsDraw).push(obj);
-        get(aEffDrawDesc).push([device.qdesc]);  
-      }
-      else
-      {
-        get(aEffectsFilter).push(obj);
-        get(aEffFilterDesc).push([device.qdesc]);
-      }
-  */
-
   device.active = true;
   curDevice.set(device);
 
@@ -143,20 +190,12 @@ export let deviceStartup = (device) =>
 
       if (cmdstr != '')
       {
-        if (cmdname == '') cmdname = 'Unknown'
-        console.log(`Now playing: ${cmdname}: "${cmdstr}"`);
+        if (cmdname == '') cmdname = 'Now Playing'
+        console.log(`${cmdname}: "${cmdstr}"`);
 
         const devlen = get(aDevicePats).length;
         const obj = { id:devlen, text:cmdname, cmd:cmdstr };
         const desc = `This is what\'s currently playing on strand ${s}.`;
-
-        if (devlen === 0)
-        {
-          // init device patterns/descriptions
-          const obj = { id:'0', text:'<none>', cmd:'' };
-          aDevicePats.set([obj]);
-          aDeviceDesc.set([[]]);
-        }
 
         get(aDevicePats).push(obj);
         get(aDeviceDesc).push([desc]);

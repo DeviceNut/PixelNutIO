@@ -78,8 +78,8 @@ export const deviceInfo =
   qdesc: '',            // holds pattern/plugin desc
   qcmd:  '',            // holds pattern/plugin str
 
-  patterns_items: [],   // custom effects item list array
-  patterns_descs: [],   // custom effects description array
+  patterns_items: [],   // custom patterns item list array
+  patterns_descs: [],   // custom patterns description array
 
   effects_items: [],    // custom effects item list array
   effects_descs: [],    // custom effects description array
@@ -396,7 +396,7 @@ export const onDeviceReply = (msg, fsend) =>
           {
             if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
-              const obj = { id:device.qcount, text:device.qname, cmd:device.qcmd };
+              const obj = { id:device.qcount+1, text:device.qname, cmd:device.qcmd };
               device.patterns_items.push(obj);
               device.patterns_descs.push([device.qdesc]);
     
@@ -446,7 +446,7 @@ export const onDeviceReply = (msg, fsend) =>
 
               device.effects_items.push(obj);
               device.effects_descs.push(device.qdesc);
-              console.log(device.effects_items); // DEBUG
+              //console.log(device.effects_items); // DEBUG
 
               if (++device.qcount >= device.report.nplugins)
                 deviceStart(device);
@@ -605,7 +605,7 @@ function readPatternInfo(device, reply)
     }
     case QSTAGE_DESC:
     {
-      device.desc = line;
+      device.qdesc = line;
       device.qstage = QSTAGE_CMD;
       break;
     }
@@ -640,7 +640,7 @@ function readPluginInfo(device, reply)
     }
     case QSTAGE_DESC:
     {
-      device.desc = line;
+      device.qdesc = line;
       device.qstage = QSTAGE_CMD;
       break;
     }

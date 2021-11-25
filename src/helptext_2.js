@@ -1,6 +1,6 @@
 export const helpText_2 = (hmap) =>
 {
-hmap.set(2, "\n\
+  hmap.set(2, "\n\
 An effect pattern is simply a string of characters, which is parsed by the PixelNut Engine for commands to be executed with the 'execCmdStr()' method (defined in 'PixelNutEngine.h').\n\
 \n\
 Review the file 'library-design.md' for more information on the overall architecture of the PixelNutLib library. For more details on each command, see the file 'pattern-command-reference.md'.\n\
@@ -25,7 +25,7 @@ The notation used for the command definitions use the following conventions and 
 "
 );
 
-hmap.set(20, "\n\
+  hmap.set(20, "\n\
 Effect plugins are specified with the 'E' command and its identifier (see the source file 'PluginFactory.cpp' for the mapping of values to effect plugins).\n\
 \n\
 E<plugin>           Creates new layer using specified plugin.\n\
@@ -65,9 +65,9 @@ Finally, the last command in patterns strings is usually 'G', which activates al
 \n\
 Until this command is used, the effect layers are not 'active', meaning the 'nextstep()' method of the plugins are not called when the application calls 'updateEffects()'.\n\
 "
-);
+  );
 
-hmap.set(21, "\n\
+  hmap.set(21, "\n\
 Let's examine an effect pattern string in detail. This is the 'PATTERN_LIGHT_WAVE' pattern from the 'MyPatterns.h' file from any of the PixelNut product applications.\n\
 \n\
 'P E10 D60 Q7 T E101 I T E120 F250 I T G'\n\
@@ -104,5 +104,5 @@ This creates an animation of red light waves moving down the strip. The initial 
 \n\
 When the application calls the 'triggerForce()' method, the 'trigger()' methods for both predraw effect plugins are called, which changes both the pixel count property (by the CountSet plugin), and the color hue property (by the RotateHue plugin), causing the LightWave to start drawing waves using the new color and length on subsequent calls to 'nextstep()'. The force that is passed by the application determines how much the color and count properties are changed with the trigger.\n\
 "
-);
+  );
 }

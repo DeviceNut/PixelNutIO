@@ -1,17 +1,16 @@
 <script>
 
-  import {
-    Grid,
-    Row,
-    Column
-  } from "carbon-components-svelte";
+  import MediaQuery from "svelte-media-query";
+  import { Grid, Row, Column } from "carbon-components-svelte";
 
   import { MAX_FORCE_VALUE } from './devcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
   import { pStrand } from './globals.js';
   import { userSendTrigger } from './cmduser1.js'
 
-  import PanelPatterns from './PanelPatterns.svelte';
+  import ButtonsPaterns1 from './ButtonsPaterns1.svelte';
+  import ButtonsPaterns2 from './ButtonsPaterns2.svelte';
+
   import SlidersMain from './SlidersMain.svelte';
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
@@ -21,12 +20,30 @@
 </script>
 
 <Grid>
-  <PanelPatterns/>
+
+  <MediaQuery query="(max-width: 620px)" let:matches>
+    {#if matches}
+      <div style="margin-top:20px; text-align:center;">
+        <ButtonsPaterns1/>
+      </div>
+      <div style="margin-top:20px; text-align:center;">
+        <ButtonsPaterns2/>
+      </div>
+    {/if}
+  </MediaQuery>
+
+  <MediaQuery query="(min-width: 621px)" let:matches>
+    {#if matches}
+      <div style="margin-top:20px; text-align:center;">
+        <ButtonsPaterns1/>
+        <ButtonsPaterns2/>
+      </div>
+    {/if}
+  </MediaQuery>
 
   <div class="divider" style="margin-top:20px;"></div>
 
   <Row style="margin-top:10px; margin-bottom:15px;">
-
     <Column style="margin-left:-5px;">
       <SlidersMain/>
       <SlidersPropsGlobal/>
@@ -50,6 +67,7 @@
       </Row>
     </Column>
   </Row>
+
 </Grid>
 
 <style>

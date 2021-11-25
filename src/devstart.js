@@ -16,8 +16,6 @@ import {
   aDevicePats,
   aDeviceDesc,
   aStoredPats,
-  selectSource,
-  selectPattern,
   maxLenPattern,
   aEffectsDraw,
   aEffDrawDesc,
@@ -227,11 +225,6 @@ export let deviceStartup = (device) =>
   // reset to use first strand
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
-
-  // prevent disturbing what's currently running on the device
-  // when first connect unless explicitely setting pattern
-  selectSource.set(false);
-  selectPattern.set(doselect);
 
   curPageMode.set(PAGEMODE_CONTROLS);
 }

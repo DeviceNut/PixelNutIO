@@ -13,9 +13,7 @@
 
   import {
     pStrand,
-    aCurListPats,
-    updateSources,
-    storedPattern
+    aCurListPats
   } from './globals.js';
 
   import {
@@ -34,9 +32,6 @@
   {
     storePatternSave($pStrand.curPatternName, savedesc, $pStrand.curPatternStr);
     storePatternsInit();
-
-    $updateSources = true;
-    $storedPattern = true;
 
     if (copyclip)
     {
@@ -62,8 +57,6 @@
     storePatternRemove(remname);
     storePatternsInit();
     userClearPattern();
-
-    $updateSources = true;
 
     openDelete = false;
   }

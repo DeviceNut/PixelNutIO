@@ -13,9 +13,7 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    curDevice,
-    selectSource,
-    selectPattern
+    curDevice
    } from './globals.js';
 
   import {
@@ -51,9 +49,6 @@
   }
   const dodocs = () =>
   {
-    $selectSource = false;  // prevent changing source
-    $selectPattern = false; // or pattern when return
-
     $prevPageMode = $curPageMode;
     $curPageMode = PAGEMODE_HELPDOCS;
   }

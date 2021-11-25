@@ -51,12 +51,6 @@ export let aStoredPats    = writable([]);     // list of all stored custom patte
 export let aStoredDesc    = writable([]);     //  and list of help strings for them
 export let aCurListPats   = writable([]);     // "points" to current patterns list
 
-export let updateSources  = writable(false);  // true to force update of sources list
-export let storedPattern  = writable(false);  // true to set pattern to last stored one
-                                              // prevents device update from dropdown init:
-export let selectSource   = writable(false);  // false to ignore source selection
-export let selectPattern  = writable(false);  // false to ignore pattern selection
-
                                               // created each time device is started:
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
 export let aEffDrawDesc   = writable([]);     // list of all draw effect descriptions

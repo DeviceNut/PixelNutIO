@@ -170,6 +170,8 @@ export const userSetPattern = () =>
 {
   const index = get(pStrand).curPatternIdx;
 
+  //console.log(`setpattern: index=${index} ${get(dStrands)[get(idStrand)].curPatternIdx}`);
+
   if (get(dStrands)[get(idStrand)].curPatternIdx !== index)
   {
     get(dStrands)[get(idStrand)].curPatternIdx = index;

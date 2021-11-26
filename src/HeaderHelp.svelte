@@ -7,7 +7,7 @@
     PAGEMODE_DEVICES,
     curPageMode,
     prevPageMode,
-    docsMenuOpen
+    helpMenuOpen
   } from './globals.js';
 
   import ModalLinks from './ModalLinks.svelte';
@@ -24,7 +24,7 @@
 
 <div class="header">
 
-  <span style="cursor:pointer;" on:click={()=>{$docsMenuOpen = !$docsMenuOpen}}>
+  <span style="cursor:pointer;" on:click={()=>{$helpMenuOpen = !$helpMenuOpen}}>
     <Menu32 style="float:left; margin-left:10px;"/>
   </span>
 

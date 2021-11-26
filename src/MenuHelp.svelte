@@ -3,9 +3,9 @@
   import { TreeView } from "carbon-components-svelte";
 
   import {
-    docsHelpText,
-    menuActiveID,
-    menuExpList
+    helpActiveID,
+    helpOpenItems,
+    helpCurText
   } from './globals.js';
 
   import {
@@ -13,14 +13,15 @@
     helpText
   } from './helpmain.js';
 
-  let activeId = $menuActiveID;
-  let expandedIds = $menuExpList;
+  let activeId = $helpActiveID;
+  let expandedIds = $helpOpenItems;
 
   const dohelp = (id) =>
   {
-    $docsHelpText = helpText(id);
-    $menuActiveID = id;
-    $menuExpList = expandedIds;
+    console.log('dohelp...')
+    $helpCurText = helpText(id);
+    $helpActiveID = id;
+    $helpOpenItems = expandedIds;
   }
   dohelp(activeId);
 

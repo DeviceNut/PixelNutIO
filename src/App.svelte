@@ -16,9 +16,9 @@
 
   import { helpInit } from './helpmain.js';
 
+  import PageHelp from './PageHelp.svelte';
   import PageDevices from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
-  import PageHelpDocs from './PageHelpDocs.svelte';
 
   helpInit();
   storePatternsInit();
@@ -30,7 +30,7 @@
 
 <main>
   {#if ($curPageMode === PAGEMODE_HELPDOCS)}
-    <PageHelpDocs/>
+    <PageHelp/>
   {:else if ($curPageMode === PAGEMODE_CONTROLS)}
     <PageControls/>
   {:else}

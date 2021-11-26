@@ -29,10 +29,10 @@ export let isConnected    = writable(false);  // true if connected to that broke
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device
 
-export let docsMenuOpen   = writable(true);   // true to display docs menu
-export let docsHelpText   = writable('');     // help text to display
-export let menuActiveID   = writable(0);      // currently selected menu choice
-export let menuExpList    = writable([]);     // list of currently expanded items
+export let helpMenuOpen   = writable(true);   // true to display help menu
+export let helpOpenItems  = writable([]);     // list of currently expanded items
+export let helpActiveID   = writable(0);      // currently selected menu choice
+export let helpCurText    = writable('');     // text to display for selected item
 
 export let nStrands       = writable(0);      // number of physical strands
 export let eStrands       = writable([]);     // array of current strand enables
@@ -44,6 +44,11 @@ export let pStrand        = writable([]);     // "points" to current strand in a
 export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track
 export let maxLenPattern  = writable(0);      // max length of pattern by device
+
+export let patsMenuOpen   = writable(false);  // true to display pattern select menu
+export let patsOpenItems  = writable([]);     // list of currently expanded items
+export let patsActiveID   = writable(0);      // currently selected menu choice
+export let patsCurText    = writable('');     // text to display for selected item
 
 export let aDevicePats    = writable([]);     // list of all device custom patterns
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them

@@ -11,26 +11,26 @@
 
   import {
     HELPTEXT_HEIGHT,
-    docsMenuOpen,
-    docsHelpText
+    helpMenuOpen,
+    helpCurText
   } from './globals.js';
 
-  import HeaderHelpDocs from './HeaderHelpDocs.svelte';
-  import PanelHelpMenu from './PanelHelpMenu.svelte';
+  import HeaderHelp from './HeaderHelp.svelte';
+  import MenuHelp from './MenuHelp.svelte';
 
 </script>
 
-<HeaderHelpDocs/>
+<HeaderHelp/>
 
 <Grid>
   <Row>
-    {#if $docsMenuOpen }
+    {#if $helpMenuOpen }
 
       <MediaQuery query="(max-width: 800px)" let:matches>
         {#if matches}
           <Row style="width:100%; margin:0 auto;">
             <Column style="">
-              <PanelHelpMenu/>
+              <MenuHelp/>
             </Column>
           </Row>
           <Row style="width:100%; margin:0 auto;">
@@ -38,7 +38,7 @@
               <TextArea
                 style="font-family:'Courier New'"
                 rows={HELPTEXT_HEIGHT}
-                value={$docsHelpText}
+                value={$helpCurText}
               />
             </Column>
           </Row>
@@ -48,13 +48,13 @@
       <MediaQuery query="(min-width: 801px)" let:matches>
         {#if matches}
           <Column>
-            <PanelHelpMenu/>
+            <MenuHelp/>
           </Column>
           <Column style="margin-top:13px;">
             <TextArea
               style="font-family:'Courier New'"
               rows={HELPTEXT_HEIGHT}
-              value={$docsHelpText}
+              value={$helpCurText}
             />
           </Column>
         {/if}
@@ -66,7 +66,7 @@
         <TextArea
           style="font-family:'Courier New'"
           rows={HELPTEXT_HEIGHT}
-          value={$docsHelpText}
+          value={$helpCurText}
         />
       </Column>
 

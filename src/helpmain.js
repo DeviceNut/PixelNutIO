@@ -6,7 +6,7 @@ const helpMap = new Map();
 export const helpInit = () =>
 {
   helpMap.set(0,
-    "Help message 0",
+"Help message 0",
   );
   
   helpText_1(helpMap);

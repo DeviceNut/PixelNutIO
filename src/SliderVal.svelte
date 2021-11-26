@@ -7,7 +7,7 @@
   export let max = 100;
   export let cur = 0;
   export let disabled = undefined;
-  export let onchange;
+  export let onchange = {};
 
   // remove event parameter from call
   let dochange = () => { onchange(); }

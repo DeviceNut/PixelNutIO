@@ -11,7 +11,10 @@
     ButtonSet
   } from "carbon-components-svelte";
 
-  import { pStrand } from './globals.js';
+  import {
+    pStrand,
+    patsMenuOpen
+  } from './globals.js';
 
   import {
     storePatternsInit,
@@ -25,7 +28,7 @@
   let savedesc;
   let copyclip = false;
 
-  const doselect = () => {}
+  const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
   const doclear  = () => { userClearPattern(); }
   const dostore  = () => { sendEntirePattern(); }
 

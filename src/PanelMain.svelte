@@ -10,15 +10,17 @@
   import { MAX_FORCE_VALUE } from './devcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
   import { pStrand } from './globals.js';
-  import { userSendTrigger } from './cmduser1.js'
+
+  import {
+    userSetBright,
+    userSetDelay,
+    userSetRotate,
+    userSendTrigger
+  } from './cmduser1.js';
 
   import ButtonsPaterns from './ButtonsPaterns.svelte';
-
-  import SlidersMain from './SlidersMain.svelte';
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
-
-  const setforce = () => {} // nothing to do here
 
 </script>
 
@@ -41,14 +43,28 @@
 
   <Row style="margin-top:10px; margin-bottom:15px;">
     <Column style="margin-left:-5px;">
-      <SlidersMain/>
+
+    <SliderVal name='Bright'
+      onchange={userSetBright}
+      bind:cur={$pStrand.pcentBright}
+    />
+    <SliderVal name='Delay&nbsp;'
+      onchange={userSetDelay}
+      bind:cur={$pStrand.pcentDelay}
+    />
+    <SliderVal name='Rotate'
+      onchange={userSetRotate}
+      bind:cur={$pStrand.pixelOffset}
+      min={0}
+      max={$pStrand.numPixels-1}
+    />
+
       <SlidersPropsGlobal/>
 
       <Row style="margin-top:10px;">
         <div style="max-width:280px; margin-left:17px;">
           <SliderVal name='Force'
             max={MAX_FORCE_VALUE}
-            onchange={setforce}
             bind:cur={$pStrand.forceValue}
             disabled={($pStrand.curPatternStr === '') ||
                       !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}

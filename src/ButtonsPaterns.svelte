@@ -129,7 +129,7 @@
 
 <Modal
   passiveModal
-  modalHeading="Save Custom Pattern"
+  modalHeading="Store Pattern in Browser"
   bind:open={openSave}
   on:close
   >

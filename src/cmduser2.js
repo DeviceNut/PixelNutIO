@@ -7,8 +7,7 @@ import {
   pStrand,
   aStrands,
   eStrands,
-  dStrands,
-  aCurListPats
+  dStrands
 } from './globals.js';
 
 import {
@@ -166,56 +165,34 @@ export const userStrandSelect = (combine) =>
 
 // user just selected pattern to use
 // triggers program error if parse fails
-export const userSetPattern = () =>
+export const userSetPattern = (name, pattern) =>
 {
-  const index = get(pStrand).curPatternIdx;
+  console.log(`SetPattern: ${name}`); // DEBUG
 
-  //console.log(`setpattern: index=${index} ${get(dStrands)[get(idStrand)].curPatternIdx}`);
+  get(pStrand).curPatternName = name;
 
-  if (get(dStrands)[get(idStrand)].curPatternIdx !== index)
+  strandClearAll();
+
+  if (parsePattern(pattern)) // sets vars for current strand
   {
-    get(dStrands)[get(idStrand)].curPatternIdx = index;
-
-    const patitem = get(aCurListPats)[index];
-    const pattern = patitem.cmd;
-
-    const name = index ? patitem.text : '';
-    get(pStrand).curPatternName = name;
-    get(dStrands)[get(idStrand)].curPatternName = name;
-  
-    //console.log(`SetPattern: ${patitem.text} index=${index}`); // DEBUG
-
-    strandClearAll();
-
-    if (parsePattern(pattern)) // sets vars for current strand
-    {
-      strandCopyAll();
-      makeEntireCmdStr();
-      sendEntirePattern(); // set new pattern
-    }
-    else deviceError(`Failed parsing pattern: ${name}`);
+    strandCopyAll();
+    makeEntireCmdStr();
+    sendEntirePattern(); // store/exec new pattern
   }
+  else deviceError(`Failed parsing pattern: ${name}`);
 }
 
 export const userClearPattern = () =>
 {
   const strand = get(pStrand);
-
-  //console.log('Clear Pattern'); // DEBUG
-
   strand.curPatternName = '';
+  strand.curPatternStr = '';
 
   strandClearAll();
   makeEntireCmdStr();
-
-  if (strand.curPatternIdx === 0)
-    sendEntirePattern(); // clear pattern
-
-  // userSetPattern() with empty string
-  else strand.curPatternIdx = 0;
+  sendEntirePattern(); // store/exec cleared pattern
 
   strand.showCustom = false;
-  strand.showMenu = true;
 }
 
 // assume cannot get called if number of T/L's at max

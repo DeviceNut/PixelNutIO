@@ -166,13 +166,8 @@ export let deviceStartup = (device) =>
   device.active = true;
   curDevice.set(device);
 
-  let doselect = false;
-  let doreset;
-
   for (let s = 0; s < numstrands; ++s)
   {
-    doreset = false;
-
     idStrand.set(s);
     let strand = get(aStrands)[s];
     pStrand.set(strand);
@@ -198,28 +193,13 @@ export let deviceStartup = (device) =>
         get(aDevicePats).push(obj);
         get(aDeviceDesc).push([desc]);
 
-        strand.curSourceIdx = 0;
+        strand.curSourceIdx = 0; // FIXME
         strand.curPatternIdx = get(aDevicePats).length-1;
       }
-      else doreset = true; // if no pattern string
     }
-    else doreset = true; // if pattern string parse error
-
-    if (doreset) // set to first pattern in built-ins
-    {
-      let index = 0;
-      if (get(aDevicePats).length > 0) ++index;
-      if (get(aStoredPats).length > 0) ++index;
-      strand.curSourceIdx = index;
-      strand.curPatternIdx = 1;
-
-      if (s === 0) doselect = true;
-    }
-    //console.log('index: ', strand.curSourceIdx, strand.curPatternIdx); // DEBUG
 
     get(dStrands)[s].curSourceIdx = strand.curSourceIdx;
-    if (!doselect)
-      get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
+    get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
   }
 
   // reset to use first strand

@@ -49,7 +49,6 @@ export let aDevicePats    = writable([]);     // list of all device custom patte
 export let aDeviceDesc    = writable([]);     //  and list of help strings for them
 export let aStoredPats    = writable([]);     // list of all stored custom patterns
 export let aStoredDesc    = writable([]);     //  and list of help strings for them
-export let aCurListPats   = writable([]);     // "points" to current patterns list
 
                                               // created each time device is started:
 export let aEffectsDraw   = writable([]);     // list of all drawing effects

@@ -37,7 +37,7 @@ export const sendStrandSwitch = (s) =>
 
 // stores both the current pattern string and name
 // to the device flash, and optionally starts it
-function sendStoreExecPattern(dostart=true)
+function sendStoreExecPattern()
 {
   const patstr = get(pStrand).curPatternStr;
   let patname = get(pStrand).curPatternName;
@@ -45,8 +45,7 @@ function sendStoreExecPattern(dostart=true)
 
   sendCmdToDevice(cmdStr_FlashPatStr  + patstr);
   sendCmdToDevice(cmdStr_FlashPatName + patname);
-
-  if (dostart) sendCmdToDevice(cmdStr_ExecFromFlash);
+  sendCmdToDevice(cmdStr_ExecFromFlash);
 }
 
 // sends current pattern to just the specified strand
@@ -61,7 +60,7 @@ export const sendPatternToStrand = (s) =>
 
 // sends command/pattern to all selected strands
 // optionally stores/executes current pattern/name
-function sendCmdToStrands(cmdstr, dostart=true)
+function sendCmdToStrands(cmdstr)
 {
   const sid = get(idStrand);
   let didswitch = false;
@@ -79,7 +78,7 @@ function sendCmdToStrands(cmdstr, dostart=true)
       }
 
       if (cmdstr === null)
-           sendStoreExecPattern(dostart);
+           sendStoreExecPattern();
       else sendCmdToDevice(cmdstr);
     }
   }
@@ -90,10 +89,10 @@ function sendCmdToStrands(cmdstr, dostart=true)
 
 // sends current pattern to all selected strands,
 // stores the pattern/name to the device flash,
-// and optionaly executes that pattern
-export const sendEntirePattern = (dostart=true) =>
+// and then executes that pattern
+export const sendEntirePattern = () =>
 {
-  sendCmdToStrands(null, dostart);
+  sendCmdToStrands(null);
 
   // MUST HAVE THIS: triggers UI update to everything
   pStrand.set(get(pStrand));

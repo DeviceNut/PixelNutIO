@@ -104,18 +104,15 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  showMenu        : true,   // true to display source/pattern menus
-  showCustom      : false,  // true if displaying customize panel
-
-  curSourceIdx    : 0,      // index into current sources list
-  browserSource   : false,  // true if that is the browser list
-
+  curSourceType   : 0,      // type of source selected
+  browserSource   : false,  // true if pattern from browser list
   curPatternIdx   : 0,      // index into current patterns list
+
   curPatternName  : '',     // name of current pattern, editable
   curPatternStr   : '',     // current pattern command string
                             // (as created from current settings)
-  savePatternName : '',     // saves what was stored in flash
-                            // needed to restore name on Restart
+
+  showCustom      : false,  // true if displaying customize panel
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
@@ -193,14 +190,9 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.showMenu       = ps.showMenu;
+        // FIXME - copy pattern selection
+
         strand.showCustom     = ps.showCustom;
-        strand.sourceType     = ps.sourceType;
-        strand.browserSource  = ps.browserSource
-        strand.curSourceIdx   = ps.curSourceIdx;
-        strand.curPatternIdx  = ps.curPatternIdx;
-        strand.curPatternStr  = ps.curPatternStr;
-        strand.curPatternName = ps.curPatternName;
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;
 

@@ -13,12 +13,7 @@
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customize");
 
-  const toggleshow = () =>
-  {
-    $pStrand.showCustom = !$pStrand.showCustom;
-    if ($pStrand.showCustom) $pStrand.showMenu = false;
-    else if ($pStrand.curPatternStr == '') $pStrand.showMenu = true;
-  }
+  const toggleshow = () => { $pStrand.showCustom = !$pStrand.showCustom; }
 
 </script>
 
@@ -36,6 +31,7 @@
   <div class="bdiv" class:select={$pStrand.showCustom} on:click={toggleshow} >
     <span class="btext" >{pstr}</span>
   </div>
+
 </div>
 
 {#if $pStrand.showCustom }

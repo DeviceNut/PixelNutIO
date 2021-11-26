@@ -1,15 +1,18 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
-  import { Grid, Row, Column } from "carbon-components-svelte";
+  import {
+    Grid,
+    Row,
+    Column,
+    TextInput
+  } from "carbon-components-svelte";
 
   import { MAX_FORCE_VALUE } from './devcmds.js';
   import { pluginBit_TRIGFORCE } from './presets.js';
   import { pStrand } from './globals.js';
   import { userSendTrigger } from './cmduser1.js'
 
-  import ButtonsPaterns1 from './ButtonsPaterns1.svelte';
-  import ButtonsPaterns2 from './ButtonsPaterns2.svelte';
+  import ButtonsPaterns from './ButtonsPaterns.svelte';
 
   import SlidersMain from './SlidersMain.svelte';
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
@@ -21,25 +24,18 @@
 
 <Grid>
 
-  <MediaQuery query="(max-width: 620px)" let:matches>
-    {#if matches}
-      <div style="margin-top:20px; text-align:center;">
-        <ButtonsPaterns1/>
-      </div>
-      <div style="margin-top:20px; text-align:center;">
-        <ButtonsPaterns2/>
-      </div>
-    {/if}
-  </MediaQuery>
+  <div style="padding-top:20px; text-align:center;">
+    <ButtonsPaterns/>
+  </div>
 
-  <MediaQuery query="(min-width: 621px)" let:matches>
-    {#if matches}
-      <div style="margin-top:20px; text-align:center;">
-        <ButtonsPaterns1/>
-        <ButtonsPaterns2/>
-      </div>
-    {/if}
-  </MediaQuery>
+  <div style="margin-top:20px; text-align:center;">
+    <TextInput
+      style="width:250px; margin:0 auto;"
+      placeholder='Name of your pattern'
+      bind:value={$pStrand.curPatternName}
+      maxlength="32"
+    />
+  </div>
 
   <div class="divider" style="margin-top:20px;"></div>
 
@@ -58,7 +54,7 @@
                       !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
             />
         </div> 
-        <button class="button"
+        <button class="button-trigger"
           on:click={userSendTrigger}
           disabled={($pStrand.curPatternStr === '') ||
                     !($pStrand.triggerUsed)}
@@ -75,8 +71,7 @@
     margin-top: 15px;
     padding-top: 2px;
     background-color: var(--bg-color-divider);
-  }
-  .button {
+  }  .button-trigger {
     height: 35px;
     padding: 3px;
     margin-top: 5px;

@@ -11,22 +11,23 @@
     ButtonSet
   } from "carbon-components-svelte";
 
-  import {
-    pStrand,
-    aCurListPats
-  } from './globals.js';
+  import { pStrand } from './globals.js';
 
   import {
     storePatternsInit,
-    storePatternSave,
-    storePatternRemove
+    storePatternSave
   } from './browser.js';
 
   import { userClearPattern } from './cmduser2.js';
+  import { sendEntirePattern } from './cmdsend.js';
 
   let openSave = false;
   let savedesc;
   let copyclip = false;
+
+  const doselect = () => {}
+  const doclear  = () => { userClearPattern(); }
+  const dostore  = () => { sendEntirePattern(); }
 
   const dosave = () =>
   {
@@ -41,24 +42,6 @@
 
     savedesc = '';
     openSave = false;
-  }
-
-  let openDelete = false;
-  let remname;
-
-  const delstart = () =>
-  {
-    remname = $aCurListPats[$pStrand.curPatternIdx].text
-    openDelete = true;
-  }
-
-  const dodelete = () =>
-  {
-    storePatternRemove(remname);
-    storePatternsInit();
-    userClearPattern();
-
-    openDelete = false;
   }
 
   function copyToClipboard()
@@ -87,18 +70,61 @@
     document.body.removeChild(textArea);
   }
 
+/*
+  import { storePatternRemove } from './browser.js';
+
+  let openDelete = false;
+
+  const dodelete = () =>
+  {
+    storePatternRemove($pStrand.curPatternName);
+    storePatternsInit();
+    userClearPattern();
+
+    openDelete = false;
+  }
+
+  <button class="button-pattern"
+    on:click={() => { openDelete = true; }}
+    disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
+    >Delete
+  </button>
+
+  <Modal
+    passiveModal
+    modalHeading={`Delete Custom Pattern: "${$pStrand.curPatternName}" ?`}
+    bind:open={openDelete}
+    on:close
+    >
+    <ButtonSet>
+      <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
+      <Button on:click={dodelete}>Delete</Button>
+    </ButtonSet>
+  </Modal>
+*/
 </script>
+
+<button class="button-pattern"
+  on:click={doselect}
+  >Select
+</button>
+
+<button class="button-pattern"
+  on:click={doclear}
+  disabled={ ($pStrand.tactives === 0) }
+  >Clear
+</button>
+
+<button class="button-pattern"
+  on:click={dostore}
+  disabled={ ($pStrand.curPatternStr === '') }
+  >Store
+</button>
 
 <button class="button-pattern"
   on:click={() => {openSave = !openSave;}}
   disabled={$pStrand.curPatternStr === ''}
   >Save
-</button>
-
-<button class="button-pattern"
-  on:click={delstart}
-  disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
-  >Delete
 </button>
 
 <Modal
@@ -130,18 +156,6 @@
   </Form>
 </Modal>
 
-<Modal
-  passiveModal
-  modalHeading={`Delete Custom Pattern: "${remname}" ?`}
-  bind:open={openDelete}
-  on:close
-  >
-  <ButtonSet>
-    <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
-    <Button on:click={dodelete}>Delete</Button>
-  </ButtonSet>
-</Modal>
-  
 <style>
   .button-pattern {
     width: 60px;

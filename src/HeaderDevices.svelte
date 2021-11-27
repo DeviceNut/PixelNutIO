@@ -21,9 +21,15 @@
 </script>
 
 <div class="header">
-  <button on:click={dolinks} class="button-left" >Links</button>
+  <button class="button-left"
+    on:click={dolinks}
+    >Links
+  </button>
   <span class="title">{titleDevices}</span>
-  <button on:click={dodocs}  class="button-rite" >Docs &gt;&gt;</button>
+  <button class="button-rite"
+    on:click={dodocs}
+    >Docs &gt;&gt;
+  </button>
 </div>
 
 <ModalLinks {openlinks} />

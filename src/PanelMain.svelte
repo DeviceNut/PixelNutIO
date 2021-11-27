@@ -23,11 +23,9 @@
   } from './cmduser1.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
-  import ButtonsPaterns from './ButtonsPaterns.svelte';
+  import ButtonsPatterns from './ButtonsPatterns.svelte';
   import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
   import SliderVal from './SliderVal.svelte';
-
-//<div style="height:300px; width:300px;"></div>
 
 </script>
 
@@ -39,7 +37,7 @@
     <div style="padding-top:20px;"></div>
 
     <div style="text-align:center;">
-      <ButtonsPaterns/>
+      <ButtonsPatterns/>
     </div>
 
     <div style="padding-top:20px;"></div>
@@ -49,12 +47,15 @@
         style="width:250px; margin:0 auto;"
         placeholder='Name of your pattern'
         bind:value={$pStrand.curPatternName}
+        disabled={!$pStrand.showCustom}
         maxlength="32"
       />
     </div>
+
+    <div style="padding-top:10px;"></div>
   {/if}
 
-  <div class="divider" style="margin-top:20px;"></div>
+  <div class="divider" style="margin-top:10px;"></div>
 
   <Row style="margin-top:10px; margin-bottom:15px;">
     <Column style="margin-left:-5px;">

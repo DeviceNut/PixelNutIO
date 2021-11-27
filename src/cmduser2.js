@@ -43,7 +43,7 @@ import {
 import {
   sendCmdToDevice,
   sendStrandSwitch,
-  sendEntirePattern,
+  sendStrandPattern,
   sendPatternToStrand,
   sendStrandCmd
 } from './cmdsend.js';
@@ -177,7 +177,10 @@ export const userSetPattern = (name, pattern) =>
   {
     strandCopyAll();
     makeEntireCmdStr();
-    sendEntirePattern(); // store/exec new pattern
+    sendStrandPattern(); // store/exec new pattern
+
+    // MUST HAVE THIS: triggers UI update to everything
+    pStrand.set(get(pStrand));
   }
   else deviceError(`Failed parsing pattern: ${name}`);
 }
@@ -190,7 +193,10 @@ export const userClearPattern = () =>
 
   strandClearAll();
   makeEntireCmdStr();
-  sendEntirePattern(); // store/exec cleared pattern
+  sendStrandPattern(); // store/exec cleared pattern
+
+  // MUST HAVE THIS: triggers UI update to everything
+  pStrand.set(get(pStrand));
 
   strand.showCustom = false;
 }

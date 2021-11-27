@@ -22,7 +22,7 @@
   } from './browser.js';
 
   import { userClearPattern } from './cmduser2.js';
-  import { sendEntirePattern } from './cmdsend.js';
+  import { sendStrandPattern } from './cmdsend.js';
 
   let openSave = false;
   let savedesc;
@@ -30,7 +30,7 @@
 
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
   const doclear  = () => { userClearPattern(); }
-  const dostore  = () => { sendEntirePattern(); }
+  const dostore  = () => { sendStrandPattern(); }
 
   const dosave = () =>
   {
@@ -73,38 +73,6 @@
     document.body.removeChild(textArea);
   }
 
-/*
-  import { storePatternRemove } from './browser.js';
-
-  let openDelete = false;
-
-  const dodelete = () =>
-  {
-    storePatternRemove($pStrand.curPatternName);
-    storePatternsInit();
-    userClearPattern();
-
-    openDelete = false;
-  }
-
-  <button class="button-pattern"
-    on:click={() => { openDelete = true; }}
-    disabled={!$pStrand.browserSource || ($pStrand.curPatternIdx === 0)}
-    >Delete
-  </button>
-
-  <Modal
-    passiveModal
-    modalHeading={`Delete Custom Pattern: "${$pStrand.curPatternName}" ?`}
-    bind:open={openDelete}
-    on:close
-    >
-    <ButtonSet>
-      <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
-      <Button on:click={dodelete}>Delete</Button>
-    </ButtonSet>
-  </Modal>
-*/
 </script>
 
 <button class="button-pattern"

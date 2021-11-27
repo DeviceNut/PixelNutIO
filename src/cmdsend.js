@@ -59,7 +59,9 @@ export const sendPatternToStrand = (s) =>
 }
 
 // sends command/pattern to all selected strands
-// optionally stores/executes current pattern/name
+// if no string is passed:
+//   stores/executes current name/pattern
+// else: just sends command
 function sendCmdToStrands(cmdstr)
 {
   const sid = get(idStrand);
@@ -77,7 +79,7 @@ function sendCmdToStrands(cmdstr)
         lastid = s;
       }
 
-      if (cmdstr === null)
+      if (!cmdstr)
            sendStoreExecPattern();
       else sendCmdToDevice(cmdstr);
     }
@@ -90,20 +92,16 @@ function sendCmdToStrands(cmdstr)
 // sends current pattern to all selected strands,
 // stores the pattern/name to the device flash,
 // and then executes that pattern
-export const sendEntirePattern = () =>
+export const sendStrandPattern = () =>
 {
   sendCmdToStrands(null);
-
-  // MUST HAVE THIS: triggers UI update to everything
-  pStrand.set(get(pStrand));
 }
 
 // send top level command (and optional value)
 // to all selected strands
 export const sendStrandCmd = (cmdstr, cmdval) =>
 {
-  if (cmdval !== undefined)
-    cmdstr = cmdstr.concat(cmdval);
+  if (cmdval) cmdstr = cmdstr.concat(cmdval);
 
   sendCmdToStrands(cmdstr);
 }

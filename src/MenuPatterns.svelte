@@ -1,7 +1,10 @@
 <script>
 
-  import {
+import {
     TreeView,
+    Modal,
+    Button,
+    ButtonSet
   } from "carbon-components-svelte";
 
   import {
@@ -12,22 +15,19 @@
     patsCurText
   } from './globals.js';
 
-  let activeId = 0; //$patsActiveID;
-  let selectedIds = [20];
+  import {
+    storePatternsInit,
+    storePatternRemove
+  } from './browser.js';
 
   let isbrowser = false;
   let delstr = 'Delete...';
+  $: {
 
-  const dodelete = () => {}
-
-  const doselect = (id) =>
-  {
-    console.log(`Selecting id=${id}`);
-
-    if (id >= 30)
+    if ($patsActiveID >= 30)
     {
       isbrowser = true;
-      delstr = (id == 30) ? 'Delete All' : 'Delete One';
+      delstr = ($patsActiveID == 30) ? 'Delete All' : 'Delete One';
     }
     else
     {
@@ -36,7 +36,36 @@
     }
   }
 
-  const patterns =
+  let openDelete = false;
+  let delname = '';
+
+  const dodelete = () =>
+  {
+    storePatternRemove(delname);
+    storePatternsInit();
+
+    //userClearPattern(); TODO: reset current pattern to...??
+
+    openDelete = false;
+  }
+
+  const doselect = (id) =>
+  {
+    //console.log(`Selecting id=${id}`);
+    $patsActiveID = id;
+    $patsSelectIDs = [ $patsActiveID ];
+
+    /*
+    if (id == 30)
+    {
+      const obj = { id: 33, text: "Pattern 3" };
+      patterns[2].children.push(obj);
+      patterns = patterns; // forces refresh
+    }
+    */
+  }
+
+  let patterns =
   [
     {
       id: 10,
@@ -71,7 +100,7 @@
 <p>Patterns to choose from:</p>
 
 <TreeView
-  children={patterns}
+  bind:children={patterns}
   bind:activeId={$patsActiveID}
   bind:selectedIds={$patsSelectIDs}
   bind:expandedIds={$patsOpenItems}
@@ -84,11 +113,23 @@
     >Close
   </button>
   <button class="button-delete"
-    on:click={dodelete}
+    on:click={() => {openDelete = true;}}
     disabled={!isbrowser}
     >{delstr}
   </button>
 </div>
+
+<Modal
+  passiveModal
+  modalHeading={`Delete Custom Pattern: "${delname}" ?`}
+  bind:open={openDelete}
+  on:close
+  >
+  <ButtonSet>
+    <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
+    <Button on:click={dodelete}>Delete</Button>
+  </ButtonSet>
+</Modal>
 
 <style>
   .button-close {

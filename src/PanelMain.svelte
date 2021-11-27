@@ -31,29 +31,33 @@
 
 <Grid>
 
-  {#if $patsMenuOpen }
-    <MenuPatterns/>
-  {:else}
-    <div style="padding-top:20px;"></div>
+  <Row>
+    <Column>
+      {#if $patsMenuOpen }
+        <MenuPatterns/>
+      {:else}
+        <div style="padding-top:20px;"></div>
 
-    <div style="text-align:center;">
-      <ButtonsPatterns/>
-    </div>
+        <div style="text-align:center;">
+          <ButtonsPatterns/>
+        </div>
 
-    <div style="padding-top:20px;"></div>
+        <div style="padding-top:20px;"></div>
 
-    <div style="text-align:center;">
-      <TextInput
-        style="width:250px; margin:0 auto;"
-        placeholder='Name of your pattern'
-        bind:value={$pStrand.curPatternName}
-        disabled={!$pStrand.showCustom}
-        maxlength="32"
-      />
-    </div>
+        <div style="text-align:center;">
+          <TextInput
+            style="width:250px; margin:0 auto;"
+            placeholder='Name of your pattern'
+            bind:value={$pStrand.curPatternName}
+            disabled={!$pStrand.showCustom}
+            maxlength="32"
+          />
+        </div>
 
-    <div style="padding-top:10px;"></div>
-  {/if}
+        <div style="padding-top:10px;"></div>
+      {/if}
+    </Column>
+  </Row>
 
   <div class="divider" style="margin-top:10px;"></div>
 

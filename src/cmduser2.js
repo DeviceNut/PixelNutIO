@@ -104,13 +104,16 @@ export const userStrandCombine = (combine) =>
   }
 }
 
-export const userStrandSelect = (combine) =>
+export const userStrandSelect = (index, combine) =>
 {
   let cur = get(idStrand);
   for (let s = 0; s < get(nStrands); ++s)
   {
     let wason = get(eStrands)[s];
     let nowon = get(aStrands)[s].selected;
+
+    // hasnt' toggled in checkbox yet
+    if (s === index) nowon = !nowon;
 
     if (wason !== nowon)
     {

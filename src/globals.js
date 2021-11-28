@@ -35,10 +35,11 @@ export let helpOpenItems  = writable([]);     // list of currently expanded item
 export let helpCurText    = writable('');     // text to display for selected item
 
 export let nStrands       = writable(0);      // number of physical strands
+export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
 export let eStrands       = writable([]);     // array of current strand enables
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
+export let strandCombine  = writable(false);  // true to combine strands
 export let dStrands       = writable([]);     // used to hold current device values
-export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
 export let pStrand        = writable([]);     // "points" to current strand in aStrands
 
 export let nTracks        = writable(0);      // total number of tracks

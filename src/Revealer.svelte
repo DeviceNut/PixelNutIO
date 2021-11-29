@@ -4,7 +4,10 @@
   import CaretDown32 from "carbon-icons-svelte/lib/CaretDown32";
 
   export let name;
+  export let num;
   export let isopen;
+
+  let title = `${name} ${num}`;
 
 </script>
 
@@ -14,7 +17,7 @@
   {:else}
     <CaretDown32 style="float:left; margin:3px 0 3px -15px;"/>
   {/if}
-  <button class="button"> {name} </button>
+  <button class="button"> {title} </button>
 </div>
 
 <style>

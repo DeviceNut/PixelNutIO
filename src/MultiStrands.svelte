@@ -6,7 +6,7 @@
 
 </script>
 
-<div style="margin:15px; 0 10px; 5px; text-align: center;">
+<div style="margin-top:15px; margin-bottom:10px; text-align: center;">
   <span style="margin-right:5px; font-size:1.2em;">Strands:</span>
 
   {#each $aStrands as _,n}

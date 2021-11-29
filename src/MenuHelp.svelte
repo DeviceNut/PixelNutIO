@@ -18,7 +18,6 @@
 
   const dohelp = (id) =>
   {
-    console.log('dohelp...')
     $helpCurText = helpText(id);
     $helpActiveID = id;
     $helpOpenItems = expandedIds;

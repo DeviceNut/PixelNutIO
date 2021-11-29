@@ -50,27 +50,28 @@
 
 </script>
 
-<div style="margin:5px 0 10px -10px; padding:0 5px 10px;
+<div style="margin: 10px -5px 10px -5px;
+            padding-top:7px; padding-left:10px; padding-bottom:10px;
             background-color: var(--bg-color-controls-area);">
 
-  <p style="padding:10px 0 10px 3px; font-size:.9em;">
+  <p style="margin-top:10px; margin-bottom:15px; font-size:.9em;">
     Triggering Options:</p>
 
   <Checkbox labelText="Once at start"
-    style="padding:3px;"
+    style="margin-top:10px;"
     on:check={autoStart}
     bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
   />
   {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
         ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
     <Checkbox labelText="From main controls"
-      style="padding:3px;"
+      style="margin-top:10px;"
       on:check={setMain}
       bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
     />
     {#if (($pStrand.trigSources).length > 1) }
       <Checkbox labelText="From other effect"
-        style="padding:3px;"
+        style="margin-top:10px;"
         on:check={setOnLayer}
         bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayer}
       />
@@ -84,7 +85,7 @@
       {/if}
     {/if}
     <Checkbox labelText="Auto generated"
-      style="padding:3px;"
+      style="margin-top:10px;"
       on:check={setRepeat}
       bind:checked={$pStrand.tracks[track].layers[layer].trigDoRepeat}
     />
@@ -128,22 +129,20 @@
         ($pStrand.tracks[track].layers[layer].trigAtStart ||
         $pStrand.tracks[track].layers[layer].trigDoRepeat) }
 
-    <p style="padding:13px 0 5px 5px; font-size:.9em;">
+    <p style="margin-top:15px; font-size:.9em;">
       Triggering Force:</p>
 
     <Checkbox labelText="Random force"
-      style="margin-left:5px; margin-top:10px;"
+      style="margin-top:15px;"
       on:check={setFtype}
       bind:checked={$pStrand.tracks[track].layers[layer].forceRandom}
     />
-    <div style="margin-left:10px; margin-top:-5px;">
-      <SliderVal name='Force:'
-        max={MAX_FORCE_VALUE}
-        onchange={setFvalue}
-        bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
-        disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
-      />
-    </div>
+    <SliderVal name='Force:'
+      max={MAX_FORCE_VALUE}
+      onchange={setFvalue}
+      bind:cur={$pStrand.tracks[track].layers[layer].forceValue}
+      disabled={$pStrand.tracks[track].layers[layer].forceRandom} 
+    />
   {/if}
 
 </div>

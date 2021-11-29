@@ -2,19 +2,23 @@
 
   import { Grid, Row, Column } from "carbon-components-svelte";
   import { pStrand } from './globals.js';
-  import OneTrack from './OneTrack.svelte';
+  import TrackLayers from './TrackLayers.svelte';
 
   export let numcols;
 
 </script>
 
-<div class="panel" class:col1={numcols === 1} class:col2={numcols === 2}>
+<div class="panel"
+  class:col1={numcols === 1}
+  class:col2={numcols === 2}
+  class:col3={numcols === 3}
+  >
   <Grid>
     <Row>
       <Column>
         {#each Array($pStrand.tactives) as _,track}
           {#if ((track % numcols) === 0) }
-            <OneTrack {track} />
+            <TrackLayers {track} />
           {/if}
         {/each}
       </Column>
@@ -22,7 +26,7 @@
         <Column style="margin-left:5px;">
           {#each Array($pStrand.tactives) as _,track}
             {#if ((track % numcols) === 1) }
-              <OneTrack {track} />
+              <TrackLayers {track} />
             {/if}
           {/each}
         </Column>
@@ -31,7 +35,7 @@
         <Column style="margin-left:5px;">
           {#each Array($pStrand.tactives) as _,track}
             {#if ((track % numcols) === 2) }
-              <OneTrack {track} />
+              <TrackLayers {track} />
             {/if}
           {/each}
         </Column>
@@ -48,10 +52,14 @@
     background-color: var(--bg-color-panel);
   }
   .col1 {
-    max-width:550px;
+    max-width:625px;
   }
   .col2 {
-    min-width:1100px;
-    max-width:1100px;
+    min-width:1050px;
+    max-width:1050px;
+  }
+  .col3 {
+    min-width:1550px;
+    max-width:1550px;
   }
 </style>

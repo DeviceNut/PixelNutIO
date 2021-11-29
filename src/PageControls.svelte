@@ -1,5 +1,7 @@
 <script>
 
+  import MediaQuery from "svelte-media-query";
+
   import {
     nStrands,
     pStrand
@@ -8,7 +10,7 @@
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';
   import PanelMain from './PanelMain.svelte';
-  import PanelCustom from './PanelCustom.svelte';
+  import TrackLayout from './TrackLayout.svelte';
 
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customize");
@@ -35,12 +37,26 @@
 </div>
 
 {#if $pStrand.showCustom }
-  <PanelCustom/>
+  <MediaQuery query="(max-width: 1100px)" let:matches>
+    {#if matches}
+      <TrackLayout numcols={1} />
+    {/if}
+  </MediaQuery>
+  <MediaQuery query="(min-width: 1101px) and (max-width: 1600px)" let:matches>
+    {#if matches }
+      <TrackLayout numcols={($pStrand.tactives < 2) ? ($pStrand.tactives) : 2} />
+    {/if}
+  </MediaQuery>
+  <MediaQuery query="(min-width: 1601px)" let:matches>
+    {#if matches }
+      <TrackLayout numcols={($pStrand.tactives < 3) ? ($pStrand.tactives) : 3} />
+    {/if}
+  </MediaQuery>
 {/if}
 
 <style>
   .panel {
-    max-width: 550px;
+    max-width: 625px;
     margin: 0 auto;
     background-color: var(--bg-color-panel);
   }

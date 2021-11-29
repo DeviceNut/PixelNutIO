@@ -81,9 +81,9 @@
 <style>
   .button {
     float: right;
-    width: 40px;
+    width: 38px;
     margin: 5px 5px 7px 0;
-    padding: 4px;
+    padding: 3px;
   }
   .button.select {
     padding: 3px;

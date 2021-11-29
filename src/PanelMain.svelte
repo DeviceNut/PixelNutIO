@@ -57,12 +57,8 @@
         <div style="padding-top:10px;"></div>
       {/if}
     </Column>
-  </Row>
 
-  <div class="divider" style="margin-top:10px;"></div>
-
-  <Row style="margin-top:10px; margin-bottom:15px;">
-    <Column style="margin-left:-5px;">
+    <Column>
 
       <SliderVal name='Bright'
         onchange={userSetBright}
@@ -81,22 +77,19 @@
 
       <SlidersPropsGlobal/>
 
-      <Row style="margin-top:10px;">
-        <div style="max-width:280px; margin-left:17px;">
-          <SliderVal name='Force'
-            max={MAX_FORCE_VALUE}
-            bind:cur={$pStrand.forceValue}
-            disabled={($pStrand.curPatternStr === '') ||
-                      !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
-            />
-        </div> 
-        <button class="button-trigger"
-          on:click={userSendTrigger}
-          disabled={($pStrand.curPatternStr === '') ||
-                    !($pStrand.triggerUsed)}
-          >Trigger
-        </button>
-      </Row>
+      <SliderVal name='Force'
+        max={MAX_FORCE_VALUE}
+        bind:cur={$pStrand.forceValue}
+        disabled={($pStrand.curPatternStr === '') ||
+                  !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
+        />
+
+      <button class="button-trigger"
+        on:click={userSendTrigger}
+        disabled={($pStrand.curPatternStr === '') ||
+                  !($pStrand.triggerUsed)}
+        >Trigger
+      </button>
 
     </Column>
   </Row>
@@ -104,13 +97,10 @@
 </Grid>
 
 <style>
-  .divider {
-    margin-top: 15px;
-    padding-top: 2px;
-    background-color: var(--bg-color-divider);
-  }  .button-trigger {
-    height: 35px;
+  .button-trigger {
+    height: 25px;
+    width: 200px;
+    margin: 5px 0 10px 60px;
     padding: 3px;
-    margin-top: 5px;
   }
 </style>

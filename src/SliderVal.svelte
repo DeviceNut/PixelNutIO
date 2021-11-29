@@ -7,10 +7,10 @@
   export let max = 100;
   export let cur = 0;
   export let disabled = undefined;
-  export let onchange = {};
+  export let onchange = undefined;
 
   // remove event parameter from call
-  let dochange = () => { onchange(); }
+  let dochange = () => { if (onchange) onchange(); }
 
   // on:click doesn't always fire ??
 

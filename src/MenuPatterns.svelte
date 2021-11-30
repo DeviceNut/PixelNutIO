@@ -107,7 +107,7 @@ import {
   on:focus={({detail}) => { doselect(detail.id); }}
 />
 
-<div style="margin-top:10px; text-align:center;">
+<div style="margin-top:15px; text-align:center;">
   <button class="button-close"
     on:click={() => { $patsMenuOpen = false; }}
     >Close

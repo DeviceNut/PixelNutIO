@@ -47,12 +47,13 @@
 <style>
   .panel {
     margin: 0 auto;
+    margin-bottom: 10px;
     padding-bottom: 10px;
-    border: 2px solid var(--bg-color-panel-border);
     background-color: var(--bg-color-panel);
+    border: 2px solid var(--bg-color-panel-border);
   }
   .col1 {
-    max-width:625px;
+    max-width:630px;
   }
   .col2 {
     min-width:1050px;

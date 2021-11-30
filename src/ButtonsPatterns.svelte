@@ -132,7 +132,7 @@
     width: 60px;
     height: 40px;
     padding: 5px;
-    margin-left: 7px;
-    margin-right: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
   }
 </style>

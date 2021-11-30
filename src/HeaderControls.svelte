@@ -55,7 +55,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 620px)" let:matches>
+<MediaQuery query="(max-width: 630px)" let:matches>
   {#if matches}
     <div class="header">
       <input
@@ -73,7 +73,7 @@
     </div>
   {/if}
 </MediaQuery>
-<MediaQuery query="(min-width: 621px)" let:matches>
+<MediaQuery query="(min-width: 631px)" let:matches>
   {#if matches }
     <div class="header">
       <button class="button left" on:click={dodevs}  >&lt;&lt; Devices</button>
@@ -104,7 +104,6 @@
 
 <style>
   .header {
-    max-width: 625px;
     margin: 0 auto;
     height: 45px;
     padding: 2px 0 10px 0;

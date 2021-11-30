@@ -37,7 +37,7 @@
 <style>
   .header {
     height: 45px;
-    max-width: 625px;
+    max-width: 630px;
     margin: 0 auto;
     text-align: center;
     background-color: var(--bg-color-header);

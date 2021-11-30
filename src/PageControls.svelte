@@ -1,6 +1,11 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
+  import {
+    Grid,
+    Row,
+    Column
+  } from "carbon-components-svelte";
 
   import {
     nStrands,
@@ -9,7 +14,8 @@
 
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';
-  import PanelMain from './PanelMain.svelte';
+  import PanelMenu from './PanelMenu.svelte';
+  import PanelControls from './PanelControls.svelte';
   import TrackLayout from './TrackLayout.svelte';
 
   let pstr = '';
@@ -19,21 +25,49 @@
 
 </script>
 
-<HeaderControls/>
-
 <div class="panel">
+
+  <HeaderControls/>
 
   {#if ($nStrands > 1) }
     <MultiStrands/>
     <div class="divider"></div>
   {/if}
 
-  <PanelMain/>
+  <Grid>
+    <MediaQuery query="(max-width: 1100px)" let:matches>
+      {#if matches}
+        <Row>
+          <Column>
+            <PanelMenu/>
+            <div class="divider"></div>
+            <PanelControls/>
+          </Column>
+        </Row>
+      {/if}
+    </MediaQuery>
+    <MediaQuery query="(min-width: 1101px)" let:matches>
+      {#if matches }
+        <Row>
+          <Column>
+            <PanelMenu/>
+          </Column>
+          <Column>
+            <PanelControls/>
+          </Column>
+        </Row>
+      {/if}
+    </MediaQuery>
 
-  <div class="bdiv" class:select={$pStrand.showCustom} on:click={toggleshow} >
-    <span class="btext" >{pstr}</span>
-  </div>
-
+    <Row>
+      <Column>
+        <div class="bdiv" on:click={toggleshow}>
+          <span class="btext" >{pstr}</span>
+        </div>
+      </Column>
+    </Row>
+    
+  </Grid>
 </div>
 
 {#if $pStrand.showCustom }
@@ -56,27 +90,26 @@
 
 <style>
   .panel {
-    max-width: 625px;
+    max-width: 1100px;
     margin: 0 auto;
     background-color: var(--bg-color-panel);
+    border: 2px solid var(--bg-color-panel-border);
   }
   .divider {
-    margin-top: 5px;
+    margin-top: 20px;
+    margin-bottom: 15px;
     padding-top: 2px;
     background-color: var(--bg-color-divider);
   }
   .bdiv {
     cursor: pointer;
+    height: 18px;
     margin-top: 10px;
-    padding: 5px;
+    padding-top: 2px;
     text-align: center;
     background-color: var(--bg-color-button);
   }
   .btext {
     color: var(--color-button);
-  }
-  .select {
-    margin-top: 10px;
-    padding: 2px 0 0 0;
   }
 </style>

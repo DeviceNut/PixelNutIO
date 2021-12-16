@@ -8,26 +8,44 @@ import {
   } from "carbon-components-svelte";
 
   import {
+    aStoredPatt,
+    aStoredDesc,
+    aDevicePatt,
+    aDeviceDesc,
     patsMenuOpen,
     patsActiveID,
-    patsSelectIDs,
     patsOpenItems,
-    patsCurText
+    patsSelectedID,
+    patsMenuItems,
+    patsCurText,
+    MENUID_PRESETS,
+    MENUID_BROWSWER,
+    MENUID_DEVICE,
+    menuPresets,
+    menuBrowser,
+    menuDevice
   } from './globals.js';
+
+  import {
+    preset_PatStrs,
+    preset_PatDescs
+  } from './presets.js';
 
   import {
     storePatternsInit,
     storePatternRemove
   } from './browser.js';
 
+  import { userSetPattern } from './cmduser2.js';
+
   let isbrowser = false;
   let delstr = 'Delete...';
   $: {
 
-    if ($patsActiveID >= 30)
+    if ((MENUID_BROWSWER <= $patsActiveID) && ($patsActiveID < MENUID_DEVICE))
     {
       isbrowser = true;
-      delstr = ($patsActiveID == 30) ? 'Delete All' : 'Delete One';
+      delstr = ($patsActiveID == MENUID_BROWSWER) ? 'Delete All' : 'Delete One';
     }
     else
     {
@@ -44,70 +62,74 @@ import {
     storePatternRemove(delname);
     storePatternsInit();
 
-    //userClearPattern(); TODO: reset current pattern to...??
+    $patsMenuItems = $patsMenuItems; // triggers update to UI - MUST HAVE THIS
+
+    // TODO: reset current pattern, and reset patsMenuItems if necessary
 
     openDelete = false;
   }
 
+  // TODO: set initial choice
+
   const doselect = (id) =>
   {
-    //console.log(`Selecting id=${id}`);
+    console.log(`Selecting id=${id}`);
+
     $patsActiveID = id;
-    $patsSelectIDs = [ $patsActiveID ];
+    $patsSelectedID = [ $patsActiveID ];
 
-    /*
-    if (id == 30)
+    if ((id == MENUID_PRESETS)  ||
+        (id == MENUID_BROWSWER) ||
+        (id == MENUID_DEVICE))
+      return; // on category, do nothing
+
+    let name, pcmd;
+    if (id < MENUID_BROWSWER)
     {
-      const obj = { id: 33, text: "Pattern 3" };
-      patterns[2].children.push(obj);
-      patterns = patterns; // forces refresh
+      id -= MENUID_PRESETS+1;
+      name = menuPresets.children[id].text;
+      pcmd = preset_PatStrs[id];
+      $patsCurText = preset_PatDescs[id];
     }
-    */
+    else if (id < MENUID_DEVICE)
+    {
+      id -= MENUID_BROWSWER+1;
+      name = menuBrowser.children[id].text;
+      pcmd = $aStoredPatt[id];
+      $patsCurText = $aStoredDesc[id];
+      delname = name;
+    }
+    else
+    {
+      id -= MENUID_DEVICE+1;
+      name = menuDevice.children[id].text;
+      pcmd = $aDevicePatt[id];
+      $patsCurText = $aDeviceDesc[id];
+    }
+    userSetPattern(name, pcmd);
   }
-
-  let patterns =
-  [
-    {
-      id: 10,
-      text: "PixelNut! Standards:",
-      children: [
-        { id: 11, text: "Pattern 1" },
-        { id: 12, text: "Pattern 2" },
-        { id: 13, text: "Pattern 3" },
-        { id: 14, text: "Pattern 4" },
-      ],
-    },
-    {
-      id: 20,
-      text: "Specific to this Device:",
-      children: [
-        { id: 21, text: "Pattern 1" },
-      ],
-    },
-    {
-      id: 30,
-      text: "Saved to your Browser:",
-      children: [
-        { id: 31, text: "Pattern 1" },
-        { id: 32, text: "Pattern 2" },
-      ],
-    },
-  ];
 
 </script>
 
 <div style="padding-top:10px; margin-left:10px;"></div>
 <p>Patterns to choose from:</p>
 
-<TreeView
-  bind:children={patterns}
+<TreeView size="compact"
+  bind:children={$patsMenuItems}
   bind:activeId={$patsActiveID}
-  bind:selectedIds={$patsSelectIDs}
+  bind:selectedIds={$patsSelectedID}
   bind:expandedIds={$patsOpenItems}
   on:focus={({detail}) => { doselect(detail.id); }}
 />
 
-<div style="margin-top:15px; text-align:center;">
+<div style="padding-top:10px; margin-left:10px;"></div>
+<p>Pattern Description:</p>
+<p style="margin-top:10px; padding:5px; font-size:.95em;
+          color: var(--color-textbox);
+          background-color: var(--bg-color-textbox);">
+  {$patsCurText}</p>
+
+  <div style="margin-top:15px; text-align:center;">
   <button class="button-close"
     on:click={() => { $patsMenuOpen = false; }}
     >Close

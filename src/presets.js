@@ -1,33 +1,60 @@
 import { get } from 'svelte/store';
 
-import { aEffectsDraw, aEffectsFilter } from './globals.js';
+import {
+  menuPresets,
+  aEffectsDraw,
+  aEffectsFilter
+} from './globals.js';
 
 ///////////////////////////////////////////////////////////
 
-export const preset_PatStrs =
+export const presetsInit = () =>
+{
+  menuPresets.children = preset_MenuItems;
+}
+
+export const preset_MenuItems =
   [
-    { id: -1, text: '<none>',             cmd: '' },
-    { id: 0,  text: 'Rainbow Ripple',     cmd: 'E2 D20 T E101 F1000 I T G' },
-    { id: 1,  text: 'Rainbow Roll',       cmd: 'E1 D20 F1 I T E101 F1000 I T G' },
-    { id: 2,  text: 'Light Waves',        cmd: 'E10 D60 T E101 T E120 F250 I T G' },
-    { id: 3,  text: 'Color Twinkles',     cmd: 'E0 B50 D10 H232 W20 Q3 T E142 F250 I E50 B80 D10 W80 T G' },
-    { id: 4,  text: 'Twinkle Comets',     cmd: 'E50 B65 D10 H50 W80 Q3 T E20 B90 D30 C25 F0 R O3 N6 E20 B90 D30 H40 C45 U F0 I T E120 F1 I G' },
-    { id: 5,  text: 'Comet Party',        cmd: 'E20 D30 W25 C25 Q7 I T E101 F100 T E20 D20 W25 C25 Q7 U I T E101 F200 T G' },
-    { id: 6,  text: 'Scanner Mix',        cmd: 'E40 D20 C25 Q4 T E111 A0 E40 D30 H270 C5 Q1 I E131 F1000 R O15 N5 G' },
-    { id: 7,  text: 'Ferris Wheel',       cmd: 'E30 D60 C20 Q7 T E160 I E111 F R O3 N7 T G' },
-    { id: 8,  text: 'Expanding Noise',    cmd: 'E52 D60 W35 C25 Q3 T E150 I E120 I G' },
-    { id: 9,  text: 'Crazy Blinks',       cmd: 'E51 D60 C10 Q4 T E112 T E131 F1 I T G' },
-    { id: 10, text: 'Blink Surges',       cmd: 'E51 D60 C10 T E112 T E131 F1000 I T G' },
-    { id: 11, text: 'Bright Swells',      cmd: 'E0 B80 D10 Q3 T E111 F R10 O10 E142 F250 I T G' },
-    { id: 12, text: 'Color Melts',        cmd: 'E0 D30 H30 T E110 F600 I T E111 A1 G' },
-    { id: 13, text: 'July 4th',           cmd: 'E50 K33 B65 D10 H355 C100 T E50 J33 K34 B65 D10 W100 C100 T E50 J67 K34 D10 H230 C100 T G' },
-    { id: 14, text: 'Holiday',            cmd: 'E50 B60 D10 T E50 B70 D15 H125 T E20 V B90 D30 H270 W80 C25 Q2 F0 I R20 O10 G' },
-    { id: 15, text: 'MashUp',             cmd: 'E50 B65 D10 H100 W30 Q1 V T E40 D50 H270 C10 T E20 D15 C20 H0 F0 A1 I T G' },
+    { id: 1,  text: 'Rainbow Ripple'      },
+    { id: 2,  text: 'Rainbow Roll',       },
+    { id: 3,  text: 'Light Waves',        },
+    { id: 4,  text: 'Color Twinkles',     },
+    { id: 5,  text: 'Twinkle Comets',     },
+    { id: 6,  text: 'Comet Party',        },
+    { id: 7,  text: 'Scanner Mix',        },
+    { id: 8,  text: 'Ferris Wheel',       },
+    { id: 9,  text: 'Expanding Noise',    },
+    { id: 10, text: 'Crazy Blinks',       },
+    { id: 11, text: 'Blink Surges',       },
+    { id: 12, text: 'Bright Swells',      },
+    { id: 13, text: 'Color Melts',        },
+    { id: 14, text: 'July 4th',           },
+    { id: 15, text: 'Holiday',            },
+    { id: 16, text: 'MashUp',             },
+  ];
+
+  export const preset_PatStrs =
+  [
+    'E2 D20 T E101 F1000 I T G',
+    'E1 D20 F1 I T E101 F1000 I T G',
+    'E10 D60 T E101 T E120 F250 I T G',
+    'E0 B50 D10 H232 W20 Q3 T E142 F250 I E50 B80 D10 W80 T G',
+    'E50 B65 D10 H50 W80 Q3 T E20 B90 D30 C25 F0 R O3 N6 E20 B90 D30 H40 C45 U F0 I T E120 F1 I G',
+    'E20 D30 W25 C25 Q7 I T E101 F100 T E20 D20 W25 C25 Q7 U I T E101 F200 T G',
+    'E40 D20 C25 Q4 T E111 A0 E40 D30 H270 C5 Q1 I E131 F1000 R O15 N5 G',
+    'E30 D60 C20 Q7 T E160 I E111 F R O3 N7 T G',
+    'E52 D60 W35 C25 Q3 T E150 I E120 I G',
+    'E51 D60 C10 Q4 T E112 T E131 F1 I T G',
+    'E51 D60 C10 T E112 T E131 F1000 I T G',
+    'E0 B80 D10 Q3 T E111 F R10 O10 E142 F250 I T G',
+    'E0 D30 H30 T E110 F600 I T E111 A1 G',
+    'E50 K33 B65 D10 H355 C100 T E50 J33 K34 B65 D10 W100 C100 T E50 J67 K34 D10 H230 C100 T G',
+    'E50 B60 D10 T E50 B70 D15 H125 T E20 V B90 D30 H270 W80 C25 Q2 F0 I R20 O10 G',
+    'E50 B65 D10 H100 W30 Q1 V T E40 D50 H270 C10 T E20 D15 C20 H0 F0 A1 I T G',
   ];
 
 export const preset_PatDescs =
   [
-    [],
     [
       "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
       "The Force modifies the amount of color change per pixel. At maximum Force the entire spectrum is displayed without moving,",

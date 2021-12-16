@@ -5,22 +5,25 @@ import {
   PAGEMODE_CONTROLS,
   curPageMode,
   curDevice,
-  nTracks,
-  nLayers,
   nStrands,
   idStrand,
   pStrand,
   aStrands,
   eStrands,
   dStrands,
-  aDevicePats,
-  aDeviceDesc,
-  aStoredPats,
+  nTracks,
+  nLayers,
   maxLenPattern,
+  aDevicePatt,
+  aDeviceDesc,
   aEffectsDraw,
   aEffDrawDesc,
   aEffectsFilter,
-  aEffFilterDesc
+  aEffFilterDesc,
+  patsMenuItems,
+  menuPresets,
+  menuBrowser,
+  menuDevice
 } from './globals.js';
 
 import {
@@ -54,29 +57,7 @@ export let deviceStartup = (device) =>
 {
   console.log(`Connecting to: "${device.curname}"...`); // DEBUG
 
-  let numstrands = device.report.strands.length; // TODO: error if 0
-
-  // init device patterns/descriptions
-
-  const patlen = device.patterns_items.length;
-  if (patlen > 0)
-  {
-    let items = [];
-    let descs = [];
-  
-    const obj = { id:0, text:'<none>', cmd:'' };
-    items.push(obj);
-    descs.push([]);
-
-    for (let i = 0; i < patlen; ++i)
-    {
-      items.push( device.patterns_items[i] );
-      descs.push( device.patterns_descs[i] );
-    }
-
-    aDevicePats.set(items);
-    aDeviceDesc.set(descs);
-  }
+  // create draw/filter effect lists with device specific items
 
   let items_draw = [];
   let descs_draw = [];
@@ -116,6 +97,10 @@ export let deviceStartup = (device) =>
 
   aEffectsFilter.set(items_filter);
   aEffFilterDesc.set(descs_filter);
+
+  // create strand lists for this specific device
+
+  let numstrands = device.report.strands.length; // TODO: error if 0
 
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;
@@ -163,8 +148,26 @@ export let deviceStartup = (device) =>
   }
   dStrands.set(slist);
 
-  device.active = true;
-  curDevice.set(device);
+  // create pattern menu lists for this specific device
+
+  let items = [];
+
+  const patlen = device.patterns_items.length;
+  if (patlen > 0)
+  {
+    let pcmds = [];
+    let descs = [];
+  
+    for (let i = 0; i < patlen; ++i)
+    {
+      items.push( device.patterns_items[i] );
+      pcmds.push( device.patterns_pcmds[i] );
+      descs.push( device.patterns_descs[i] );
+    }
+
+    aDevicePatt.set(pcmds);
+    aDeviceDesc.set(descs);
+  }
 
   for (let s = 0; s < numstrands; ++s)
   {
@@ -172,39 +175,57 @@ export let deviceStartup = (device) =>
     let strand = get(aStrands)[s];
     pStrand.set(strand);
 
+    let cmdname = device.report.strands[s].patname;
     let cmdstr = device.report.strands[s].patstr;
+
     if (parsePattern(cmdstr))
     {
       makeEntireCmdStr();
 
-      //const cmdstr = strand.curPatternStr;
-      let cmdname = device.report.strands[s].patname;
       strand.curPatternName = cmdname;
+      strand.curPatternStr = cmdstr;
+    }
+    else
+    {
 
-      if (cmdstr != '')
-      {
-        if (cmdname == '') cmdname = 'Now Playing'
-        console.log(`${cmdname}: "${cmdstr}"`);
-
-        const devlen = get(aDevicePats).length;
-        const obj = { id:devlen, text:cmdname, cmd:cmdstr };
-        const desc = `This is what\'s currently playing on strand ${s}.`;
-
-        get(aDevicePats).push(obj);
-        get(aDeviceDesc).push([desc]);
-
-        strand.curSourceIdx = 0; // FIXME
-        strand.curPatternIdx = get(aDevicePats).length-1;
-      }
     }
 
-    get(dStrands)[s].curSourceIdx = strand.curSourceIdx;
+    /*
+    if (cmdstr != '')
+    {
+      if (cmdname == '') cmdname = 'Now Playing'
+      console.log(`${cmdname}: "${cmdstr}"`);
+
+      const devlen = get(aDevicePats).length;
+      const obj = { id:devlen, text:cmdname, cmd:cmdstr };
+      const desc = `This is what\'s currently playing on strand ${s}.`;
+
+      get(aDevicePats).push(obj);
+      get(aDeviceDesc).push([desc]);
+
+      strand.curPatternIdx = get(aDevicePats).length-1;
+    }
+
     get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
+    */
   }
+
+  let lmenu = [];
+  lmenu.push(menuPresets);
+  lmenu.push(menuBrowser);
+  if (items.length > 0)
+  {
+    menuDevice.children = items;
+    lmenu.push(menuDevice);
+  }
+  patsMenuItems.set(lmenu);
 
   // reset to use first strand
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
+
+  device.active = true;
+  curDevice.set(device);
 
   curPageMode.set(PAGEMODE_CONTROLS);
 }

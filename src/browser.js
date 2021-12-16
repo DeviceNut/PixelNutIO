@@ -2,8 +2,10 @@ import { get } from 'svelte/store';
 
 import {
   mqttBrokerIP,
-  aStoredPats,
-  aStoredDesc
+  aStoredPatt,
+  aStoredDesc,
+  menuBrowser,
+  MENUID_BROWSWER
 } from './globals.js';
 
 const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
@@ -39,45 +41,37 @@ export const storePatternsInit = () =>
   // retrieve command and search for built-ins
   // else set to first one (Rainbow Ripple)
 
-  let lpats = [];
+  let lmenu = [];
+  let lpatt = [];
   let ldesc = [];
 
   const names = localStorage.getItem(SavePatternNames);
   if ((names !== null) && (names !== ''))
   {
     let nlist = names.split(SavePatternSeparator);
-    let bcount = 0;
+    let bcount = MENUID_BROWSWER;
 
     //console.log('nlist=', nlist); // DEBUG
 
     for (const text of nlist)
     {
       if (text === '') continue;
-      let cmd = localStorage.getItem(SavePatternKeyCmd+text);
-      let adesc = localStorage.getItem(SavePatternKeyDesc+text);
+      let patt = localStorage.getItem(SavePatternKeyCmd+text);
+      let desc = localStorage.getItem(SavePatternKeyDesc+text);
+      desc = [desc];
 
-      if (cmd !== '')
+      if (patt !== '')
       {
-        if (bcount === 0)
-        {
-          const obj = { id:'0', text:'<none>', cmd:'' };
-          lpats.push(obj);
-          ldesc.push([]);
-          bcount = 1;
-        }
-
-        const obj = { id:`${++bcount}`, text:text, cmd:cmd };
-        lpats.push(obj);
-
-        let dlist = [adesc];
-        ldesc.push(dlist);
-
-        //console.log('dlist=', dlist); // DEBUG
+        const obj = { id:`${++bcount}`, text:text };
+        lmenu.push(obj);
+        lpatt.push(patt);
+        ldesc.push(desc);
       }
     }
   }
-  
-  aStoredPats.set(lpats);
+
+  menuBrowser.children = lmenu;
+  aStoredPatt.set(lpatt);
   aStoredDesc.set(ldesc);
 }
 

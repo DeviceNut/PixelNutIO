@@ -11,7 +11,8 @@ import {
   deviceList,
   isConnected,
   msgTitle,
-  msgDesc
+  msgDesc,
+  MENUID_DEVICE
  } from './globals.js';
 
 // Device Responses:
@@ -78,8 +79,10 @@ export const deviceInfo =
   qdesc: '',            // holds pattern/plugin desc
   qcmd:  '',            // holds pattern/plugin str
 
-  patterns_items: [],   // custom patterns item list array
-  patterns_descs: [],   // custom patterns description array
+                        // custom patterns:
+  patterns_items: [],   //  array of menu items
+  patterns_pcmds: [],   //  array of pattern commands
+  patterns_descs: [],   //  array of description arrays
 
   effects_items: [],    // custom effects item list array
   effects_descs: [],    // custom effects description array
@@ -380,6 +383,7 @@ export const onDeviceReply = (msg, fsend) =>
             device.qcount = 0;
 
             device.patterns_items = [];
+            device.patterns_pcmds = [];
             device.patterns_descs = [];
           }
           else
@@ -396,8 +400,9 @@ export const onDeviceReply = (msg, fsend) =>
           {
             if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
-              const obj = { id:device.qcount+1, text:device.qname, cmd:device.qcmd };
+              const obj = { id: (MENUID_DEVICE + device.qcount), text:device.qname };
               device.patterns_items.push(obj);
+              device.patterns_pcmds.push(device.qcmd);
               device.patterns_descs.push([device.qdesc]);
     
               if (++device.qcount >= device.report.npatterns)

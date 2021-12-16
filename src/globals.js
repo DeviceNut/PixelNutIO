@@ -46,16 +46,16 @@ export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track
 export let maxLenPattern  = writable(0);      // max length of pattern by device
 
-export let patsMenuOpen   = writable(false);  // true to display pattern select menu
-export let patsActiveID   = writable(10);     // currently selected menu choice
-export let patsSelectIDs  = writable([10]);   // list of currently selected items
-export let patsOpenItems  = writable([10,20,30]); // list of currently expanded items
-export let patsCurText    = writable('');     // text to display for selected item
+export let msgTitle       = writable('');     // non-empty to cause user message popup
+export let msgDesc        = writable('');     // description text for that message
 
-export let aDevicePats    = writable([]);     // list of all device custom patterns
-export let aDeviceDesc    = writable([]);     //  and list of help strings for them
-export let aStoredPats    = writable([]);     // list of all stored custom patterns
-export let aStoredDesc    = writable([]);     //  and list of help strings for them
+                                              // for stored-in-browser:
+export let aStoredPatt    = writable([]);     // list of pattern strings
+export let aStoredDesc    = writable([]);     // list of help strings
+
+                                              // for stored-in-device:
+export let aDevicePatt    = writable([]);     // list of pattern strings
+export let aDeviceDesc    = writable([]);     // list of help strings
 
                                               // created each time device is started:
 export let aEffectsDraw   = writable([]);     // list of all drawing effects
@@ -63,5 +63,35 @@ export let aEffDrawDesc   = writable([]);     // list of all draw effect descrip
 export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 
-export let msgTitle       = writable('');     // non-empty to cause user message popup
-export let msgDesc        = writable('');     // description text for that message
+export let patsMenuOpen   = writable(false);  // true to display pattern select menu
+export let patsActiveID   = writable(0);      // currently selected menu choice
+export let patsMenuItems  = writable([]);     // array of menu items for current device
+export let patsCurText    = writable('');     // text to display for selected item
+
+export const MENUID_PRESETS         = 0;      // must be 0
+export const MENUID_BROWSWER        = 1000;   // must be larger than highest filter effect id
+export const MENUID_DEVICE          = 2000;   // must be larger than number of browser patterns
+
+export let patsSelectedID = writable([MENUID_PRESETS]); // list of selected/expanded items
+export let patsOpenItems  = writable([MENUID_PRESETS,MENUID_DEVICE,MENUID_BROWSWER]);
+
+export let menuPresets =
+{
+  id: MENUID_PRESETS,
+  text: "PixelNut! Presets:",
+  children: [],
+};
+
+export let menuBrowser =
+{
+  id: MENUID_BROWSWER,
+  text: "Saved to your Browser:",
+  children: [],
+};
+
+export let menuDevice =
+{
+  id: MENUID_DEVICE,
+  text: "Specific to this Device:",
+  children: [],
+};

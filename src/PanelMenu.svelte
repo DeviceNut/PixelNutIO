@@ -11,9 +11,7 @@
 {#if $patsMenuOpen }
   <MenuPatterns/>
 {:else}
-  <div style="padding-top:20px;"></div>
-
-  <div style="text-align:center;">
+  <div style="padding-top:20px; text-align:center;">
     <ButtonsPatterns/>
   </div>
 

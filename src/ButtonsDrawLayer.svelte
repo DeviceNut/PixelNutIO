@@ -1,6 +1,5 @@
 <script>
  
-   import { get } from 'svelte/store';
   import { DRAW_LAYER } from './devcmds.js';
   import { pStrand, nTracks } from './globals.js';
   import { userAddTrackLayer } from './cmduser2.js';
@@ -32,7 +31,7 @@
     for (let i = 0; i < t.lactives; ++i)
       t.layers[i].open = expanded;
 
-    pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+    $pStrand = $pStrand; // triggers update to UI - MUST HAVE THIS
   }
 
 </script>

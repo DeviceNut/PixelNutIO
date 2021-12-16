@@ -104,6 +104,8 @@
       <TrackLayout numcols={($pStrand.tactives < 3) ? ($pStrand.tactives) : 3} />
     {/if}
   </MediaQuery>
+{:else}
+  <div style="margin-top:10px;"></div>
 {/if}
 
 <style>

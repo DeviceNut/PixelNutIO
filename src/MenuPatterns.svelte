@@ -112,9 +112,9 @@ import {
 </script>
 
 <div style="padding-top:10px; margin-left:10px;"></div>
-<p>Patterns to choose from:</p>
+<p>Pattern Choice:</p>
 
-<TreeView size="compact"
+<TreeView size="compact" style="margin-top:-10px;"
   bind:children={$patsMenuItems}
   bind:activeId={$patsActiveID}
   bind:selectedIds={$patsSelectedID}
@@ -124,12 +124,12 @@ import {
 
 <div style="padding-top:10px; margin-left:10px;"></div>
 <p>Pattern Description:</p>
-<p style="margin-top:10px; padding:5px; font-size:.95em;
+<p style="margin-top:2px; padding:5px; font-size:.95em;
           color: var(--color-textbox);
           background-color: var(--bg-color-textbox);">
   {$patsCurText}</p>
 
-  <div style="margin-top:15px; text-align:center;">
+<div style="margin-top:15px; margin-bottom:5px; text-align:center;">
   <button class="button-close"
     on:click={() => { $patsMenuOpen = false; }}
     >Close

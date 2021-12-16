@@ -51,7 +51,7 @@
   .button-trigger {
     height: 25px;
     width: 200px;
-    margin: 5px 0 10px 60px;
+    margin: 5px 0 15px 60px;
     padding: 3px;
   }
 </style>

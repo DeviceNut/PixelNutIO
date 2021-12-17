@@ -8,19 +8,18 @@ import {
   } from "carbon-components-svelte";
 
   import {
+    pStrand,
     aStoredPatt,
     aStoredDesc,
     aDevicePatt,
     aDeviceDesc,
-    patsMenuOpen,
-    patsActiveID,
-    patsOpenItems,
-    patsSelectedID,
-    patsMenuItems,
-    patsCurText,
     MENUID_PRESETS,
     MENUID_BROWSWER,
     MENUID_DEVICE,
+    patsMenuOpen,
+    patsOpenItems,
+    patsSelectedID,
+    patsMenuItems,
     menuPresets,
     menuBrowser,
     menuDevice
@@ -36,52 +35,62 @@ import {
     storePatternRemove
   } from './browser.js';
 
-  import { userSetPattern } from './cmduser2.js';
-
-  let isbrowser = false;
-  let delstr = 'Delete...';
-  $: {
-
-    if ((MENUID_BROWSWER <= $patsActiveID) && ($patsActiveID < MENUID_DEVICE))
-    {
-      isbrowser = true;
-      delstr = ($patsActiveID == MENUID_BROWSWER) ? 'Delete All' : 'Delete One';
-    }
-    else
-    {
-      isbrowser = false;
-      delstr = 'Delete...';
-    }
-  }
+  import {
+    userSetPattern,
+    userClearPattern
+  } from './cmduser2.js';
 
   let openDelete = false;
+  let deleteall = false;
+  let delstr = 'Delete...';
   let delname = '';
 
   const dodelete = () =>
   {
-    storePatternRemove(delname);
-    storePatternsInit();
-
-    $patsMenuItems = $patsMenuItems; // triggers update to UI - MUST HAVE THIS
-
-    // TODO: reset current pattern, and reset patsMenuItems if necessary
-
     openDelete = false;
-  }
 
-  // TODO: set initial choice
+    if (deleteall)
+    {
+
+    }
+    else
+    {
+      storePatternRemove(delname);
+      storePatternsInit();
+    }
+
+    doselect(MENUID_BROWSWER);
+
+    // triggers update to UI - MUST HAVE THIS
+    $patsMenuItems = $patsMenuItems;
+  }
 
   const doselect = (id) =>
   {
     console.log(`Selecting id=${id}`);
 
-    $patsActiveID = id;
-    $patsSelectedID = [ $patsActiveID ];
+    $pStrand.curPatternId = id;
+    $patsSelectedID = [ id ];
 
-    if ((id == MENUID_PRESETS)  ||
-        (id == MENUID_BROWSWER) ||
-        (id == MENUID_DEVICE))
-      return; // on category, do nothing
+    delname = '';
+    delstr = 'Delete...';
+    deleteall = false;
+
+    if ((id === MENUID_PRESETS)  ||
+        (id === MENUID_BROWSWER) ||
+        (id === MENUID_DEVICE))
+    {
+      userClearPattern();
+
+      if ((id === MENUID_BROWSWER) && ($aStoredPatt.length > 0))
+      {
+        delname = '<All Browser Patterns>'
+        delstr = 'Delete All';
+        deleteall = true;
+      }
+
+      return;
+    }
 
     let name, pcmd;
     if (id < MENUID_BROWSWER)
@@ -89,23 +98,27 @@ import {
       id -= MENUID_PRESETS+1;
       name = menuPresets.children[id].text;
       pcmd = preset_PatStrs[id];
-      $patsCurText = preset_PatDescs[id];
+      $pStrand.curPatternDesc = preset_PatDescs[id];
     }
     else if (id < MENUID_DEVICE)
     {
       id -= MENUID_BROWSWER+1;
       name = menuBrowser.children[id].text;
       pcmd = $aStoredPatt[id];
-      $patsCurText = $aStoredDesc[id];
+      $pStrand.curPatternDesc = $aStoredDesc[id];
+
       delname = name;
+      delstr = 'Delete One';
+      deleteall = false;
     }
     else
     {
       id -= MENUID_DEVICE+1;
       name = menuDevice.children[id].text;
       pcmd = $aDevicePatt[id];
-      $patsCurText = $aDeviceDesc[id];
+      $pStrand.curPatternDesc = $aDeviceDesc[id];
     }
+
     userSetPattern(name, pcmd);
   }
 
@@ -116,18 +129,18 @@ import {
 
 <TreeView size="compact" style="margin-top:-10px;"
   bind:children={$patsMenuItems}
-  bind:activeId={$patsActiveID}
+  bind:activeId={$pStrand.curPatternId}
   bind:selectedIds={$patsSelectedID}
   bind:expandedIds={$patsOpenItems}
   on:focus={({detail}) => { doselect(detail.id); }}
 />
 
 <div style="padding-top:10px; margin-left:10px;"></div>
-<p>Pattern Description:</p>
+<p>Pattern Description: {$pStrand.curPatternName}</p>
 <p style="margin-top:2px; padding:5px; font-size:.95em;
           color: var(--color-textbox);
           background-color: var(--bg-color-textbox);">
-  {$patsCurText}</p>
+  {$pStrand.curPatternDesc}</p>
 
 <div style="margin-top:15px; margin-bottom:5px; text-align:center;">
   <button class="button-close"
@@ -136,7 +149,7 @@ import {
   </button>
   <button class="button-delete"
     on:click={() => {openDelete = true;}}
-    disabled={!isbrowser}
+    disabled={delname === ''}
     >{delstr}
   </button>
 </div>

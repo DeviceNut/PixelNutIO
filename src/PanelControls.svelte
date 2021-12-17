@@ -36,13 +36,13 @@
 <SliderVal name='Force'
   max={MAX_FORCE_VALUE}
   bind:cur={$pStrand.forceValue}
-  disabled={($pStrand.curPatternStr === '') ||
+  disabled={($pStrand.curPatternCmd === '') ||
             !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
   />
 
 <button class="button-trigger"
   on:click={userSendTrigger}
-  disabled={($pStrand.curPatternStr === '') ||
+  disabled={($pStrand.curPatternCmd === '') ||
             !($pStrand.triggerUsed)}
   >Trigger
 </button>

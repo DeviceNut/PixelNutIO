@@ -183,7 +183,8 @@ export let deviceStartup = (device) =>
       makeEntireCmdStr();
 
       strand.curPatternName = cmdname;
-      strand.curPatternStr = cmdstr;
+      strand.curPatternCmd = cmdstr;
+      // TODO what about ID etc.
     }
     else
     {

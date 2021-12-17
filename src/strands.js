@@ -104,13 +104,10 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  curSourceType   : 0,      // type of source selected
-  browserSource   : false,  // true if pattern from browser list
-  curPatternIdx   : 0,      // index into current patterns list
-
-  curPatternName  : '',     // name of current pattern, editable
-  curPatternStr   : '',     // current pattern command string
-                            // (as created from current settings)
+  curPatternId    : 0,      // menu ID of current pattern
+  curPatternName  : '',     // name of current pattern
+  curPatternCmd   : '',     // current pattern command
+  curPatternDesc  : '',     // current pattern description
 
   showCustom      : false,  // true if displaying customize panel
 

@@ -39,7 +39,7 @@ export const sendStrandSwitch = (s) =>
 // to the device flash, and optionally starts it
 function sendStoreExecPattern()
 {
-  const patstr = get(pStrand).curPatternStr;
+  const patstr = get(pStrand).curPatternCmd;
   let patname = get(pStrand).curPatternName;
   if (patstr === '') patname = '';
 

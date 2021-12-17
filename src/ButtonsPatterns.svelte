@@ -34,7 +34,7 @@
 
   const dosave = () =>
   {
-    storePatternSave($pStrand.curPatternName, savedesc, $pStrand.curPatternStr);
+    storePatternSave($pStrand.curPatternName, savedesc, $pStrand.curPatternCmd);
     storePatternsInit();
 
     if (copyclip)
@@ -51,7 +51,7 @@
   {
     let textArea = document.createElement("textarea");
 
-    textArea.value = $pStrand.curPatternStr;
+    textArea.value = $pStrand.curPatternCmd;
 
     document.body.appendChild(textArea);
     textArea.focus();
@@ -88,19 +88,19 @@
 
 <button class="button-pattern"
   on:click={dostore}
-  disabled={ ($pStrand.curPatternStr === '') }
+  disabled={ ($pStrand.curPatternCmd === '') }
   >Store
 </button>
 
 <button class="button-pattern"
   on:click={() => {openSave = !openSave;}}
-  disabled={$pStrand.curPatternStr === ''}
+  disabled={$pStrand.curPatternCmd === ''}
   >Save
 </button>
 
 <Modal
   passiveModal
-  modalHeading="Store Pattern in Browser"
+  modalHeading="Save Pattern in Browser"
   bind:open={openSave}
   on:close
   >
@@ -122,7 +122,7 @@
     />
     <ButtonSet>
       <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
-      <Button type="submit">Store</Button>
+      <Button type="submit">Save</Button>
     </ButtonSet>
   </Form>
 </Modal>

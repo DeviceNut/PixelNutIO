@@ -191,8 +191,10 @@ export const userSetPattern = (name, pattern) =>
 export const userClearPattern = () =>
 {
   const strand = get(pStrand);
+  strand.curPatternId   = 0;
   strand.curPatternName = '';
-  strand.curPatternStr = '';
+  strand.curPatternCmd  = '';
+  strand.curPatternDesc = '';
 
   strandClearAll();
   makeEntireCmdStr();

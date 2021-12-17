@@ -28,7 +28,7 @@
   {
     $pStrand.showCustom = !$pStrand.showCustom;
     if ($pStrand.showCustom && ($pStrand.tactives === 0))
-      userSetPattern('', defCustomCmd);
+      userSetPattern(defCustomCmd);
   }
 
 </script>

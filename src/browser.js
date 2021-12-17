@@ -95,7 +95,7 @@ export const storePatternSave = (name, desc, cmds) =>
   }
 }
 
-export const storePatternRemove = (name) =>
+export const storePatternRemove = (delname) =>
 {
   let found = false;
 
@@ -107,15 +107,15 @@ export const storePatternRemove = (name) =>
     let nlist = names.split(SavePatternSeparator);
     for (const [i, n] of nlist.entries())
     {
-      if (n === name)
+      if (n === delname)
       {
-        //console.log(`removing: ${name}`); // DEBUG
+        //console.log(`removing: ${n}`); // DEBUG
 
         nlist.splice(i, 1);
         const str = nlist.join(SavePatternSeparator);
         localStorage.setItem(SavePatternNames, str);
-        localStorage.removeItem(SavePatternKeyCmd+name);
-        localStorage.removeItem(SavePatternKeyDesc+name);
+        localStorage.removeItem(SavePatternKeyCmd+n);
+        localStorage.removeItem(SavePatternKeyDesc+n);
 
         found = true;
         break;
@@ -123,5 +123,24 @@ export const storePatternRemove = (name) =>
     }
   }
 
-  if (!found) console.warn(`Failed to remove pattern: ${name}`);
+  if (!found) console.warn(`Failed to remove pattern: ${delname}`);
+}
+
+export const storePatternRemAll = () =>
+{
+  let names = localStorage.getItem(SavePatternNames);
+  if (names === null) names = '';
+
+  if (names !== '')
+  {
+    let nlist = names.split(SavePatternSeparator);
+    for (const [i, n] of nlist.entries())
+    {
+        console.log(`removing: ${n}`); // DEBUG
+
+        localStorage.removeItem(SavePatternKeyCmd+n);
+        localStorage.removeItem(SavePatternKeyDesc+n);
+    }
+    localStorage.setItem(SavePatternNames, '');
+  }
 }

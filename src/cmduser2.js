@@ -168,11 +168,9 @@ export const userStrandSelect = (index, combine) =>
 
 // user just selected pattern to use
 // triggers program error if parse fails
-export const userSetPattern = (name, pattern) =>
+export const userSetPattern = (pattern) =>
 {
-  console.log(`SetPattern: ${name}`); // DEBUG
-
-  get(pStrand).curPatternName = name;
+  //console.log(`SetPattern: ${get(pStrand).curPatternName}`); // DEBUG
 
   strandClearAll();
 
@@ -200,8 +198,8 @@ export const userClearPattern = () =>
   makeEntireCmdStr();
   sendStrandPattern(); // store/exec cleared pattern
 
-    // triggers update to UI - MUST HAVE THIS
-    pStrand.set(get(pStrand));
+  // triggers update to UI - MUST HAVE THIS
+  pStrand.set(get(pStrand));
 
   strand.showCustom = false;
 }

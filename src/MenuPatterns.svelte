@@ -32,7 +32,8 @@ import {
 
   import {
     storePatternsInit,
-    storePatternRemove
+    storePatternRemove,
+    storePatternRemAll
   } from './browser.js';
 
   import {
@@ -41,23 +42,16 @@ import {
   } from './cmduser2.js';
 
   let openDelete = false;
-  let deleteall = false;
-  let delstr = 'Delete...';
-  let delname = '';
+  let deleteall, delstr, delname, deltitle;
 
   const dodelete = () =>
   {
     openDelete = false;
 
-    if (deleteall)
-    {
+    if (deleteall) storePatternRemAll();
+    else storePatternRemove(delname);
 
-    }
-    else
-    {
-      storePatternRemove(delname);
-      storePatternsInit();
-    }
+    storePatternsInit();
 
     doselect(MENUID_BROWSWER);
 
@@ -73,6 +67,7 @@ import {
     $patsSelectedID = [ id ];
 
     delname = '';
+    deltitle = '';
     delstr = 'Delete...';
     deleteall = false;
 
@@ -81,11 +76,13 @@ import {
         (id === MENUID_DEVICE))
     {
       userClearPattern();
+      $pStrand.curPatternId = id; // reset after clear
 
       if ((id === MENUID_BROWSWER) && ($aStoredPatt.length > 0))
       {
-        delname = '<All Browser Patterns>'
+        delname = 'all';
         delstr = 'Delete All';
+        deltitle = 'Delete ALL Saved Patterns';
         deleteall = true;
       }
 
@@ -96,31 +93,33 @@ import {
     if (id < MENUID_BROWSWER)
     {
       id -= MENUID_PRESETS+1;
-      name = menuPresets.children[id].text;
-      pcmd = preset_PatStrs[id];
+      $pStrand.curPatternName = menuPresets.children[id].text;
       $pStrand.curPatternDesc = preset_PatDescs[id];
+      pcmd = preset_PatStrs[id];
     }
     else if (id < MENUID_DEVICE)
     {
       id -= MENUID_BROWSWER+1;
-      name = menuBrowser.children[id].text;
-      pcmd = $aStoredPatt[id];
+      $pStrand.curPatternName = menuBrowser.children[id].text;
       $pStrand.curPatternDesc = $aStoredDesc[id];
+      pcmd = $aStoredPatt[id];
 
-      delname = name;
+      delname = $pStrand.curPatternName;
       delstr = 'Delete One';
+      deltitle = `Delete Saved Pattern: "${delname}"`;
       deleteall = false;
     }
     else
     {
       id -= MENUID_DEVICE+1;
-      name = menuDevice.children[id].text;
-      pcmd = $aDevicePatt[id];
+      $pStrand.curPatternName = menuDevice.children[id].text;
       $pStrand.curPatternDesc = $aDeviceDesc[id];
+      pcmd = $aDevicePatt[id];
     }
 
-    userSetPattern(name, pcmd);
+    userSetPattern(pcmd);
   }
+  doselect($pStrand.curPatternId);
 
 </script>
 
@@ -156,7 +155,7 @@ import {
 
 <Modal
   passiveModal
-  modalHeading={`Delete Custom Pattern: "${delname}" ?`}
+  modalHeading={deltitle}
   bind:open={openDelete}
   on:close
   >

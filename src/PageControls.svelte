@@ -8,9 +8,12 @@
   } from "carbon-components-svelte";
 
   import {
+    defCustomCmd,
     nStrands,
     pStrand
   } from './globals.js';
+
+  import { userSetPattern } from './cmduser2.js';
 
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';
@@ -21,7 +24,12 @@
   let pstr = '';
   $: pstr = ($pStrand.showCustom ? "^" : "Customize");
 
-  const toggleshow = () => { $pStrand.showCustom = !$pStrand.showCustom; }
+  const toggleshow = () =>
+  {
+    $pStrand.showCustom = !$pStrand.showCustom;
+    if ($pStrand.showCustom && ($pStrand.tactives === 0))
+      userSetPattern('', defCustomCmd);
+  }
 
 </script>
 

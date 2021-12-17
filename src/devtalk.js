@@ -400,7 +400,7 @@ export const onDeviceReply = (msg, fsend) =>
           {
             if (device.qstage === QSTAGE_DONE) // finished one pattern
             {
-              const obj = { id: (MENUID_DEVICE + device.qcount), text:device.qname };
+              const obj = { id: (MENUID_DEVICE + device.qcount + 1), text:device.qname };
               device.patterns_items.push(obj);
               device.patterns_pcmds.push(device.qcmd);
               device.patterns_descs.push([device.qdesc]);

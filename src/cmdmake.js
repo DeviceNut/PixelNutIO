@@ -143,7 +143,8 @@ export const makeEntireCmdStr = () =>
   //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
   //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG
 
-  pStrand.set(get(pStrand)); // triggers update to UI - MUST HAVE THIS
+  // triggers update to UI - MUST HAVE THIS
+  pStrand.set(get(pStrand));
 }
 
 // create partial command string for one layer in a track

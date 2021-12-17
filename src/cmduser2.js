@@ -182,7 +182,7 @@ export const userSetPattern = (name, pattern) =>
     makeEntireCmdStr();
     sendStrandPattern(); // store/exec new pattern
 
-    // MUST HAVE THIS: triggers UI update to everything
+    // triggers update to UI - MUST HAVE THIS
     pStrand.set(get(pStrand));
   }
   else deviceError(`Failed parsing pattern: ${name}`);
@@ -198,8 +198,8 @@ export const userClearPattern = () =>
   makeEntireCmdStr();
   sendStrandPattern(); // store/exec cleared pattern
 
-  // MUST HAVE THIS: triggers UI update to everything
-  pStrand.set(get(pStrand));
+    // triggers update to UI - MUST HAVE THIS
+    pStrand.set(get(pStrand));
 
   strand.showCustom = false;
 }

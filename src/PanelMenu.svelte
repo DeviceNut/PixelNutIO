@@ -15,7 +15,7 @@
     <ButtonsPatterns/>
   </div>
 
-  {#if $pStrand.tactives !== 0 }
+  {#if ($pStrand.tactives !== 0) }
     <div style="margin-top:20px; text-align:center;">
       <TextInput
         style="width:250px; margin:0 auto;"

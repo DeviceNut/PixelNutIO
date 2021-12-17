@@ -80,7 +80,7 @@ export let patsOpenItems  = writable([MENUID_PRESETS,MENUID_DEVICE,MENUID_BROWSW
 export let menuPresets =
 {
   id: MENUID_PRESETS,
-  text: "PixelNut! Presets:",
+  text: "Standard Presets:",
   children: [],
 };
 
@@ -94,6 +94,6 @@ export let menuBrowser =
 export let menuDevice =
 {
   id: MENUID_DEVICE,
-  text: "Specific to this Device:",
+  text: "Specific to Device:",
   children: [],
 };

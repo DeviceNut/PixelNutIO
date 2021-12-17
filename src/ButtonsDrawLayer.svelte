@@ -31,7 +31,8 @@
     for (let i = 0; i < t.lactives; ++i)
       t.layers[i].open = expanded;
 
-    $pStrand = $pStrand; // triggers update to UI - MUST HAVE THIS
+    // triggers update to UI - MUST HAVE THIS
+    $pStrand = $pStrand;
   }
 
 </script>

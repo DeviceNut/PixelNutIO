@@ -16,6 +16,8 @@
 
 </script>
 
+<div style="margin-top:10px;"></div>
+
 <SliderVal name='Bright'
   onchange={userSetBright}
   bind:cur={$pStrand.pcentBright}
@@ -31,7 +33,11 @@
   max={$pStrand.numPixels-1}
 />
 
+<div style="margin-top:10px;"></div>
+
 <SlidersPropsGlobal/>
+
+<div style="margin-top:10px;"></div>
 
 <SliderVal name='Force'
   max={MAX_FORCE_VALUE}

@@ -143,10 +143,10 @@
 
 <style>
   .button-pattern {
-    width: 60px;
+    width: 55px;
     height: 40px;
-    padding: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
+    padding: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
   }
 </style>

@@ -103,7 +103,8 @@ import {
     if ((id === MENUID_CUSTOM)   ||
         (id === MENUID_PRESETS)  ||
         (id === MENUID_BROWSER) ||
-        (id === MENUID_DEVICE)) return;
+        (id === MENUID_DEVICE))
+      return;
 
     let pcmd;
     if (id < MENUID_BROWSER)
@@ -134,7 +135,7 @@ import {
 </script>
 
 <div style="padding-top:10px; margin-left:10px;"></div>
-<p>Pattern Choice:</p>
+<p style="font-size:.98em;">Pattern Choice:</p>
 
 <TreeView size="compact" style="margin-top:-10px;"
   bind:children={$patsMenuItems}
@@ -145,7 +146,7 @@ import {
 />
 
 <div style="padding-top:10px; margin-left:10px;"></div>
-<p>Pattern Description: "{$pStrand.curPatternName}"</p>
+<p style="font-size:.98em;">Pattern Description:</p>
 <p style="margin-top:2px; padding:5px; font-size:.95em;
           color: var(--color-textbox);
           background-color: var(--bg-color-textbox);">

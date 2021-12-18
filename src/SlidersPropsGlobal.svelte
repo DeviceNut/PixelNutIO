@@ -28,7 +28,9 @@
 
 </script>
 
-<div style="margin-top:15px; padding:10px; background-color: {bgc};">
+<div style="margin-top:15px; max-width:290px;
+            padding:10px; 0 3px 12px;
+            background-color: {bgc};">
 
   <Checkbox labelText="Override Track Properties"
     on:check={userSetOverMode}

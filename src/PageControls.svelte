@@ -1,22 +1,14 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
-  import {
-    Grid,
-    Row,
-    Column
-  } from "carbon-components-svelte";
+  import { Grid, Row, Column } from "carbon-components-svelte";
 
-  import {
-    defCustomCmd,
-    nStrands,
-    pStrand
-  } from './globals.js';
-
+  import { defCustomCmd, pStrand } from './globals.js';
   import { userSetPattern } from './cmduser2.js';
 
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';
+  import ButtonsPatterns from './ButtonsPatterns.svelte';
   import PanelMenu from './PanelMenu.svelte';
   import PanelControls from './PanelControls.svelte';
   import TrackLayout from './TrackLayout.svelte';
@@ -40,17 +32,17 @@
         <Row>
           <Column>
             <HeaderControls/>
-            {#if ($nStrands > 1) }
-              <MultiStrands/>
-              <div class="divider"></div>
-            {/if}
+            <MultiStrands/>
           </Column>
+        </Row>
+        <Row>
           <Column>
-            <div style="margin-left:20px; margin-right:20px;">
+            <div style="margin:15px; 20px; 0 20px;">
+              <ButtonsPatterns/>
               <PanelMenu/>
             </div>
             <div class="divider"></div>
-            <div style="margin-left:20px; margin-right:20px;">
+            <div style="padding-left:10px;">
               <PanelControls/>
             </div>
             <div class="bdiv" class:bdiv2={$pStrand.showCustom}
@@ -68,17 +60,15 @@
         <Row>
           <Column>
             <HeaderControls/>
-            {#if ($nStrands > 1) }
-              <MultiStrands/>
-              <div class="divider"></div>
-            {/if}
+            <MultiStrands/>
           </Column>
         </Row>
         <Row style="margin:10px 0 10px 10px;">
           <Column>
+            <ButtonsPatterns/>
             <PanelMenu/>
           </Column>
-          <div class="panel3"></div>
+          <div class="vertdiv"></div>
           <Column>
             <PanelControls/>
           </Column>
@@ -128,7 +118,7 @@
   .panel2 {
     max-width: 1050px;
   }
-  .panel3 {
+  .vertdiv {
     width: 3px;
     background-color: var(--bg-color-panel-border);
   }

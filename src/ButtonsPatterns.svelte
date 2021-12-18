@@ -89,28 +89,32 @@
 
 </script>
 
-<button class="button-pattern"
-  on:click={doselect}
-  >{menustr}
-</button>
+<div style="margin-top:10px; text-align:center;">
 
-<button class="button-pattern"
-  on:click={doclear}
-  disabled={ ($pStrand.tactives === 0) }
-  >Clear
-</button>
+  <button class="button-pattern"
+    on:click={doselect}
+    >{menustr}
+  </button>
 
-<button class="button-pattern"
-  on:click={dostore}
-  disabled={ ($pStrand.curPatternCmd === '') }
-  >Store
-</button>
+  <button class="button-pattern"
+    on:click={doclear}
+    disabled={ ($pStrand.tactives === 0) }
+    >Clear
+  </button>
 
-<button class="button-pattern"
-  on:click={() => {openSave = !openSave;}}
-  disabled={$pStrand.curPatternCmd === ''}
-  >Save
-</button>
+  <button class="button-pattern"
+    on:click={dostore}
+    disabled={ ($pStrand.curPatternCmd === '') }
+    >Store
+  </button>
+
+  <button class="button-pattern"
+    on:click={() => {openSave = !openSave;}}
+    disabled={$pStrand.curPatternCmd === ''}
+    >Save
+  </button>
+
+</div>
 
 <Modal
   passiveModal

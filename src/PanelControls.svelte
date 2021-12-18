@@ -16,42 +16,46 @@
 
 </script>
 
-<div style="margin-top:10px;"></div>
+<div style="display:flex; justify-content:center;">
+  <div style="margin-bottom:10px;">
 
-<SliderVal name='Bright'
-  onchange={userSetBright}
-  bind:cur={$pStrand.pcentBright}
-/>
-<SliderVal name='Delay&nbsp;'
-  onchange={userSetDelay}
-  bind:cur={$pStrand.pcentDelay}
-/>
-<SliderVal name='Rotate'
-  onchange={userSetRotate}
-  bind:cur={$pStrand.pixelOffset}
-  min={0}
-  max={$pStrand.numPixels-1}
-/>
+    <SliderVal name='Bright'
+      onchange={userSetBright}
+      bind:cur={$pStrand.pcentBright}
+    />
+    <SliderVal name='Delay&nbsp;'
+      onchange={userSetDelay}
+      bind:cur={$pStrand.pcentDelay}
+    />
+    <SliderVal name='Rotate'
+      onchange={userSetRotate}
+      bind:cur={$pStrand.pixelOffset}
+      min={0}
+      max={$pStrand.numPixels-1}
+    />
 
-<div style="margin-top:10px;"></div>
+    <div style="margin-top:10px;"></div>
 
-<SlidersPropsGlobal/>
+    <SlidersPropsGlobal/>
 
-<div style="margin-top:10px;"></div>
+    <div style="margin-top:10px;"></div>
 
-<SliderVal name='Force'
-  max={MAX_FORCE_VALUE}
-  bind:cur={$pStrand.forceValue}
-  disabled={($pStrand.curPatternCmd === '') ||
-            !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
-  />
+    <SliderVal name='Force'
+      max={MAX_FORCE_VALUE}
+      bind:cur={$pStrand.forceValue}
+      disabled={($pStrand.curPatternCmd === '') ||
+                !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
+      />
 
-<button class="button-trigger"
-  on:click={userSendTrigger}
-  disabled={($pStrand.curPatternCmd === '') ||
-            !($pStrand.triggerUsed)}
-  >Trigger
-</button>
+    <button class="button-trigger"
+      on:click={userSendTrigger}
+      disabled={($pStrand.curPatternCmd === '') ||
+                !($pStrand.triggerUsed)}
+      >Trigger
+    </button>
+
+  </div>
+</div>
 
 <style>
   .button-trigger {

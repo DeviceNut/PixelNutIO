@@ -4,13 +4,8 @@
   import { pStrand, patsMenuOpen } from './globals.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
-  import ButtonsPatterns from './ButtonsPatterns.svelte';
 
 </script>
-
-<div style="padding-top:20px; text-align:center;">
-  <ButtonsPatterns/>
-</div>
 
 {#if $patsMenuOpen }
   <MenuPatterns/>

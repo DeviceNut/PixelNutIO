@@ -13,7 +13,9 @@
 
   import {
     pStrand,
-    patsMenuOpen
+    patsMenuOpen,
+    patsMenuItems,
+    MENUID_CUSTOM
   } from './globals.js';
 
   import {
@@ -23,28 +25,40 @@
 
   import { userClearPattern } from './cmduser2.js';
   import { sendStrandPattern } from './cmdsend.js';
+  import { menuCreate } from './menu.js';
 
   let openSave = false;
-  let savedesc;
   let copyclip = false;
 
+  let menustr;
+  $: menustr = $patsMenuOpen ? 'Close' : 'Select';
+
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
-  const doclear  = () => { userClearPattern(); }
-  const dostore  = () => { sendStrandPattern(); }
+
+  const doclear = () =>
+  {
+    userClearPattern();
+    $pStrand.curPatternId = MENUID_CUSTOM;
+  }
+
+  const dostore = () => { sendStrandPattern(); }
 
   const dosave = () =>
   {
-    storePatternSave($pStrand.curPatternName, savedesc, $pStrand.curPatternCmd);
-    storePatternsInit();
-
     if (copyclip)
     {
       copyToClipboard();
       copyclip = false;
     }
 
-    savedesc = '';
     openSave = false;
+
+    storePatternSave($pStrand.curPatternName, $pStrand.curPatternDesc, $pStrand.curPatternCmd);
+    storePatternsInit();
+    menuCreate();
+
+    // triggers update to UI - MUST HAVE THIS
+    $patsMenuItems = $patsMenuItems;
   }
 
   function copyToClipboard()
@@ -77,7 +91,7 @@
 
 <button class="button-pattern"
   on:click={doselect}
-  >Select
+  >{menustr}
 </button>
 
 <button class="button-pattern"
@@ -113,7 +127,7 @@
       <div style="margin-top:10px;"></div>
       <TextArea
         labelText="Description"
-        bind:value={savedesc}
+        bind:value={$pStrand.curPatternDesc}
       />
     </FormGroup>
     <Checkbox labelText="Copy command string to clipboard"

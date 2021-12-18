@@ -13,10 +13,10 @@ import {
     aStoredDesc,
     aDevicePatt,
     aDeviceDesc,
+    MENUID_CUSTOM,
     MENUID_PRESETS,
-    MENUID_BROWSWER,
+    MENUID_BROWSER,
     MENUID_DEVICE,
-    patsMenuOpen,
     patsOpenItems,
     patsSelectedID,
     patsMenuItems,
@@ -41,8 +41,26 @@ import {
     userClearPattern
   } from './cmduser2.js';
 
+  import { menuCreate } from './menu.js';
+
   let openDelete = false;
-  let deleteall, delstr, delname, deltitle;
+  let delname, deltitle, deleteall;
+
+  const delone = () =>
+  {
+    delname = $pStrand.curPatternName;
+    deltitle = `Delete Saved Pattern: "${delname}"`;
+    deleteall = false;
+    openDelete = true;
+  }
+
+  const delall = () =>
+  {
+    delname = '';
+    deltitle = 'Delete ALL Saved Patterns';
+    deleteall = true;
+    openDelete = true;
+  }
 
   const dodelete = () =>
   {
@@ -52,45 +70,43 @@ import {
     else storePatternRemove(delname);
 
     storePatternsInit();
+    menuCreate();
 
-    doselect(MENUID_BROWSWER);
+    userClearPattern();
+    $pStrand.curPatternId = MENUID_BROWSER;
 
     // triggers update to UI - MUST HAVE THIS
     $patsMenuItems = $patsMenuItems;
   }
 
+  let isbrowser;
+  $: isbrowser = ($pStrand.curPatternId > MENUID_BROWSER) &&
+                 ($pStrand.curPatternId < MENUID_DEVICE);
+
+  $: doselect($pStrand.curPatternId);
   const doselect = (id) =>
   {
+    if (id === $pStrand.curPatternIdOld)
+      return;
+
     console.log(`Selecting id=${id}`);
 
+    if ((id === MENUID_PRESETS)  ||
+        (id === MENUID_BROWSER) ||
+        (id === MENUID_DEVICE))
+      userClearPattern();
+
+    $pStrand.curPatternIdOld = id;
     $pStrand.curPatternId = id;
     $patsSelectedID = [ id ];
 
-    delname = '';
-    deltitle = '';
-    delstr = 'Delete...';
-    deleteall = false;
+    if ((id === MENUID_CUSTOM)   ||
+        (id === MENUID_PRESETS)  ||
+        (id === MENUID_BROWSER) ||
+        (id === MENUID_DEVICE)) return;
 
-    if ((id === MENUID_PRESETS)  ||
-        (id === MENUID_BROWSWER) ||
-        (id === MENUID_DEVICE))
-    {
-      userClearPattern();
-      $pStrand.curPatternId = id; // reset after clear
-
-      if ((id === MENUID_BROWSWER) && ($aStoredPatt.length > 0))
-      {
-        delname = 'all';
-        delstr = 'Delete All';
-        deltitle = 'Delete ALL Saved Patterns';
-        deleteall = true;
-      }
-
-      return;
-    }
-
-    let name, pcmd;
-    if (id < MENUID_BROWSWER)
+    let pcmd;
+    if (id < MENUID_BROWSER)
     {
       id -= MENUID_PRESETS+1;
       $pStrand.curPatternName = menuPresets.children[id].text;
@@ -99,15 +115,10 @@ import {
     }
     else if (id < MENUID_DEVICE)
     {
-      id -= MENUID_BROWSWER+1;
+      id -= MENUID_BROWSER+1;
       $pStrand.curPatternName = menuBrowser.children[id].text;
       $pStrand.curPatternDesc = $aStoredDesc[id];
       pcmd = $aStoredPatt[id];
-
-      delname = $pStrand.curPatternName;
-      delstr = 'Delete One';
-      deltitle = `Delete Saved Pattern: "${delname}"`;
-      deleteall = false;
     }
     else
     {
@@ -119,7 +130,6 @@ import {
 
     userSetPattern(pcmd);
   }
-  doselect($pStrand.curPatternId);
 
 </script>
 
@@ -135,23 +145,26 @@ import {
 />
 
 <div style="padding-top:10px; margin-left:10px;"></div>
-<p>Pattern Description: {$pStrand.curPatternName}</p>
+<p>Pattern Description: "{$pStrand.curPatternName}"</p>
 <p style="margin-top:2px; padding:5px; font-size:.95em;
           color: var(--color-textbox);
           background-color: var(--bg-color-textbox);">
   {$pStrand.curPatternDesc}</p>
 
-<div style="margin-top:15px; margin-bottom:5px; text-align:center;">
-  <button class="button-close"
-    on:click={() => { $patsMenuOpen = false; }}
-    >Close
-  </button>
-  <button class="button-delete"
-    on:click={() => {openDelete = true;}}
-    disabled={delname === ''}
-    >{delstr}
-  </button>
-</div>
+{#if ($aStoredPatt.length > 0) }
+  <div style="margin-top:15px; margin-bottom:5px; text-align:center;">
+    <button class="button-delete"
+      on:click={delall}
+      disabled={!isbrowser}
+      >Delete One
+    </button>
+    <button class="button-delete"
+      on:click={delone}
+      disabled={!isbrowser}
+      >Delete All
+    </button>
+  </div>
+{/if}
 
 <Modal
   passiveModal
@@ -166,11 +179,6 @@ import {
 </Modal>
 
 <style>
-  .button-close {
-    width: 60px;
-    height: 35px;
-    padding: 5px;
-  }
   .button-delete {
     width: 90px;
     height: 35px;

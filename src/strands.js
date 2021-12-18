@@ -8,7 +8,8 @@ import {
   aStrands,
   dStrands,
   nTracks,
-  nLayers
+  nLayers,
+  MENUID_CUSTOM
 } from './globals.js';
 
 import {
@@ -104,7 +105,8 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  curPatternId    : 0,      // menu ID of current pattern
+  curPatternIdOld : -1,     // used to prevent unnecessary selections
+  curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
   curPatternDesc  : '',     // current pattern description

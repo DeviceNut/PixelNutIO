@@ -20,9 +20,6 @@ import {
   aEffDrawDesc,
   aEffectsFilter,
   aEffFilterDesc,
-  patsMenuItems,
-  menuPresets,
-  menuBrowser,
   menuDevice
 } from './globals.js';
 
@@ -37,6 +34,7 @@ import {
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
+import { menuCreate } from './menu.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -211,15 +209,8 @@ export let deviceStartup = (device) =>
     */
   }
 
-  let lmenu = [];
-  lmenu.push(menuPresets);
-  lmenu.push(menuBrowser);
-  if (items.length > 0)
-  {
-    menuDevice.children = items;
-    lmenu.push(menuDevice);
-  }
-  patsMenuItems.set(lmenu);
+  menuDevice.children = items;
+  menuCreate();
 
   // reset to use first strand
   idStrand.set(0);

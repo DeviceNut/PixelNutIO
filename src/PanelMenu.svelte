@@ -8,22 +8,20 @@
 
 </script>
 
+<div style="padding-top:20px; text-align:center;">
+  <ButtonsPatterns/>
+</div>
+
 {#if $patsMenuOpen }
   <MenuPatterns/>
-{:else}
-  <div style="padding-top:20px; text-align:center;">
-    <ButtonsPatterns/>
+{:else if ($pStrand.tactives !== 0) }
+  <div style="margin-top:20px; text-align:center;">
+    <TextInput
+      style="width:250px; margin:0 auto;"
+      placeholder='Name your pattern here'
+      bind:value={$pStrand.curPatternName}
+      disabled={!$pStrand.showCustom}
+      maxlength="32"
+    />
   </div>
-
-  {#if ($pStrand.tactives !== 0) }
-    <div style="margin-top:20px; text-align:center;">
-      <TextInput
-        style="width:250px; margin:0 auto;"
-        placeholder='Name your pattern here'
-        bind:value={$pStrand.curPatternName}
-        disabled={!$pStrand.showCustom}
-        maxlength="32"
-      />
-    </div>
-  {/if}
 {/if}

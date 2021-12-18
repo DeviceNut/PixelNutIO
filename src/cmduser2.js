@@ -7,7 +7,7 @@ import {
   pStrand,
   aStrands,
   eStrands,
-  dStrands
+  MENUID_CUSTOM
 } from './globals.js';
 
 import {
@@ -189,7 +189,7 @@ export const userSetPattern = (pattern) =>
 export const userClearPattern = () =>
 {
   const strand = get(pStrand);
-  strand.curPatternId   = 0;
+  strand.curPatternId   = MENUID_CUSTOM;
   strand.curPatternName = '';
   strand.curPatternCmd  = '';
   strand.curPatternDesc = '';

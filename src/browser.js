@@ -5,7 +5,7 @@ import {
   aStoredPatt,
   aStoredDesc,
   menuBrowser,
-  MENUID_BROWSWER
+  MENUID_BROWSER
 } from './globals.js';
 
 const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
@@ -49,7 +49,7 @@ export const storePatternsInit = () =>
   if ((names !== null) && (names !== ''))
   {
     let nlist = names.split(SavePatternSeparator);
-    let bcount = MENUID_BROWSWER;
+    let bcount = MENUID_BROWSER;
 
     //console.log('nlist=', nlist); // DEBUG
 

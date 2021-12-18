@@ -5,7 +5,6 @@
   import { nStrands, aStrands, strandCombine } from './globals.js';
   import { userStrandSelect, userStrandCombine } from './cmduser2.js';
 
-//    <span style="margin-right:5px; font-size:1.1em;">Strands:</span>
 
 </script>
 
@@ -14,6 +13,20 @@
   <div style="display:flex; justify-content:center;">
     <div style="margin-top:15px;">
 
+      <MediaQuery query="(max-width: 680px)" let:matches>
+        {#if matches}
+          <span style="display:block; text-align:center;
+                       margin-bottom:10px; font-size:1.1em;"
+            >Strands:
+          </span>
+        {/if}
+      </MediaQuery>
+      <MediaQuery query="(min-width: 681px)" let:matches>
+        {#if matches}
+          <span style="font-size:1.1em;">Strands:</span>
+        {/if}
+      </MediaQuery>
+    
       {#each $aStrands as _,n}
         <Checkbox labelText={n+1}
           style="display:inline-block; margin-left:20px;"

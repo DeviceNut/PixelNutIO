@@ -86,7 +86,7 @@ import {
   $: doselect($pStrand.curPatternId);
   const doselect = (id) =>
   {
-    if (id === $pStrand.curPatternIdOld)
+    if (id === $pStrand.curPattIdOld)
       return;
 
     console.log(`Selecting id=${id}`);
@@ -96,7 +96,7 @@ import {
         (id === MENUID_DEVICE))
       userClearPattern();
 
-    $pStrand.curPatternIdOld = id;
+    $pStrand.curPattIdOld = id;
     $pStrand.curPatternId = id;
     $patsSelectedID = [ id ];
 

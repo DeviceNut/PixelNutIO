@@ -94,7 +94,8 @@ const drawProps =
 const oneTrack =
 {
   open            : true,   // true if displayed
-  trackBits       : 0x00,   // all filter layers OR'ed with drawing layer
+  trackBits       : 0x00,   // all filter layers pluginBits (unless muted)
+                            //  OR'ed with drawing layer pluginBits (always)
 
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track
@@ -105,7 +106,7 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  curPatternIdOld : -1,     // used to prevent unnecessary selections
+  curPattIdOld : -1,     // used to prevent unnecessary selections
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
@@ -114,7 +115,7 @@ const oneStrand =
   showCustom      : false,  // true if displaying customize panel
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
-  bitsEffects     : 0x00,   // OR'ed effect bits from all track layers
+  bitsEffects     : 0x00,   // OR'ed trackBits from all track layers
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
   pcentBright     : 0,      // percent bright
@@ -189,7 +190,11 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        // FIXME - copy pattern selection
+        strand.curPattIdOld   = ps.curPattIdOld;
+        strand.curPatternId   = ps.curPatternId;
+        strand.curPatternName = ps.curPatternName;
+        strand.curPatternCmd  = ps.curPatternCmd;
+        strand.curPatternDesc = ps.curPatternDesc;
 
         strand.showCustom     = ps.showCustom;
         strand.bitsOverride   = ps.bitsOverride;

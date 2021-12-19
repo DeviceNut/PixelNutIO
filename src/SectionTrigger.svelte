@@ -5,17 +5,14 @@
     Dropdown
   } from "carbon-components-svelte";
 
-  import {
-    DRAW_LAYER,
-    MAX_FORCE_VALUE
-  } from './devcmds.js';
-
   import { pStrand } from './globals.js';
 
   import {
+    DRAW_LAYER,
+    MAX_FORCE_VALUE,
     pluginBit_REPTRIGS,
     pluginBit_TRIGFORCE
-  } from './presets.js';
+  } from './devcmds.js';
 
   import {
     userSetTrigStart,

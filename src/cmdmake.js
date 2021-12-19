@@ -10,11 +10,6 @@ import {
 } from './globals.js';
 
 import {
-  pluginBit_TRIGFORCE,
-  pluginBit_SENDFORCE
-} from './presets.js';
-
-import {
   DRAW_LAYER           ,
   DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
@@ -24,6 +19,8 @@ import {
   overBit_DegreeHue    ,
   overBit_PcentWhite   ,
   overBit_PcentCount   ,
+  pluginBit_TRIGFORCE  ,
+  pluginBit_SENDFORCE  ,
   cmdStr_PcentXoffset  ,
   cmdStr_PcentXlength  ,
   cmdStr_SetEffect     ,
@@ -70,10 +67,9 @@ export const makeOrideBits = (p, track) =>
   return bits;
 }
   
-// combine all layer cmds into command output string
+// combine all layer commands into single command string
 export const makeEntireCmdStr = () =>
 {
-  // combine all layers into single string
   let cmdstr = '';
   let ridebits = 0;
   let splugbits = 0;
@@ -88,18 +84,16 @@ export const makeEntireCmdStr = () =>
 
     //let ismute = false; // DEBUG
 
-    // must have effect and not be mute be enabled
+    // must have effect and not be muted to be enabled
 
     for (let j = 0; j < track.lactives; ++j)
     {
       let layer = track.layers[j];
 
-      // must have effect and not be mute to get output
-      // (note that draw layer does not have mute)
       if (j === DRAW_LAYER)
       {
         drawplugin = !layer.mute;
-        tplugbits |= layer.pluginBits;
+        tplugbits |= layer.pluginBits; // 
 
         if (drawplugin)
         {
@@ -115,8 +109,8 @@ export const makeEntireCmdStr = () =>
       else if (drawplugin && !layer.mute)
       {
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
-        splugbits |= layer.pluginBits;
         tplugbits |= layer.pluginBits;
+        splugbits |= layer.pluginBits;
 
         //console.log(`filter: tmain=${layer.trigFromMain}`);
         if (layer.trigFromMain) trigused = true;

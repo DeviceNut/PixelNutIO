@@ -7,42 +7,40 @@ import {
 } from './globals.js';
 
 import {
-  DRAW_LAYER           ,
-  cmdStr_PullTrigger   ,
-  cmdStr_OR_Bright     ,
-  cmdStr_OR_Delay      ,
-  cmdStr_OR_Props      ,
-  cmdStr_SetOride      ,
-  cmdStr_SetFirst      ,
-  cmdStr_SelectEffect  ,
-  cmdStr_PcentXoffset  ,
-  cmdStr_PcentXlength  ,
-  cmdStr_PcentBright   ,
-  cmdStr_MsecsDelay    ,
-  cmdStr_DegreeHue     ,
-  cmdStr_PcentWhite    ,
-  cmdStr_PcentCount    ,
-  cmdStr_OrideBits     ,
-  cmdStr_Backwards     ,
-  cmdStr_CombinePixs   ,
-  cmdStr_TrigAtStart   ,
-  cmdStr_TrigByEffect  ,
-  cmdStr_TrigFromMain  ,
-  cmdStr_TrigRepeating ,
-  cmdStr_TrigOffset    ,
-  cmdStr_TrigRange     ,
-  cmdStr_TrigForce     ,
+  DRAW_LAYER            ,
+  pluginBit_ORIDE_HUE   ,
+  pluginBit_ORIDE_WHITE ,
+  pluginBit_ORIDE_COUNT ,
+  pluginBit_ORIDE_DELAY ,
+  pluginBit_ORIDE_DIR   ,
+  pluginBit_ORIDE_EXT   ,
+  cmdStr_PullTrigger    ,
+  cmdStr_OR_Bright      ,
+  cmdStr_OR_Delay       ,
+  cmdStr_OR_Props1      ,
+  cmdStr_OR_Props2      ,
+  cmdStr_SetOride       ,
+  cmdStr_SetFirst       ,
+  cmdStr_SelectEffect   ,
+  cmdStr_PcentXoffset   ,
+  cmdStr_PcentXlength   ,
+  cmdStr_PcentBright    ,
+  cmdStr_MsecsDelay     ,
+  cmdStr_DegreeHue      ,
+  cmdStr_PcentWhite     ,
+  cmdStr_PcentCount     ,
+  cmdStr_OrideBits      ,
+  cmdStr_Backwards      ,
+  cmdStr_CombinePixs    ,
+  cmdStr_TrigAtStart    ,
+  cmdStr_TrigByEffect   ,
+  cmdStr_TrigFromMain   ,
+  cmdStr_TrigRepeating  ,
+  cmdStr_TrigOffset     ,
+  cmdStr_TrigRange      ,
+  cmdStr_TrigForce      ,
   cmdStr_Go
 } from './devcmds.js';
-
-import {
-  pluginBit_ORIDE_HUE,
-  pluginBit_ORIDE_WHITE,
-  pluginBit_ORIDE_COUNT,
-  pluginBit_ORIDE_DELAY,
-  pluginBit_ORIDE_DIR,
-  pluginBit_ORIDE_EXT
-} from './presets.js';
 
 import {
   strandCopyTop,
@@ -277,7 +275,7 @@ export const userSetProps = () =>
     get(dStrands)[get(idStrand)].pcentCount = count;
 
     strandCopyTop();
-    sendStrandCmd(cmdStr_OR_Props, `${hue} ${white} ${count}`);
+    sendStrandCmd(cmdStr_OR_Props1, `${hue} ${white} ${count}${cmdStr_OR_Props2}`);
   }
 }
 

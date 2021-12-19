@@ -36,7 +36,7 @@ export const sendStrandSwitch = (s) =>
 }
 
 // stores both the current pattern string and name
-// to the device flash, and optionally starts it
+// to the device flash, and then starts it
 function sendStoreExecPattern()
 {
   const patstr = get(pStrand).curPatternCmd;

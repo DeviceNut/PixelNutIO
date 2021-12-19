@@ -23,12 +23,13 @@ import {
   menuDevice
 } from './globals.js';
 
+import { pluginBit_REDRAW } from './devcmds.js';
+
 import {
   preset_DrawEffectItems,
   preset_DrawEffectDescs,
   preset_FilterEffectItems,
-  preset_FilterEffectDescs,
-  pluginBit_REDRAW
+  preset_FilterEffectDescs
 } from './presets.js';
 
 import { strandCreateNew } from './strands.js';

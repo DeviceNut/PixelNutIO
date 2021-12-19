@@ -241,23 +241,6 @@ export const preset_FilterEffectDescs =
     "Toggles the drawing direction property on each trigger.",
   ];
 
-export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
-export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
-export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
-export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
-export const pluginBit_ROTATION    = 0x0010;  // changing rotation changes effect
-export const pluginBit_REPTRIGS    = 0x0020;  // repeat triggers changes effect
-export const pluginBit_TRIGFORCE   = 0x0040;  // force used in triggering
-export const pluginBit_SENDFORCE   = 0x0080;  // sends force to other plugins
-                                              // filter effect overrides:
-export const pluginBit_ORIDE_HUE   = 0x0100;  //  hue property
-export const pluginBit_ORIDE_WHITE = 0x0200;  //  white property
-export const pluginBit_ORIDE_COUNT = 0x0400;  //  count property
-export const pluginBit_ORIDE_DELAY = 0x0800;  //  delay property
-export const pluginBit_ORIDE_DIR   = 0x1000;  //  direction property
-export const pluginBit_ORIDE_EXT   = 0x2000;  //  start/extent properties
-export const pluginBit_REDRAW      = 0x8000;  // set if redraw effect, else filter
-
 export const presetsFindEffect = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())

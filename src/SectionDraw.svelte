@@ -15,7 +15,7 @@
     pluginBit_ORIDE_DELAY,
     pluginBit_ORIDE_DIR,
     pluginBit_ORIDE_EXT
-  } from './presets.js';
+  } from './devcmds.js';
 
   import {
     userSetBright,
@@ -52,7 +52,7 @@
     <SliderVal name='Delay&nbsp;'
       onchange={setDelay}
       bind:cur={$pStrand.tracks[track].drawProps.pcentDelay}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_DELAY) ||
                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DELAY)}
     />
   </Row>
@@ -82,8 +82,8 @@
     <Checkbox labelText="Move Backwards"
       on:check={setBwards}
       bind:checked={$pStrand.tracks[track].drawProps.dirBackwards}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR)}
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR) }
     />
   </Row>
 </div>

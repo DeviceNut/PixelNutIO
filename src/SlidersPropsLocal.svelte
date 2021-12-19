@@ -14,7 +14,7 @@
     pluginBit_ORIDE_HUE,
     pluginBit_ORIDE_WHITE,
     pluginBit_ORIDE_COUNT,
-  } from './presets.js';
+  } from './devcmds.js';
 
   import {
     userSetHue,
@@ -46,20 +46,20 @@
     <Checkbox labelText="Hue"
       on:check={setovers}
       bind:checked={$pStrand.tracks[track].drawProps.overHue}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE) }
     />
     <Checkbox labelText="White"
       on:check={setovers}
       bind:checked={$pStrand.tracks[track].drawProps.overWhite}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE)}
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_COLOR) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_WHITE) }
     />
     <Checkbox labelText="Count"
       on:check={setovers}
       bind:checked={$pStrand.tracks[track].drawProps.overCount}
-      disabled={!($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT)}
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_COUNT) ||
+                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_COUNT) }
     />
   </Row>
   <Row>
@@ -68,9 +68,9 @@
         max={359}
         onchange={sethue}
         bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
-        disabled={($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
-                 !($pStrand.tracks[track].trackBits & pluginBit_COLOR)              ||
-                  ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE)}
+        disabled={ ($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||
+                  !($pStrand.tracks[track].trackBits & pluginBit_COLOR)              ||
+                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_HUE) }
       />
 
       <SliderVal name='White&nbsp;'

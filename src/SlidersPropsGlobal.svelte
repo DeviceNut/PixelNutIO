@@ -2,18 +2,15 @@
 
   import { Checkbox } from 'carbon-components-svelte';
 
+  import { pStrand } from './globals.js';
+
   import {
     overBit_DegreeHue,
     overBit_PcentWhite,
     overBit_PcentCount,
-  } from './devcmds.js';
-
-  import {
     pluginBit_COLOR,
     pluginBit_COUNT
-  } from './presets.js';
-
-  import { pStrand } from './globals.js';
+  } from './devcmds.js';
 
   import {
     userSetOverMode,

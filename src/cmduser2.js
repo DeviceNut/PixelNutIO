@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 
 import {
+  defFilterNum,
   curDevice,
   nStrands,
   idStrand,
@@ -215,8 +216,8 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   }
   else
   {
-    // send command to apped new filter layer, set effect #100 - FIXME
-    userSendToLayer(track, layer, cmdStr_AppRemEffect, 100);
+    // send command to apped new filter layer
+    userSendToLayer(track, layer, cmdStr_AppRemEffect, defFilterNum);
     strandAppendLayer(track, layer);
   }
 

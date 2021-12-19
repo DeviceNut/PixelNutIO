@@ -1,8 +1,11 @@
 <script>
 
   import { pStrand } from './globals.js';
-  import { MAX_FORCE_VALUE } from './devcmds.js';
-  import { pluginBit_TRIGFORCE } from './presets.js';
+
+  import {
+    MAX_FORCE_VALUE,
+    pluginBit_TRIGFORCE
+  } from './devcmds.js';
 
   import {
     userSetBright,
@@ -43,14 +46,14 @@
     <SliderVal name='Force'
       max={MAX_FORCE_VALUE}
       bind:cur={$pStrand.forceValue}
-      disabled={($pStrand.curPatternCmd === '') ||
-                !($pStrand.bitsEffects & pluginBit_TRIGFORCE)}
+      disabled={ ($pStrand.tactives === 0) ||
+                !($pStrand.bitsEffects & pluginBit_TRIGFORCE) }
       />
 
     <button class="button-trigger"
       on:click={userSendTrigger}
-      disabled={($pStrand.curPatternCmd === '') ||
-                !($pStrand.triggerUsed)}
+      disabled={ ($pStrand.tactives === 0) ||
+                !($pStrand.triggerUsed) }
       >Trigger
     </button>
 

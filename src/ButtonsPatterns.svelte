@@ -104,13 +104,13 @@
 
   <button class="button-pattern"
     on:click={dostore}
-    disabled={ ($pStrand.curPatternCmd === '') }
+    disabled={ ($pStrand.tactives === 0) }
     >Store
   </button>
 
   <button class="button-pattern"
     on:click={() => {openSave = !openSave;}}
-    disabled={$pStrand.curPatternCmd === ''}
+    disabled={ ($pStrand.tactives === 0) }
     >Save
   </button>
 

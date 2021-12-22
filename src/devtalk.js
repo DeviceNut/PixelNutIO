@@ -11,11 +11,12 @@ import {
   deviceList,
   isConnected,
   msgTitle,
-  msgDesc,
-  MENUID_DEVICE
+  msgDesc  
  } from './globals.js';
 
-// Device Responses:
+ import { MENUID_DEVICE } from './menu.js';
+ 
+ // Device Responses:
  export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
  export const respStr_VersionStr  = "P!!"       // specifies response format version
  

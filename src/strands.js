@@ -8,8 +8,7 @@ import {
   aStrands,
   dStrands,
   nTracks,
-  nLayers,
-  MENUID_CUSTOM
+  nLayers
 } from './globals.js';
 
 import {
@@ -22,6 +21,7 @@ import {
 } from './devcmds.js';
 
 import { deviceError } from './devtalk.js';
+import { MENUID_CUSTOM } from './menu.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.

@@ -14,8 +14,7 @@
   import {
     pStrand,
     patsMenuOpen,
-    patsMenuItems,
-    MENUID_CUSTOM
+    patsMenuItems
   } from './globals.js';
 
   import {
@@ -25,7 +24,7 @@
 
   import { userClearPattern } from './cmduser2.js';
   import { sendStrandPattern } from './cmdsend.js';
-  import { menuCreate } from './menu.js';
+  import { MENUID_CUSTOM, menuCreate } from './menu.js';
 
   let openSave = false;
   let copyclip = false;

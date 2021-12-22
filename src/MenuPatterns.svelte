@@ -13,10 +13,6 @@ import {
     aStoredDesc,
     aDevicePatt,
     aDeviceDesc,
-    MENUID_CUSTOM,
-    MENUID_PRESETS,
-    MENUID_BROWSER,
-    MENUID_DEVICE,
     patsOpenItems,
     patsSelectedID,
     patsMenuItems,
@@ -39,6 +35,10 @@ import {
   } from './cmduser2.js';
 
   import {
+    MENUID_CUSTOM,
+    MENUID_PRESETS,
+    MENUID_BROWSER,
+    MENUID_DEVICE,
     menuPresets,
     menuBrowser,
     menuDevice,

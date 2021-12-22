@@ -1,5 +1,15 @@
-import { patsMenuItems } from './globals.js';
+import {
+  patsMenuItems,
+  patsSelectedID,
+  patsOpenItems
+} from './globals.js';
+
 import { preset_MenuItems } from './presets.js';
+
+export const MENUID_CUSTOM          = 0;      // must be 0
+export const MENUID_PRESETS         = 1;      // must be 1
+export const MENUID_BROWSER         = 1000;   // must be larger than highest filter effect id
+export const MENUID_DEVICE          = 2000;   // must be larger than number of browser patterns
 
 export let menuCustom =
 {
@@ -41,4 +51,7 @@ export let menuCreate = () =>
     lmenu.push(menuDevice);
 
   patsMenuItems.set(lmenu);
+
+  patsSelectedID.set([MENUID_PRESETS]);
+  patsOpenItems.set([MENUID_PRESETS,MENUID_DEVICE,MENUID_BROWSER]);
 }

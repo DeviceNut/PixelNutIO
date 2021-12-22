@@ -3,11 +3,13 @@ import { get } from 'svelte/store';
 import {
   mqttBrokerIP,
   aStoredPatt,
-  aStoredDesc,
-  MENUID_BROWSER
+  aStoredDesc
 } from './globals.js';
 
-import { menuBrowser } from './menu.js';
+import {
+  MENUID_BROWSER,
+  menuBrowser
+} from './menu.js';
 
 const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
 const SavePatternNames      = "PixelNut-Names";

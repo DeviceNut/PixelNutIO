@@ -63,15 +63,10 @@ export let aEffDrawDesc   = writable([]);     // list of all draw effect descrip
 export let aEffectsFilter = writable([]);     // list of all filter effects
 export let aEffFilterDesc = writable([]);     // list of all filter effect descriptions
 
-export const MENUID_CUSTOM          = 0;      // must be 0
-export const MENUID_PRESETS         = 1;      // must be 1
-export const MENUID_BROWSER        = 1000;   // must be larger than highest filter effect id
-export const MENUID_DEVICE          = 2000;   // must be larger than number of browser patterns
-
 export let patsMenuOpen   = writable(false);  // true to display pattern select menu
 export let patsMenuItems  = writable([]);     // array of menu items for current device
-export let patsSelectedID = writable([MENUID_PRESETS]); // list of selected/expanded items
-export let patsOpenItems  = writable([MENUID_PRESETS,MENUID_DEVICE,MENUID_BROWSER]);
+export let patsSelectedID = writable([]);     // list of selected items
+export let patsOpenItems  = writable([]);     // list of expanded items
 
 export const findEffectFromPlugin = (plugnum) =>
 {

@@ -7,7 +7,6 @@ import {
   pStrand,
   aStrands,
   eStrands,
-  MENUID_CUSTOM,
   findEffectFromPlugin
 } from './globals.js';
 
@@ -57,6 +56,7 @@ import {
 } from './cmdsend.js';
 
 import { parsePattern } from './cmdparse.js';
+import { MENUID_CUSTOM } from './menu.js';
 
 ///////////////////////////////////////////////////////////
 

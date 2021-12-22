@@ -10,19 +10,25 @@ import {
 } from './globals.js';
 
 import {
+  overBit_DegreeHue,
+  overBit_PcentWhite,
+  overBit_PcentCount,
+  strandCopyLayer,
+  strandCopyTracks
+} from './strands.js';
+
+import {
   DRAW_LAYER           ,
   DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_DELAY      ,
   DEF_PCENT_COUNT      ,
   DEF_FORCE_VALUE      ,
-  overBit_DegreeHue    ,
-  overBit_PcentWhite   ,
-  overBit_PcentCount   ,
   pluginBit_TRIGFORCE  ,
   pluginBit_SENDFORCE  ,
   cmdStr_PcentXoffset  ,
   cmdStr_PcentXlength  ,
+  cmdStr_LayerMute     ,
   cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
@@ -41,11 +47,6 @@ import {
   cmdStr_TrigForce     ,
   cmdStr_Go            
 } from './devcmds.js';
-
-import {
-  strandCopyLayer,
-  strandCopyTracks
-} from './strands.js';
 
 import { deviceError } from './devtalk.js';
 
@@ -82,45 +83,45 @@ export const makeEntireCmdStr = () =>
     let drawplugin = false;
     let tplugbits = 0;
 
-    //let ismute = false; // DEBUG
-
     // must have effect and not be muted to be enabled
 
     for (let j = 0; j < track.lactives; ++j)
     {
       let layer = track.layers[j];
+      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginBits.toString(16)}`); // DEBUG
 
       if (j === DRAW_LAYER)
       {
-        drawplugin = !layer.mute;
-        tplugbits |= layer.pluginBits; // 
+        cmdstr = cmdstr.concat(`${layer.cmdstr}`);
 
+        drawplugin = !layer.mute;
         if (drawplugin)
         {
-          cmdstr = cmdstr.concat(`${layer.cmdstr}`);
-          ridebits |= makeOrideBits(strand, i);
+          tplugbits |= layer.pluginBits;
           splugbits |= layer.pluginBits;
+          ridebits |= makeOrideBits(strand, i);
 
-          //console.log(`draw: cmdstr=${cmdstr} tmain=${layer.trigFromMain}`);
           if (layer.trigFromMain) trigused = true;
         }
-        //else ismute = true; // DEBUG
+        else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
-      else if (drawplugin && !layer.mute)
+      else
       {
         cmdstr = cmdstr.concat(`${layer.cmdstr}`);
-        tplugbits |= layer.pluginBits;
-        splugbits |= layer.pluginBits;
 
-        //console.log(`filter: tmain=${layer.trigFromMain}`);
-        if (layer.trigFromMain) trigused = true;
+        if (drawplugin && !layer.mute)
+        {
+          tplugbits |= layer.pluginBits;
+          splugbits |= layer.pluginBits;
+
+          if (layer.trigFromMain) trigused = true;
+        }
+        else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
-
-      //else ismute = true; // DEBUG
-      //console.log(`  ${i}:${j} ${layer.cmdstr} ${ismute?'*':''}`) // DEBUG
     }
 
     // track plugin bits includes bits from all layers
+    //console.log(`makeAll: track=${i} trackBits=${tplugbits.toString(16)}`); // DEBUG
     track.trackBits = tplugbits;
   }
 

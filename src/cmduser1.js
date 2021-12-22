@@ -7,6 +7,11 @@ import {
 } from './globals.js';
 
 import {
+  strandCopyTop,
+  convTrackLayerToIndex,
+} from './strands.js';
+
+import {
   DRAW_LAYER            ,
   pluginBit_ORIDE_HUE   ,
   pluginBit_ORIDE_WHITE ,
@@ -41,11 +46,6 @@ import {
   cmdStr_TrigForce      ,
   cmdStr_Go
 } from './devcmds.js';
-
-import {
-  strandCopyTop,
-  convTrackLayerToIndex,
-} from './strands.js';
 
 import {
   makeOrideBits,
@@ -103,6 +103,9 @@ export const userSetEffect = (track, layer, elist) =>
   const prevstr = strand.tracks[track].layers[layer].cmdstr;
   const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
+  console.log(`seteffect: track=${track} layer=${layer} prev=${prevstr} index=${pindex} shadow=${lshadow.pluginIndex}`);
+  console.log(`1) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
+
   if ((prevstr == '') || (lshadow.pluginIndex !== pindex))
   {
     const before = elist[lshadow.pluginIndex].bits;
@@ -117,19 +120,26 @@ export const userSetEffect = (track, layer, elist) =>
 
     if (prevstr == '') // if no previous effect: create new effect
     {
+      console.log('create new effect');
       sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);
       sendStrandCmd(cmdStr_Go);
     }
     else // else switch to new effect on this layer
     {
+      console.log('switch to new effect');
+
       let devindex = convTrackLayerToIndex(track, layer);
       if (devindex == null) return; // error pending
 
       sendLayerCmd(devindex, cmdStr_SelectEffect, `${elist[pindex].id}`);
+
+      console.log(`2) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
     }
 
     const bits = before & ~after; // override bits being cleared
     updateTrackOverrides(track, bits);
+
+    console.log(`3) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
   }
 }
 

@@ -3,7 +3,8 @@
   import MediaQuery from "svelte-media-query";
   import { Grid, Row, Column } from "carbon-components-svelte";
 
-  import { defCustomCmd, pStrand } from './globals.js';
+  import { pStrand } from './globals.js';
+  import { defCustomCmd } from './devcmds.js';
   import { userSetPattern } from './cmduser2.js';
 
   import HeaderControls from './HeaderControls.svelte';

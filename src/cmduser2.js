@@ -1,25 +1,16 @@
 import { get } from 'svelte/store';
 
 import {
-  defFilterNum,
   curDevice,
   nStrands,
   idStrand,
   pStrand,
   aStrands,
   eStrands,
+  aEffectsDraw,
+  aEffectsFilter,
   MENUID_CUSTOM
 } from './globals.js';
-
-import {
-  DRAW_LAYER,
-  cmdStr_LayerMute,
-  cmdStr_DeviceName,
-  cmdStr_Pause,
-  cmdStr_Resume,
-  cmdStr_SelectEffect,
-  cmdStr_AppRemEffect
-} from './devcmds.js';
 
 import {
   strandCopyAll,
@@ -33,6 +24,20 @@ import {
   strandSwapTracks,
   strandSwapLayers
 } from './strands.js';
+
+import {
+  DRAW_LAYER,
+  cmdStr_LayerMute,
+  cmdStr_DeviceName,
+  cmdStr_Pause,
+  cmdStr_Resume,
+  cmdStr_SelectEffect,
+  cmdStr_AppRemEffect,
+  cmdStr_TrigAtStart,
+  cmdStr_SetEffect,
+  defDrawEffect,
+  defFilterEffect
+} from './devcmds.js';
 
 import {
   makeEntireCmdStr,
@@ -208,21 +213,38 @@ export const userClearPattern = () =>
 // assume cannot get called if number of T/L's at max
 export const userAddTrackLayer = (track, layer, dofilter=false) =>
 {
+  const strand = get(pStrand);
+  let effect, plugbits;
+
   if (!dofilter && (layer === DRAW_LAYER))
   {
-    // send command to apped new track and redraw layer, set effect #0
-    userSendToLayer(track, DRAW_LAYER, cmdStr_AppRemEffect, 0);
     strandAppendTrack(track);
+
+    track += 1;
+    effect = defDrawEffect;
+    plugbits = get(aEffectsDraw)[effect].bits;
   }
   else
   {
-    // send command to apped new filter layer
-    userSendToLayer(track, layer, cmdStr_AppRemEffect, defFilterNum);
     strandAppendLayer(track, layer);
+
+    layer += 1;
+    effect = defFilterEffect;
+    plugbits = get(aEffectsFilter)[effect].bits;
   }
+
+  strand.tracks[track].layers[layer].pluginIndex = effect;
+  strand.tracks[track].layers[layer].pluginBits  = plugbits;
+  strand.tracks[track].trackBits = plugbits;
 
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild all tracks
+
+  // send command to append new track and redraw layer, set effect
+  userSendToLayer(track, layer, cmdStr_AppRemEffect, effect);
+
+  if (strand.tracks[track].layers[layer].trigAtStart)
+    userSendToLayer(track, DRAW_LAYER, cmdStr_TrigAtStart, undefined);
 }
 
 // assume cannot get called if only one T/L

@@ -300,10 +300,7 @@ export const updateTriggerLayers = () =>
             {
               found = true;
               strand.tracks[track].layers[layer].trigSrcListDex = i;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = i;
-
               strand.tracks[track].layers[layer].trigDevIndex = item.devindex;
-              get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevIndex = item.devindex;
 
               //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`); // DEBUG
             }
@@ -319,7 +316,6 @@ export const updateTriggerLayers = () =>
           strand.tracks[track].layers[layer].trigSrcListDex = 0;
 
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = 0;
         }
       }
     }

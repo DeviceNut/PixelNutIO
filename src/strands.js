@@ -44,10 +44,10 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigAtStart     : true,   // true to trigger effect at creation
-  trigFromMain    : false,  // true if can trigger from main controls
+  trigAtStart     : true,   // *true to trigger effect at creation
+  trigFromMain    : false,  // *true if can trigger from main controls
 
-  trigOnLayer     : false,  // true if can trigger from other layer:
+  trigOnLayer     : false,  // *true if can trigger from other layer:
   trigSrcListDex  : 0,      //  source list index currently selected (0=none)
                             //  if the above is >0 (user has selected one):
   trigSourceID    : 0,      //  uniqueID for that chosen source layer
@@ -55,14 +55,14 @@ const oneLayer =
                             //  (set by parser before source list created)
                             //  (must recalculate this when create pattern)
 
-  trigDoRepeat    : false,  // true for auto-generated trigger:
-  trigForever     : false,  //   false to select specific count
-  trigRepCount    : 1,      //   number of times to trigger (from 1)
-  trigRepOffset   : 0,      //   offset seconds before range (from 0)
-  trigRepRange    : 0,      //   range of random seconds (from 0)
+  trigDoRepeat    : false,  // *true for auto-generated trigger:
+  trigForever     : false,  //   *false to select specific count
+  trigRepCount    : 1,      //   *number of times to trigger (from 1)
+  trigRepOffset   : 0,      //   *offset seconds before range (from 0)
+  trigRepRange    : 0,      //   *range of random seconds (from 0)
 
-  forceRandom     : false,  // true if a random force is applied when triggering
-  forceValue      : MAX_FORCE_VALUE/2, // percent force to apply (if not random)
+  forceRandom     : false,  // *true if a random force is applied when triggering
+  forceValue      : MAX_FORCE_VALUE/2, // *percent force to apply (if not random)
 
   pluginIndex     : 0,      // effect plugin index, not value
   pluginBits      : 0x00,   // describes plugin (pluginBit_xxx)
@@ -75,20 +75,20 @@ const drawProps =
   pcentBright     : DEF_PCENT_BRIGHT, // percent brightness
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
-  overHue         : false,  // true to allow global override
-  degreeHue       : DEF_HUE_DEGREE, // hue in degrees (0-MAX_DEGREES_HUE)
+  overHue         : false,  // *true to allow global override
+  degreeHue       : DEF_HUE_DEGREE, // *hue in degrees (0-MAX_DEGREES_HUE)
 
-  overWhite       : false,  // true to allow global override
-  pcentWhite      : 0,      // percent whiteness
+  overWhite       : false,  // *true to allow global override
+  pcentWhite      : 0,      // *percent whiteness
 
-  overCount       : false,  // true to allow global override
-  pcentCount      : 50,     // percent of pixels affected in range
+  overCount       : false,  // *true to allow global override
+  pcentCount      : 50,     // *percent of pixels affected in range
                           
-  pcentXoffset    : 0,      // percent of pixels for offset
-  pcentXlength    : 100,    // percent of pixels to be drawn
+  pcentXoffset    : 0,      // *percent of pixels for offset
+  pcentXlength    : 100,    // *percent of pixels to be drawn
 
-  dirBackwards    : false,  // backwards drawing direction (decreasing pixel index)
-  orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
+  dirBackwards    : false,  // *backwards drawing direction (decreasing pixel index)
+  orPixelVals     : false,  // *whether pixels overwrites (false) or are OR'ed (true)
 }
 
 const oneTrack =
@@ -118,11 +118,11 @@ const oneStrand =
   bitsEffects     : 0x00,   // OR'ed trackBits from all track layers
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
-  pcentBright     : 0,      // percent bright
-  pcentDelay      : 0,      // percent delay
-  pixelOffset     : 0,      // pixel offset to start drawing from
+  pcentBright     : 0,      // *percent bright
+  pcentDelay      : 0,      // *percent delay
+  pixelOffset     : 0,      // *pixel offset to start drawing from
 
-  doOverride      : false,  // true to override local properties with:
+  doOverride      : false,  // *true to override local properties with:
   degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
   pcentWhite      : 0,      // percent whiteness
   pcentCount      : 0,      // percent of pixels affected in range
@@ -135,6 +135,7 @@ const oneStrand =
 
   trigSources     : [],     // list of trigger source layer info
 }
+// * shadow value used to test for actual user changes
 
 export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite

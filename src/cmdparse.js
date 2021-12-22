@@ -5,9 +5,7 @@ import {
   nLayers,
   pStrand,
   dStrands,
-  idStrand,
-  aEffectsDraw,
-  aEffectsFilter
+  idStrand
 } from './globals.js';
 
 import {
@@ -102,7 +100,6 @@ export const parsePattern = (pattern) =>
       case cmdStr_SetEffect:
       {
         let firstone = ((track < 0) || (layer < 0));
-        let layerbits;
 
         let obj = presetsFindEffect(val);
         if (obj === undefined)
@@ -124,15 +121,13 @@ export const parsePattern = (pattern) =>
             makeLayerCmdStr(track, layer);
             
             get(pStrand).tracks[track].trackBits = trackbits;
-            get(dStrands)[get(idStrand)].tracks[track].trackBits = trackbits;
           }
 
-          get(pStrand).tactives++;
           ++track;
+          get(pStrand).tactives++;
           layer = DRAW_LAYER;
 
-          layerbits = get(aEffectsDraw)[obj.index].bits;
-          trackbits = layerbits;
+          trackbits = obj.bits;
         }
         else if (firstone)
         {
@@ -148,12 +143,11 @@ export const parsePattern = (pattern) =>
             console.warn('Too many layers');
             return false;
           }
-          get(pStrand).tracks[track].lactives++;
 
+          get(pStrand).tracks[track].lactives++;
           ++layer;
 
-          layerbits = get(aEffectsFilter)[obj.index].bits;
-          trackbits |= layerbits;
+          trackbits |= obj.bits;
         }
 
         // turn off triggering-on-start because disabled if missing
@@ -163,10 +157,9 @@ export const parsePattern = (pattern) =>
         //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`); // DEBUG
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
-        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
+        get(pStrand).tracks[track].layers[layer].pluginBits = obj.bits;
 
-        get(pStrand).tracks[track].layers[layer].pluginBits = layerbits;
-        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginBits = layerbits;
+        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;
         break;
       }
       default: // must have draw effect for these commands:
@@ -183,7 +176,6 @@ export const parsePattern = (pattern) =>
             // enable if no value follows command
             const mute = isNaN(val) ? true : valueToBool(val);
             get(pStrand).tracks[track].layers[layer].mute = mute;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].mute = mute;
             break;
           }
           case cmdStr_PcentXoffset:
@@ -311,10 +303,9 @@ export const parsePattern = (pattern) =>
             else enable = true;
 
             get(pStrand).tracks[track].layers[layer].trigOnLayer = enable;
-            get(pStrand).tracks[track].layers[layer].trigDevIndex = val;
-
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDevIndex = val;
+
+            get(pStrand).tracks[track].layers[layer].trigDevIndex = val;
             break;
           }
           case cmdStr_TrigRepeating:
@@ -325,6 +316,7 @@ export const parsePattern = (pattern) =>
             {
               get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
+
               get(pStrand).tracks[track].layers[layer].trigForever = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigForever = true;
             }
@@ -332,8 +324,10 @@ export const parsePattern = (pattern) =>
             {
               get(pStrand).tracks[track].layers[layer].trigDoRepeat = true;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigDoRepeat = true;
+
               get(pStrand).tracks[track].layers[layer].trigForever = false;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigForever = false;
+
               get(pStrand).tracks[track].layers[layer].trigRepCount = count;
               get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepCount = count;
             }
@@ -398,7 +392,7 @@ export const parsePattern = (pattern) =>
           if ((i > 0) && (item.devindex == devindex))
           {
             strand.tracks[track].layers[layer].trigSrcListDex = i;
-            strand.tracks[track].layers[layer].trigSourceID = 
+            strand.tracks[track].layers[layer].trigSourceID =
               strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
             //console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)

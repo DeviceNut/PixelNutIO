@@ -7,8 +7,6 @@ import {
   pStrand,
   aStrands,
   eStrands,
-  aEffectsDraw,
-  aEffectsFilter,
   MENUID_CUSTOM
 } from './globals.js';
 
@@ -214,34 +212,34 @@ export const userClearPattern = () =>
 export const userAddTrackLayer = (track, layer, dofilter=false) =>
 {
   const strand = get(pStrand);
-  let effect, plugbits;
+  let effect;
 
   if (!dofilter && (layer === DRAW_LAYER))
   {
     strandAppendTrack(track);
 
-    track += 1;
     effect = defDrawEffect;
-    plugbits = get(aEffectsDraw)[effect].bits;
+    // send command to append new track and redraw layer, set effect
+    userSendToLayer(track, layer, cmdStr_AppRemEffect, effect);
+    track += 1;
   }
   else
   {
     strandAppendLayer(track, layer);
 
-    layer += 1;
     effect = defFilterEffect;
-    plugbits = get(aEffectsFilter)[effect].bits;
+    // send command to append new filter layer, set effect
+    userSendToLayer(track, layer, cmdStr_AppRemEffect, effect);
+    layer += 1;
   }
 
+  let obj = presetsFindEffect(effect);
   strand.tracks[track].layers[layer].pluginIndex = effect;
-  strand.tracks[track].layers[layer].pluginBits  = plugbits;
-  strand.tracks[track].trackBits = plugbits;
+  strand.tracks[track].layers[layer].pluginBits = obj.bits;
+  strand.tracks[track].trackBits = obj.bits
 
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild all tracks
-
-  // send command to append new track and redraw layer, set effect
-  userSendToLayer(track, layer, cmdStr_AppRemEffect, effect);
 
   if (strand.tracks[track].layers[layer].trigAtStart)
     userSendToLayer(track, DRAW_LAYER, cmdStr_TrigAtStart, undefined);

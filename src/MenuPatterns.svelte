@@ -20,9 +20,6 @@ import {
     patsOpenItems,
     patsSelectedID,
     patsMenuItems,
-    menuPresets,
-    menuBrowser,
-    menuDevice
   } from './globals.js';
 
   import {
@@ -41,7 +38,12 @@ import {
     userClearPattern
   } from './cmduser2.js';
 
-  import { menuCreate } from './menu.js';
+  import {
+    menuPresets,
+    menuBrowser,
+    menuDevice,
+    menuCreate
+  } from './menu.js';
 
   let openDelete = false;
   let delname, deltitle, deleteall;

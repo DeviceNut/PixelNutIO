@@ -61,38 +61,29 @@ import {
 
 ///////////////////////////////////////////////////////////
 
-// send command (and optional value) to specific layer
-export const userSendToLayer = (track, layer, cmdstr, cmdval) =>
-{
-  let devindex = convTrackLayerToIndex(track, layer);
-  if (devindex == null) return; // error pending
-
-  sendLayerCmd(devindex, cmdstr, cmdval);
-}
-
 function updateTrackOverrides(track, bits)
 {
   const props = get(pStrand).tracks[track].drawProps;
 
   if (bits & pluginBit_ORIDE_HUE)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
 
   if (bits & pluginBit_ORIDE_WHITE)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
 
   if (bits & pluginBit_ORIDE_COUNT)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
 
   if (bits & pluginBit_ORIDE_DELAY)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
 
   if (bits & pluginBit_ORIDE_DIR)
-    userSendToLayer(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
 
   if (bits & pluginBit_ORIDE_EXT)
   {
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
-    userSendToLayer(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
   }
 }
 
@@ -128,10 +119,7 @@ export const userSetEffect = (track, layer, elist) =>
     {
       console.log('switch to new effect');
 
-      let devindex = convTrackLayerToIndex(track, layer);
-      if (devindex == null) return; // error pending
-
-      sendLayerCmd(devindex, cmdStr_SelectEffect, `${elist[pindex].id}`);
+      sendLayerCmd(track, layer, cmdStr_SelectEffect, `${elist[pindex].id}`);
 
       console.log(`2) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
     }
@@ -145,15 +133,11 @@ export const userSetEffect = (track, layer, elist) =>
 
 export const userDoRestart = (track, layer, elist) =>
 {
-  let devindex = convTrackLayerToIndex(track, layer);
-  if (devindex == null) return; // error pending
-
   const pindex = get(pStrand).tracks[track].layers[layer].pluginIndex;
   const pval = elist[pindex].id;
 
-  sendLayerCmd(devindex, cmdStr_SelectEffect, `${pval}`);
+  sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pval}`);
 }
-
 
 export const userSetOrPixs = (track) =>
 {
@@ -165,7 +149,7 @@ export const userSetOrPixs = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_CombinePixs, (enable ? 1 : 0));
+    sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : 0));
   }
 }
 
@@ -194,7 +178,7 @@ export const userSetBright = (track) =>
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentBright = bright;
 
       updateLayerVals(track, layer);
-      userSendToLayer(track, layer, cmdStr_PcentBright, bright);
+      sendLayerCmd(track, layer, cmdStr_PcentBright, bright);
     }
   }
 }
@@ -222,7 +206,7 @@ export const userSetDelay = (track) =>
       get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentDelay = delay;
 
       updateLayerVals(track, layer);
-      userSendToLayer(track, layer, cmdStr_MsecsDelay, delay);
+      sendLayerCmd(track, layer, cmdStr_MsecsDelay, delay);
     }
   }
 }
@@ -256,13 +240,13 @@ export const userSetOverMode = () =>
         let props = get(pStrand).tracks[i].drawProps;
 
         if (props.overHue)
-          userSendToLayer(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
 
         if (props.overWhite)
-          userSendToLayer(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
 
         if (props.overCount)
-          userSendToLayer(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
       }
     }
   }
@@ -307,7 +291,7 @@ export const userSetOffset = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXoffset = offset;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentXoffset, offset);
+    sendLayerCmd(track, layer, cmdStr_PcentXoffset, offset);
   }
 }
 
@@ -322,7 +306,7 @@ export const userSetLength = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentXlength = extent;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentXlength, extent);
+    sendLayerCmd(track, layer, cmdStr_PcentXlength, extent);
   }
 }
 
@@ -336,7 +320,7 @@ export const userSetBackwards = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = enable;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_Backwards, (enable ? 1 : 0));
+    sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? 1 : 0));
   }
 }
 
@@ -352,7 +336,7 @@ export const userSetHue = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.degreeHue = hue;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_DegreeHue, `${hue}`);
+    sendLayerCmd(track, layer, cmdStr_DegreeHue, `${hue}`);
   }
 }
 
@@ -366,7 +350,7 @@ export const userSetWhite = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentWhite = white;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentWhite, `${white}`);
+    sendLayerCmd(track, layer, cmdStr_PcentWhite, `${white}`);
   }
 }
 
@@ -380,7 +364,7 @@ export const userSetCount = (track) =>
     get(dStrands)[get(idStrand)].tracks[track].drawProps.pcentCount = count;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_PcentCount, `${count}`);
+    sendLayerCmd(track, layer, cmdStr_PcentCount, `${count}`);
   }
 }
 
@@ -395,30 +379,30 @@ export const userSetOverrides = (track) =>
   {
     updateLayerVals(track, layer);
   
-    userSendToLayer(track, layer, cmdStr_OrideBits, bits);
+    sendLayerCmd(track, layer, cmdStr_OrideBits, bits);
 
     if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue !== props.overHue)
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.overHue = props.overHue;
       if (!props.overHue)
-           userSendToLayer(track, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
-      else userSendToLayer(track, layer, cmdStr_DegreeHue, `${strand.degreeHue}`);
+           sendLayerCmd(track, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
+      else sendLayerCmd(track, layer, cmdStr_DegreeHue, `${strand.degreeHue}`);
     }
 
     if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite !== props.overWhite)
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.overWhite = props.overWhite;
       if (!props.overWhite)
-           userSendToLayer(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
-      else userSendToLayer(track, layer, cmdStr_PcentWhite, `${strand.pcentWhite}`);
+           sendLayerCmd(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
+      else sendLayerCmd(track, layer, cmdStr_PcentWhite, `${strand.pcentWhite}`);
     }
 
     if (get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount !== props.overCount)
     {
       get(dStrands)[get(idStrand)].tracks[track].drawProps.overCount = props.overCount;
       if (!props.overCount)
-           userSendToLayer(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
-      else userSendToLayer(track, layer, cmdStr_PcentCount, `${strand.pcentCount}`);
+           sendLayerCmd(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
+      else sendLayerCmd(track, layer, cmdStr_PcentCount, `${strand.pcentCount}`);
     }
   }
 }
@@ -436,7 +420,7 @@ export const userSetTrigStart = (track, layer) =>
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = dostart;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigAtStart, (dostart ? undefined : 0));
+    sendLayerCmd(track, layer, cmdStr_TrigAtStart, (dostart ? undefined : 0));
     // don't need to send value if enabling (1 is default)
   }
 }
@@ -452,7 +436,7 @@ export const userSetTrigMain = (track, layer) =>
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigFromMain = domain;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigFromMain, (domain ? undefined : 0));
+    sendLayerCmd(track, layer, cmdStr_TrigFromMain, (domain ? undefined : 0));
     // don't need to send value if enabling (1 is default)
   }
 }
@@ -468,11 +452,11 @@ export const userSetTrigLayer = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let devindex; // set to undefined, valid parm to userSendToLayer()
+    let devindex; // set to undefined, valid parm to sendLayerCmd()
     if (enable && (strand.tracks[track].layers[layer].trigSourceDex > 0))
       devindex = strand.tracks[track].layers[layer].trigDevIndex;
 
-    userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);
+    sendLayerCmd(track, layer, cmdStr_TrigByEffect, devindex);
   }
 }
 
@@ -488,7 +472,7 @@ export const userSetTrigSource = (track, layer) =>
 
     updateLayerVals(track, layer);
 
-    let devindex; // set to undefined, valid parm to userSendToLayer()
+    let devindex; // set to undefined, valid parm to sendLayerCmd()
     if (index > 0)
     {
       const item = strand.trigSources[index];
@@ -502,7 +486,7 @@ export const userSetTrigSource = (track, layer) =>
       strand.tracks[track].layers[layer].trigSourceID = idval;
     }
 
-    userSendToLayer(track, layer, cmdStr_TrigByEffect, devindex);
+    sendLayerCmd(track, layer, cmdStr_TrigByEffect, devindex);
   }
 }
 
@@ -523,9 +507,9 @@ export const userSetTrigRepeat = (track, layer) =>
       let count;
       if (get(pStrand).tracks[track].layers[layer].trigForever) count = undefined;
       else count = get(pStrand).tracks[track].layers[layer].trigRepCount;
-      userSendToLayer(track, layer, cmdStr_TrigRepeating, count);
+      sendLayerCmd(track, layer, cmdStr_TrigRepeating, count);
     }
-    else userSendToLayer(track, layer, cmdStr_TrigRepeating, 0); // disable
+    else sendLayerCmd(track, layer, cmdStr_TrigRepeating, 0); // disable
   }
 }
 
@@ -545,7 +529,7 @@ export const userSetTrigForever = (track, layer) =>
       let count;
       if (forever) count = 0;
       else count = get(pStrand).tracks[track].layers[layer].trigRepCount;
-      userSendToLayer(track, layer, cmdStr_TrigRepeating, count);
+      sendLayerCmd(track, layer, cmdStr_TrigRepeating, count);
     }
   }
 }
@@ -563,7 +547,7 @@ export const userSetTrigCount = (track, layer) =>
     if (get(pStrand).tracks[track].layers[layer].trigDoRepeat)
     {
       // assume forever is not set here
-      userSendToLayer(track, layer, cmdStr_TrigRepeating, count);
+      sendLayerCmd(track, layer, cmdStr_TrigRepeating, count);
     }
   }
 }
@@ -577,7 +561,7 @@ export const userSetTrigOffset = (track, layer) =>
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepOffset = offset;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigOffset, offset);
+    sendLayerCmd(track, layer, cmdStr_TrigOffset, offset);
   }
 }
 
@@ -590,7 +574,7 @@ export const userSetTrigRange = (track, layer) =>
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepRange = range;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigRange, range);
+    sendLayerCmd(track, layer, cmdStr_TrigRange, range);
   }
 }
 
@@ -605,7 +589,7 @@ export const userSetForceType = (track, layer) =>
     const force = isrand ? undefined : get(pStrand).tracks[track].layers[layer].forceValue;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigForce, force);
+    sendLayerCmd(track, layer, cmdStr_TrigForce, force);
   }
 }
 
@@ -618,6 +602,6 @@ export const userSetForceValue = (track, layer) =>
     get(dStrands)[get(idStrand)].tracks[track].layers[layer].forceValue = force;
 
     updateLayerVals(track, layer);
-    userSendToLayer(track, layer, cmdStr_TrigForce, force);
+    sendLayerCmd(track, layer, cmdStr_TrigForce, force);
   }
 }

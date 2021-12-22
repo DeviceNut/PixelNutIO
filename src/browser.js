@@ -4,9 +4,10 @@ import {
   mqttBrokerIP,
   aStoredPatt,
   aStoredDesc,
-  menuBrowser,
   MENUID_BROWSER
 } from './globals.js';
+
+import { menuBrowser } from './menu.js';
 
 const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
 const SavePatternNames      = "PixelNut-Names";

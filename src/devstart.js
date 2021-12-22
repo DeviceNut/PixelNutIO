@@ -19,8 +19,7 @@ import {
   aEffectsDraw,
   aEffDrawDesc,
   aEffectsFilter,
-  aEffFilterDesc,
-  menuDevice
+  aEffFilterDesc  
 } from './globals.js';
 
 import { pluginBit_REDRAW } from './devcmds.js';
@@ -35,7 +34,7 @@ import {
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
-import { menuCreate } from './menu.js';
+import { menuDevice, menuCreate } from './menu.js';
 
 ///////////////////////////////////////////////////////////
 

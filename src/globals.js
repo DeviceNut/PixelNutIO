@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store'
+import { writable } from 'svelte/store';
 
 export let defDeviceName  = 'PixelNut!';
 export let titleDevices   = 'PixelNut! Devices';
@@ -73,29 +73,15 @@ export let patsMenuItems  = writable([]);     // array of menu items for current
 export let patsSelectedID = writable([MENUID_PRESETS]); // list of selected/expanded items
 export let patsOpenItems  = writable([MENUID_PRESETS,MENUID_DEVICE,MENUID_BROWSER]);
 
-export let menuCustom =
+export const findEffectFromPlugin = (plugnum) =>
 {
-  id: MENUID_CUSTOM,
-  text: "Custom Pattern"
-};
+  for (const [i, f] of get(aEffectsDraw).entries())
+    if (f.id === plugnum)
+      return { filter:false, index:i, bits:f.bits };
 
-export let menuPresets =
-{
-  id: MENUID_PRESETS,
-  text: "Standard Presets:",
-  children: [],
-};
+  for (const [i, f] of get(aEffectsFilter).entries())
+    if (f.id === plugnum)
+      return { filter:true, index:i, bits:f.bits };
 
-export let menuBrowser =
-{
-  id: MENUID_BROWSER,
-  text: "Saved in Browser:",
-  children: [],
-};
-
-export let menuDevice =
-{
-  id: MENUID_DEVICE,
-  text: "Stored on Device:",
-  children: [],
-};
+  return undefined;
+}

@@ -1,17 +1,4 @@
-import { get } from 'svelte/store';
-
-import {
-  menuPresets,
-  aEffectsDraw,
-  aEffectsFilter
-} from './globals.js';
-
 ///////////////////////////////////////////////////////////
-
-export const presetsInit = () =>
-{
-  menuPresets.children = preset_MenuItems;
-}
 
 export const preset_MenuItems =
   [
@@ -240,16 +227,3 @@ export const preset_FilterEffectDescs =
 
     "Toggles the drawing direction property on each trigger.",
   ];
-
-export const presetsFindEffect = (plugnum) =>
-{
-  for (const [i, f] of get(aEffectsDraw).entries())
-    if (f.id === plugnum)
-      return { filter:false, index:i, bits:f.bits };
-
-  for (const [i, f] of get(aEffectsFilter).entries())
-    if (f.id === plugnum)
-      return { filter:true, index:i, bits:f.bits };
-
-  return undefined;
-}

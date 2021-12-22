@@ -5,7 +5,8 @@ import {
   nLayers,
   pStrand,
   dStrands,
-  idStrand
+  idStrand,
+  findEffectFromPlugin
 } from './globals.js';
 
 import {
@@ -40,8 +41,6 @@ import {
   cmdStr_LayerMute     ,
   cmdStr_Go
 } from './devcmds.js';
-
-import { presetsFindEffect } from './presets.js';
 
 import {
   makeTrigSourceList,
@@ -101,7 +100,7 @@ export const parsePattern = (pattern) =>
       {
         let firstone = ((track < 0) || (layer < 0));
 
-        let obj = presetsFindEffect(val);
+        let obj = findEffectFromPlugin(val);
         if (obj === undefined)
         {
           console.warn(`Unknown effect: #${val}`);

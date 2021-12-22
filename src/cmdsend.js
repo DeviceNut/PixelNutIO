@@ -1,6 +1,10 @@
 import { get } from 'svelte/store';
 
 import {
+  convTrackLayerToIndex,
+} from './strands.js';
+
+import {
   nStrands,
   idStrand,
   pStrand,
@@ -100,10 +104,12 @@ export const sendStrandCmd = (cmdstr, cmdval) =>
   sendStrandPattern(cmdstr);
 }
 
-// send layer-specific command (and optional value)
-// to all selected strands
-export const sendLayerCmd = (devindex, cmdstr, cmdval) =>
+// send layer-specific command/(value) to all selected strands
+export const sendLayerCmd = (track, layer, cmdstr, cmdval) =>
 {
+  let devindex = convTrackLayerToIndex(track, layer);
+  if (devindex == null) return; // error pending
+
   if (cmdval !== undefined)
     cmdstr = cmdstr.concat(cmdval);
 

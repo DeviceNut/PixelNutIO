@@ -70,14 +70,13 @@
       disabled={($pStrand.tracks[track].trackBits & pluginBit_ORIDE_EXT)}
     />
   </Row>
-  {#if (track > 0) }
-    <Row style="margin-top:10px;">
-      <Checkbox labelText="Combine Pixels"
-        on:check={setOrPixs}
-        bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
-      />
-    </Row>
-  {/if}
+  <Row style="margin-top:10px;">
+    <Checkbox labelText="Combine Pixels"
+      on:check={setOrPixs}
+      bind:checked={$pStrand.tracks[track].drawProps.orPixelVals}
+      disabled={(track === 0)}
+    />
+  </Row>
   <Row style="margin-top:10px;">
     <Checkbox labelText="Move Backwards"
       on:check={setBwards}

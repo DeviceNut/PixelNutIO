@@ -136,6 +136,10 @@ const oneStrand =
   trigSources     : [],     // list of trigger source layer info
 }
 
+export const overBit_DegreeHue    = 1;      // overwrite degreeHue
+export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
+export const overBit_PcentCount   = 4;      // overwrite pcentCount
+
 function makeOneLayer()
 {
   let layer = {...oneLayer};
@@ -344,7 +348,9 @@ export const strandClearLayer = (track, layer) =>
   strandCopyLayer(track, layer);
 }
 
-// inserts new track after the one specified in all selected strands
+// for all selected strands: activate new track,
+// and if not the last one, then delete track from
+// the end and splice it after the one specified 
 export const strandAppendTrack = (track) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
@@ -354,9 +360,8 @@ export const strandAppendTrack = (track) =>
 
     if (get(aStrands)[s].selected)
     {
-      if (track < get(aStrands)[s].tactives) // not last one
+      if (track < get(aStrands)[s].tactives)
       {
-        // delete track from end and splice in new one after current
         let lasttrack = get(nTracks)-1;
         get(aStrands)[s].tracks.splice(lasttrack+1, 1);
         get(dStrands)[s].tracks.splice(lasttrack+1, 1);
@@ -368,7 +373,9 @@ export const strandAppendTrack = (track) =>
   }
 }
 
-// inserts specified layer after one specified in the current strand
+// for all selected strands: activate new layer,
+// and if not the last one, then delete layer from
+// the end and splice it after the one specified 
 export const strandAppendLayer = (track, layer) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
@@ -378,9 +385,8 @@ export const strandAppendLayer = (track, layer) =>
       ++(get(aStrands)[s].tracks[track].lactives);
       ++(get(dStrands)[s].tracks[track].lactives);
 
-      if (layer < get(aStrands)[s].tracks[track].lactives) // not last one
+      if (layer < get(aStrands)[s].tracks[track].lactives)
       {
-        // delete layer from end and splice in new one after current
         let lastlayer = get(nLayers)-1;
         get(aStrands)[s].tracks[track].layers.splice(lastlayer, 1);
         get(dStrands)[s].tracks[track].layers.splice(lastlayer, 1);
@@ -392,21 +398,20 @@ export const strandAppendLayer = (track, layer) =>
   }
 }
 
-// removes track and appends new one at the end for all selected strands
+// for all selected strands: deactivate one track,
+// and if not the last one, then remove specified
+// track and append it at the end
 export const strandRemoveTrack = (track) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
   {
     if (get(aStrands)[s].selected)
     {
-      console.log('delete track: ', track);
       --(get(aStrands)[s].tactives);
       --(get(dStrands)[s].tactives);
-      console.log('deltrack, count=', get(aStrands)[s].tactives);
 
-      if (track < get(aStrands)[s].tactives) // not last one
+      if (track < get(aStrands)[s].tactives)
       {
-        console.log('delete track splicing...');
         get(aStrands)[s].tracks.splice(track, 1);
         get(aStrands)[s].tracks.push( makeOneTrack() );
 
@@ -417,7 +422,9 @@ export const strandRemoveTrack = (track) =>
   }
 }
 
-// removes specified layer and appends new one at the end in the current strand
+// for all selected strands: deactivate one layer,
+// and if not the last one, then remove specified
+// layer and append it at the end
 export const strandRemoveLayer = (track, layer) =>
 {
   for (let s = 0; s < get(nStrands); ++s)
@@ -427,7 +434,7 @@ export const strandRemoveLayer = (track, layer) =>
       --(get(aStrands)[s].tracks[track].lactives);
       --(get(dStrands)[s].tracks[track].lactives);
 
-      if (layer < get(aStrands)[s].tracks[track].lactives) // not last one
+      if (layer < get(aStrands)[s].tracks[track].lactives)
       {
         get(aStrands)[s].tracks[track].layers.splice(layer, 1);
         get(aStrands)[s].tracks[track].layers.push( makeOneLayer() );

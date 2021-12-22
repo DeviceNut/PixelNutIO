@@ -11,10 +11,6 @@ export const DEF_PCENT_COUNT      = 50;     // percent pixel count
 export const DEF_FORCE_VALUE      = (MAX_FORCE_VALUE/2); // force value
                                             // all other are 0
 
-export const overBit_DegreeHue    = 1;      // overwrite degreeHue
-export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
-export const overBit_PcentCount   = 4;      // overwrite pcentCount
-
 // Plugin Bit definitions:
 export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
@@ -90,3 +86,7 @@ export const cmdStr_Go            = "G";    // must be at end of sequence to act
 
 // Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////
+
+export let defCustomCmd           = 'E0 T';   // default pattern command
+export let defDrawEffect          = 0;        // default draw effect
+export let defFilterEffect        = 100;      // default filter effect

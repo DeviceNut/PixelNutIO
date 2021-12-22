@@ -62,7 +62,9 @@ export const sendPatternToStrand = (s) =>
 // if no string is passed:
 //   stores/executes current name/pattern
 // else: just sends command
-function sendCmdToStrands(cmdstr)
+// stores the pattern/name to the device flash,
+// and then executes that pattern
+export const sendStrandPattern = (cmdstr=null) =>
 {
   const sid = get(idStrand);
   let didswitch = false;
@@ -89,21 +91,13 @@ function sendCmdToStrands(cmdstr)
     sendStrandSwitch(sid)
 }
 
-// sends current pattern to all selected strands,
-// stores the pattern/name to the device flash,
-// and then executes that pattern
-export const sendStrandPattern = () =>
-{
-  sendCmdToStrands(null);
-}
-
 // send top level command (and optional value)
 // to all selected strands
 export const sendStrandCmd = (cmdstr, cmdval) =>
 {
   if (cmdval) cmdstr = cmdstr.concat(cmdval);
 
-  sendCmdToStrands(cmdstr);
+  sendStrandPattern(cmdstr);
 }
 
 // send layer-specific command (and optional value)
@@ -113,5 +107,5 @@ export const sendLayerCmd = (devindex, cmdstr, cmdval) =>
   if (cmdval !== undefined)
     cmdstr = cmdstr.concat(cmdval);
 
-  sendCmdToStrands(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
+    sendStrandPattern(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
 }

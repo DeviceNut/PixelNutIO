@@ -20,8 +20,8 @@
 
   export let track;
 
-  const setEffect = () => { userSetEffect(  track, DRAW_LAYER, $aEffectsDraw); }
-  const restart   = () => { userDoRestart(  track, DRAW_LAYER, $aEffectsDraw); }
+  const setEffect = () => { userSetEffect(track, DRAW_LAYER, $aEffectsDraw); }
+  const restart   = () => { userDoRestart(track, DRAW_LAYER, $aEffectsDraw); }
 
   let helpon = false;
 

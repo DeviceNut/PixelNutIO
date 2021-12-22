@@ -7,7 +7,10 @@
   import {
     overBit_DegreeHue,
     overBit_PcentWhite,
-    overBit_PcentCount,
+    overBit_PcentCount 
+  } from './strands.js';
+
+  import {
     pluginBit_COLOR,
     pluginBit_COUNT
   } from './devcmds.js';

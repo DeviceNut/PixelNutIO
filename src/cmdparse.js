@@ -11,13 +11,16 @@ import {
 } from './globals.js';
 
 import {
+  overBit_DegreeHue,
+  overBit_PcentWhite,
+  overBit_PcentCount 
+} from './strands.js';
+
+import {
   DRAW_LAYER           ,
   DEF_HUE_DEGREE       ,
   DEF_PCENT_BRIGHT     ,
   DEF_PCENT_COUNT      ,
-  overBit_DegreeHue    ,
-  overBit_PcentWhite   ,
-  overBit_PcentCount   ,
   cmdStr_PcentXoffset  ,
   cmdStr_PcentXlength  ,
   cmdStr_SetEffect     ,
@@ -108,29 +111,7 @@ export const parsePattern = (pattern) =>
           return false;
         }
 
-        if (obj.filter)
-        {
-          if (firstone)
-          {
-            console.warn('Must have draw effect before filter effect');
-            return false;
-          }
-
-          makeLayerCmdStr(track, layer);
-
-          if (get(pStrand).tracks[track].lactives >= get(nLayers))
-          {
-            console.warn('Too many layers');
-            return false;
-          }
-          get(pStrand).tracks[track].lactives++;
-
-          ++layer;
-
-          layerbits = get(aEffectsFilter)[obj.index].bits;
-          trackbits |= layerbits;
-        }
-        else // drawing effect
+        if (!obj.filter)
         {
           if (get(pStrand).tactives >= get(nTracks))
           {
@@ -153,10 +134,33 @@ export const parsePattern = (pattern) =>
           layerbits = get(aEffectsDraw)[obj.index].bits;
           trackbits = layerbits;
         }
+        else if (firstone)
+        {
+          console.warn('Must have draw effect before filter effect');
+          return false;
+        }
+        else // filter effect
+        {
+          makeLayerCmdStr(track, layer);
+
+          if (get(pStrand).tracks[track].lactives >= get(nLayers))
+          {
+            console.warn('Too many layers');
+            return false;
+          }
+          get(pStrand).tracks[track].lactives++;
+
+          ++layer;
+
+          layerbits = get(aEffectsFilter)[obj.index].bits;
+          trackbits |= layerbits;
+        }
 
         // turn off triggering-on-start because disabled if missing
         get(pStrand).tracks[track].layers[layer].trigAtStart = false;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
+
+        //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`); // DEBUG
 
         get(pStrand).tracks[track].layers[layer].pluginIndex = obj.index;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginIndex = obj.index;

@@ -20,8 +20,8 @@
 
   export let track;
 
-  const setEffect = () => { userSetEffect(track, DRAW_LAYER, $aEffectsDraw); }
-  const restart   = () => { userDoRestart(track, DRAW_LAYER, $aEffectsDraw); }
+  const setEffect = () => { userSetEffect(track, DRAW_LAYER); }
+  const restart   = () => { userDoRestart(track, DRAW_LAYER); }
 
   let helpon = false;
 
@@ -34,7 +34,7 @@
       size="sm"
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex}
+      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginObj.index}
       bind:items={$aEffectsDraw}
     />
     <button class="button-help"
@@ -53,7 +53,7 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginIndex]}
+        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginObj.index]}
       </p>
     </Row>
   {/if}

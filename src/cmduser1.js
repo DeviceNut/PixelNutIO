@@ -4,6 +4,7 @@ import {
   idStrand,
   pStrand,
   dStrands,
+  findEffectFromIndex
 } from './globals.js';
 
 import {
@@ -43,8 +44,7 @@ import {
   cmdStr_TrigRepeating  ,
   cmdStr_TrigOffset     ,
   cmdStr_TrigRange      ,
-  cmdStr_TrigForce      ,
-  cmdStr_Go
+  cmdStr_TrigForce
 } from './devcmds.js';
 
 import {
@@ -61,81 +61,59 @@ import {
 
 ///////////////////////////////////////////////////////////
 
-function updateTrackOverrides(track, bits)
-{
-  const props = get(pStrand).tracks[track].drawProps;
-
-  if (bits & pluginBit_ORIDE_HUE)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
-
-  if (bits & pluginBit_ORIDE_WHITE)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
-
-  if (bits & pluginBit_ORIDE_COUNT)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
-
-  if (bits & pluginBit_ORIDE_DELAY)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
-
-  if (bits & pluginBit_ORIDE_DIR)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
-
-  if (bits & pluginBit_ORIDE_EXT)
-  {
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
-  }
-}
-
-export const userSetEffect = (track, layer, elist) =>
+// switch to new effect on this layer, specified by layer's pluginObj.index
+export const userSetEffect = (track, layer) =>
 {
   const strand = get(pStrand);
-  const pindex = strand.tracks[track].layers[layer].pluginIndex;
-  const prevstr = strand.tracks[track].layers[layer].cmdstr;
-  const lshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
+  const pLayer = strand.tracks[track].layers[layer];
+  const pShadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
-  console.log(`seteffect: track=${track} layer=${layer} prev=${prevstr} index=${pindex} shadow=${lshadow.pluginIndex}`);
-  console.log(`1) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
+  console.log(`seteffect: track=${track} layer=${layer} index: old=${pShadow.pluginObj.index} new=${pLayer.pluginObj.index}`);
 
-  if ((prevstr == '') || (lshadow.pluginIndex !== pindex))
+  if (pShadow.pluginObj.index !== pLayer.pluginObj.index)
   {
-    const before = elist[lshadow.pluginIndex].bits;
-    lshadow.pluginIndex = pindex;
-
-    const after = elist[pindex].bits;
-    strand.tracks[track].layers[layer].pluginBits = after;
-    lshadow.pluginBits = after;
+    const pobj = findEffectFromIndex(pLayer.pluginObj.filter, pLayer.pluginObj.index);
+    const before = pLayer.pluginObj.bits;
+    const after = pobj.bits;
+    pLayer.pluginObj = pobj;
+    pShadow.pluginObj = pobj;
 
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks
 
-    if (prevstr == '') // if no previous effect: create new effect
-    {
-      console.log('create new effect');
-      sendStrandCmd(strand.tracks[track].layers[layer].cmdstr);
-      sendStrandCmd(cmdStr_Go);
-    }
-    else // else switch to new effect on this layer
-    {
-      console.log('switch to new effect');
-
-      sendLayerCmd(track, layer, cmdStr_SelectEffect, `${elist[pindex].id}`);
-
-      console.log(`2) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
-    }
+    sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pobj.id}`);
 
     const bits = before & ~after; // override bits being cleared
-    updateTrackOverrides(track, bits);
+    const props = get(pStrand).tracks[track].drawProps;
 
-    console.log(`3) bits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
+    console.log(`  trackbits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
+
+    if (bits & pluginBit_ORIDE_HUE)
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
+  
+    if (bits & pluginBit_ORIDE_WHITE)
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
+  
+    if (bits & pluginBit_ORIDE_COUNT)
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
+  
+    if (bits & pluginBit_ORIDE_DELAY)
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
+  
+    if (bits & pluginBit_ORIDE_DIR)
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
+  
+    if (bits & pluginBit_ORIDE_EXT)
+    {
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
+    }
   }
 }
 
-export const userDoRestart = (track, layer, elist) =>
+export const userDoRestart = (track, layer) =>
 {
-  const pindex = get(pStrand).tracks[track].layers[layer].pluginIndex;
-  const pval = elist[pindex].id;
-
+  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
   sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pval}`);
 }
 

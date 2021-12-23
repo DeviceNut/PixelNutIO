@@ -21,8 +21,8 @@
   export let track;
   export let layer;
 
-  const setEffect = () => { userSetEffect(track, layer, $aEffectsFilter); }
-  const restart   = () => { userDoRestart(track, layer, $aEffectsFilter); }
+  const setEffect = () => { userSetEffect(track, layer); }
+  const restart   = () => { userDoRestart(track, layer); }
 
   let helpon = false;
 
@@ -35,7 +35,7 @@
       size="sm"
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginIndex}
+      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginObj.index}
       bind:items={$aEffectsFilter}
     />
     <button class="button-help"
@@ -55,7 +55,7 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginIndex]}
+        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginObj.index]}
       </p>
     </Row>
   {/if}

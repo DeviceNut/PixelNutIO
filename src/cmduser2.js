@@ -5,6 +5,7 @@ import {
   nStrands,
   idStrand,
   pStrand,
+  dStrands,
   aStrands,
   eStrands,
   findEffectFromPlugin
@@ -236,9 +237,10 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   }
 
   let obj = findEffectFromPlugin(effect);
-  strand.tracks[track].layers[layer].pluginIndex = effect;
-  strand.tracks[track].layers[layer].pluginBits = obj.bits;
   strand.tracks[track].trackBits = obj.bits
+
+  strand.tracks[track].layers[layer].pluginObj = obj;
+  get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = obj;
 
   updateTriggerLayers(); // update trigger sources
   updateAllTracks();     // rebuild all tracks

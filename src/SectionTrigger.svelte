@@ -60,7 +60,7 @@
     bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
   />
   {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
-        ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
+        ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
     <Checkbox labelText="From main controls"
       style="margin-top:10px;"
       on:check={setMain}
@@ -88,7 +88,7 @@
     />
     {#if ($pStrand.tracks[track].layers[layer].trigDoRepeat) }
       <div style="margin:12px 15px 0 15px;">
-        {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_REPTRIGS) }
+        {#if ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
           <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
           <input type="number"
             min=1 max=9999
@@ -122,7 +122,7 @@
     {/if}
   {/if}
 
-  {#if ($pStrand.tracks[track].layers[layer].pluginBits & pluginBit_TRIGFORCE) &&
+  {#if ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_TRIGFORCE) &&
         ($pStrand.tracks[track].layers[layer].trigAtStart ||
         $pStrand.tracks[track].layers[layer].trigDoRepeat) }
 

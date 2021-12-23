@@ -64,8 +64,8 @@ const oneLayer =
   forceRandom     : false,  // *true if a random force is applied when triggering
   forceValue      : MAX_FORCE_VALUE/2, // *percent force to apply (if not random)
 
-  pluginIndex     : 0,      // effect plugin index, not value
-  pluginBits      : 0x00,   // describes plugin (pluginBit_xxx)
+  pluginObj       : {},     // object returned from findEffectFromPlugin()
+                            //  that contains all info on an effect
 
   cmdstr          : ''      // command string for the current settings
 }
@@ -94,8 +94,8 @@ const drawProps =
 const oneTrack =
 {
   open            : true,   // true if displayed
-  trackBits       : 0x00,   // all filter layers pluginBits (unless muted)
-                            //  OR'ed with drawing layer pluginBits (always)
+  trackBits       : 0x00,   // all filter layers plugin bits OR'ed with
+                            //  drawing layer plugin bits (unless muted)
 
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track

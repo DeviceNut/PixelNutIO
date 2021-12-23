@@ -4,8 +4,6 @@ import {
   pStrand,
   dStrands,
   idStrand,
-  aEffectsDraw,
-  aEffectsFilter,
   maxLenPattern
 } from './globals.js';
 
@@ -88,7 +86,7 @@ export const makeEntireCmdStr = () =>
     for (let j = 0; j < track.lactives; ++j)
     {
       let layer = track.layers[j];
-      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginBits.toString(16)}`); // DEBUG
+      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginObj.bits.toString(16)}`); // DEBUG
 
       if (j === DRAW_LAYER)
       {
@@ -97,8 +95,8 @@ export const makeEntireCmdStr = () =>
         drawplugin = !layer.mute;
         if (drawplugin)
         {
-          tplugbits |= layer.pluginBits;
-          splugbits |= layer.pluginBits;
+          tplugbits |= layer.pluginObj.bits;
+          splugbits |= layer.pluginObj.bits;
           ridebits |= makeOrideBits(strand, i);
 
           if (layer.trigFromMain) trigused = true;
@@ -111,8 +109,8 @@ export const makeEntireCmdStr = () =>
 
         if (drawplugin && !layer.mute)
         {
-          tplugbits |= layer.pluginBits;
-          splugbits |= layer.pluginBits;
+          tplugbits |= layer.pluginObj.bits;
+          splugbits |= layer.pluginObj.bits;
 
           if (layer.trigFromMain) trigused = true;
         }
@@ -150,10 +148,9 @@ export const makeLayerCmdStr = (track, layer) =>
 
   if (layer === DRAW_LAYER)
   {
-    let plugvalue = get(aEffectsDraw)[player.pluginIndex].id;
     let pdraw = get(pStrand).tracks[track].drawProps;
 
-    cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
+    cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
 
     if (pdraw.pcentXoffset !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_PcentXoffset}${pdraw.pcentXoffset} `);
@@ -186,14 +183,10 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.orPixelVals === true)
       cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
   }
-  else
-  {
-    let plugvalue = get(aEffectsFilter)[player.pluginIndex].id;
-    cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${plugvalue} `);
-  }
+  else cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
 
   // don't include force value if effect doesn't use it
-  if (player.pluginBits & pluginBit_TRIGFORCE)
+  if (player.pluginObj.bits & pluginBit_TRIGFORCE)
   {
     if (player.forceRandom)
       cmdstr = cmdstr.concat(`${cmdStr_TrigForce} `);
@@ -251,11 +244,10 @@ export const makeTrigSourceList = () =>
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
-      if (strand.tracks[track].layers[layer].pluginBits & pluginBit_SENDFORCE)
+      if (strand.tracks[track].layers[layer].pluginObj.bits & pluginBit_SENDFORCE)
       {
         let sourceid = strand.tracks[track].layers[layer].uniqueID;
-        let index = strand.tracks[track].layers[layer].pluginIndex;
-        let name = (layer === 0) ? get(aEffectsDraw)[index].text : get(aEffectsFilter)[index].text;
+        let name = strand.tracks[track].layers[layer].pluginObj.name;
 
         ++count;
         items.push({ id:count,

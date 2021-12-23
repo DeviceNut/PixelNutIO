@@ -72,11 +72,19 @@ export const findEffectFromPlugin = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())
     if (f.id === plugnum)
-      return { filter:false, index:i, bits:f.bits };
+      return { filter:false, id:f.id, bits:f.bits, name:f.text, index:i };
 
   for (const [i, f] of get(aEffectsFilter).entries())
     if (f.id === plugnum)
-      return { filter:true, index:i, bits:f.bits };
+      return { filter:true, id:f.id, bits:f.bits, name:f.text, index:i };
 
   return undefined;
+}
+
+export const findEffectFromIndex = (filter, index) =>
+{
+  let f;
+  if (filter) f = get(aEffectsFilter)[index];
+  else        f = get(aEffectsDraw)[index];
+  return { filter:filter, id:f.id, bits:f.bits, name:f.text, index:index };
 }

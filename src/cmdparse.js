@@ -156,7 +156,7 @@ export const parsePattern = (pattern) =>
         //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`); // DEBUG
 
         get(pStrand).tracks[track].layers[layer].pluginObj = obj;
-        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = obj;
+        get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = {...obj};
         break;
       }
       default: // must have draw effect for these commands:

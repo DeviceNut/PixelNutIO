@@ -76,7 +76,7 @@ export const userSetEffect = (track, layer) =>
     const before = pLayer.pluginObj.bits;
     const after = pobj.bits;
     pLayer.pluginObj = pobj;
-    pShadow.pluginObj = pobj;
+    pShadow.pluginObj = {...pobj};
 
     updateTriggerLayers(); // update trigger sources
     updateAllTracks();     // recreate all tracks

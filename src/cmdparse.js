@@ -85,7 +85,7 @@ export const parsePattern = (pattern) =>
   let trackbits = 0;
 
   const cmds = pattern.toUpperCase().split(/\s+/); // remove all spaces
-  //console.log('parse: ', cmds); // DEBUG
+  //console.log('parse: ', cmds);
 
   for (let cmd of cmds)
   {
@@ -153,7 +153,7 @@ export const parsePattern = (pattern) =>
         get(pStrand).tracks[track].layers[layer].trigAtStart = false;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigAtStart = false;
 
-        //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`); // DEBUG
+        //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`);
 
         get(pStrand).tracks[track].layers[layer].pluginObj = obj;
         get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = {...obj};
@@ -392,8 +392,9 @@ export const parsePattern = (pattern) =>
             strand.tracks[track].layers[layer].trigSourceID =
               strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
-            //console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
-            //console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSourceID}`)
+            console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSourceID}`)
+
             found = true;
             break;
           }
@@ -401,9 +402,10 @@ export const parsePattern = (pattern) =>
 
         if (!found)
         {
+          console.warn(`parse: failed to find trigger source for: ${devindex}`);
+
           strand.tracks[track].layers[layer].trigOnLayer = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
-          console.warn(`Failed to find trigger source for: ${devindex}`);
         }
       }
     }

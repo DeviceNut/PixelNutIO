@@ -68,7 +68,7 @@ export const userSetEffect = (track, layer) =>
   const pLayer = strand.tracks[track].layers[layer];
   const pShadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
-  console.log(`seteffect: track=${track} layer=${layer} index: old=${pShadow.pluginObj.index} new=${pLayer.pluginObj.index}`);
+  //console.log(`seteffect: track=${track} layer=${layer} index: old=${pShadow.pluginObj.index} new=${pLayer.pluginObj.index}`);
 
   if (pShadow.pluginObj.index !== pLayer.pluginObj.index)
   {
@@ -86,7 +86,7 @@ export const userSetEffect = (track, layer) =>
     const bits = before & ~after; // override bits being cleared
     const props = get(pStrand).tracks[track].drawProps;
 
-    console.log(`  trackbits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
+    //console.log(`  trackbits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
 
     if (bits & pluginBit_ORIDE_HUE)
       sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);

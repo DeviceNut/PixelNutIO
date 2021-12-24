@@ -91,7 +91,7 @@ import {
     if (id === $pStrand.curPattIdOld)
       return;
 
-    console.log(`Selecting id=${id}`);
+    //console.log(`Selecting id=${id}`);
 
     if ((id === MENUID_PRESETS)  ||
         (id === MENUID_BROWSER) ||

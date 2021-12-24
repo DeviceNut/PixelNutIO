@@ -138,7 +138,7 @@ function sendQuery(device, fsend, query)
 
 function deviceQueryBegin(device, fsend)
 {
-  console.log('Requesting device info...'); // DEBUG
+  console.log('Requesting device info...');
 
   device.ready = false;
   device.active = false;
@@ -151,7 +151,7 @@ function deviceQueryBegin(device, fsend)
 
 function deviceStart(device)
 {
-  console.log(`Device ready: "${device.curname}"`) // DEBUG
+  console.log(`Device ready: "${device.curname}"`)
 
   device.ready  = true;
   device.query  = QUERY_NONE;
@@ -177,7 +177,7 @@ function deviceStop(device=null)
     curdev.active = false;
     curDevice.set(null);
 
-    //console.log(`Device stopped: ${curdev.curname}`); // DEBUG
+    //console.log(`Device stopped: ${curdev.curname}`);
   }
 
   if (device !== null)
@@ -205,7 +205,7 @@ function notify_check()
     let tstamp = curTimeSecs();
     for (const device of curlist)
     {
-      //console.log(`Checking: ${device.curname}`); // DEBUG
+      //console.log(`Checking: ${device.curname}`);
   
       // if device hasn't failed already and hasn't sent
       // a notification recently, mark as not present
@@ -250,7 +250,7 @@ export const onNotification = (msg, fsend) =>
   const info = msg.split(',');
   const name = info[0];
 
-  //console.log(`Device="${name}" IP=${info[1]}`); // DEBUG
+  //console.log(`Device="${name}" IP=${info[1]}`);
 
   for (const device of get(deviceList))
   {
@@ -262,7 +262,7 @@ export const onNotification = (msg, fsend) =>
     }
     else if (device.newname === name)
     {
-      console.log(`Renaming device: "${name}"`); // DEBUG
+      console.log(`Renaming device: "${name}"`);
 
       device.curname = name;
       device.newname = '';
@@ -272,7 +272,7 @@ export const onNotification = (msg, fsend) =>
     }
   }
 
-  console.log(`Adding device: "${name}"`); // DEBUG
+  console.log(`Adding device: "${name}"`);
 
   let device = {...deviceInfo};
   device.curname = name;
@@ -286,7 +286,7 @@ export const onNotification = (msg, fsend) =>
 
 export const onDeviceReply = (msg, fsend) =>
 {
-  console.log(`Device reply: ${msg}`) // DEBUG
+  console.log(`Device reply: ${msg}`)
 
   if (timer_reply)
   {
@@ -302,7 +302,7 @@ export const onDeviceReply = (msg, fsend) =>
   const dlist = get(deviceList);
   for (const d of dlist)
   {
-    //console.log('device: ', d); // DEBUG
+    //console.log('device: ', d);
     if (d.curname === name)
     {
       device = d;
@@ -452,7 +452,7 @@ export const onDeviceReply = (msg, fsend) =>
 
               device.effects_items.push(obj);
               device.effects_descs.push(device.qdesc);
-              //console.log(device.effects_items); // DEBUG
+              //console.log(device.effects_items);
 
               if (++device.qcount >= device.report.nplugins)
                 deviceStart(device);

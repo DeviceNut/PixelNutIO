@@ -86,7 +86,7 @@ export const makeEntireCmdStr = () =>
     for (let j = 0; j < track.lactives; ++j)
     {
       let layer = track.layers[j];
-      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginObj.bits.toString(16)}`); // DEBUG
+      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginObj.bits.toString(16)}`);
 
       if (j === DRAW_LAYER)
       {
@@ -119,7 +119,7 @@ export const makeEntireCmdStr = () =>
     }
 
     // track plugin bits includes bits from all layers
-    //console.log(`makeAll: track=${i} trackBits=${tplugbits.toString(16)}`); // DEBUG
+    //console.log(`makeAll: track=${i} trackBits=${tplugbits.toString(16)}`);
     track.trackBits = tplugbits;
   }
 
@@ -133,8 +133,8 @@ export const makeEntireCmdStr = () =>
   if (cmdstr.length > get(maxLenPattern))
     deviceError('Exceeded max pattern length');
 
-  //console.log(`oridebits=${ridebits.toString(16)}`); // DEBUG
-  //console.log(`splugbits=${splugbits.toString(16)}`); // DEBUG
+  //console.log(`oridebits=${ridebits.toString(16)}`);
+  //console.log(`splugbits=${splugbits.toString(16)}`);
 
   // triggers update to UI - MUST HAVE THIS
   pStrand.set(get(pStrand));
@@ -294,15 +294,14 @@ export const updateTriggerLayers = () =>
               strand.tracks[track].layers[layer].trigSrcListDex = i;
               strand.tracks[track].layers[layer].trigDevIndex = item.devindex;
 
-              //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`); // DEBUG
+              console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`);
             }
           }
         }
 
         if (!found)
         {
-          console.warn(`Failed to find trigger source for: ${track}:${layer}`);
-          console.log(`parse: ID=${sourceid}`)
+          console.warn(`update: failed to find trigger source for: ${track}:${layer} ID=${sourceid}`);
 
           strand.tracks[track].layers[layer].trigOnLayer = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0;

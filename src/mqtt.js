@@ -20,14 +20,14 @@ let mqtt = null;
 
 export const mqttSend = (name, msg) =>
 {
-  console.log('>>', msg); // DEBUG
+  console.log('>>', msg);
 
   mqtt.publish(topicCommand + name, msg);
 }
 
 function onConnect()
 {
-  console.log('MQTT Subscribing...'); // DEBUG
+  console.log('MQTT Subscribing...');
   mqtt.subscribe(topicDevNotify);
   mqtt.subscribe(topicDevReply);
 
@@ -56,7 +56,7 @@ function onFailure(rsp)
 function onMessage(message)
 {
   let msg = message.payloadString;
-  //console.log(`MQTT Topic=${message.topic} Msg=${msg}`); // DEBUG
+  //console.log(`MQTT Topic=${message.topic} Msg=${msg}`);
 
   switch (message.topic)
   {
@@ -84,7 +84,7 @@ export const mqttConnect = () =>
 
   mqtt = new Paho.Client(get(mqttBrokerIP), MQTT_BROKER_PORT, genUniqueID());
 
-  console.log(`MQTT Connecting to ${get(mqttBrokerIP)}...`); // DEBUG
+  console.log(`MQTT Connecting to ${get(mqttBrokerIP)}...`);
 
   let options = {
     timeout: 1,

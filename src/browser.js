@@ -54,7 +54,7 @@ export const storePatternsInit = () =>
     let nlist = names.split(SavePatternSeparator);
     let bcount = MENUID_BROWSER;
 
-    //console.log('nlist=', nlist); // DEBUG
+    //console.log('nlist=', nlist);
 
     for (const text of nlist)
     {
@@ -83,14 +83,14 @@ export const storePatternSave = (name, desc, cmds) =>
   if (!desc) desc = ''; // allow empty description
   if (name && cmds)
   {
-    //console.log(`saving: ${name}:${desc}`); // DEBUG
+    //console.log(`saving: ${name}:${desc}`);
 
     let names = localStorage.getItem(SavePatternNames);
     if (names === null) names = '';
     else if (names !== '') names = names.concat(SavePatternSeparator);
     names = names.concat(name);
   
-    //console.log('names=', names); // DEBUG
+    //console.log('names=', names);
   
     localStorage.setItem(SavePatternNames, names);
     localStorage.setItem(SavePatternKeyCmd+name, cmds);
@@ -112,7 +112,7 @@ export const storePatternRemove = (delname) =>
     {
       if (n === delname)
       {
-        //console.log(`removing: ${n}`); // DEBUG
+        //console.log(`removing: ${n}`);
 
         nlist.splice(i, 1);
         const str = nlist.join(SavePatternSeparator);
@@ -139,7 +139,7 @@ export const storePatternRemAll = () =>
     let nlist = names.split(SavePatternSeparator);
     for (const [i, n] of nlist.entries())
     {
-        console.log(`removing: ${n}`); // DEBUG
+        console.log(`removing: ${n}`);
 
         localStorage.removeItem(SavePatternKeyCmd+n);
         localStorage.removeItem(SavePatternKeyDesc+n);

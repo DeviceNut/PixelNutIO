@@ -295,7 +295,7 @@ export const strandCopyAll = () =>
 {
   strandCopyTop();
   strandCopyTracks();
-  //console.log(get(aStrands)); // DEBUG
+  //console.log(get(aStrands));
 }
 
 // clears all main property values for the current strand to defaults
@@ -491,7 +491,7 @@ export const convIndexToTrackLayer = (index) =>
   {
     if (index < get(pStrand).tracks[i].lactives)
     {
-      //console.log(`conv: ${index} => ${track}:${layer}`); // DEBUG
+      //console.log(`conv: ${index} => ${track}:${layer}`);
       return { track:track, layer:index };
     }
 
@@ -530,7 +530,7 @@ export const convTrackLayerToIndex = (track, layer) =>
   for (let j = 0; j < layer; ++j)
     ++index;
 
-  //console.log(`conv: ${track}:${layer} => ${index}`); // DEBUG
+  //console.log(`conv: ${track}:${layer} => ${index}`);
   return index;
 }
 

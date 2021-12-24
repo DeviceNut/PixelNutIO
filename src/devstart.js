@@ -53,7 +53,7 @@ function setStrandTop(strand, dvals)
 
 export let deviceStartup = (device) =>
 {
-  console.log(`Connecting to: "${device.curname}"...`); // DEBUG
+  console.log(`Connecting to: "${device.curname}"...`);
 
   // create draw/filter effect lists with device specific items
 

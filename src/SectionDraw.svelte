@@ -10,8 +10,10 @@
   } from './globals.js';
 
   import {
+    DRAW_LAYER,
     pluginBit_DELAY,
     pluginBit_DIRECTION,
+    pluginBit_NOREPEATING,
     pluginBit_ORIDE_DELAY,
     pluginBit_ORIDE_DIR,
     pluginBit_ORIDE_EXT
@@ -23,7 +25,9 @@
     userSetOffset,
     userSetLength,
     userSetOrPixs,
-    userSetBackwards
+    userSetBackwards,
+    userSetNoRepeat,
+    userDoRestart
   } from './cmduser1.js'
 
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';
@@ -32,12 +36,14 @@
 
   export let track;
 
-  const setBright = () => { userSetBright(  track); }
-  const setDelay  = () => { userSetDelay(   track); }
-  const setOrPixs = () => { userSetOrPixs(  track); }
-  const setOffset = () => { userSetOffset(  track); }
-  const setLength = () => { userSetLength(  track); }
+  const setBright = () => { userSetBright(   track); }
+  const setDelay  = () => { userSetDelay(    track); }
+  const setOffset = () => { userSetOffset(   track); }
+  const setLength = () => { userSetLength(   track); }
+  const setOrPixs = () => { userSetOrPixs(   track); }
   const setBwards = () => { userSetBackwards(track); }
+  const setNoRep  = () => { userSetNoRepeat( track);
+                            userDoRestart(track, DRAW_LAYER) }
 
 </script>
 
@@ -83,6 +89,13 @@
       bind:checked={$pStrand.tracks[track].drawProps.dirBackwards}
       disabled={ !($pStrand.tracks[track].trackBits & pluginBit_DIRECTION) ||
                   ($pStrand.tracks[track].trackBits & pluginBit_ORIDE_DIR) }
+    />
+  </Row>
+  <Row style="margin-top:10px;">
+    <Checkbox labelText="No Repeating"
+      on:check={setNoRep}
+      bind:checked={$pStrand.tracks[track].drawProps.noRepeating}
+      disabled={ !($pStrand.tracks[track].trackBits & pluginBit_NOREPEATING) }
     />
   </Row>
 </div>

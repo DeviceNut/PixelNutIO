@@ -36,14 +36,14 @@ import {
   cmdStr_OrideBits     ,
   cmdStr_Backwards     ,
   cmdStr_CombinePixs   ,
+  cmdStr_NoRepeating   ,
   cmdStr_TrigAtStart   ,
   cmdStr_TrigByEffect  ,
   cmdStr_TrigFromMain  ,
   cmdStr_TrigRepeating ,
   cmdStr_TrigOffset    ,
   cmdStr_TrigRange     ,
-  cmdStr_TrigForce     ,
-  cmdStr_Go            
+  cmdStr_TrigForce
 } from './devcmds.js';
 
 import { deviceError } from './devtalk.js';
@@ -123,8 +123,6 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
-  if (cmdstr !== '') cmdstr = cmdstr.concat(`${cmdStr_Go}`);
-
   get(pStrand).curPatternCmd = cmdstr;
   get(pStrand).bitsOverride  = ridebits;
   get(pStrand).bitsEffects   = splugbits;
@@ -177,11 +175,14 @@ export const makeLayerCmdStr = (track, layer) =>
     if (bits !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
 
+    if (pdraw.orPixelVals === true)
+      cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
+
     if (pdraw.dirBackwards === true)
       cmdstr = cmdstr.concat(`${cmdStr_Backwards} `);
 
-    if (pdraw.orPixelVals === true)
-      cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
+    if (pdraw.noRepeating === true)
+      cmdstr = cmdstr.concat(`${cmdStr_NoRepeating} `);
   }
   else cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
 

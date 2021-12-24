@@ -29,8 +29,9 @@ import {
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
-  cmdStr_Backwards     ,
   cmdStr_CombinePixs   ,
+  cmdStr_Backwards     ,
+  cmdStr_NoRepeating   ,
   cmdStr_TrigAtStart   ,
   cmdStr_TrigFromMain  ,
   cmdStr_TrigByEffect  ,
@@ -38,8 +39,7 @@ import {
   cmdStr_TrigOffset    ,
   cmdStr_TrigRange     ,
   cmdStr_TrigForce     ,
-  cmdStr_LayerMute     ,
-  cmdStr_Go
+  cmdStr_LayerMute
 } from './devcmds.js';
 
 import {
@@ -244,6 +244,14 @@ export const parsePattern = (pattern) =>
             }
             break;
           }
+          case cmdStr_CombinePixs:
+          {
+            // enable if no value follows command
+            const enable = isNaN(val) ? true : valueToBool(val);
+            get(pStrand).tracks[track].drawProps.orPixelVals = enable;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
+            break;
+          }
           case cmdStr_Backwards:
           {
             // enable if no value follows command
@@ -252,12 +260,12 @@ export const parsePattern = (pattern) =>
             get(dStrands)[get(idStrand)].tracks[track].drawProps.dirBackwards = enable;
             break;
           }
-          case cmdStr_CombinePixs:
+          case cmdStr_NoRepeating:
           {
             // enable if no value follows command
             const enable = isNaN(val) ? true : valueToBool(val);
-            get(pStrand).tracks[track].drawProps.orPixelVals = enable;
-            get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
+            get(pStrand).tracks[track].drawProps.noRepeating = enable;
+            get(dStrands)[get(idStrand)].tracks[track].drawProps.noRepeating = enable;
             break;
           }
           case cmdStr_TrigForce:
@@ -351,8 +359,6 @@ export const parsePattern = (pattern) =>
             get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigRepRange = range;
             break;
           }
-          case cmdStr_Go: break; // ignored
-
           default:
           {
             console.warn(`Unexpected command: ${ch}`);

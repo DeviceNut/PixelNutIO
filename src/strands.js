@@ -89,6 +89,7 @@ const drawProps =
 
   dirBackwards    : false,  // *backwards drawing direction (decreasing pixel index)
   orPixelVals     : false,  // *whether pixels overwrites (false) or are OR'ed (true)
+  noRepeating     : false,  // *action does not repeat, else continuous
 }
 
 const oneTrack =

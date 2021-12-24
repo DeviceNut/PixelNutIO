@@ -16,7 +16,7 @@ export const pluginBit_COLOR       = 0x0001;  // changing color changes effect
 export const pluginBit_COUNT       = 0x0002;  // changing count changes effect
 export const pluginBit_DELAY       = 0x0004;  // changing delay changes effect
 export const pluginBit_DIRECTION   = 0x0008;  // changing direction changes effect
-export const pluginBit_ROTATION    = 0x0010;  // changing rotation changes effect
+export const pluginBit_NOREPEATING = 0x0010;  // effect can be non-repeating
 export const pluginBit_REPTRIGS    = 0x0020;  // repeat triggers changes effect
 export const pluginBit_TRIGFORCE   = 0x0040;  // force used in triggering
 export const pluginBit_SENDFORCE   = 0x0080;  // sends force to other plugins
@@ -70,8 +70,9 @@ export const cmdStr_DegreeHue     = "H";    // hue degree (0..359)
 export const cmdStr_PcentWhite    = "W";    // percent whiteness
 export const cmdStr_PcentCount    = "C";    // percent of draw length
 export const cmdStr_OrideBits     = "Q";    // property override bits
-export const cmdStr_Backwards     = "U";    // def/0=forwards, 1=backwards
-export const cmdStr_CombinePixs   = "V";    // def/0=ORpixs, 1=overwrite pixels
+export const cmdStr_CombinePixs   = "V";    // def/0=ORpixs, none/1=overwrite pixels
+export const cmdStr_Backwards     = "U";    // def/0=forwards, none/1=backwards
+export const cmdStr_NoRepeating   = "G";    // def/0=continuous, none/1=one-shot
 export const cmdStr_TrigForce     = "F";    // trigger force (none=random, else value)
 export const cmdStr_TrigAtStart   = "T";    // def/0=off, none=trigger once when starting
 export const cmdStr_TrigFromMain  = "I";    // def/0=off, none=trigger from main controls
@@ -82,7 +83,6 @@ export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=
 
 // Commands that causes an action (no paramenters):
 export const cmdStr_Clear         = "P";    // clears all effects (unused)
-export const cmdStr_Go            = "G";    // must be at end of sequence to activate
 
 // Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////

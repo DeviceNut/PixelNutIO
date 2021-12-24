@@ -36,8 +36,9 @@ import {
   cmdStr_PcentWhite     ,
   cmdStr_PcentCount     ,
   cmdStr_OrideBits      ,
-  cmdStr_Backwards      ,
   cmdStr_CombinePixs    ,
+  cmdStr_Backwards      ,
+  cmdStr_NoRepeating    ,
   cmdStr_TrigAtStart    ,
   cmdStr_TrigByEffect   ,
   cmdStr_TrigFromMain   ,
@@ -115,20 +116,6 @@ export const userDoRestart = (track, layer) =>
 {
   const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
   sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pval}`);
-}
-
-export const userSetOrPixs = (track) =>
-{
-  const layer = DRAW_LAYER;
-  const enable = get(pStrand).tracks[track].drawProps.orPixelVals;
-
-  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals !== enable)
-  {
-    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
-
-    updateLayerVals(track, layer);
-    sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : 0));
-  }
 }
 
 // Main Controls:
@@ -288,6 +275,20 @@ export const userSetLength = (track) =>
   }
 }
 
+export const userSetOrPixs = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const enable = get(pStrand).tracks[track].drawProps.orPixelVals;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals !== enable)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.orPixelVals = enable;
+
+    updateLayerVals(track, layer);
+    sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : 0));
+  }
+}
+
 export const userSetBackwards = (track) =>
 {
   const layer = DRAW_LAYER;
@@ -299,6 +300,20 @@ export const userSetBackwards = (track) =>
 
     updateLayerVals(track, layer);
     sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? 1 : 0));
+  }
+}
+
+export const userSetNoRepeat = (track) =>
+{
+  const layer = DRAW_LAYER;
+  const enable = get(pStrand).tracks[track].drawProps.noRepeating;
+
+  if (get(dStrands)[get(idStrand)].tracks[track].drawProps.noRepeating !== enable)
+  {
+    get(dStrands)[get(idStrand)].tracks[track].drawProps.noRepeating = enable;
+
+    updateLayerVals(track, layer);
+    sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : 0));
   }
 }
 

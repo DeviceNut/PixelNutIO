@@ -79,8 +79,8 @@ export const userSetEffect = (track, layer) =>
     pLayer.pluginObj = pobj;
     pShadow.pluginObj = {...pobj};
 
-    updateTriggerLayers(); // update trigger sources
-    updateAllTracks();     // recreate all tracks
+    updateTriggerLayers();
+    updateAllTracks();
 
     sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pobj.id}`);
 
@@ -438,18 +438,18 @@ export const userSetTrigLayer = (track, layer) =>
 {
   const strand = get(pStrand);
   const enable = strand.tracks[track].layers[layer].trigOnLayer;
+  const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer !== enable)
+  //console.log(`triglayer: enable=${enable} index=${index}`);
+
+  if (!enable && (index > 0)) // if disabling and was selected then reset selection
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = enable;
+    // always reset selection when disable
+    strand.tracks[track].layers[layer].trigSrcListDex = 0;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = 0;
 
     updateLayerVals(track, layer);
-
-    let devindex; // set to undefined, valid parm to sendLayerCmd()
-    if (enable && (strand.tracks[track].layers[layer].trigSourceDex > 0))
-      devindex = strand.tracks[track].layers[layer].trigDevIndex;
-
-    sendLayerCmd(track, layer, cmdStr_TrigByEffect, devindex);
+    sendLayerCmd(track, layer, cmdStr_TrigByEffect, undefined); // disable in device
   }
 }
 
@@ -457,11 +457,13 @@ export const userSetTrigLayer = (track, layer) =>
 export const userSetTrigSource = (track, layer) =>
 {
   const strand = get(pStrand);
-  const index = strand.tracks[track].layers[layer].trigSourceDex;
+  const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSourceDex !== index)
+  //console.log(`trigsource: index=${index}`);
+
+  if (get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex !== index)
   {
-    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSourceDex = index;
+    get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = index;
 
     updateLayerVals(track, layer);
 
@@ -469,14 +471,15 @@ export const userSetTrigSource = (track, layer) =>
     if (index > 0)
     {
       const item = strand.trigSources[index];
+      //console.log(item);
 
-      const devindex = convTrackLayerToIndex(item.track, item.layer);
+      devindex = convTrackLayerToIndex(item.track, item.layer);
       if (devindex == null) return; // error pending
 
-      strand.tracks[track].layers[layer].trigDevIndex = devindex;
+      strand.tracks[track].layers[layer].trigSrcLayerDex = devindex;
 
       const idval = strand.tracks[item.track].layers[item.layer].uniqueID;
-      strand.tracks[track].layers[layer].trigSourceID = idval;
+      strand.tracks[track].layers[layer].trigSrcLayerID = idval;
     }
 
     sendLayerCmd(track, layer, cmdStr_TrigByEffect, devindex);

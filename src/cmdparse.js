@@ -308,9 +308,9 @@ export const parsePattern = (pattern) =>
             else enable = true;
 
             get(pStrand).tracks[track].layers[layer].trigOnLayer = enable;
-            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = enable;
 
-            get(pStrand).tracks[track].layers[layer].trigDevIndex = val;
+            get(pStrand).tracks[track].layers[layer].trigSrcLayerDex = val;
             break;
           }
           case cmdStr_TrigRepeating:
@@ -387,7 +387,7 @@ export const parsePattern = (pattern) =>
     {
       if (strand.tracks[track].layers[layer].trigOnLayer)
       {
-        const devindex = strand.tracks[track].layers[layer].trigDevIndex;
+        const devindex = strand.tracks[track].layers[layer].trigSrcLayerDex;
         let found = false;
 
         for (const [i, item] of slist.entries())
@@ -395,11 +395,13 @@ export const parsePattern = (pattern) =>
           if ((i > 0) && (item.devindex == devindex))
           {
             strand.tracks[track].layers[layer].trigSrcListDex = i;
-            strand.tracks[track].layers[layer].trigSourceID =
+            get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = i;
+
+            strand.tracks[track].layers[layer].trigSrcLayerID =
               strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
             console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
-            console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSourceID}`)
+            //console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSrcLayerID}`)
 
             found = true;
             break;
@@ -412,6 +414,9 @@ export const parsePattern = (pattern) =>
 
           strand.tracks[track].layers[layer].trigOnLayer = false;
           get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
+
+          strand.tracks[track].layers[layer].trigSrcListDex = 0; // indicates none chosen
+          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigSrcListDex = 0;
         }
       }
     }

@@ -202,7 +202,7 @@ export const makeLayerCmdStr = (track, layer) =>
     cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
   if (player.trigOnLayer)
-    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigDevIndex} `);
+    cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigSrcLayerDex} `);
 
   if (player.trigDoRepeat)
   {
@@ -282,7 +282,7 @@ export const updateTriggerLayers = () =>
     {
       if (strand.tracks[track].layers[layer].trigOnLayer)
       {
-        let sourceid = strand.tracks[track].layers[layer].trigSourceID;
+        let sourceid = strand.tracks[track].layers[layer].trigSrcLayerID;
         let found = false;
 
         for (const [i, item] of slist.entries())
@@ -293,9 +293,9 @@ export const updateTriggerLayers = () =>
             {
               found = true;
               strand.tracks[track].layers[layer].trigSrcListDex = i;
-              strand.tracks[track].layers[layer].trigDevIndex = item.devindex;
+              strand.tracks[track].layers[layer].trigSrcLayerDex = item.devindex;
 
-              console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`);
+              //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`);
             }
           }
         }

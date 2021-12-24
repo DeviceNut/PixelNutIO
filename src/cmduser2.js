@@ -242,8 +242,8 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   strand.tracks[track].layers[layer].pluginObj = obj;
   get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = {...obj};
 
-  updateTriggerLayers(); // update trigger sources
-  updateAllTracks();     // rebuild all tracks
+  updateTriggerLayers();
+  updateAllTracks();
 
   if (strand.tracks[track].layers[layer].trigAtStart)
     sendLayerCmd(track, DRAW_LAYER, cmdStr_TrigAtStart, undefined);
@@ -257,17 +257,17 @@ export const userRemTrackLayer = (track, layer) =>
 
   if (layer == DRAW_LAYER)
   {
-    strandClearTrack(track); // clear it first
+    strandClearTrack(track);
     strandRemoveTrack(track);
   }
   else
   {
-    strandClearLayer(track, layer); // clear it first
+    strandClearLayer(track, layer);
     strandRemoveLayer(track, layer);
   }
 
-  updateTriggerLayers(); // update trigger sources
-  updateAllTracks();     // rebuild command string
+  updateTriggerLayers();
+  updateAllTracks();
 }
 
 // assume cannot get called if the T/L is the last
@@ -277,17 +277,11 @@ export const userSwapTrackLayer = (track, layer) =>
   sendLayerCmd(track, layer, cmdStr_SelectEffect);
 
   if (layer === DRAW_LAYER)
-  {
-    strandSwapTracks(track);
-    updateTriggerLayers();
-    updateAllTracks();     // rebuild command string
-  }
-  else
-  {
-    strandSwapLayers(track, layer);
-    updateTriggerLayers();
-    updateAllTracks();     // rebuild command string
-  }
+       strandSwapTracks(track);
+  else strandSwapLayers(track, layer);
+
+  updateTriggerLayers();
+  updateAllTracks();
 }
 
 // Note: does NOT update shadow values FIXME?

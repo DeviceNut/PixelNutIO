@@ -47,11 +47,11 @@ const oneLayer =
   trigAtStart     : true,   // *true to trigger effect at creation
   trigFromMain    : false,  // *true if can trigger from main controls
 
-  trigOnLayer     : false,  // *true if can trigger from other layer:
-  trigSrcListDex  : 0,      //  source list index currently selected (0=none)
+  trigOnLayer     : false,  // true if can trigger from other layer:
+  trigSrcListDex  : 0,      //  *source list index currently selected (0=none)
                             //  if the above is >0 (user has selected one):
-  trigSourceID    : 0,      //  uniqueID for that chosen source layer
-  trigDevIndex    : 0,      //  device layer index for trigger source
+  trigSrcLayerID  : 0,      //  uniqueID for that chosen source layer
+  trigSrcLayerDex : 0,      //  device layer index for trigger source
                             //  (set by parser before source list created)
                             //  (must recalculate this when create pattern)
 

@@ -139,7 +139,7 @@ export const storePatternRemAll = () =>
     let nlist = names.split(SavePatternSeparator);
     for (const [i, n] of nlist.entries())
     {
-        console.log(`removing: ${n}`);
+        //console.log(`removing: ${n}`);
 
         localStorage.removeItem(SavePatternKeyCmd+n);
         localStorage.removeItem(SavePatternKeyDesc+n);

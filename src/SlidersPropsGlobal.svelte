@@ -11,6 +11,7 @@
   } from './strands.js';
 
   import {
+    MAX_HUE_DEGREE,
     pluginBit_COLOR,
     pluginBit_COUNT
   } from './devcmds.js';
@@ -39,12 +40,12 @@
   />
 
   <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
+    max={MAX_HUE_DEGREE}
     onchange={userSetProps}
     bind:cur={$pStrand.degreeHue}
     disabled={!$pStrand.doOverride                          ||
               !($pStrand.bitsOverride & overBit_DegreeHue)  ||
               !($pStrand.bitsEffects  & pluginBit_COLOR)}
-    max={359}
   />
   <SliderVal name='White&nbsp;'
     onchange={userSetProps}

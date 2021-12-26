@@ -120,7 +120,7 @@ export const preset_DrawEffectItems =
     { id: 10, bits: 0x800F, text: 'Light Wave' },
     { id: 20, bits: 0x80FF, text: 'Comet Heads' },
     { id: 30, bits: 0x801F, text: 'Ferris Wheel' },
-    { id: 40, bits: 0x8097, text: 'Block Scanner' },
+    { id: 40, bits: 0x80B7, text: 'Block Scanner' },
     { id: 50, bits: 0x8007, text: 'Twinkle' },
     { id: 51, bits: 0x8007, text: 'Blinky' },
     { id: 52, bits: 0x8007, text: 'Noise' },
@@ -176,7 +176,7 @@ export const preset_FilterEffectItems =
     { id: 132, bits: 0x08E4, text: 'Delay Wave' },
     { id: 141, bits: 0x0064, text: 'Bright Surge' },
     { id: 142, bits: 0x00E4, text: 'Bright Wave' },
-    { id: 150, bits: 0x2096, text: 'Expander' },
+    { id: 150, bits: 0x20B6, text: 'Win Expander' },
     { id: 160, bits: 0x1020, text: 'Flip Direction' },
   ];
 

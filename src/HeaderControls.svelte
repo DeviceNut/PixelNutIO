@@ -66,27 +66,64 @@
       />
     </div>
     <div class="header2">
-      <button class="button center" on:click={dodevs} >&lt;&lt; Devices</button>
-      <button class="button center" on:click={dopause} >{textPause}</button>
-      <button class="button center" on:click={dolinks} >Links</button>
-      <button class="button center" on:click={dodocs}  >Docs &gt;&gt;</button>
-    </div>
+
+      <button class="button center"
+        on:click={dodevs}
+        >&lt;&lt; Devices
+      </button>
+
+      <button class="button center fixwidth"
+        class:paused={isPaused}
+        on:click={dopause}
+        >{textPause}
+      </button>
+
+      <button class="button center"
+        on:click={dolinks}
+        >Links
+      </button>
+
+      <button class="button center"
+        on:click={dodocs}
+        >Docs &gt;&gt;
+      </button>
+
+      </div>
   {/if}
 </MediaQuery>
 <MediaQuery query="(min-width: 681px)" let:matches>
   {#if matches }
     <div class="header">
-      <button class="button left" on:click={dodevs}  >&lt;&lt; Devices</button>
-      <button class="button left" on:click={dopause} >{textPause}</button>
+
+      <button class="button left"
+        on:click={dodevs}
+        >&lt;&lt; Devices
+      </button>
+
+      <button class="button left fixwidth"
+        class:paused={isPaused}
+        on:click={dopause}
+        >{textPause}
+      </button>
+
       <input
         class="title"
         size=32 maxlength=32
         on:change={setname}
         bind:value={devname}
       />
-      <button class="button rite" on:click={dodocs}  >Docs &gt;&gt;</button>
-      <button class="button rite" on:click={dolinks} >Links</button>
-    </div>
+
+      <button class="button rite"
+        on:click={dodocs}
+        >Docs &gt;&gt;
+      </button>
+
+      <button class="button rite"
+        on:click={dolinks}
+        >Links
+      </button>
+
+      </div>
   {/if}
 </MediaQuery>
 
@@ -136,5 +173,12 @@
   .button.rite {
     float: right;
     margin-right: 10px;
+  }
+  .button.fixwidth {
+    width: 70px;
+  }
+  .button.paused {
+    border: 2px solid var(--color-border-paused);
+    background-color: var(--bg-color-button-select);
   }
 </style>

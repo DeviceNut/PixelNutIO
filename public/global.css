@@ -27,8 +27,9 @@
 	--bg-color-button-active: #666;
 	--bg-color-button-border: #bbb;
 
-	--color-border-select: #0064c8;
+	--color-border-select: #0066dd;
 	--bg-color-button-select: #222;
+	--color-border-paused: #aa5500;
 }
 
 body {

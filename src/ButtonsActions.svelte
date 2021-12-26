@@ -82,6 +82,7 @@
   .button {
     float: right;
     width: 38px;
+    height: 30px;
     margin: 5px 5px 7px 0;
     padding: 3px;
   }

@@ -36,79 +36,79 @@ export const preset_MenuItems =
     'E0 B80 D10 Q3 T E111 F R10 O10 E142 F250 I T',
     'E0 D30 H21 T E110 F600 I T E111 A1',
     'E50 K33 B65 D10 H252 C100 T E50 J34 K33 B65 D10 W100 C100 T E50 J67 K34 D10 H163 C100 T',
-    'E50 B60 D10 T E50 B70 D15 H89 T E20 V B90 D30 H192 W80 C25 Q2 G I R20 O10',
+    'E50 B60 D10 H0 T E50 B70 D15 H89 T E20 V B90 D30 H192 W80 C25 Q2 G I R20 O10',
     'E50 B65 D10 H71 W30 Q1 V T E40 D50 H192 C10 T E20 D15 C20 H0 G A1 I T',
   ];
 
 export const preset_PatDescs =
   [
     [
-      "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.",
-      "The Force modifies the amount of color change per pixel. At maximum Force the entire spectrum is displayed without moving,",
-      "with 0 force it's a single color, and any other force value the colors continually change."
+      "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered. " +
+      "The Force modifies the amount of color change per pixel. At maximum Force the entire spectrum is displayed without moving," +
+      "with 0 Force it's a single color, and any other Force value the colors continually change."
     ],
     [
-      "Colors hue changes occur at the head and get pushed down the strip. When the end is reached they start getting cleared, creating a \"rolling\" effect.",
-      "Triggering restarts the effect, with the amount of Force determining how fast the colors change. At the maximum Force the entire spectrum is displayed again."
+      "Colors hue changes occur at the head and get pushed down the strip. When the end is reached they start getting cleared, creating " +
+      "a \"rolling\" effect. Triggering restarts the effect, with the amount of Force determining how fast the colors change. At the " +
+      "maximum Force the entire spectrum is displayed again."
     ],
     [
-      "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, with the colors rotating.",
+      "This creates a \"wave\" effect (brightness that changes up and down) that move down the strip, with the colors rotating. " +
       "Triggering changes the frequency of the waves, with larger Forces making longer waves."
     ],
     [
-      "This has bright white twinkling \"stars\" over a background color, which is determined by the 'Hue' and 'White' properties.",
+      "This has bright white twinkling \"stars\" over a background color, which is determined by the Hue and White properties. " +
       "Triggering causes the background brightness to swell up and down, with the amount of Force determining the speed of the swelling."
     ],
     [
-      "This has bright twinkling without a background. The 'Hue' property changes the twinkling color.",
-      "Occasional comets streak up and down and then disappear. One of the comets is the default color, and appears randomly every 3-6 seconds.",
+      "This has bright twinkling without a background. The Hue property changes the twinkling color. " +
+      "Occasional comets streak up and down and then disappear. One of the comets is the default color, and appears randomly every 3-6 seconds. " +
       "The other is orange and appears only when Triggered, with the Force determining its length."
     ],
     [
-      "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs.",
-      "The comet color and tail lengths can be modified with the 'Hue', 'White', and 'Count' properties."
+      "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs. " +
+      "The comet color and tail lengths can be modified with the Hue, White, and Count properties."
     ],
     [
-      "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered.",
-      "The first one changes colors on each change in direction, and the length can be modified with the 'Count' property.",
-      "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with 'Hue' property."
+      "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered. " +
+      "The first one changes colors on each change in direction, and the length can be modified with the Count property. " +
+      "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with Hue property."
     ],
     [
-      "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect.",
-      "The spokes periodically change colors, or can be modified with the 'Hue' and 'White' properties.",
-      "The 'Count' property determines the number of spokes. Triggering toggles the direction of the motion."
+      "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect.  " +
+      "The spokes periodically change colors, or can be modified with the Hue and White properties. " +
+      "The Count property determines the number of spokes. Triggering toggles the direction of the motion."
     ],
     [
-      "The background is \"noise\" (randomly set pixels of random brightness), with the color modified by the 'Hue' and 'White' properties.",
+      "The background is \"noise\" (randomly set pixels of random brightness), with the color modified by the Hue and White properties. " +
       "A Trigger causes the background to slowly and continuously expand and contract, with the Force determining the extent of the expansion."
     ],
     [
-      "Random colored blinking that periodically surge in the rate of blinking. The 'Count' property determines the number of blinking changes made at once.",
+      "Random colored blinking that periodically surge in the rate of blinking. The Count property determines the number of blinking changes " +
+      "made at once. Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
+    ],
+    [
+      "Random colored blinking that periodically surge in the rate of blinking. " +
       "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
     ],
     [
-      "Random colored blinking that periodically surge in the rate of blinking.",
-      "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
-    ],
-    [
-      "All pixels swell up and down in brightness, with random color hue and whiteness changes, or set with the 'Hue' and 'White' properties.",
+      "All pixels swell up and down in brightness, with random color hue and whiteness changes, or set with the Hue and White properties. " +
       "Triggering changes the pace of the swelling, with larger Forces causing faster swelling."
     ],
     [
-      "Colors melt from one to the other, with slow and smooth transitions.",
-      "Triggering causes a new target color to be is chosen, with larger Forcs causing larger color changes."
+      "Colors melt from one to the other, with slow and smooth transitions. " +
+      "Triggering causes a new target color to be is chosen, with larger Forces causing larger color changes."
     ],
     [
       "Celebrate the holiday with Red, White, and Blue twinkles!"
     ],
     [
-      "Festive red and green twinkles, with an occasional white comet that streaks across them.",
+      "Festive red and green twinkles, with an occasional white comet that streaks across them. " +
       "The comet's whiteness can be modified, and Triggering creates them."
     ],
     [
       "Combination of a purple scanner over a greenish twinkling background, with a red comet that is fired off every time the scanner " +
-      "bounces off the end of the strip, or when Triggered.",
-      "The 'Hue' property only affects the color of the twinkling."
+      "bounces off the end of the strip, or when Triggered. The Hue property only affects the color of the twinkling."
     ],
   ];
 
@@ -131,34 +131,34 @@ export const preset_DrawEffectDescs =
     "Draws all pixels with the current color.",
 
     "Draws one pixel at a time with current color/brightness, inserting at the head. " +
-    "Triggering causes a new cycle to begin. If force is 0 then cycle is not repeated. " +
+    "Triggering causes a new cycle to begin. If Force is 0 then cycle is not repeated. " +
     "Can trigger other effects.",
 
     "Draws one pixel at a time with current color/brightness, appending at the tail. " +
     "Can trigger other effects.",
 
     "Light waves (brighness changes) in the current color that fluctuate (sine wave). " +
-    "The count property sets the wave frequency.",
+    "The Count property sets the wave frequency.",
 
     "Creates a bright head with a fading tail in the current color that moves. " +
-    "The count property determines its length, and triggering creates a new one. " +
+    "The Count property determines its length, and triggering creates a new one. " +
     "Can trigger other effects.",
 
     "Draws evenly spaced pixels using the current color, shifting them down one pixel " +
-    "at a time. The count property determines amount of space between them. " +
+    "at a time. The Count property determines amount of space between them. " +
     "Can trigger other effects.",
 
     "Draws a block of pixels with the current color back and forth. " +
-    "The count property sets the length of the block.",
+    "The Count property sets the length of the block.",
 
     "Scales pixel brightness levels up and down individually, using current color. " +
-    "The count property determines total number of pixels affected.",
+    "The Count property determines total number of pixels affected.",
 
     "Blinks on and off random pixels using current color/brightness. " +
-    "The count property determines number of pixels changed each step.",
+    "The Count property determines number of pixels changed each step.",
 
     "Sets randomly chosen pixels with current color but random brightness. " +
-    "The count property determines number of pixels changed each step."
+    "The Count property determines number of pixels changed each step."
   ];
 
 export const preset_FilterEffectItems =
@@ -176,54 +176,54 @@ export const preset_FilterEffectItems =
     { id: 132, bits: 0x08E4, text: 'Delay Wave' },
     { id: 141, bits: 0x0064, text: 'Bright Surge' },
     { id: 142, bits: 0x00E4, text: 'Bright Wave' },
-    { id: 150, bits: 0x2096, text: 'Window Expander' },
+    { id: 150, bits: 0x2096, text: 'Expander' },
     { id: 160, bits: 0x1020, text: 'Flip Direction' },
   ];
 
 export const preset_FilterEffectDescs =
   [
-    "Directly sets color hue once from force value on each trigger (whiteness uneffected). " +
-    "As force increases color hue changes from red->green->blue->red.",
+    "Directly sets Hue property once from Force value on each trigger (White uneffected). " +
+    "As Force increases the color hue moves around the color wheel.",
 
-    "Rotates color hue around color wheel on each drawing step (whiteness unaffected). " +
-    "Amount of change each time determined by trigger force.",
+    "Rotates Hue property around color wheel on each drawing step (White unaffected). " +
+    "Amount of change each time determined by trigger Force.",
 
-    "Smoothly melds from current color (hue/white) into another whenever color values are changed. " +
+    "Smoothly melds from current color (Hue and White properties) into another whenever color values are changed. " +
     "Can trigger other effects.",
 
-    "Rotates color hue and whiteness on each trigger, with the force determining how much change is made.",
+    "Rotates Hue and White properties on each trigger, with the Force determining how much change is made.",
 
-    "Sets color hue and whiteness to random values on each drawing step.",
+    "Sets Hue and White properties to random values on each drawing step.",
 
-    "Directly sets pixel count property once from the force value on every trigger. A force of 0 is ignored.",
+    "Directly sets Count property once from the Force value on every trigger. A Force of 0 is ignored.",
 
-    "Increases pixel count property using the trigger force, then decreases it in even steps back to its original value. " +
+    "Increases Count property using the trigger Force, then decreases it in even steps back to its original value. " +
     "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
-    "Modulates pixel count property with a cosine function. The wave height is half the maximum. " +
-    "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Modulates Count property with a cosine function. The wave height is half the maximum. " +
+    "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
     "Can trigger other effects.",
 
-    "Directly sets delay time property from the force value on every trigger. Increased force reduces the delay; " +
-    "at maximum force the delay is minimal; a force of 0 means a maximum delay.",
+    "Directly sets 'Delay' property from the Force value on every trigger. Increased Force reduces the delay; " +
+    "at maximum Force the delay is minimal; a Force of 0 means a maximum delay.",
 
-    "Decreases delay time property using the trigger force, then increases it in even steps back to its original value." +
+    "Decreases 'Delay' property using the trigger Force, then increases it in even steps back to its original value." +
     "The original value (when triggered the first time) must be greater than the minimum to have any effect.",
 
-    "Modulates delay time property with a cosine function, down to its minimum and back. The trigger force " +
-    "determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Modulates 'Delay' property with a cosine function, down to its minimum and back. " +
+    "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
     "Can trigger other effects.",
 
-    "Increases brightness property using the trigger force, then decreases it in even steps back to its original value. " +
+    "Increases 'Bright' property using the trigger Force, then decreases it in even steps back to its original value. " +
     "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
-    "Modulates brightness property with a cosine function. The wave height is a third of the maximum. " +
-    "The trigger force determines the number of steps in the wave: larger forces for quicker changes. " +
+    "Modulates 'Bright' property with a cosine function. The wave height is a third of the maximum. " +
+    "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
     "Can trigger other effects.",
 
     "Expands/contracts the drawing window continuously, centered on the middle of the strand. " +
-    "The pixel count property determines the size of the window on every step. " +
+    "The Count property determines the size of the window on every step. " +
     "Can trigger other effects.",
 
-    "Toggles the drawing direction property on each trigger.",
+    "Toggles the drawing 'Direction' property on each trigger.",
   ];

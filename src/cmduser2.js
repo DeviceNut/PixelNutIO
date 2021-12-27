@@ -33,7 +33,6 @@ import {
   cmdStr_SelectEffect,
   cmdStr_AppRemEffect,
   cmdStr_TrigAtStart,
-  cmdStr_SetEffect,
   defDrawEffect,
   defFilterEffect
 } from './devcmds.js';
@@ -56,6 +55,7 @@ import {
   sendLayerCmd
 } from './cmdsend.js';
 
+import { resetEffectBits } from './cmduser1.js';
 import { parsePattern } from './cmdparse.js';
 import { MENUID_CUSTOM } from './menu.js';
 
@@ -246,7 +246,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   updateAllTracks();
 
   if (strand.tracks[track].layers[layer].trigAtStart)
-    sendLayerCmd(track, layer, cmdStr_TrigAtStart, undefined);
+    sendLayerCmd(track, layer, cmdStr_TrigAtStart);
 }
 
 // assume cannot get called if only one T/L
@@ -262,6 +262,12 @@ export const userRemTrackLayer = (track, layer) =>
   }
   else
   {
+    const strand = get(pStrand);
+    const props = strand.tracks[track].drawProps;
+    const player = strand.tracks[track].layers[layer];
+    const bits = player.pluginObj.bits;
+    resetEffectBits(track, props, bits);
+
     strandClearLayer(track, layer);
     strandRemoveLayer(track, layer);
   }

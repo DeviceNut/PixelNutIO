@@ -62,22 +62,48 @@ import {
 
 ///////////////////////////////////////////////////////////
 
+export const resetEffectBits = (track, props, bits) =>
+{
+  console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
+
+  if (bits & pluginBit_ORIDE_HUE)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
+
+  if (bits & pluginBit_ORIDE_WHITE)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
+
+  if (bits & pluginBit_ORIDE_COUNT)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
+
+  if (bits & pluginBit_ORIDE_DELAY)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
+
+  if (bits & pluginBit_ORIDE_DIR)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
+
+  if (bits & pluginBit_ORIDE_EXT)
+  {
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
+  }
+}
+
 // switch to new effect on this layer, specified by layer's pluginObj.index
 export const userSetEffect = (track, layer) =>
 {
   const strand = get(pStrand);
-  const pLayer = strand.tracks[track].layers[layer];
-  const pShadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
+  const player = strand.tracks[track].layers[layer];
+  const pshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
-  //console.log(`seteffect: track=${track} layer=${layer} index: old=${pShadow.pluginObj.index} new=${pLayer.pluginObj.index}`);
+  //console.log(`seteffect: track=${track} layer=${layer} index: old=${pshadow.pluginObj.index} new=${player.pluginObj.index}`);
 
-  if (pShadow.pluginObj.index !== pLayer.pluginObj.index)
+  if (pshadow.pluginObj.index !== player.pluginObj.index)
   {
-    const pobj = findEffectFromIndex(pLayer.pluginObj.filter, pLayer.pluginObj.index);
-    const before = pLayer.pluginObj.bits;
+    const pobj = findEffectFromIndex(player.pluginObj.filter, player.pluginObj.index);
+    const before = player.pluginObj.bits;
     const after = pobj.bits;
-    pLayer.pluginObj = pobj;
-    pShadow.pluginObj = {...pobj};
+    player.pluginObj = pobj;
+    pshadow.pluginObj = {...pobj};
 
     updateTriggerLayers();
     updateAllTracks();
@@ -87,28 +113,7 @@ export const userSetEffect = (track, layer) =>
     const bits = before & ~after; // override bits being cleared
     const props = get(pStrand).tracks[track].drawProps;
 
-    //console.log(`  trackbits = ${get(pStrand).tracks[track].trackBits.toString(16)}`);
-
-    if (bits & pluginBit_ORIDE_HUE)
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
-  
-    if (bits & pluginBit_ORIDE_WHITE)
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
-  
-    if (bits & pluginBit_ORIDE_COUNT)
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
-  
-    if (bits & pluginBit_ORIDE_DELAY)
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
-  
-    if (bits & pluginBit_ORIDE_DIR)
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
-  
-    if (bits & pluginBit_ORIDE_EXT)
-    {
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
-      sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
-    }
+    resetEffectBits(track, props, bits);
   }
 }
 

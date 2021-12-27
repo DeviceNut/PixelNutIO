@@ -47,6 +47,7 @@
       max={MAX_FORCE_VALUE}
       bind:cur={$pStrand.forceValue}
       disabled={ ($pStrand.tactives === 0) ||
+                !($pStrand.triggerUsed)    ||
                 !($pStrand.bitsEffects & pluginBit_TRIGFORCE) }
       />
 

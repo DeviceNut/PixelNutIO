@@ -82,6 +82,9 @@ export const cmdStr_TrigRepeating = "R";    // def/0=off, none=forever, else val
 export const cmdStr_TrigOffset    = "O";    // offset secs before range (def/none/0=default)
 export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=default)
 
+// Commands that causes an action (no paramenters):
+export const cmdStr_GetDevInfo    = "?";    // returns info on device in JSON format
+
 // Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////
 

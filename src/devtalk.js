@@ -489,12 +489,12 @@ function readDeviceInfo(device, reply)
     return false;
   }
 
-  device.report.nstrands  = strs[0];
-  device.report.maxstrlen = strs[1];
-  device.report.numlayers = strs[2];
-  device.report.numtracks = strs[3];
-  device.report.npatterns = strs[4];
-  device.report.nplugins  = strs[5];
+  device.report.nstrands  = parseInt(strs[0]);
+  device.report.maxstrlen = parseInt(strs[1]);
+  device.report.numlayers = parseInt(strs[2]);
+  device.report.numtracks = parseInt(strs[3]);
+  device.report.npatterns = parseInt(strs[4]);
+  device.report.nplugins  = parseInt(strs[5]);
 
   if (device.report.nstrands < 1)
   {

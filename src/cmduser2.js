@@ -246,7 +246,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   updateAllTracks();
 
   if (strand.tracks[track].layers[layer].trigAtStart)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_TrigAtStart, undefined);
+    sendLayerCmd(track, layer, cmdStr_TrigAtStart, undefined);
 }
 
 // assume cannot get called if only one T/L

@@ -12,10 +12,9 @@ import {
 } from './globals.js';
 
 import {
-  DEF_HUE_DEGREE,
+  DEF_HUE_VALUE,
   DEF_PCENT_BRIGHT,
   DEF_PCENT_DELAY,
-  MAX_FORCE_VALUE,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE
 } from './devcmds.js';
@@ -62,7 +61,7 @@ const oneLayer =
   trigRepRange    : 0,      //   *range of random seconds (from 0)
 
   forceRandom     : false,  // *true if a random force is applied when triggering
-  forceValue      : MAX_FORCE_VALUE/2, // *percent force to apply (if not random)
+  forceValue      : DEF_FORCE_VALUE, // *percent force to apply (if not random)
 
   pluginObj       : {},     // object returned from findEffectFromPlugin()
                             //  that contains all info on an effect
@@ -76,7 +75,7 @@ const drawProps =
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
   overHue         : false,  // *true to allow global override
-  degreeHue       : DEF_HUE_DEGREE, // *hue in degrees (0-MAX_DEGREES_HUE)
+  degreeHue       : DEF_HUE_VALUE, // *hue in degrees (0-MAX_DEGREES_HUE)
 
   overWhite       : false,  // *true to allow global override
   pcentWhite      : 0,      // *percent whiteness
@@ -128,7 +127,7 @@ const oneStrand =
   pcentWhite      : 0,      // percent whiteness
   pcentCount      : 0,      // percent of pixels affected in range
 
-  forceValue      : MAX_FORCE_VALUE/2, // force value for triggering
+  forceValue      : DEF_FORCE_VALUE, // force value for triggering
   numPixels       : 0,      // number of pixels in this strand
 
   tactives        : 0,      // current number of active tracks
@@ -303,9 +302,7 @@ export const strandCopyAll = () =>
 export const strandClearTop = () =>
 {
   const strand = get(pStrand);
-  // Don't reset global brightness and delay FIXME?
-  //strand.pcentBright    = 50; // diffeent default for global control
-  //strand.pcentDelay     = 0;
+  // NOTE: don't reset global brightness/delay FIXME?
   strand.pixelOffset    = 0;
   strand.doOverride     = false;
   strand.degreeHue      = 0;

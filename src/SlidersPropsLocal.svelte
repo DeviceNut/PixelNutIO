@@ -5,7 +5,7 @@
   import { pStrand } from './globals.js';
 
   import {
-    MAX_HUE_DEGREE,
+    MAX_HUE_VALUE,
     pluginBit_COLOR,
     pluginBit_COUNT,
     pluginBit_ORIDE_HUE,
@@ -62,7 +62,7 @@
   <Row>
     <Column style="margin-left:10px;">
       <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
-        max={MAX_HUE_DEGREE}
+        max={MAX_HUE_VALUE}
         onchange={sethue}
         bind:cur={$pStrand.tracks[track].drawProps.degreeHue}
         disabled={ ($pStrand.doOverride && $pStrand.tracks[track].drawProps.overHue) ||

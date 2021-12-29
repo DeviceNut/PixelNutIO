@@ -1,12 +1,12 @@
 
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
+export const MAX_HUE_VALUE        = 255;    // maximum hue value
 export const MAX_FORCE_VALUE      = 1000;   // maximum force value // TODO
 
                                             // default values:
-export const MAX_HUE_DEGREE       = 255;    // max hue value
-export const DEF_HUE_DEGREE       = 192;    // hue value for purple
-export const DEF_PCENT_BRIGHT     = 100;    // percent brightness // TODO?
+export const DEF_HUE_VALUE        = 192;    // hue value for purple
+export const DEF_PCENT_BRIGHT     = 50;     // percent brightness
 export const DEF_PCENT_DELAY      = 50;     // percent delay of max
 export const DEF_PCENT_COUNT      = 50;     // percent pixel count
 export const DEF_FORCE_VALUE      = (MAX_FORCE_VALUE/2); // force value
@@ -81,9 +81,6 @@ export const cmdStr_TrigByEffect  = "A";    // layer index that will trigger thi
 export const cmdStr_TrigRepeating = "R";    // def/0=off, none=forever, else value=count
 export const cmdStr_TrigOffset    = "O";    // offset secs before range (def/none/0=default)
 export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=default)
-
-// Commands that causes an action (no paramenters):
-export const cmdStr_GetDevInfo    = "?";    // returns info on device in JSON format
 
 // Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////

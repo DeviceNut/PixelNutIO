@@ -11,7 +11,7 @@
   } from './strands.js';
 
   import {
-    MAX_HUE_DEGREE,
+    MAX_HUE_VALUE,
     pluginBit_COLOR,
     pluginBit_COUNT
   } from './devcmds.js';
@@ -40,7 +40,7 @@
   />
 
   <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
-    max={MAX_HUE_DEGREE}
+    max={MAX_HUE_VALUE}
     onchange={userSetProps}
     bind:cur={$pStrand.degreeHue}
     disabled={!$pStrand.doOverride                          ||

@@ -2,7 +2,7 @@
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_HUE_VALUE        = 255;    // maximum hue value
-export const MAX_FORCE_VALUE      = 1000;   // maximum force value // TODO
+export const MAX_FORCE_VALUE      = 255;    // maximum force value
 
                                             // default values:
 export const DEF_HUE_VALUE        = 192;    // hue value for purple

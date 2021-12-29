@@ -3,8 +3,6 @@ import { get } from 'svelte/store';
 import {
   SECS_NOTIFY_TIMEOUT,
   SECS_REPLY_TIMEOUT,
-  MIN_TRACKS,
-  MIN_TRACK_LAYERS,
   PAGEMODE_DEVICES,
   curPageMode,
   curDevice,
@@ -14,35 +12,30 @@ import {
   msgDesc  
  } from './globals.js';
 
- import { MENUID_DEVICE } from './menu.js';
- 
- // Device Responses:
+ // Device Query/Responses:
+ export const queryStr_GetInfo    = "?";        // returns device info in JSON format
  export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
- export const respStr_VersionStr  = "P!!"       // specifies response format version
- 
- // Query commands:
-export const cmdStr_GetDevInfo    = "?";        // returns info on device
-export const cmdStr_GetStrands    = "?S";       // returns info on each strand
-export const cmdStr_GetPatterns   = "?P";       // returns info on device patterns
-export const cmdStr_GetPlugins    = "?G";       // returns info on device plugins
+ export const respStr_StartInfo   = "?<"        // indicates start of device info
+ export const respStr_FinishInfo  = ">?"        // indicates end of device info
 
-const QUERY_NONE          = 0;  // invalid state
-const QUERY_DEVICE        = 1;  // waiting for device reply
-const QUERY_STRANDS       = 2;  // waiting for strand replies
-const QUERY_PATTERNS      = 3;  // waiting for pattern replies
-const QUERY_PLUGINS       = 4;  // waiting for plugin replies
-const CHECK_PATTERNS      = 5;  // check if need to retrieve patterns
-const CHECK_PLUGINS       = 6;  // check if need to retrieve plugins
+/*
+// format of each custom device pattern object:
+{
+  id: 0,                // index into this list
+  text: '',             // user name of pattern
+  pcmd: '',             // pattern command string
+  desc: []              // pattern description array
+}
 
-                                // stage of queries:
-const QSTAGE_NONE         = 0;  // invalid state
-const QSTAGE_INFO         = 1;  // waiting for info
-const QSTAGE_NAME         = 2;  // waiting for name
-const QSTAGE_DESC         = 3;  // waiting for description
-const QSTAGE_CMD          = 4;  // waiting for command str
-const QSTAGE_DONE         = 5;  // final state
+// format of each custom device effect object:
+{
+  id: 0,                // global unique effect ID
+  bits: 0x00,           // pluginBit_ values
+  text: '',             // user name for effect
+  desc: ''              // effect description
+}
 
-export const strandState =
+// format of each device strand info object:
 {
   pixels: 0,            // number of pixels
   bright: 0,            // brightness percent
@@ -55,11 +48,28 @@ export const strandState =
   xt_white: 0,          //  white property (percent)
   xt_count: 0,          //  count property (percent)
 
-  patstr: '',           // pattern string
   patname: ''           // pattern name
-};
+  patstr: '',           // pattern string
+}
 
-export const deviceInfo =
+// format of each device info object:
+{
+  nstrands: 0,          // strand count (>= 1)
+  npatterns: 0,         // custom device patterns
+  nplugins: 0,          // custom device plugins
+
+  maxstrlen: 0,         // max length for cmds/patterns
+  numtracks: 0,         // number of tracks available
+  numlayers: 0,         // number of layers available
+
+  strands: [],          // list of strand info
+  patterns: [],         // list of pattern info
+  effects: [],          // list of effect info
+}
+*/
+
+// state of each device found
+export const deviceState =
 {
   curname: '',          // used as topic to talk to device
   newname: '',          // used when renaming the device
@@ -72,34 +82,8 @@ export const deviceInfo =
   active: false,        // true if being controlled now
                         // (only one device at a time)
 
-  query:  QUERY_NONE,   // state of query commands (QUERY_xxx)
-  qstage: QSTAGE_NONE,  // stage of each retrieval
-  qcount: 0,            // messages left to receive
-
-  qname: '',            // holds pattern/plugin name
-  qdesc: '',            // holds pattern/plugin desc
-  qcmd:  '',            // holds pattern/plugin str
-
-                        // custom patterns:
-  patterns_items: [],   //  array of menu items
-  patterns_pcmds: [],   //  array of pattern commands
-  patterns_descs: [],   //  array of description arrays
-
-  effects_items: [],    // custom effects item list array
-  effects_descs: [],    // custom effects description array
-
-  report:               // reported capabilities & state
-  {
-    nstrands: 0,        // strand count (>= 1)
-    npatterns: 0,       // custom device patterns
-    nplugins: 0,        // custom device plugins
-
-    maxstrlen: 0,       // max length for cmds/patterns
-    numtracks: 0,       // number of tracks available
-    numlayers: 0,       // number of layers available
-
-    strands: [],        // list of 'strandState'
-  }
+  dinfo: {},            // holds raw JSON device output
+  report: {}            // parsed device info object
 };
 
 export let deviceError = (text, title=null, device=null) =>
@@ -127,15 +111,6 @@ function timeout_reply()
   deviceError('', `Device "${reply_device.curname}" failed to answer query.`, reply_device);
 }
 
-function sendQuery(device, fsend, query)
-{
-  reply_device = device;
-  reply_query = query;
-  fsend(device.curname, query);
-
-  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
-}
-
 function deviceQueryBegin(device, fsend)
 {
   console.log('Requesting device info...');
@@ -143,10 +118,11 @@ function deviceQueryBegin(device, fsend)
   device.ready = false;
   device.active = false;
   device.failed = false;
-  device.query = QUERY_DEVICE;
-  device.qstage = QSTAGE_NONE;
 
-  sendQuery(device, fsend, cmdStr_GetDevInfo);
+  reply_device = device;
+  fsend(device.curname, queryStr_GetInfo);
+
+  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
 }
 
 function deviceStart(device)
@@ -154,9 +130,6 @@ function deviceStart(device)
   console.log(`Device ready: "${device.curname}"`)
 
   device.ready  = true;
-  device.query  = QUERY_NONE;
-  device.qstage = QSTAGE_NONE;
-  device.qcount = 0;
   device.tstamp = curTimeSecs();
 
   deviceList.set(get(deviceList)); // trigger UI update
@@ -274,7 +247,7 @@ export const onNotification = (msg, fsend) =>
 
   console.log(`Adding device: "${name}"`);
 
-  let device = {...deviceInfo};
+  let device = {...deviceState};
   device.curname = name;
   device.tstamp = curTimeSecs();
   get(deviceList).push(device);
@@ -286,7 +259,7 @@ export const onNotification = (msg, fsend) =>
 
 export const onDeviceReply = (msg, fsend) =>
 {
-  console.log(`Device reply: ${msg}`)
+  //console.log(`Device reply: ${msg}`)
 
   if (timer_reply)
   {
@@ -330,338 +303,21 @@ export const onDeviceReply = (msg, fsend) =>
   {
     console.warn(`Ignoring reply from current device: ${name}`);
   }
+  else if (reply[0] === respStr_StartInfo)
+  {
+    console.log('Starting device info...');
+    device.dinfo = '';
+  }
+  else if (reply[0] === respStr_FinishInfo)
+  {
+    console.log('...Ending device info');
+    deviceStart(device);
+    console.log(device.dinfo);
+    console.log(JSON.parse(device.dinfo));
+  }
   else
   {
-    while(true) // used with continue to change query
-    {
-      switch (device.query)
-      {
-        case QUERY_DEVICE:
-        {
-          //console.log('device reply: ', reply);
-          if (reply[0] === respStr_VersionStr)
-          {
-            reply.shift();
-            if (readDeviceInfo(device, reply))
-            {
-              sendQuery(device, fsend, cmdStr_GetStrands);
-  
-              device.query = QUERY_STRANDS;
-              device.qstage = QSTAGE_INFO;
-              device.qcount = 0;
-
-              device.report.strands = [];
-            }
-          }
-          break;
-        }
-        case QUERY_STRANDS:
-        {
-          //console.log('strands reply: ', reply);
-          if (readStrandInfo(device, reply))
-          {
-            if (device.qstage === QSTAGE_DONE) // finished one strand
-            {
-              if (++device.qcount >= device.report.nstrands)
-              {
-                device.query = CHECK_PATTERNS;
-                continue;
-              }
-              else device.qstage = QSTAGE_INFO; // setup for next strand
-            }
-            // else keep parsing responses
-          }
-          break;
-        }
-        case CHECK_PATTERNS:
-        {
-          if (device.report.npatterns > 0)
-          {
-            sendQuery(device, fsend, cmdStr_GetPatterns);
-  
-            device.query = QUERY_PATTERNS;
-            device.qstage = QSTAGE_NAME;
-            device.qcount = 0;
-
-            device.patterns_items = [];
-            device.patterns_pcmds = [];
-            device.patterns_descs = [];
-          }
-          else
-          {
-            device.query = CHECK_PLUGINS;
-            continue;
-          }
-          break;
-        }
-        case QUERY_PATTERNS:
-        {
-          //console.log('patterns reply: ', reply);
-          if (readPatternInfo(device, reply))
-          {
-            if (device.qstage === QSTAGE_DONE) // finished one pattern
-            {
-              const obj = { id: (MENUID_DEVICE + device.qcount + 1), text:device.qname };
-              device.patterns_items.push(obj);
-              device.patterns_pcmds.push(device.qcmd);
-              device.patterns_descs.push([device.qdesc]);
-    
-              if (++device.qcount >= device.report.npatterns)
-              {
-                device.query = CHECK_PLUGINS;
-                continue;
-              }
-              else device.qstage = QSTAGE_NAME; // setup for next pattern
-            }
-            // else keep parsing responses
-          }
-          break;
-        }
-        case CHECK_PLUGINS:
-        {
-          if (device.report.nplugins > 0)
-          {
-            sendQuery(device, fsend, cmdStr_GetPlugins);
-  
-            device.query = QUERY_PLUGINS;
-            device.qstage = QSTAGE_NAME;
-            device.qcount = 0;
-
-            device.effects_items = [];
-            device.effects_descs = [];
-          }
-          else deviceStart(device);
-          break;
-        }
-        case QUERY_PLUGINS:
-        {
-          //console.log('plugins reply: ', reply);
-          if (readPluginInfo(device, reply))
-          {
-            if (device.qstage === QSTAGE_DONE) // finished one pattern
-            {
-              const strs = device.qcmd.split(' ');
-              if (strs.length < 2)
-              {
-                deviceError(`Unexpected plugin cmd: "${device.qcmd}"`);
-                break;
-              }
-              const pvalue = parseInt(strs[0]);
-              const bvalue = parseInt(strs[1], 16);
-              const obj = { id:pvalue, bits:bvalue, text:device.qname };
-
-              device.effects_items.push(obj);
-              device.effects_descs.push(device.qdesc);
-              //console.log(device.effects_items);
-
-              if (++device.qcount >= device.report.nplugins)
-                deviceStart(device);
-
-              else device.qstage = QSTAGE_NAME; // setup for next plugin
-            }
-            // else keep parsing responses
-          }
-          break;
-        }
-        default:
-        {
-          deviceError(`Unexpected query state: ${device.query} for reply: ${msg}`)
-          break;        
-        }
-      }
-
-      break; // exit from while()
-    }
+    console.log(`<< ${reply[0]}`);
+    device.dinfo += reply[0];
   }
-}
-
-function readDeviceInfo(device, reply)
-{
-  let line, strs;
-
-  line = reply[0];
-  reply.shift();
-
-  strs = line.split(' ');
-  if (strs.length < 6)
-  {
-    deviceError(`Unexpected parm count (line 2): ${strs.length}`);
-    return false;
-  }
-
-  device.report.nstrands  = parseInt(strs[0]);
-  device.report.maxstrlen = parseInt(strs[1]);
-  device.report.numlayers = parseInt(strs[2]);
-  device.report.numtracks = parseInt(strs[3]);
-  device.report.npatterns = parseInt(strs[4]);
-  device.report.nplugins  = parseInt(strs[5]);
-
-  if (device.report.nstrands < 1)
-  {
-    deviceError(`Bad strand count: "${device.report.nstrands}"`);
-    return false;
-  }
-
-  if (device.report.numtracks < MIN_TRACKS)
-  {
-    deviceError(`Not enough tracks: ${device.report.numtracks}`);
-    return false;
-  }
-
-  if (device.report.numlayers < (MIN_TRACKS * MIN_TRACK_LAYERS))
-  {
-    deviceError(`Not enough layers: ${device.report.numlayers}`);
-    return false;
-  }
-
-  return true;
-}
-
-// 2 parm lines + 1 pattern, per strand
-function readStrandInfo(device, reply)
-{
-  let line, strs, strand;
-
-  switch (device.qstage)
-  {
-    case QSTAGE_INFO:
-    {
-      if (reply.length < 2)
-      {
-        deviceError(`Unexpected strand line count: ${reply.length}`);
-        return false;
-      }
-
-      line = reply[0];
-      reply.shift();
-  
-      strs = line.split(' ');
-      if (strs.length < 4)
-      {
-        deviceError(`Unexpected parm count (s1): ${strs.length}`);
-        return false;
-      }
-  
-      strand = {...strandState};
-  
-      strand.pixels = parseInt(strs[0]);
-      strand.bright = parseInt(strs[1]);
-      strand.delay  = parseInt(strs[2]);
-      strand.first  = parseInt(strs[3]);
-  
-      line = reply[0];
-      reply.shift();
-  
-      strs = line.split(' ');
-      if (strs.length < 5)
-      {
-        deviceError(`Unexpected parm count (s2): ${strs.length}`);
-        return false;
-      }
-  
-      strand.xt_mode  = parseInt(strs[0]) === 1; // must convert to boolean
-      strand.xt_hue   = parseInt(strs[1]);
-      strand.xt_white = parseInt(strs[2]);
-      strand.xt_count = parseInt(strs[3]);
-      strand.force    = parseInt(strs[4]);
-
-      device.report.strands.push(strand);
-
-      device.qstage = QSTAGE_CMD;
-      break;
-    }
-    case QSTAGE_CMD:
-    {
-      device.report.strands[device.qcount].patstr = reply[0];
-      reply.shift();
-  
-      device.qstage = QSTAGE_NAME;
-      break;
-    }
-    case QSTAGE_NAME:
-    {
-      device.report.strands[device.qcount].patname = reply[0];
-      reply.shift();
-  
-      device.qstage = QSTAGE_DONE; // indicates finished
-      break;
-    }
-    default:
-    {
-      deviceError(`Unexpected strand stage: ${device.qstage}`);
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function readPatternInfo(device, reply)
-{
-  const line = reply[0];
-  reply.shift();
-
-  switch (device.qstage)
-  {
-    case QSTAGE_NAME:
-    {
-      device.qname = line;
-      device.qstage = QSTAGE_DESC;
-      break;
-    }
-    case QSTAGE_DESC:
-    {
-      device.qdesc = line;
-      device.qstage = QSTAGE_CMD;
-      break;
-    }
-    case QSTAGE_CMD:
-    {
-      device.qcmd = line;
-      device.qstage = QSTAGE_DONE; // indicates finished
-      break;
-    }
-    default:
-    {
-      deviceError(`Unexpected pattern stage: ${device.qstage}`);
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function readPluginInfo(device, reply)
-{
-  const line = reply[0];
-  reply.shift();
-
-  switch (device.qstage)
-  {
-    case QSTAGE_NAME:
-    {
-      device.qname = line;
-      device.qstage = QSTAGE_DESC;
-      break;
-    }
-    case QSTAGE_DESC:
-    {
-      device.qdesc = line;
-      device.qstage = QSTAGE_CMD;
-      break;
-    }
-    case QSTAGE_CMD:
-    {
-      device.qcmd = line;
-      device.qstage = QSTAGE_DONE; // indicates finished
-      break;
-    }
-    default:
-    {
-      deviceError(`Unexpected plugin stage: ${device.qstage}`);
-      return false;
-    }
-  }
-
-  return true;
 }

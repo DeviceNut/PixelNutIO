@@ -72,5 +72,21 @@
 
     {/if}
   </Row>
+
+  <Row style="display:flex; justify-content:center;">
+    <div class="links">
+      Visit the PixelNut! <a target='_blank' href='https://www.devicenut.com/pixelnut'>website.</a>&nbsp;&nbsp;
+      Source code available for the <a target='_blank' href='https://github.com/DeviceNut/PixelNutWeb'>web application</a>
+      and for the <a target='_blank' href='https://github.com/DeviceNut/PixelNutSys'>devices</a>.
+    </div>
+  </Row>
+
 </Grid>
 
+<style>
+  .links {
+    margin-top: 13px;
+    padding: 10px;
+    font-size:.97em;
+  }  
+</style>

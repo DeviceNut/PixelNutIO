@@ -1,9 +1,5 @@
 export const helpText_1 = (hmap) =>
 {
-  hmap.set(1,
-"Help message 1",
-  );
-
   hmap.set(10,
 "Help message 10",
   );

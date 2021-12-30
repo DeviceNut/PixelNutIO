@@ -1,3 +1,4 @@
+import { helpText_0 } from './helptext_0.js';
 import { helpText_1 } from './helptext_1.js';
 import { helpText_2 } from './helptext_2.js';
 
@@ -5,10 +6,7 @@ const helpMap = new Map();
 
 export const helpInit = () =>
 {
-  helpMap.set(0,
-"Help message 0",
-  );
-  
+  helpText_0(helpMap);
   helpText_1(helpMap);
   helpText_2(helpMap);
 }
@@ -22,25 +20,25 @@ export const helpTopics =
   [
     { id: 0, text: "What is PixelNut?" },
     {
-      id: 1,
-      text: "Topic 1",
+      id: 10,
+      text: "Topic 10",
       children: [
         {
-          id: 10,
-          text: "Topic 10",
+          id: 100,
+          text: "Topic 100",
           children: [
-            { id: 100, text: "Topic 100" },
-            { id: 101, text: "Topic 101" },
+            { id: 1000, text: "Topic 1000" },
+            { id: 1001, text: "Topic 1001" },
           ],
         },
       ],
     },
     {
-      id: 2,
-      text: "How PixelNut Effect Patterns Work",
+      id: 20,
+      text: "How PixelNut Patterns Work",
       children: [
-        { id: 20, text: "Command Definitions" },
-        { id: 21, text: "LightWave Example" },
+        { id: 200, text: "Command Definitions" },
+        { id: 201, text: "LightWave Example" },
       ],
     },
   ];

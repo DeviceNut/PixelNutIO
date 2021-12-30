@@ -118,7 +118,7 @@
 
   <div class="listbox">
     {#each $deviceList as device }
-      {#if !device.failed }
+      {#if !device.ignore }
         <div class="listitem">
           <ScanDevice {device} />
         </div>

@@ -1,8 +1,8 @@
 import { get } from 'svelte/store';
 
 import {
-  SECS_NOTIFY_TIMEOUT,
-  SECS_REPLY_TIMEOUT,
+  SECS_RESPONSE_TIMEOUT,
+  MAX_DEVICE_FAIL_COUNT,
   PAGEMODE_DEVICES,
   curPageMode,
   curDevice,
@@ -13,10 +13,18 @@ import {
  } from './globals.js';
 
  // Device Query/Responses:
- export const queryStr_GetInfo    = "?";        // returns device info in JSON format
- export const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
- export const respStr_StartInfo   = "?<"        // indicates start of device info
- export const respStr_FinishInfo  = ">?"        // indicates end of device info
+const queryStr_GetInfo    = "?";        // returns device info in JSON format
+const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
+const respStr_StartInfo   = "?<"        // indicates start of device info
+const respStr_FinishInfo  = ">?"        // indicates end of device info
+
+                                        // device states:
+const DSTATE_NONE         = 0;          //  invalid state
+const DSTATE_DO_QUERY     = 1;          //  query on next notify
+const DSTATE_WAIT_RESP    = 2;          //  waiting for response
+const DSTATE_WAIT_DATA    = 3;          //  waiting for more data
+const DSTATE_READY        = 4;          //  ready for control
+const DSTATE_ACTIVE       = 5;          //  being controlled
 
 /*
 // format of each custom device pattern object:
@@ -74,102 +82,70 @@ export const deviceState =
   curname: '',          // used as topic to talk to device
   newname: '',          // used when renaming the device
 
-  tstamp: 0,            // timestamp(secs) of last notify
+  dstate: DSTATE_NONE,  // current state of this device
+  failcount: 0,         // number of protocol failures
+  ignore: false,        // true to ignore this device
+  ready: false,         // true to stop spinner on UI
 
-  failed: false,        // device communication failed
-  ready: false,         // true if ready for controlling
-                        // (all info retrieved successfully)
-  active: false,        // true if being controlled now
-                        // (only one device at a time)
+  tstamp: 0,            // timestamp of last notify/response
+  fsend: null,          // function to send message to device
 
   dinfo: {},            // holds raw JSON device output
   report: {}            // parsed device info object
 };
-
-export let deviceError = (text, title=null, device=null) =>
-{
-  if (title === null) title = 'Program Error';
-
-  console.error(text == '' ? title : text);
-
-  deviceStop(device);
-
-  // setup error message title/text
-  msgTitle.set(title);
-  msgDesc.set(text);
-}
-
-// create timer for receiving a reply to a device query
-let timer_reply = 0;
-let reply_query = '';
-let reply_device = null;
-
-function timeout_reply()
-{
-  console.log(`No response from: ${reply_query}`);
-
-  deviceError('', `Device "${reply_device.curname}" failed to answer query.`, reply_device);
-}
-
-function deviceQueryBegin(device, fsend)
-{
-  console.log('Requesting device info...');
-
-  device.ready = false;
-  device.active = false;
-  device.failed = false;
-
-  reply_device = device;
-  fsend(device.curname, queryStr_GetInfo);
-
-  timer_reply = setTimeout(timeout_reply, (1000 * SECS_REPLY_TIMEOUT));
-}
-
-function deviceStart(device)
-{
-  console.log(`Device ready: "${device.curname}"`)
-
-  device.ready  = true;
-  device.tstamp = curTimeSecs();
-
-  deviceList.set(get(deviceList)); // trigger UI update
-}
-
-function deviceStop(device=null)
-{
-  // if device is currently being controlled,
-  // return to the device discovery page
-
-  console.log('devstop=', device);
-  let curdev = get(curDevice);
-  if (curdev !== null)
-  {
-    if (get(curPageMode) !== PAGEMODE_DEVICES)
-      curPageMode.set(PAGEMODE_DEVICES);
-
-    curdev.active = false;
-    curDevice.set(null);
-
-    //console.log(`Device stopped: ${curdev.curname}`);
-  }
-
-  if (device !== null)
-  {
-    deviceError(`Device failed: ${device.curname}`);
-
-    device.failed = true;
-    deviceList.set(get(deviceList)); // trigger UI update
-  }
-}
 
 function curTimeSecs()
 {
   return Math.floor(Date.now() / 1000); // convert to seconds
 }
 
+export let deviceError = (text, title=null) =>
+{
+  if (title === null) title = 'Program Error';
+
+  console.error(text == '' ? title : text);
+
+  // trigger error message title/text
+  msgDesc.set(text);
+  msgTitle.set(title);
+
+  deviceReset();
+
+  // set state to send new device query
+  device.dstate = DSTATE_DO_QUERY;
+  device.ready = false;
+}
+
+// reset currently active device and return to the discovery page
+function deviceReset()
+{
+  let device = get(curDevice);
+  if (device !== null)
+  {
+    if (get(curPageMode) !== PAGEMODE_DEVICES)
+      curPageMode.set(PAGEMODE_DEVICES);
+
+    curDevice.set(null);
+
+    // triggers update to UI - MUST HAVE THIS
+    deviceList.set(get(deviceList));
+  }
+}
+
+function deviceQuery(device)
+{
+  console.log(`Device Query: "${device.curname}"`)
+
+  device.dstate = DSTATE_WAIT_RESP;
+  device.tstamp = curTimeSecs();
+
+  device.fsend(device.curname, queryStr_GetInfo);
+}
+
 // create timer for receiving a connection notification
-let timer_notify = 0;
-function notify_check()
+// if device doesn't respond in time, stop and remove it
+let timeObj = 0;
+function checkTimeout()
 {
   let curlist = get(deviceList);
   if (curlist.length > 0)
@@ -178,18 +154,15 @@ function notify_check()
     let tstamp = curTimeSecs();
     for (const device of curlist)
     {
-      //console.log(`Checking: ${device.curname}`);
+      //console.log(`Device Check: "${device.curname}""`);
   
-      // if device hasn't failed already and hasn't sent
-      // a notification recently, mark as not present
-      if (!device.failed &&
-         ((device.tstamp + SECS_NOTIFY_TIMEOUT) < tstamp))
+      if (!device.ignore &&
+         ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
       {
-        console.warn(`Device lost: ${device.curname}`);
+        console.warn(`Device Lost: "${device.curname}"`);
 
-        // if device is currently being controlled,
-        // return to the device discovery page
-        if (device.active) deviceStop();
+        if (device.dstate === DSTATE_ACTIVE)
+          deviceReset();
       }
       else newlist.push(device);
     }
@@ -197,21 +170,21 @@ function notify_check()
     deviceList.set(newlist);
   }
 
-  timer_notify = setTimeout(notify_check, (1000 * SECS_NOTIFY_TIMEOUT));
+  timeObj = setTimeout(checkTimeout, (1000 * SECS_RESPONSE_TIMEOUT));
 }
 
+// if lose connection, clear devices
 export const onConnection = (enabled) =>
 {
-  if (enabled) notify_check();
+  if (enabled) checkTimeout();
   else
   {
-    if (timer_notify)
+    if (timeObj)
     {
-      clearTimeout(timer_notify);
-      timer_notify = 0;
+      clearTimeout(timeObj);
+      timeObj = 0;
     } 
 
-    deviceStop();
     deviceList.set([]);
   }
 
@@ -223,49 +196,48 @@ export const onNotification = (msg, fsend) =>
   const info = msg.split(',');
   const name = info[0];
 
-  //console.log(`Device="${name}" IP=${info[1]}`);
+  //console.log(`Device Notify: "${name}" IP=${info[1]}`);
 
   for (const device of get(deviceList))
   {
+    if (device.ignore) continue;
+
     if (device.curname === name)
     {
-      if (!device.failed) device.tstamp = curTimeSecs();
+      if (device.dstate == DSTATE_DO_QUERY)
+        deviceQuery(device);
 
+      else device.tstamp = curTimeSecs();
       return; // don't add this device
     }
     else if (device.newname === name)
     {
-      console.log(`Renaming device: "${name}"`);
+      console.log(`Device Rename: "${name}"`);
 
       device.curname = name;
       device.newname = '';
-      device.tstamp = curTimeSecs();
 
+      device.tstamp = curTimeSecs();
       return; // don't add this device
     }
   }
 
-  console.log(`Adding device: "${name}"`);
+  console.log(`Device Add: "${name}"`);
 
   let device = {...deviceState};
   device.curname = name;
-  device.tstamp = curTimeSecs();
+  device.fsend = fsend;
   get(deviceList).push(device);
 
-  deviceList.set(get(deviceList)); // trigger UI update
+  deviceQuery(device);
 
-  deviceQueryBegin(device, fsend);
+  // triggers update to UI - MUST HAVE THIS
+  deviceList.set(get(deviceList));
 }
 
-export const onDeviceReply = (msg, fsend) =>
+export const onDeviceReply = (msg) =>
 {
-  //console.log(`Device reply: ${msg}`)
-
-  if (timer_reply)
-  {
-    clearTimeout(timer_reply);
-    timer_reply = 0;
-  } 
+  //console.log(`Device Reply: ${msg}`)
 
   const reply = msg.split('\n');
   const name = reply[0];
@@ -275,7 +247,6 @@ export const onDeviceReply = (msg, fsend) =>
   const dlist = get(deviceList);
   for (const d of dlist)
   {
-    //console.log('device: ', d);
     if (d.curname === name)
     {
       device = d;
@@ -283,41 +254,81 @@ export const onDeviceReply = (msg, fsend) =>
     }
   }
 
-  if (reply[0] === respStr_Rebooted)
+  if (device !== null)
   {
-    console.log(`>> Received reboot from: ${name}`);
-    if ((device != null) && device.active)
+    if (device.ignore) return;
+
+    device.tstamp = curTimeSecs();
+
+    if (reply[0] === respStr_Rebooted)
     {
-      deviceStop();
-      msgTitle.set('Device Rebooted');
-      msgDesc.set('The device you were connected to just rebooted.');
-      deviceQueryBegin(device, fsend); // restart query process
+      console.log(`>> Device Reboot: "${name}"`);
+
+      let doquery = false;
+
+      if (device.dstate === DSTATE_ACTIVE)
+      {
+        // trigger error message title/text
+        msgDesc.set('The device you were connected to just rebooted.');
+        msgTitle.set('Device Rebooted');
+
+        deviceReset();
+        doquery = true;
+      }
+      else if (device.dstate === DSTATE_READY)
+        doquery = true;
+
+      if (doquery)
+      {
+        // set state to send new device query
+        device.dstate = DSTATE_DO_QUERY;
+        device.ready = false;
+      }
+      return;
     }
-    // else cannot interrupt query in progress
+    else if (device.dstate === DSTATE_WAIT_RESP)
+    {
+      if (reply[0] === respStr_StartInfo)
+      {
+        //console.log('Starting device info...');
+        device.dstate = DSTATE_WAIT_DATA;
+        device.dinfo = '';
+        return;
+      }
+    }
+    else if (device.dstate === DSTATE_WAIT_DATA)
+    {
+      if (reply[0] === respStr_FinishInfo)
+      {
+        //console.log('...Ending device info');
+        try
+        {
+          device.report = JSON.parse(device.dinfo);
+          device.dstate = DSTATE_READY;
+          device.ready = true;
+
+          console.log(`Device Ready: "${device.curname}"`)
+          console.log(device.report);
+        
+          // triggers update to UI - MUST HAVE THIS
+          deviceList.set(get(deviceList));
+        }
+        catch (e)
+        {
+          console.warn(`Device Fail: "${device.curname}" JSON=${device.dinfo}`);
+
+          if (++device.failcount > MAX_DEVICE_FAIL_COUNT)
+            device.ignore = true;
+        }
+      }
+      else
+      {
+        //console.log(`<< ${reply[0]}`);
+        device.dinfo += reply[0];
+      }
+      return;
+    }
   }
-  else if (device === null)
-  {
-    console.warn(`Ignoring reply from other device: ${name}`);
-  }
-  else if (device.ready)
-  {
-    console.warn(`Ignoring reply from current device: ${name}`);
-  }
-  else if (reply[0] === respStr_StartInfo)
-  {
-    console.log('Starting device info...');
-    device.dinfo = '';
-  }
-  else if (reply[0] === respStr_FinishInfo)
-  {
-    console.log('...Ending device info');
-    deviceStart(device);
-    console.log(device.dinfo);
-    console.log(JSON.parse(device.dinfo));
-  }
-  else
-  {
-    console.log(`<< ${reply[0]}`);
-    device.dinfo += reply[0];
-  }
+
+  console.warn(`>> Device Ignore: "${name}" reply=${reply[0]}`);
 }

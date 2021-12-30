@@ -65,7 +65,7 @@ function onMessage(message)
       break;
 
     case topicDevReply:
-      onDeviceReply(msg, mqttSend);
+      onDeviceReply(msg);
       break;
   }
 }

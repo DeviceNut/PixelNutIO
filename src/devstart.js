@@ -55,6 +55,8 @@ export let deviceStartup = (device) =>
 {
   console.log(`Connecting to: "${device.curname}"...`);
 
+  device.active = true; // now being actively controlled
+
   // create draw/filter effect lists with device specific items
 
   let items_draw = [];
@@ -75,18 +77,18 @@ export let deviceStartup = (device) =>
     descs_filter.push( preset_FilterEffectDescs[i] );
   }
 
-  for (let i = 0; i < device.effects_items.length; ++i)
+  for (let i = 0; i < device.report.plugins.length; ++i)
   {
-    let bvalue = device.effects_items[i].bits;
+    let bvalue = parseInt(device.report.plugins[i].bits, 16);
     if (bvalue & pluginBit_REDRAW)
     {
-      items_draw.push( device.effects_items[i] );
-      descs_draw.push( device.effects_descs[i] );
+      items_draw.push( device.report.plugins[i] );
+      descs_draw.push( device.report.plugins[i].desc );
     }
     else
     {
-      items_filter.push( device.effects_items[i] );
-      descs_filter.push( device.effects_descs[i] );
+      items_filter.push( device.report.plugins[i] );
+      descs_filter.push( device.report.plugins[i].desc );
     }
   }
 
@@ -150,7 +152,7 @@ export let deviceStartup = (device) =>
 
   let items = [];
 
-  const patlen = device.patterns_items.length;
+  const patlen = device.report.patterns.length;
   if (patlen > 0)
   {
     let pcmds = [];
@@ -158,9 +160,9 @@ export let deviceStartup = (device) =>
   
     for (let i = 0; i < patlen; ++i)
     {
-      items.push( device.patterns_items[i] );
-      pcmds.push( device.patterns_pcmds[i] );
-      descs.push( device.patterns_descs[i] );
+      items.push( device.report.patterns[i] );
+      pcmds.push( device.report.patterns[i].pcmd );
+      descs.push( device.report.patterns[i].desc );
     }
 
     aDevicePatt.set(pcmds);

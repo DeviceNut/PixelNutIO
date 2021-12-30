@@ -19,12 +19,10 @@ const respStr_StartInfo   = "?<"        // indicates start of device info
 const respStr_FinishInfo  = ">?"        // indicates end of device info
 
                                         // device states:
-const DSTATE_NONE         = 0;          //  invalid state
-const DSTATE_DO_QUERY     = 1;          //  query on next notify
-const DSTATE_WAIT_RESP    = 2;          //  waiting for response
-const DSTATE_WAIT_DATA    = 3;          //  waiting for more data
-const DSTATE_READY        = 4;          //  ready for control
-const DSTATE_ACTIVE       = 5;          //  being controlled
+const QSTATE_NONE         = 0;          //  not querying device now
+const QSTATE_RESTART      = 1;          //  restart query on next notify
+const QSTATE_WAIT_RESP    = 2;          //  waiting for response
+const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
 /*
 // format of each custom device pattern object:
@@ -35,12 +33,12 @@ const DSTATE_ACTIVE       = 5;          //  being controlled
   desc: []              // pattern description array
 }
 
-// format of each custom device effect object:
+// format of each custom device plugin object:
 {
-  id: 0,                // global unique effect ID
+  id: 0,                // global unique plugin ID
   bits: 0x00,           // pluginBit_ values
-  text: '',             // user name for effect
-  desc: ''              // effect description
+  text: '',             // user name for plugin
+  desc: ''              // plugin description
 }
 
 // format of each device strand info object:
@@ -72,7 +70,7 @@ const DSTATE_ACTIVE       = 5;          //  being controlled
 
   strands: [],          // list of strand info
   patterns: [],         // list of pattern info
-  effects: [],          // list of effect info
+  plugins: [],          // list of plugin info
 }
 */
 
@@ -82,13 +80,14 @@ export const deviceState =
   curname: '',          // used as topic to talk to device
   newname: '',          // used when renaming the device
 
-  dstate: DSTATE_NONE,  // current state of this device
+  tstamp: 0,            // secs of last notify/response
+  qstate: QSTATE_NONE,  // query state of this device
+
   failcount: 0,         // number of protocol failures
   ignore: false,        // true to ignore this device
-  ready: false,         // true to stop spinner on UI
 
-  tstamp: 0,            // timestamp of last notify/response
-  fsend: null,          // function to send message to device
+  ready: false,         // true to stop spinner on UI
+  active: false,        // true after user selected
 
   dinfo: {},            // holds raw JSON device output
   report: {}            // parsed device info object
@@ -112,7 +111,8 @@ export let deviceError = (text, title=null) =>
   deviceReset();
 
   // set state to send new device query
-  device.dstate = DSTATE_DO_QUERY;
+  device.qstate = QSTATE_RESTART;
+  device.active = false;
   device.ready = false;
 }
 
@@ -132,14 +132,14 @@ function deviceReset()
   }
 }
 
-function deviceQuery(device)
+function deviceQuery(device, fsend)
 {
   console.log(`Device Query: "${device.curname}"`)
 
-  device.dstate = DSTATE_WAIT_RESP;
+  device.qstate = QSTATE_WAIT_RESP;
   device.tstamp = curTimeSecs();
 
-  device.fsend(device.curname, queryStr_GetInfo);
+  fsend(device.curname, queryStr_GetInfo);
 }
 
 // create timer for receiving a connection notification
@@ -161,8 +161,14 @@ function checkTimeout()
       {
         console.warn(`Device Lost: "${device.curname}"`);
 
-        if (device.dstate === DSTATE_ACTIVE)
+        if (device.active)
+        {
+          // trigger error message title/text
+          msgDesc.set('The device you were using just disconnected.');
+          msgTitle.set('Device Disconnect');
+
           deviceReset();
+        }
       }
       else newlist.push(device);
     }
@@ -202,12 +208,13 @@ export const onNotification = (msg, fsend) =>
   {
     if (device.ignore) continue;
 
+    device.tstamp = curTimeSecs();
+
     if (device.curname === name)
     {
-      if (device.dstate == DSTATE_DO_QUERY)
-        deviceQuery(device);
+      if (device.qstate == QSTATE_RESTART)
+        deviceQuery(device, fsend);
 
-      else device.tstamp = curTimeSecs();
       return; // don't add this device
     }
     else if (device.newname === name)
@@ -217,7 +224,6 @@ export const onNotification = (msg, fsend) =>
       device.curname = name;
       device.newname = '';
 
-      device.tstamp = curTimeSecs();
       return; // don't add this device
     }
   }
@@ -226,10 +232,9 @@ export const onNotification = (msg, fsend) =>
 
   let device = {...deviceState};
   device.curname = name;
-  device.fsend = fsend;
   get(deviceList).push(device);
 
-  deviceQuery(device);
+  deviceQuery(device, fsend);
 
   // triggers update to UI - MUST HAVE THIS
   deviceList.set(get(deviceList));
@@ -264,39 +269,32 @@ export const onDeviceReply = (msg) =>
     {
       console.log(`>> Device Reboot: "${name}"`);
 
-      let doquery = false;
-
-      if (device.dstate === DSTATE_ACTIVE)
+      if (device.active)
       {
         // trigger error message title/text
-        msgDesc.set('The device you were connected to just rebooted.');
-        msgTitle.set('Device Rebooted');
+        msgDesc.set('The device you were using just restarted.');
+        msgTitle.set('Device Restart');
 
         deviceReset();
-        doquery = true;
       }
-      else if (device.dstate === DSTATE_READY)
-        doquery = true;
-
-      if (doquery)
+      else if (device.ready)
       {
-        // set state to send new device query
-        device.dstate = DSTATE_DO_QUERY;
         device.ready = false;
+        device.qstate = QSTATE_RESTART;
       }
       return;
     }
-    else if (device.dstate === DSTATE_WAIT_RESP)
+    else if (device.qstate === QSTATE_WAIT_RESP)
     {
       if (reply[0] === respStr_StartInfo)
       {
         //console.log('Starting device info...');
-        device.dstate = DSTATE_WAIT_DATA;
+        device.qstate = QSTATE_WAIT_DATA;
         device.dinfo = '';
         return;
       }
     }
-    else if (device.dstate === DSTATE_WAIT_DATA)
+    else if (device.qstate === QSTATE_WAIT_DATA)
     {
       if (reply[0] === respStr_FinishInfo)
       {
@@ -304,7 +302,7 @@ export const onDeviceReply = (msg) =>
         try
         {
           device.report = JSON.parse(device.dinfo);
-          device.dstate = DSTATE_READY;
+          device.qstate = QSTATE_NONE;
           device.ready = true;
 
           console.log(`Device Ready: "${device.curname}"`)

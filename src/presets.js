@@ -11,30 +11,28 @@ export const preset_MenuItems =
     { id: 8,  text: 'Scanner Mix',        },
     { id: 9,  text: 'Ferris Wheel',       },
     { id: 10, text: 'Expanding Noise',    },
-    { id: 11, text: 'Crazy Blinks',       },
-    { id: 12, text: 'Blink Surges',       },
-    { id: 13, text: 'Bright Swells',      },
-    { id: 14, text: 'Color Melts',        },
-    { id: 15, text: 'July 4th',           },
-    { id: 16, text: 'Holiday',            },
-    { id: 17, text: 'MashUp',             },
+    { id: 11, text: 'Blink Surges',       },
+    { id: 12, text: 'Bright Swells',      },
+    { id: 13, text: 'Color Melts',        },
+    { id: 14, text: 'July 4th',           },
+    { id: 15, text: 'Holiday',            },
+    { id: 16, text: 'MashUp',             },
   ];
 
   export const preset_PatStrs =
   [
-    'E2 D20 T E101 F1000 I T',
-    'E1 D20 F1 I T E101 F1000 I T',
-    'E10 D60 T E101 T E120 F250 I T',
-    'E0 B50 D10 H163 W20 Q3 T E142 F250 I E50 B80 D10 W80 T',
+    'E2 D20 T E101 F255 I T',
+    'E1 D20 F1 I T E101 F255 I T',
+    'E10 D60 T E101 T E120 F64 I T',
+    'E0 B50 D10 H163 W20 Q3 T E142 F65 I E50 B80 D10 W80 T',
     'E50 B65 D10 H35 W80 Q3 T E20 B90 D30 C25 G R O3 N6 E20 B90 D30 H28 C45 U G I T E120 F1 I',
-    'E20 D30 W25 C25 Q7 I T E101 F100 T E20 D20 W25 C25 Q7 U I T E101 F200 T',
-    'E40 D20 C25 Q4 T E111 A0 E40 D30 H192 C5 Q1 I E131 F1000 R O15 N5',
+    'E20 D30 W25 C25 Q7 I T E101 F25 T E20 D20 W25 C25 Q7 U I T E101 F50 T',
+    'E40 D20 C25 Q4 T E111 A0 E40 D30 H192 C5 Q1 I E131 F255 R O15 N5',
     'E30 D60 C20 Q7 T E160 I E111 F R O3 N7 T',
-    'E52 D60 W35 C25 Q3 T E150 I E120 I', // FIXME?
-    'E51 D60 C10 Q4 T E112 T E131 F1 I T',
-    'E51 D60 C10 T E112 T E131 F1000 I T',
-    'E0 B80 D10 Q3 T E111 F R10 O10 E142 F250 I T',
-    'E0 D30 H21 T E110 F600 I T E111 A1',
+    'E52 D60 W35 C25 Q3 T E150 I E120 I',
+    'E51 D60 C10 Q4 T E112 T E131 F255 I T',
+    'E0 B80 D10 Q3 T E111 F R10 O10 E142 F65 I T',
+    'E0 D30 H21 T E110 F150 I T E111 A1',
     'E50 K33 B65 D10 H252 C100 T E50 J34 K33 B65 D10 W100 C100 T E50 J67 K34 D10 H163 C100 T',
     'E50 B60 D10 H0 T E50 B70 D15 H89 T E20 V B90 D30 H192 W80 C25 Q2 G I R20 O10',
     'E50 B65 D10 H71 W30 Q1 V T E40 D50 H192 C10 T E20 D15 C20 H0 G A1 I T',
@@ -88,12 +86,8 @@ export const preset_PatDescs =
       "made at once. Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
     ],
     [
-      "Random colored blinking that periodically surge in the rate of blinking. " +
-      "Triggering changes the frequency of the blinking, with larger Forces causing faster blinking surges."
-    ],
-    [
-      "All pixels swell up and down in brightness, with random color hue and whiteness changes, or set with the Hue and White properties. " +
-      "Triggering changes the pace of the swelling, with larger Forces causing faster swelling."
+      "All pixels swell up and down in brightness, with random color hue and whiteness changes every 10 seconds, or set with the " +
+      "Hue and White properties. Triggering changes the pace of the swelling, with larger Forces causing faster swelling."
     ],
     [
       "Colors melt from one to the other, with slow and smooth transitions. " +

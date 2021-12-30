@@ -9,8 +9,8 @@
 
   import ModalLinks from './ModalLinks.svelte';
 
-  let openlinks = false;
-  const dolinks = () => { openlinks = !openlinks; }
+  let openOptions = false;
+  const doshow = () => { openOptions = !openOptions; }
 
   const dodocs = () =>
   {
@@ -22,8 +22,8 @@
 
 <div class="header">
   <button class="button-left"
-    on:click={dolinks}
-    >Links
+    on:click={doshow}
+    >Options
   </button>
   <span class="title">{titleDevices}</span>
   <button class="button-rite"
@@ -32,7 +32,7 @@
   </button>
 </div>
 
-<ModalLinks {openlinks} />
+<ModalLinks {openOptions} />
 
 <style>
   .header {

@@ -2,14 +2,14 @@
 
   import { Modal } from "carbon-components-svelte";
 
-  export let openlinks = false;
+  export let openOptions = false;
 
 </script>
 
 <Modal
   passiveModal
   modalHeading={"Links to the website and code:"}
-  bind:open={openlinks}
+  bind:open={openOptions}
   on:close
   >
   <p>Visit the PixelNut! website <a target="_blank" href="https://www.devicenut.com/pixelnut">here</a>.</p>

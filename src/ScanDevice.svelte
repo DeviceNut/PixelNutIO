@@ -33,8 +33,8 @@
     </div>
     {#if (device.report.nplugins > 0 || device.report.npatterns > 0)}
       <div>
-        <span class="infotext1">Custom Effects={device.report.nplugins}</span>
         <span class="infotext1">Custom Patterns={device.report.npatterns}</span>
+        <span class="infotext1">Custom Effects={device.report.nplugins}</span>
       </div>
     {/if}
     {#each device.report.strands as strand,i }

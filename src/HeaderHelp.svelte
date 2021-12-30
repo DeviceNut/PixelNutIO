@@ -15,8 +15,8 @@
   let prevPage;
   $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
 
-  let openlinks = false;
-  const dolinks = () => { openlinks = !openlinks; }
+  let openOptions = false;
+  const doshow = () => { openOptions = !openOptions; }
 
   const goback = () => { $curPageMode = $prevPageMode; }
 
@@ -28,14 +28,14 @@
     <Menu32 style="float:left; margin-left:10px;"/>
   </span>
 
-  <button on:click={dolinks} class="button-left" >Links</button>
+  <button on:click={doshow} class="button-left" >Options</button>
 
   <span class="title">{titleHelpDocs}</span>
 
   <button on:click={goback}  class="button-rite" >{prevPage} &gt;&gt;</button>
 </div>
 
-<ModalLinks {openlinks} />
+<ModalLinks {openOptions} />
 
 <style>
   .header {

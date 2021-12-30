@@ -40,8 +40,8 @@
   $: textPause = (isPaused ? 'Resume' : 'Pause');
   const dopause = () => { userSendPause(isPaused = !isPaused); }
 
-  let openlinks = false;
-  const dolinks = () => { openlinks = !openlinks; }
+  let openOptions = false;
+  const doshow = () => { openOptions = !openOptions; }
 
   const dodevs = () =>
   {
@@ -79,8 +79,8 @@
       </button>
 
       <button class="button center"
-        on:click={dolinks}
-        >Links
+        on:click={doshow}
+        >Options
       </button>
 
       <button class="button center"
@@ -119,7 +119,7 @@
       </button>
 
       <button class="button rite"
-        on:click={dolinks}
+        on:click={doshow}
         >Links
       </button>
 
@@ -127,7 +127,7 @@
   {/if}
 </MediaQuery>
 
-<ModalLinks {openlinks} />
+<ModalLinks {openOptions} />
 
 <Modal
   passiveModal
@@ -168,17 +168,17 @@
   }
   .button.left {
     float: left;
-    margin-left: 10px;
+    margin-left: 8px;
   }
   .button.rite {
     float: right;
-    margin-right: 10px;
+    margin-right: 8px;
   }
   .button.fixwidth {
-    width: 70px;
+    width: 63px;
   }
   .button.paused {
-    border: 2px solid var(--color-border-paused);
+    border: 1px solid var(--color-border-paused);
     background-color: var(--bg-color-button-select);
   }
 </style>

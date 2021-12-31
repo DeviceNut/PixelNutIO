@@ -34,7 +34,12 @@ import {
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
-import { menuDevice, menuCreate } from './menu.js';
+
+import {
+  MENUID_DEVICE,
+  menuDevice,
+  menuCreate
+} from './menu.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -55,7 +60,9 @@ export let deviceStartup = (device) =>
 {
   console.log(`Connecting to: "${device.curname}"...`);
 
-  device.active = true; // now being actively controlled
+  // now being actively controlled
+  device.active = true;
+  curDevice.set(device);
 
   // create draw/filter effect lists with device specific items
 
@@ -79,15 +86,20 @@ export let deviceStartup = (device) =>
 
   for (let i = 0; i < device.report.plugins.length; ++i)
   {
+    const item = { id:  device.report.plugins[i].id,
+                  bits: device.report.plugins[i].bits,
+                  text: device.report.plugins[i].name };
+
     let bvalue = parseInt(device.report.plugins[i].bits, 16);
+    console.log(`pluginbits=${bvalue.toString(16)}`);
     if (bvalue & pluginBit_REDRAW)
     {
-      items_draw.push( device.report.plugins[i] );
+      items_draw.push( item );
       descs_draw.push( device.report.plugins[i].desc );
     }
     else
     {
-      items_filter.push( device.report.plugins[i] );
+      items_filter.push( item );
       descs_filter.push( device.report.plugins[i].desc );
     }
   }
@@ -160,7 +172,13 @@ export let deviceStartup = (device) =>
   
     for (let i = 0; i < patlen; ++i)
     {
-      items.push( device.report.patterns[i] );
+      const item =
+      {
+        id:MENUID_DEVICE + i + 1,
+        text: device.report.patterns[i].name
+      };
+
+      items.push( item );
       pcmds.push( device.report.patterns[i].pcmd );
       descs.push( device.report.patterns[i].desc );
     }
@@ -217,9 +235,6 @@ export let deviceStartup = (device) =>
   // reset to use first strand
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
-
-  device.active = true;
-  curDevice.set(device);
 
   curPageMode.set(PAGEMODE_CONTROLS);
 }

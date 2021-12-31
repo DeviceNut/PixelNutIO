@@ -99,7 +99,8 @@ export const sendStrandPattern = (cmdstr=null) =>
 // to all selected strands
 export const sendStrandCmd = (cmdstr, cmdval) =>
 {
-  if (cmdval) cmdstr = cmdstr.concat(cmdval);
+  if (cmdval !== undefined)
+    cmdstr = cmdstr.concat(cmdval);
 
   sendStrandPattern(cmdstr);
 }

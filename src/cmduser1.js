@@ -79,7 +79,7 @@ export const resetEffectBits = (track, props, bits) =>
     sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
 
   if (bits & pluginBit_ORIDE_DIR)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards ? 1 : undefined);
 
   if (bits & pluginBit_ORIDE_EXT)
   {
@@ -95,14 +95,16 @@ export const userSetEffect = (track, layer) =>
   const player = strand.tracks[track].layers[layer];
   const pshadow = get(dStrands)[get(idStrand)].tracks[track].layers[layer];
 
-  //console.log(`seteffect: track=${track} layer=${layer} index: old=${pshadow.pluginObj.index} new=${player.pluginObj.index}`);
+  console.log(`seteffect: track=${track} layer=${layer} index: old=${pshadow.pluginObj.index} new=${player.pluginObj.index}`);
 
   if (pshadow.pluginObj.index !== player.pluginObj.index)
   {
     const pobj = findEffectFromIndex(player.pluginObj.filter, player.pluginObj.index);
     const before = player.pluginObj.bits;
     const after = pobj.bits;
+    console.log(`newbits=${before.toString(16)}`);
     player.pluginObj = pobj;
+    console.log(pobj);
     pshadow.pluginObj = {...pobj};
 
     updateTriggerLayers();

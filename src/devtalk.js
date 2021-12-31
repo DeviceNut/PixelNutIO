@@ -27,18 +27,17 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 /*
 // format of each custom device pattern object:
 {
-  id: 0,                // index into this list
-  text: '',             // user name of pattern
-  pcmd: '',             // pattern command string
-  desc: []              // pattern description array
+  name: '',             // user name for pattern
+  desc: '',             // description string
+  pcmd: ''              // command string
 }
 
 // format of each custom device plugin object:
 {
-  id: 0,                // global unique plugin ID
+  name: '',             // user name for plugin
+  desc: ''              // description string
   bits: 0x00,           // pluginBit_ values
-  text: '',             // user name for plugin
-  desc: ''              // plugin description
+  id: 0,                // globally unique ID
 }
 
 // format of each device strand info object:
@@ -137,7 +136,6 @@ function deviceQuery(device, fsend)
   console.log(`Device Query: "${device.curname}"`)
 
   device.qstate = QSTATE_WAIT_RESP;
-  device.tstamp = curTimeSecs();
 
   fsend(device.curname, queryStr_GetInfo);
 }
@@ -206,13 +204,13 @@ export const onNotification = (msg, fsend) =>
 
   for (const device of get(deviceList))
   {
-    if (device.ignore) continue;
+    if (device.ignore) return; // don't add
 
     device.tstamp = curTimeSecs();
 
     if (device.curname === name)
     {
-      if (device.qstate == QSTATE_RESTART)
+      if (device.qstate === QSTATE_RESTART)
         deviceQuery(device, fsend);
 
       return; // don't add this device
@@ -307,17 +305,21 @@ export const onDeviceReply = (msg) =>
 
           console.log(`Device Ready: "${device.curname}"`)
           console.log(device.report);
-        
-          // triggers update to UI - MUST HAVE THIS
-          deviceList.set(get(deviceList));
         }
         catch (e)
         {
-          console.warn(`Device Fail: "${device.curname}" JSON=${device.dinfo}`);
+          console.warn(`Device Error: "${device.curname}" JSON=${device.dinfo}`);
 
-          if (++device.failcount > MAX_DEVICE_FAIL_COUNT)
+          if (++device.failcount >= MAX_DEVICE_FAIL_COUNT)
+          {
+            console.error(`Device Failed: "${device.curname}"`);
             device.ignore = true;
+          }
+          else device.qstate = QSTATE_RESTART;
         }
+        
+        // triggers update to UI - MUST HAVE THIS
+        deviceList.set(get(deviceList));
       }
       else
       {

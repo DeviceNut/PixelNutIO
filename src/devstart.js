@@ -86,12 +86,11 @@ export let deviceStartup = (device) =>
 
   for (let i = 0; i < device.report.plugins.length; ++i)
   {
+    let bvalue = parseInt(device.report.plugins[i].bits, 16);
     const item = { id:  device.report.plugins[i].id,
-                  bits: device.report.plugins[i].bits,
+                  bits: bvalue,
                   text: device.report.plugins[i].name };
 
-    let bvalue = parseInt(device.report.plugins[i].bits, 16);
-    console.log(`pluginbits=${bvalue.toString(16)}`);
     if (bvalue & pluginBit_REDRAW)
     {
       items_draw.push( item );

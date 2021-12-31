@@ -118,7 +118,6 @@ export const parsePattern = (pattern) =>
           if (!firstone)
           {
             makeLayerCmdStr(track, layer);
-            
             get(pStrand).tracks[track].trackBits = trackbits;
           }
 
@@ -371,7 +370,10 @@ export const parsePattern = (pattern) =>
 
   // make sure to finish last layer
   if ((track >= 0) && (layer >= 0))
+  {
     makeLayerCmdStr(track, layer);
+    get(pStrand).tracks[track].trackBits = trackbits;
+  }
 
   // must create trigger source list,
   makeTrigSourceList();

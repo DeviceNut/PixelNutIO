@@ -237,7 +237,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   }
 
   let obj = findEffectFromPlugin(effect);
-  strand.tracks[track].trackBits = obj.bits
+  strand.tracks[track].trackBits |= obj.bits;
 
   strand.tracks[track].layers[layer].pluginObj = obj;
   get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = {...obj};

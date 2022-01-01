@@ -16,8 +16,9 @@ export const PAGEMODE_DEVICES       = 0;      // list of devices to connect to
 export const PAGEMODE_CONTROLS      = 1;      // controls for specific device
 export const PAGEMODE_HELPDOCS      = 2;      // controls help documentation
 
-export const MIN_TRACKS             = 4;      // minimum tracks for built-in patterns
-export const MIN_TRACK_LAYERS       = 4;      // minimum layers for each track
+export const MIN_TRACKS             = 4;      // minimum number of tracks
+export const MIN_LAYERS             = 4;      // minimum number of layers
+export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern length
 
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);

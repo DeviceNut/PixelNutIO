@@ -1,7 +1,9 @@
 import { get } from 'svelte/store';
 
 import {
-  MIN_TRACK_LAYERS,
+  MIN_TRACKS,
+  MIN_LAYERS,
+  MINLEN_MAXPATTERN,
   PAGEMODE_CONTROLS,
   curPageMode,
   curDevice,
@@ -19,10 +21,10 @@ import {
   aEffectsDraw,
   aEffDrawDesc,
   aEffectsFilter,
-  aEffFilterDesc  
+  aEffFilterDesc,
+  msgTitle,
+  msgDesc
 } from './globals.js';
-
-import { pluginBit_REDRAW } from './devcmds.js';
 
 import {
   preset_DrawEffectItems,
@@ -31,17 +33,26 @@ import {
   preset_FilterEffectDescs
 } from './presets.js';
 
+import { pluginBit_REDRAW } from './devcmds.js';
+import { deviceError } from './devtalk.js';
+
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
 
 import {
+  MENUID_CUSTOM,
   MENUID_DEVICE,
   menuDevice,
   menuCreate
 } from './menu.js';
 
 ///////////////////////////////////////////////////////////
+
+function devInfoErr(msg)
+{
+  deviceError(msg, 'Device Error');
+}
 
 function setStrandTop(strand, dvals)
 {
@@ -58,7 +69,7 @@ function setStrandTop(strand, dvals)
 
 export let deviceStartup = (device) =>
 {
-  console.log(`Connecting to: "${device.curname}"...`);
+  //console.log(`Connecting to: "${device.curname}"...`);
 
   // now being actively controlled
   device.active = true;
@@ -111,19 +122,25 @@ export let deviceStartup = (device) =>
 
   // create strand lists for this specific device
 
-  let numstrands = device.report.strands.length; // TODO: error if 0
+  let numstrands = device.report.strands.length;
+  if (numstrands <= 0)
+    return devInfoErr(`No strands found: ${numstrands}`);
 
   let numtracks = device.report.numtracks;
   let numlayers = device.report.numlayers;
   let tracklayers = numlayers / numtracks;
 
-  maxLenPattern.set(device.report.maxstrlen);
+  let maxstrlen = device.report.maxstrlen;
+  maxLenPattern.set(maxstrlen);
 
-  if (tracklayers < MIN_TRACK_LAYERS)
-  {
-    tracklayers = MIN_TRACK_LAYERS;
-    numtracks = numlayers / tracklayers;
-  }
+  if (maxstrlen < MINLEN_MAXPATTERN)
+    return devInfoErr(`Must support longer patterns: ${maxstrlen} < ${MINLEN_MAXPATTERN}`);
+
+  if (numtracks < MIN_TRACKS)
+    return devInfoErr(`Too few tracks: ${numtracks} < ${MIN_TRACKS}`);
+
+  if (tracklayers < MIN_LAYERS)
+    return devInfoErr(`Too few layers: ${tracklayers} < ${MIN_LAYERS}`);
 
   nStrands.set(numstrands);
   nTracks.set(numtracks);
@@ -186,6 +203,8 @@ export let deviceStartup = (device) =>
     aDeviceDesc.set(descs);
   }
 
+  // setup each strand with its pattern
+
   for (let s = 0; s < numstrands; ++s)
   {
     idStrand.set(s);
@@ -195,45 +214,36 @@ export let deviceStartup = (device) =>
     let cmdname = device.report.strands[s].patname;
     let cmdstr = device.report.strands[s].patstr;
 
-    if (parsePattern(cmdstr))
+    if (0)//parsePattern(cmdstr))
     {
       makeEntireCmdStr();
 
       strand.curPatternName = cmdname;
       strand.curPatternCmd = cmdstr;
-      // TODO what about ID etc.
+
     }
     else
     {
+      // trigger error message title/text
+      msgDesc.set(`For strand #${s}: ${cmdstr}`);
+      msgTitle.set('Device Pattern Unregonized');
 
+      strand.curPatternId   = MENUID_CUSTOM;
+      strand.curPatternName = '';
+      strand.curPatternCmd  = '';
+      strand.curPatternDesc = '';
     }
-
-    /*
-    if (cmdstr != '')
-    {
-      if (cmdname == '') cmdname = 'Now Playing'
-      console.log(`${cmdname}: "${cmdstr}"`);
-
-      const devlen = get(aDevicePats).length;
-      const obj = { id:devlen, text:cmdname, cmd:cmdstr };
-      const desc = `This is what\'s currently playing on strand ${s}.`;
-
-      get(aDevicePats).push(obj);
-      get(aDeviceDesc).push([desc]);
-
-      strand.curPatternIdx = get(aDevicePats).length-1;
-    }
-
-    get(dStrands)[s].curPatternIdx = strand.curPatternIdx;
-    */
   }
 
-  menuDevice.children = items;
-  menuCreate();
-
-  // reset to use first strand
-  idStrand.set(0);
-  pStrand.set(get(aStrands)[0]);
-
-  curPageMode.set(PAGEMODE_CONTROLS);
+  if (get(curDevice) !== null)
+  {
+    menuDevice.children = items;
+    menuCreate();
+  
+    // reset to use first strand
+    idStrand.set(0);
+    pStrand.set(get(aStrands)[0]);
+  
+    curPageMode.set(PAGEMODE_CONTROLS);
+  }
 }

@@ -9,7 +9,7 @@ import {
   deviceList,
   isConnected,
   msgTitle,
-  msgDesc  
+  msgDesc
  } from './globals.js';
 
  // Device Query/Responses:
@@ -108,11 +108,6 @@ export let deviceError = (text, title=null) =>
   msgTitle.set(title);
 
   deviceReset();
-
-  // set state to send new device query
-  device.qstate = QSTATE_RESTART;
-  device.active = false;
-  device.ready = false;
 }
 
 // reset currently active device and return to the discovery page
@@ -121,10 +116,11 @@ function deviceReset()
   let device = get(curDevice);
   if (device !== null)
   {
-    if (get(curPageMode) !== PAGEMODE_DEVICES)
-      curPageMode.set(PAGEMODE_DEVICES);
+    device.active = false;
 
     curDevice.set(null);
+    if (get(curPageMode) !== PAGEMODE_DEVICES)
+      curPageMode.set(PAGEMODE_DEVICES);
 
     // triggers update to UI - MUST HAVE THIS
     deviceList.set(get(deviceList));
@@ -265,7 +261,7 @@ export const onDeviceReply = (msg) =>
 
     if (reply[0] === respStr_Rebooted)
     {
-      console.log(`>> Device Reboot: "${name}"`);
+      console.log(`Device Reboot: "${name}"`);
 
       if (device.active)
       {
@@ -300,11 +296,13 @@ export const onDeviceReply = (msg) =>
         try
         {
           device.report = JSON.parse(device.dinfo);
+          device.dinfo = ''; // done with input string
+
           device.qstate = QSTATE_NONE;
           device.ready = true;
 
           console.log(`Device Ready: "${device.curname}"`)
-          console.log(device.report);
+          //console.log(device.report);
         }
         catch (e)
         {

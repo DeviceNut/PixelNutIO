@@ -129,7 +129,7 @@ export const makeEntireCmdStr = () =>
   get(pStrand).triggerUsed   = trigused;
 
   if (cmdstr.length > get(maxLenPattern))
-    deviceError('Exceeded max pattern length');
+    deviceError(`Exceeded max pattern length=${get(maxLenPattern)}`);
 
   //console.log(`oridebits=${ridebits.toString(16)}`);
   //console.log(`splugbits=${splugbits.toString(16)}`);

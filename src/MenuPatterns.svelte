@@ -149,7 +149,8 @@ import {
 
 <div style="padding-top:10px; margin-left:10px;"></div>
 <p style="font-size:.98em;">Pattern Description:</p>
-<p style="margin-top:2px; padding:5px; font-size:.95em;
+<p style="font-size:.95em;
+          margin-top:2px; padding:5px;
           color: var(--color-textbox);
           background-color: var(--bg-color-textbox);">
   {$pStrand.curPatternDesc}</p>

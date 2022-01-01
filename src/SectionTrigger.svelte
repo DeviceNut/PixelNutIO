@@ -123,7 +123,7 @@
   {/if}
 
   {#if ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_TRIGFORCE) &&
-        ($pStrand.tracks[track].layers[layer].trigAtStart ||
+       ($pStrand.tracks[track].layers[layer].trigAtStart ||
         $pStrand.tracks[track].layers[layer].trigDoRepeat) }
 
     <p style="margin-top:15px; font-size:.9em;">

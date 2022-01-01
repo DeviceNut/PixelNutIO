@@ -190,7 +190,7 @@ export const userSetPattern = (pattern) =>
     // triggers update to UI - MUST HAVE THIS
     pStrand.set(get(pStrand));
   }
-  else deviceError(`Failed parsing pattern: ${name}`);
+  else deviceError(`Failed parsing pattern: ${pattern}`);
 }
 
 export const userClearPattern = () =>

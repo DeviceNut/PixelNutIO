@@ -21,7 +21,7 @@
     userSendPause
   } from './cmduser2.js';
 
-  import ModalLinks from './ModalLinks.svelte';
+  import UserOptions from './UserOptions.svelte';
 
   let openError = false;
   let devname = $curDevice.curname;
@@ -127,7 +127,7 @@
   {/if}
 </MediaQuery>
 
-<ModalLinks {openOptions} />
+<UserOptions {openOptions} />
 
 <Modal
   passiveModal

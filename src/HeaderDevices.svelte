@@ -7,7 +7,7 @@
     prevPageMode
   } from './globals.js';
 
-  import ModalLinks from './ModalLinks.svelte';
+  import UserOptions from './UserOptions.svelte';
 
   let openOptions = false;
   const doshow = () => { openOptions = !openOptions; }
@@ -32,7 +32,7 @@
   </button>
 </div>
 
-<ModalLinks {openOptions} />
+<UserOptions {openOptions} />
 
 <style>
   .header {

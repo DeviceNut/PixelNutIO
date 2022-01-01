@@ -10,7 +10,7 @@
     helpMenuOpen
   } from './globals.js';
 
-  import ModalLinks from './ModalLinks.svelte';
+  import UserOptions from './UserOptions.svelte';
 
   let prevPage;
   $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
@@ -35,7 +35,7 @@
   <button on:click={goback}  class="button-rite" >{prevPage} &gt;&gt;</button>
 </div>
 
-<ModalLinks {openOptions} />
+<UserOptions {openOptions} />
 
 <style>
   .header {

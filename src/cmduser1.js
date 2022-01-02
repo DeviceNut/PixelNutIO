@@ -1,7 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  idStrand,
   pStrand,
   findEffectFromIndex
 } from './globals.js';
@@ -169,23 +168,29 @@ export const userSetRotate = () =>
 
 export const userSetOverMode = () =>
 {
-  const oride = get(pStrand).doOverride;
+  const strand = get(pStrand);
+  const oride = strand.doOverride;
 
-  sendStrandCmd(cmdStr_SetOride, oride ? 1 : 0);
-  if (!oride) // must resend any props that were overriden
+  if (oride !== strand.doOrideSave)
   {
-    for (let i = 0; i < get(pStrand).tactives; ++i)
+    strand.doOrideSave = oride;
+    sendStrandCmd(cmdStr_SetOride, oride ? 1 : 0);
+
+    if (!oride) // must resend any props that were overriden
     {
-      let props = get(pStrand).tracks[i].drawProps;
+      for (let i = 0; i < get(pStrand).tactives; ++i)
+      {
+        let props = get(pStrand).tracks[i].drawProps;
 
-      if (props.overHue)
-        sendLayerCmd(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
+        if (props.overHue)
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
 
-      if (props.overWhite)
-        sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
+        if (props.overWhite)
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
 
-      if (props.overCount)
-        sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
+        if (props.overCount)
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
+      }
     }
   }
 }

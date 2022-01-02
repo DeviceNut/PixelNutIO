@@ -61,6 +61,7 @@ function setStrandTop(strand, dvals)
   strand.numPixels   = dvals.pixels;
 
   strand.doOverride  = dvals.xt_mode;
+  strand.doOrideSave = dvals.xt_mode;
   strand.degreeHue   = dvals.xt_hue;
   strand.pcentWhite  = dvals.xt_white;
   strand.pcentCount  = dvals.xt_count;

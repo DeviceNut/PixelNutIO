@@ -287,7 +287,6 @@ export const userSwapTrackLayer = (track, layer) =>
   updateAllTracks();
 }
 
-// Note: does NOT update shadow values FIXME?
 export const userSoloTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);
@@ -369,7 +368,6 @@ export const userSoloTrackLayer = (track, layer) =>
   makeEntireCmdStr();
 }
 
-// Note: does NOT update shadow values FIXME?
 export const userMuteTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);

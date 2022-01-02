@@ -42,25 +42,25 @@ const oneLayer =
   solo            : false,  // true if currently solo
   mute            : false,  // true if currently mute
 
-  trigAtStart     : true,   // *true to trigger effect at creation
-  trigFromMain    : false,  // *true if can trigger from main controls
+  trigAtStart     : true,   // true to trigger effect at creation
+  trigFromMain    : false,  // true if can trigger from main controls
 
   trigOnLayer     : false,  // true if can trigger from other layer:
-  trigSrcListDex  : 0,      //  *source list index currently selected (0=none)
+  trigSrcListDex  : 0,      //  source list index currently selected (0=none)
                             //  if the above is >0 (user has selected one):
   trigSrcLayerID  : 0,      //  uniqueID for that chosen source layer
   trigSrcLayerDex : 0,      //  device layer index for trigger source
                             //  (set by parser before source list created)
                             //  (must recalculate this when create pattern)
 
-  trigDoRepeat    : false,  // *true for auto-generated trigger:
-  trigForever     : false,  //   *false to select specific count
-  trigRepCount    : 1,      //   *number of times to trigger (from 1)
-  trigRepOffset   : 0,      //   *offset seconds before range (from 0)
-  trigRepRange    : 0,      //   *range of random seconds (from 0)
+  trigDoRepeat    : false,  // true for auto-generated trigger:
+  trigForever     : false,  //   false to select specific count
+  trigRepCount    : 1,      //   number of times to trigger (from 1)
+  trigRepOffset   : 0,      //   offset seconds before range (from 0)
+  trigRepRange    : 0,      //   range of random seconds (from 0)
 
-  forceRandom     : false,  // *true if a random force is applied when triggering
-  forceValue      : DEF_FORCE_VALUE, // *percent force to apply (if not random)
+  forceRandom     : false,  // true if a random force is applied when triggering
+  forceValue      : DEF_FORCE_VALUE, // percent force to apply (if not random)
 
   pluginObj       : {},     // object returned from findEffectFromPlugin()
                             //  that contains all info on an effect
@@ -74,21 +74,21 @@ const drawProps =
   pcentBright     : DEF_PCENT_BRIGHT, // percent brightness
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
-  overHue         : false,  // *true to allow global override
-  degreeHue       : DEF_HUE_VALUE, // *hue in degrees (0-MAX_DEGREES_HUE)
+  overHue         : false,  // true to allow global override
+  degreeHue       : DEF_HUE_VALUE, // hue in degrees (0-MAX_DEGREES_HUE)
 
-  overWhite       : false,  // *true to allow global override
-  pcentWhite      : 0,      // *percent whiteness
+  overWhite       : false,  // true to allow global override
+  pcentWhite      : 0,      // percent whiteness
 
-  overCount       : false,  // *true to allow global override
-  pcentCount      : 50,     // *percent of pixels affected in range
+  overCount       : false,  // true to allow global override
+  pcentCount      : 50,     // percent of pixels affected in range
                           
-  pcentXoffset    : 0,      // *percent of pixels for offset
-  pcentXlength    : 100,    // *percent of pixels to be drawn
+  pcentXoffset    : 0,      // percent of pixels for offset
+  pcentXlength    : 100,    // percent of pixels to be drawn
 
-  dirBackwards    : false,  // *backwards drawing direction (decreasing pixel index)
-  orPixelVals     : false,  // *whether pixels overwrites (false) or are OR'ed (true)
-  noRepeating     : false,  // *action does not repeat, else continuous
+  dirBackwards    : false,  // backwards drawing direction (decreasing pixel index)
+  orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
+  noRepeating     : false,  // action does not repeat, else continuous
 }
 
 const oneTrack =
@@ -119,14 +119,15 @@ const oneStrand =
   bitsEffects     : 0x00,   // OR'ed trackBits from all track layers
   triggerUsed     : false,  // true if effect(s) allow(s) main triggering
 
-  pcentBright     : 0,      // *percent bright
-  pcentDelay      : 0,      // *percent delay
-  pixelOffset     : 0,      // *pixel offset to start drawing from
+  pcentBright     : 0,      // percent bright
+  pcentDelay      : 0,      // percent delay
+  pixelOffset     : 0,      // pixel offset to start drawing from
 
-  doOverride      : false,  // *true to override local properties with:
-  degreeHue       : 0,      // *hue in degrees (0-MAX_DEGREES_HUE)
-  pcentWhite      : 0,      // *percent whiteness
-  pcentCount      : 0,      // *percent of pixels affected in range
+  doOverride      : false,  // true to override local properties with:
+  degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
+  pcentWhite      : 0,      // percent whiteness
+  pcentCount      : 0,      // percent of pixels affected in range
+  doOrideSave     : false,  // saves previous value (because checkbox)
 
   forceValue      : DEF_FORCE_VALUE, // force value for triggering
   numPixels       : 0,      // number of pixels in this strand
@@ -136,7 +137,6 @@ const oneStrand =
 
   trigSources     : [],     // list of trigger source layer info
 }
-// * shadow value used to test for actual user changes
 
 export const overBit_DegreeHue    = 1;      // overwrite degreeHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
@@ -210,6 +210,7 @@ export const strandCopyTop = () =>
         strand.pcentDelay     = ps.pcentDelay;
         strand.pixelOffset    = ps.pixelOffset;
         strand.doOverride     = ps.doOverride;
+        strand.doOrideSave    = ps.doOrideSave;
         strand.degreeHue      = ps.degreeHue;
         strand.pcentWhite     = ps.pcentWhite;
         strand.pcentCount     = ps.pcentCount;
@@ -224,9 +225,10 @@ export const strandCopyTop = () =>
 // to all the other currently selected strands
 export const strandCopyLayer = (track, layer) =>
 {
-  const sid = get(idStrand);
-  const props = get(pStrand).tracks[track].drawProps;
-  const player = get(pStrand).tracks[track].layers[layer];
+  const sid     = get(idStrand);
+  const strand  = get(pStrand);
+  const props   = strand.tracks[track].drawProps;
+  const player  = strand.tracks[track].layers[layer];
 
   for (let s = 0; s < get(nStrands); ++s)
   {
@@ -296,28 +298,23 @@ export const strandCopyAll = () =>
 {
   strandCopyTop();
   strandCopyTracks();
-  //console.log(get(aStrands));
 }
 
-// clears all main property values for the current strand to defaults
-export const strandClearTop = (strand) =>
+// clears all values for all tracks in the current strand
+export const strandClearAll = (track) =>
 {
+  const strand = get(pStrand);
+
+  strand.tactives = 0;
+  strand.tracks = makeNewTracks();
+
   strand.pixelOffset  = 0;
   strand.doOverride   = false;
   strand.degreeHue    = 0;
   strand.pcentWhite   = 0;
   strand.pcentCount   = DEF_PCENT_COUNT;
   strand.forceValue   = DEF_FORCE_VALUE;
-}
 
-// clears all values for all tracks in the current strand
-export const strandClearAll = (track) =>
-{
-  let sid = get(idStrand);
-  get(aStrands)[sid].tactives = 0;
-  get(aStrands)[sid].tracks = makeNewTracks();
-
-  strandClearTop(get(aStrands)[sid]);
   strandCopyAll();
 }
 
@@ -325,8 +322,7 @@ export const strandClearAll = (track) =>
 // and copies it to all other selected strands
 export const strandClearTrack = (track) =>
 {
-  let sid = get(idStrand);
-  get(aStrands)[sid].tracks.splice(track, 1, makeOneTrack());
+  get(pStrand).tracks.splice(track, 1, makeOneTrack());
 
   strandCopyTrack(track);
 }
@@ -335,8 +331,7 @@ export const strandClearTrack = (track) =>
 // and copies it to all other selected strands
 export const strandClearLayer = (track, layer) =>
 {
-  let sid = get(idStrand);
-  get(aStrands)[sid].tracks[track].layers.splice(layer, 1, makeOneLayer());
+  get(pStrand).tracks[track].layers.splice(layer, 1, makeOneLayer());
 
   strandCopyLayer(track, layer);
 }

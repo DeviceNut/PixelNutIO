@@ -43,8 +43,8 @@ export const cmdStr_ExecFromFlash = "$";    // clear, exec pattern from flash
 // Override properties:                     // value is: (affects all strands)
 export const cmdStr_OR_Bright     = "%";    // brightness percent of max
 export const cmdStr_OR_Delay      = "&";    // delay percent to apply
-export const cmdStr_OR_Props1     = "{";    // hue white count
-export const cmdStr_OR_Props2     = "}";    // ending to above
+export const cmdStr_OR_Props1     = "<";    // hue white count
+export const cmdStr_OR_Props2     = ">";    // ending to above
 export const cmdStr_SetOride      = "|";    // 0=disable 1=enable override
 export const cmdStr_SetFirst      = "^";    // first pixel to draw
 

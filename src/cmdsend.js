@@ -16,6 +16,7 @@ import {
   cmdStr_FlashPatStr,
   cmdStr_FlashPatName,
   cmdStr_ExecFromFlash,
+  cmdStr_ClearPattern,
   cmdStr_AddrStrand,
   cmdStr_AddrLayer
 } from './devcmds.js';
@@ -45,11 +46,14 @@ function sendStoreExecPattern()
 {
   const patstr = get(pStrand).curPatternCmd;
   let patname = get(pStrand).curPatternName;
-  if (patstr === '') patname = '';
 
-  sendCmdToDevice(cmdStr_FlashPatStr  + patstr);
-  sendCmdToDevice(cmdStr_FlashPatName + patname);
-  sendCmdToDevice(cmdStr_ExecFromFlash);
+  if (patstr !== '')
+  {
+    sendCmdToDevice(cmdStr_FlashPatStr  + patstr);
+    sendCmdToDevice(cmdStr_FlashPatName + patname);
+    sendCmdToDevice(cmdStr_ExecFromFlash);
+  }
+  else sendCmdToDevice(cmdStr_ClearPattern);
 }
 
 // sends current pattern to just the specified strand

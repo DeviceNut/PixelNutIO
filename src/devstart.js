@@ -35,10 +35,10 @@ import {
 
 import { pluginBit_REDRAW } from './devcmds.js';
 import { deviceError } from './devtalk.js';
-
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
+import { sendPatternToStrand } from './cmdsend.js';
 
 import {
   MENUID_CUSTOM,
@@ -65,6 +65,15 @@ function setStrandTop(strand, dvals)
   strand.degreeHue   = dvals.xt_hue;
   strand.pcentWhite  = dvals.xt_white;
   strand.pcentCount  = dvals.xt_count;
+}
+
+function setStrandPattern(strand, id, name='', pstr='', pdesc='')
+{
+  strand.curPattIdOld   = id;
+  strand.curPatternId   = id;
+  strand.curPatternName = name;
+  strand.curPatternCmd  = pstr;
+  strand.curPatternDesc = pdesc;
 }
 
 export let deviceStartup = (device) =>
@@ -178,72 +187,113 @@ export let deviceStartup = (device) =>
 
   // create pattern menu lists for this specific device
 
-  let items = [];
+  let items = []; // device menu items
+  let pcmds = [];
+  let descs = [];
+
+  let devdex_base = MENUID_DEVICE + 1;
+  let devdex_last = devdex_base;
 
   const patlen = device.report.patterns.length;
-  if (patlen > 0)
+  for (let i = 0; i < patlen; ++i)
   {
-    let pcmds = [];
-    let descs = [];
-  
-    for (let i = 0; i < patlen; ++i)
+    const item =
     {
-      const item =
-      {
-        id:MENUID_DEVICE + i + 1,
-        text: device.report.patterns[i].name
-      };
+      id: devdex_last++,
+      text: device.report.patterns[i].name
+    };
 
-      items.push( item );
-      pcmds.push( device.report.patterns[i].pcmd );
-      descs.push( device.report.patterns[i].desc );
-    }
-
-    aDevicePatt.set(pcmds);
-    aDeviceDesc.set(descs);
+    items.push( item );
+    pcmds.push( device.report.patterns[i].pcmd );
+    descs.push( device.report.patterns[i].desc );
   }
 
-  // setup each strand with its pattern
+  // initialize each strand with its pattern
+
+  let didclear = false;
 
   for (let s = 0; s < numstrands; ++s)
   {
     idStrand.set(s);
     let strand = get(aStrands)[s];
+    let dstrand = get(dStrands)[s];
     pStrand.set(strand);
 
     let cmdname = device.report.strands[s].patname;
-    let cmdstr = device.report.strands[s].patstr;
+    let cmdstr = device.report.strands[s].patstr.trim();
 
-    if (0)//parsePattern(cmdstr))
+    if (cmdstr === '') // no pattern running
     {
-      makeEntireCmdStr();
-
-      strand.curPatternName = cmdname;
-      strand.curPatternCmd = cmdstr;
-
+      setStrandPattern(strand, MENUID_CUSTOM);
+      setStrandPattern(dstrand, MENUID_CUSTOM);
     }
-    else
+    else if (!parsePattern(cmdstr)) // failed: clear pattern
     {
-      // trigger error message title/text
-      msgDesc.set(`For strand #${s}: ${cmdstr}`);
-      msgTitle.set('Device Pattern Unregonized');
+      setStrandPattern(strand, MENUID_CUSTOM);
+      setStrandPattern(strand, MENUID_CUSTOM);
+      sendPatternToStrand(s);
+      didclear = true;
+    }
+    else // check for match with existing patterns
+    {
+      let found = false;
 
-      strand.curPatternId   = MENUID_CUSTOM;
-      strand.curPatternName = '';
-      strand.curPatternCmd  = '';
-      strand.curPatternDesc = '';
+      for (let i = 0; i < device.report.patterns.length; ++i)
+      {
+        console.log(`"${cmdstr}" == "${device.report.patterns[i].pcmd}"`);
+
+        if ((cmdname === device.report.patterns[i].name) &&
+            (cmdstr  === device.report.patterns[i].pcmd))
+        {
+          let cmdid = (devdex_base + i);
+          let cmdesc = device.report.patterns[i].desc;
+
+          setStrandPattern( strand, cmdid, cmdname, cmdstr, cmdesc);
+          setStrandPattern(dstrand, cmdid, cmdname, cmdstr, cmdesc);
+          found = true;
+          break;
+        }
+      }
+
+      if (!found) // if doesn't match known patterns: add to device menu
+      {
+        let cmdid = devdex_last++;
+        let cmdesc = `Strand #${s+1}`;
+    
+        setStrandPattern( strand, cmdid, cmdname, cmdstr, cmdesc);
+        setStrandPattern(dstrand, cmdid, cmdname, cmdstr, cmdesc);
+
+        const item = { id:cmdid, text: cmdname };
+  
+        items.push( item );
+        pcmds.push( cmdstr );
+        descs.push( cmdesc );
+      }
+
+      makeEntireCmdStr();
     }
   }
 
+  // reset to use first strand
+  idStrand.set(0);
+  pStrand.set(get(aStrands)[0]);
+
+  // setup device patterns/descriptions
+  aDevicePatt.set(pcmds);
+  aDeviceDesc.set(descs);
+  menuDevice.children = items;
+  menuCreate(); // create entire menu
+
+  // sanity check if device still active
   if (get(curDevice) !== null)
   {
-    menuDevice.children = items;
-    menuCreate();
-  
-    // reset to use first strand
-    idStrand.set(0);
-    pStrand.set(get(aStrands)[0]);
-  
     curPageMode.set(PAGEMODE_CONTROLS);
+
+    if (didclear)
+    {
+      // trigger warning message title/text
+      msgDesc.set('Could not recognize a device pattern - cleared');
+      msgTitle.set('Device Issue');
+    }
   }
 }

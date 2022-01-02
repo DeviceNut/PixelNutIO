@@ -35,9 +35,7 @@ export const cmdStr_DeviceName    = "@";    // new name of device
 export const cmdStr_PullTrigger   = "!";    // trigger force applied
 export const cmdStr_Pause         = "[";    // none: pauses operation
 export const cmdStr_Resume        = "]";    // none: resumes operation
-export const cmdStr_ClearPattern  = "*";    // none: clears pattern (unused)
-export const cmdStr_ReadCurPat    = "<";    // none: returns current pattern (unused)
-export const cmdStr_FlashCurPat   = ">";    // none: flash current pattern (unused)
+export const cmdStr_ClearPattern  = "*";    // none: clears name/pattern
 export const cmdStr_FlashPatStr   = "=";    // flash sent pattern string
 export const cmdStr_FlashPatName  = "~";    // flash sent pattern name
 export const cmdStr_ExecFromFlash = "$";    // clear, exec pattern from flash
@@ -46,7 +44,7 @@ export const cmdStr_ExecFromFlash = "$";    // clear, exec pattern from flash
 export const cmdStr_OR_Bright     = "%";    // brightness percent of max
 export const cmdStr_OR_Delay      = "&";    // delay percent to apply
 export const cmdStr_OR_Props1     = "{";    // hue white count
-export const cmdStr_OR_Props2     = "}";    // optional ending to above
+export const cmdStr_OR_Props2     = "}";    // ending to above
 export const cmdStr_SetOride      = "|";    // 0=disable 1=enable override
 export const cmdStr_SetFirst      = "^";    // first pixel to draw
 

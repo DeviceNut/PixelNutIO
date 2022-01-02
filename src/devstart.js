@@ -15,6 +15,8 @@ import {
   nTracks,
   nLayers,
   maxLenPattern,
+  aStoredPatt,
+  aStoredDesc,
   aDevicePatt,
   aDeviceDesc,
   aEffectsDraw,
@@ -26,6 +28,8 @@ import {
 } from './globals.js';
 
 import {
+  preset_PatStrs,
+  preset_PatDescs,
   preset_DrawEffectItems,
   preset_DrawEffectDescs,
   preset_FilterEffectItems,
@@ -41,7 +45,11 @@ import { sendPatternToStrand } from './cmdsend.js';
 
 import {
   MENUID_CUSTOM,
+  MENUID_PRESETS,
+  MENUID_BROWSER,
   MENUID_DEVICE,
+  menuPresets,
+  menuBrowser,
   menuDevice,
   menuCreate
 } from './menu.js';
@@ -60,17 +68,21 @@ function setStrandTop(strand, dvals)
   strand.pixelOffset = dvals.first;
   strand.numPixels   = dvals.pixels;
 
-  strand.doOverride  = dvals.xt_mode;
-  strand.doOrideSave = dvals.xt_mode;
-  strand.degreeHue   = dvals.xt_hue;
-  strand.pcentWhite  = dvals.xt_white;
-  strand.pcentCount  = dvals.xt_count;
+  let mode = dvals.xt_mode ? true : false;
+  strand.opropsUser.doEnable   = mode;
+  strand.opropsUser.valueHue   = dvals.xt_hue;
+  strand.opropsUser.pcentWhite = dvals.xt_white;
+  strand.opropsUser.pcentCount = dvals.xt_count;
+
+  strand.opropsSent.doEnable   = mode;
+  strand.opropsSent.valueHue   = dvals.xt_hue;
+  strand.opropsSent.pcentWhite = dvals.xt_white;
+  strand.opropsSent.pcentCount = dvals.xt_count;
 }
 
 function setStrandPattern(strand, id, name='', pstr='', pdesc='')
 {
-  strand.curPattIdOld   = id;
-  strand.curPatternId   = id;
+  strand.setPattIdOld   = id;
   strand.curPatternName = name;
   strand.curPatternCmd  = pstr;
   strand.curPatternDesc = pdesc;
@@ -224,10 +236,33 @@ export let deviceStartup = (device) =>
     else // check for match with existing patterns
     {
       let found = false;
+      let apats, adesc;
+
+      apats = preset_PatStrs;
+      adesc = preset_PatDescs;
+      for (let i = 0; i < menuPresets.children.length; ++i)
+      {
+        let name = menuPresets.children[i].text;
+        let idex = menuPresets.children[i].id - (MENUID_PRESETS+1);
+        //console.log(`Presets(${i}): ${name}`);
+        //console.log(`    ${apats[idex]}`);
+        //console.log(`    ${adesc[idex]}`);
+      }
+
+      apats = get(aStoredPatt);
+      adesc = get(aStoredDesc);
+      for (let i = 0; i < menuBrowser.children.length; ++i)
+      {
+        let name = menuBrowser.children[i].text;
+        let idex = menuBrowser.children[i].id - (MENUID_BROWSER+1);
+        //console.log(`Browser(${i}): ${name}`);
+        //console.log(`    ${apats[idex]}`);
+        //console.log(`    ${adesc[idex]}`);
+      }
 
       for (let i = 0; i < device.report.patterns.length; ++i)
       {
-        console.log(`"${cmdstr}" == "${device.report.patterns[i].pcmd}"`);
+        //console.log(`"${cmdstr}" == "${device.report.patterns[i].pcmd}"`);
 
         if ((cmdname === device.report.patterns[i].name) &&
             (cmdstr  === device.report.patterns[i].pcmd))

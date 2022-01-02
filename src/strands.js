@@ -75,7 +75,7 @@ const drawProps =
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
   overHue         : false,  // true to allow global override
-  degreeHue       : DEF_HUE_VALUE, // hue in degrees (0-MAX_DEGREES_HUE)
+  valueHue       : DEF_HUE_VALUE, // hue in degrees (0-MAX_HUE_VALUE)
 
   overWhite       : false,  // true to allow global override
   pcentWhite      : 0,      // percent whiteness
@@ -103,17 +103,23 @@ const oneTrack =
   saveProps       : {}      // used to detect changes in properties
 }
 
+const orideProps =
+{
+  doEnable        : false,  // true to override local properties with:
+  valueHue        : 0,      // hue value (0-MAX_HUE_VALUE)
+  pcentWhite      : 0,      // percent whiteness
+  pcentCount      : 0,      // percent of pixels affected in range
+}
+
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
+  showCustom      : false,  // true if displaying customize panel
 
-  curPattIdOld    : -1,     // used to prevent unnecessary selections
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
   curPatternDesc  : '',     // current pattern description
-
-  showCustom      : false,  // true if displaying customize panel
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
   bitsEffects     : 0x00,   // OR'ed trackBits from all track layers
@@ -122,30 +128,27 @@ const oneStrand =
   pcentBright     : 0,      // percent bright
   pcentDelay      : 0,      // percent delay
   pixelOffset     : 0,      // pixel offset to start drawing from
-
-  doOverride      : false,  // true to override local properties with:
-  degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
-  pcentWhite      : 0,      // percent whiteness
-  pcentCount      : 0,      // percent of pixels affected in range
-  doOrideSave     : false,  // saves previous value (because checkbox)
-
   forceValue      : DEF_FORCE_VALUE, // force value for triggering
-  numPixels       : 0,      // number of pixels in this strand
 
+  opropsUser      : {},     // override properties set by user
+  opropsSent      : {},     // override properties sent to device
+
+  numPixels       : 0,      // number of pixels in this strand
   tactives        : 0,      // current number of active tracks
   tracks          : [],     // list of 'oneTrack's for this strand
 
   trigSources     : [],     // list of trigger source layer info
 }
 
-export const overBit_DegreeHue    = 1;      // overwrite degreeHue
+export const overBit_DegreeHue    = 1;      // overwrite valueHue
 export const overBit_PcentWhite   = 2;      // overwrite pcentWhite
 export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
 function makeOneLayer()
 {
   let layer = {...oneLayer};
-  layer.uniqueID = 'LID' + (Math.random() + 1).toString(36).substr(-6);
+  let str = (Math.random() + 1).toString(36);
+  layer.uniqueID = 'LID' + str.substring(str.length-6);
   //console.log('ID=', layer.uniqueID);
   return layer;
 }
@@ -178,6 +181,8 @@ function makeNewTracks(s)
 export const strandCreateNew = (s) =>
 {
   let strand = {...oneStrand};
+  strand.opropsUser = {...orideProps};
+  strand.opropsSent = {...orideProps};
   strand.tracks = makeNewTracks();
   return strand;
 }
@@ -196,25 +201,33 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.curPattIdOld   = ps.curPattIdOld;
         strand.curPatternId   = ps.curPatternId;
         strand.curPatternName = ps.curPatternName;
         strand.curPatternCmd  = ps.curPatternCmd;
         strand.curPatternDesc = ps.curPatternDesc;
 
         strand.showCustom     = ps.showCustom;
+
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;
+        strand.triggerUsed    = ps.triggerUsed;
 
         strand.pcentBright    = ps.pcentBright;
         strand.pcentDelay     = ps.pcentDelay;
         strand.pixelOffset    = ps.pixelOffset;
-        strand.doOverride     = ps.doOverride;
-        strand.doOrideSave    = ps.doOrideSave;
-        strand.degreeHue      = ps.degreeHue;
-        strand.pcentWhite     = ps.pcentWhite;
-        strand.pcentCount     = ps.pcentCount;
         strand.forceValue     = ps.forceValue;
+
+        strand.opropsUser.doEnable   = ps.opropsUser.doEnable;
+        strand.opropsUser.valueHue   = ps.opropsUser.valueHue;
+        strand.opropsUser.pcentWhite = ps.opropsUser.pcentWhite;
+        strand.opropsUser.pcentCount = ps.opropsUser.pcentCount;
+
+        strand.opropsUser.doEnable   = ps.opropsUser.doEnable;
+        strand.opropsUser.valueHue   = ps.opropsUser.valueHue;
+        strand.opropsUser.pcentWhite = ps.opropsUser.pcentWhite;
+        strand.opropsUser.pcentCount = ps.opropsUser.pcentCount;
+
+        // TODO: copy triggerSources
       }
       get(eStrands)[s] = strand.selected;
     }
@@ -309,8 +322,8 @@ export const strandClearAll = (track) =>
   strand.tracks = makeNewTracks();
 
   strand.pixelOffset  = 0;
-  strand.doOverride   = false;
-  strand.degreeHue    = 0;
+  strand.doEnable   = false;
+  strand.valueHue    = 0;
   strand.pcentWhite   = 0;
   strand.pcentCount   = DEF_PCENT_COUNT;
   strand.forceValue   = DEF_FORCE_VALUE;

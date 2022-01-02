@@ -29,7 +29,7 @@ import {
   cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
-  cmdStr_DegreeHue     ,
+  cmdStr_ValueHue     ,
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
@@ -161,8 +161,8 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentDelay !== DEF_PCENT_DELAY)
       cmdstr = cmdstr.concat(`${cmdStr_MsecsDelay}${pdraw.pcentDelay} `);
 
-    if (pdraw.degreeHue !== DEF_HUE_VALUE)
-      cmdstr = cmdstr.concat(`${cmdStr_DegreeHue}${pdraw.degreeHue} `);
+    if (pdraw.valueHue !== DEF_HUE_VALUE)
+      cmdstr = cmdstr.concat(`${cmdStr_ValueHue}${pdraw.valueHue} `);
 
     if (pdraw.pcentWhite !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_PcentWhite}${pdraw.pcentWhite} `);

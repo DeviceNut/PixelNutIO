@@ -30,7 +30,7 @@ import {
   cmdStr_PcentXlength   ,
   cmdStr_PcentBright    ,
   cmdStr_MsecsDelay     ,
-  cmdStr_DegreeHue      ,
+  cmdStr_ValueHue      ,
   cmdStr_PcentWhite     ,
   cmdStr_PcentCount     ,
   cmdStr_OrideBits      ,
@@ -65,7 +65,7 @@ export const resetEffectBits = (track, props, bits) =>
   //console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
 
   if (bits & pluginBit_ORIDE_HUE)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_DegreeHue, props.degreeHue);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_ValueHue, props.valueHue);
 
   if (bits & pluginBit_ORIDE_WHITE)
     sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
@@ -169,11 +169,11 @@ export const userSetRotate = () =>
 export const userSetOverMode = () =>
 {
   const strand = get(pStrand);
-  const oride = strand.doOverride;
+  const oride = strand.opropsUser.doEnable;
 
-  if (oride !== strand.doOrideSave)
+  if (oride !== strand.opropsSent.doOrideSave)
   {
-    strand.doOrideSave = oride;
+    strand.opropsSent.doEnable = oride;
     sendStrandCmd(cmdStr_SetOride, oride ? 1 : 0);
 
     if (!oride) // must resend any props that were overriden
@@ -183,7 +183,7 @@ export const userSetOverMode = () =>
         let props = get(pStrand).tracks[i].drawProps;
 
         if (props.overHue)
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_DegreeHue, `${props.degreeHue}`);
+          sendLayerCmd(i, DRAW_LAYER, cmdStr_ValueHue, `${props.valueHue}`);
 
         if (props.overWhite)
           sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
@@ -198,13 +198,23 @@ export const userSetOverMode = () =>
 export const userSetProps = () =>
 {
   const strand = get(pStrand);
+  console.log('set props ...');
 
-  let hue   = strand.degreeHue;
-  let white = strand.pcentWhite;
-  let count = strand.pcentCount;
+  let hue = strand.opropsUser.valueHue;
+  let wht = strand.opropsUser.pcentWhite;
+  let cnt = strand.opropsUser.pcentCount;
 
-  strandCopyTop();
-  sendStrandCmd(cmdStr_OR_Props1, `${hue} ${white} ${count}${cmdStr_OR_Props2}`);
+  if ((hue !== strand.opropsSent.valueHue)   ||
+      (wht !== strand.opropsSent.pcentWhite) ||
+      (cnt !== strand.opropsSent.pcentCount))
+  {
+    strand.opropsSent.valueHue   = hue;
+    strand.opropsSent.pcentWhite = wht;
+    strand.opropsSent.pcentCount = cnt;
+
+    strandCopyTop();
+    sendStrandCmd(cmdStr_OR_Props1, `${hue} ${wht} ${cnt}${cmdStr_OR_Props2}`);
+  }
 }
 
 export const userSendTrigger = () =>
@@ -266,10 +276,10 @@ export const userSetNoRepeat = (track) =>
 export const userSetHue = (track) =>
 {
   const layer = DRAW_LAYER;
-  const hue = get(pStrand).tracks[track].drawProps.degreeHue;
+  const hue = get(pStrand).tracks[track].drawProps.valueHue;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_DegreeHue, `${hue}`);
+  sendLayerCmd(track, layer, cmdStr_ValueHue, `${hue}`);
 }
 
 export const userSetWhite = (track) =>
@@ -299,18 +309,18 @@ export const userSetOverrides = (track) =>
 
   updateLayerVals(track, layer);
 
-  sendLayerCmd(track, layer, cmdStr_OrideBits, bits);
+  sendLayerCmd(track, layer, cmdStr_OrideBits, bits ? bits : undefined);
 
   if (!props.overHue)
-        sendLayerCmd(track, layer, cmdStr_DegreeHue, `${props.degreeHue}`);
-  else sendLayerCmd(track, layer, cmdStr_DegreeHue, `${strand.degreeHue}`);
+       sendLayerCmd(track, layer, cmdStr_ValueHue, `${props.valueHue}`);
+  else sendLayerCmd(track, layer, cmdStr_ValueHue, `${strand.valueHue}`);
 
   if (!props.overWhite)
-        sendLayerCmd(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
+       sendLayerCmd(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
   else sendLayerCmd(track, layer, cmdStr_PcentWhite, `${strand.pcentWhite}`);
 
   if (!props.overCount)
-        sendLayerCmd(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
+       sendLayerCmd(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
   else sendLayerCmd(track, layer, cmdStr_PcentCount, `${strand.pcentCount}`);
 }
 

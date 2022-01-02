@@ -24,7 +24,7 @@ import {
   cmdStr_SetEffect     ,
   cmdStr_PcentBright   ,
   cmdStr_MsecsDelay    ,
-  cmdStr_DegreeHue     ,
+  cmdStr_ValueHue     ,
   cmdStr_PcentWhite    ,
   cmdStr_PcentCount    ,
   cmdStr_OrideBits     ,
@@ -198,11 +198,11 @@ export const parsePattern = (pattern) =>
             get(pStrand).tracks[track].drawProps.pcentDelay = delay;
             break;
           }
-          case cmdStr_DegreeHue:
+          case cmdStr_ValueHue:
           {
             // set to default if no value follows command
             const hue = isNaN(val) ? DEF_HUE_VALUE : valueToDegree(val);
-            get(pStrand).tracks[track].drawProps.degreeHue = hue;
+            get(pStrand).tracks[track].drawProps.valueHue = hue;
             break;
           }
           case cmdStr_PcentWhite:

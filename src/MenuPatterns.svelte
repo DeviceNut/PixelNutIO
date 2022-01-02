@@ -136,8 +136,8 @@ import {
 
 </script>
 
-<div style="padding-top:10px; margin-left:10px;"></div>
-<p style="font-size:.98em;">Pattern Choice:</p>
+<div class="area"></div>
+<p class="setfont">Pattern Choice:</p>
 
 <TreeView size="compact" style="margin-top:-10px;"
   bind:children={$patsMenuItems}
@@ -147,16 +147,12 @@ import {
   on:focus={({detail}) => { doselect(detail.id); }}
 />
 
-<div style="padding-top:10px; margin-left:10px;"></div>
-<p style="font-size:.98em;">Pattern Description:</p>
-<p style="font-size:.95em;
-          margin-top:2px; padding:5px;
-          color: var(--color-textbox);
-          background-color: var(--bg-color-textbox);">
-  {$pStrand.curPatternDesc}</p>
+<div class="area"></div>
+<p class="setfont">Pattern Description:</p>
+<p class="descrip">{ $pStrand.curPatternDesc }</p>
 
 {#if ($aStoredPatt.length > 0) }
-  <div style="margin-top:15px; margin-bottom:5px; text-align:center;">
+  <div class="buttons">
     <button class="button-delete"
       on:click={delall}
       disabled={!isbrowser}
@@ -183,6 +179,25 @@ import {
 </Modal>
 
 <style>
+  .area {
+    padding-top: 10px;
+    margin-left: 10px;
+  }
+  .setfont {
+    font-size: .98em;
+  }
+  .descrip {
+    font-size: .95em;
+    margin-top: 2px;
+    padding: 5px;
+    color: var(--color-textbox);
+    background-color: var(--bg-color-textbox);
+  }
+  .buttons {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    text-align: center;
+  }
   .button-delete {
     width: 90px;
     height: 35px;

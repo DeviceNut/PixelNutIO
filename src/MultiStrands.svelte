@@ -10,7 +10,7 @@
 
 {#if ($nStrands > 1) }
 
-  <div style="display:flex; justify-content:center;">
+  <div class="docenter">
     <div style="margin-top:15px;">
 
       <MediaQuery query="(max-width: 680px)" let:matches>
@@ -47,9 +47,13 @@
 {/if}
 
 <style>
-.divider {
-  margin-top: 10px;
-  padding-top: 2px;
-  background-color: var(--bg-color-divider);
-}
+  .docenter {
+    display:flex;
+    justify-content:center;
+  }
+  .divider {
+    margin-top: 10px;
+    padding-top: 2px;
+    background-color: var(--bg-color-divider);
+  }
 </style>

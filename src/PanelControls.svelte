@@ -19,7 +19,7 @@
 
 </script>
 
-<div style="display:flex; justify-content:center;">
+<div class="docenter">
   <div style="margin-bottom:10px;">
 
     <SliderVal name='Bright'
@@ -37,11 +37,9 @@
       max={$pStrand.numPixels-1}
     />
 
-    <div style="margin-top:10px;"></div>
-
+    <div class="divider"></div>
     <SlidersPropsGlobal/>
-
-    <div style="margin-top:10px;"></div>
+    <div class="divider"></div>
 
     <SliderVal name='Force'
       max={MAX_FORCE_VALUE}
@@ -62,6 +60,13 @@
 </div>
 
 <style>
+  .docenter {
+    display:flex;
+    justify-content:center;
+  }
+  .divider {
+    margin-top: 10px;
+  }
   .button-trigger {
     height: 25px;
     width: 200px;

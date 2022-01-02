@@ -47,12 +47,8 @@
 
 </script>
 
-<div style="margin: 10px -5px 10px -5px;
-            padding-top:7px; padding-left:10px; padding-bottom:10px;
-            background-color: var(--bg-color-controls-area);">
-
-  <p style="margin-top:10px; margin-bottom:15px; font-size:.9em;">
-    Triggering Options:</p>
+<div class="area">
+  <p class="options">Triggering Options:</p>
 
   <Checkbox labelText="Once at start"
     style="margin-top:10px;"
@@ -89,7 +85,7 @@
     {#if ($pStrand.tracks[track].layers[layer].trigDoRepeat) }
       <div style="margin:12px 15px 0 15px;">
         {#if ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
-          <span style="margin-right:9px">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
+          <span class="inval">Repeat Count:&nbsp;&nbsp;&nbsp;</span>
           <input type="number"
             min=1 max=9999
             on:change={setCount}
@@ -103,7 +99,7 @@
           />
         {/if}
         <div style="margin-top:8px;">
-          <span style="margin-right:8px">Minimum Time:&nbsp;</span>
+          <span class="inval">Minimum Time:&nbsp;</span>
           <input type="number"
             min=1 max=9999
             on:change={setOffset}
@@ -111,7 +107,7 @@
           />&nbsp;&nbsp;secs
         </div>
         <div style="margin-top:8px; margin-bottom:10px;">
-          <span style="margin-right:8px">Random Period:</span>
+          <span class="inval">Random Period:</span>
           <input type="number"
             min=0 max=9999
             on:change={setRange}
@@ -143,3 +139,19 @@
   {/if}
 
 </div>
+
+<style>
+  .area {
+    margin: 10px -5px 10px -5px;
+    padding: 7px 0 10px 10px;
+    background-color: var(--bg-color-controls-area);
+  }
+  .options {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size:.9em;
+  }
+  .inval {
+    margin-right: 8px;
+  }
+</style>

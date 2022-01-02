@@ -12,7 +12,6 @@ import {
   pStrand,
   aStrands,
   eStrands,
-  dStrands,
   nTracks,
   nLayers,
   maxLenPattern,
@@ -175,16 +174,6 @@ export let deviceStartup = (device) =>
   eStrands.set(elist);
   pStrand.set(slist[sid]);
 
-  // make duplicate object to keep shadow values
-  slist = [];
-  for (let s = 0; s < numstrands; ++s)
-  {
-    const strand = strandCreateNew(s);
-    setStrandTop(strand, device.report.strands[s]);
-    slist.push(strand);
-  }
-  dStrands.set(slist);
-
   // create pattern menu lists for this specific device
 
   let items = []; // device menu items
@@ -216,7 +205,6 @@ export let deviceStartup = (device) =>
   {
     idStrand.set(s);
     let strand = get(aStrands)[s];
-    let dstrand = get(dStrands)[s];
     pStrand.set(strand);
 
     let cmdname = device.report.strands[s].patname;
@@ -225,11 +213,9 @@ export let deviceStartup = (device) =>
     if (cmdstr === '') // no pattern running
     {
       setStrandPattern(strand, MENUID_CUSTOM);
-      setStrandPattern(dstrand, MENUID_CUSTOM);
     }
     else if (!parsePattern(cmdstr)) // failed: clear pattern
     {
-      setStrandPattern(strand, MENUID_CUSTOM);
       setStrandPattern(strand, MENUID_CUSTOM);
       sendPatternToStrand(s);
       didclear = true;
@@ -248,8 +234,7 @@ export let deviceStartup = (device) =>
           let cmdid = (devdex_base + i);
           let cmdesc = device.report.patterns[i].desc;
 
-          setStrandPattern( strand, cmdid, cmdname, cmdstr, cmdesc);
-          setStrandPattern(dstrand, cmdid, cmdname, cmdstr, cmdesc);
+          setStrandPattern(strand, cmdid, cmdname, cmdstr, cmdesc);
           found = true;
           break;
         }
@@ -260,8 +245,7 @@ export let deviceStartup = (device) =>
         let cmdid = devdex_last++;
         let cmdesc = `Strand #${s+1}`;
     
-        setStrandPattern( strand, cmdid, cmdname, cmdstr, cmdesc);
-        setStrandPattern(dstrand, cmdid, cmdname, cmdstr, cmdesc);
+        setStrandPattern(strand, cmdid, cmdname, cmdstr, cmdesc);
 
         const item = { id:cmdid, text: cmdname };
   

@@ -5,7 +5,6 @@ import {
   nStrands,
   idStrand,
   pStrand,
-  dStrands,
   aStrands,
   eStrands,
   findEffectFromPlugin
@@ -177,7 +176,7 @@ export const userStrandSelect = (index, combine) =>
 // triggers program error if parse fails
 export const userSetPattern = (pattern) =>
 {
-  //console.log(`SetPattern: ${get(pStrand).curPatternName}`);
+  console.log(`SetPattern: ${get(pStrand).curPatternName}`);
 
   strandClearAll();
 
@@ -238,9 +237,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
 
   let obj = findEffectFromPlugin(effect);
   strand.tracks[track].trackBits |= obj.bits;
-
   strand.tracks[track].layers[layer].pluginObj = obj;
-  get(dStrands)[get(idStrand)].tracks[track].layers[layer].pluginObj = {...obj};
 
   updateTriggerLayers();
   updateAllTracks();

@@ -2,7 +2,6 @@ import { get } from 'svelte/store';
 
 import {
   pStrand,
-  dStrands,
   idStrand,
   maxLenPattern
 } from './globals.js';
@@ -306,8 +305,6 @@ export const updateTriggerLayers = () =>
 
           strand.tracks[track].layers[layer].trigOnLayer = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0;
-
-          get(dStrands)[get(idStrand)].tracks[track].layers[layer].trigOnLayer = false;
         }
       }
     }

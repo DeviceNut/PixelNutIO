@@ -6,7 +6,6 @@ import {
   pStrand,
   eStrands,
   aStrands,
-  dStrands,
   nTracks,
   nLayers
 } from './globals.js';
@@ -316,12 +315,7 @@ export const strandClearAll = (track) =>
   get(aStrands)[sid].tactives = 0;
   get(aStrands)[sid].tracks = makeNewTracks();
 
-  get(dStrands)[sid].tactives = 0;
-  get(dStrands)[sid].tracks = makeNewTracks();
-
   strandClearTop(get(aStrands)[sid]);
-  strandClearTop(get(dStrands)[sid]);
-
   strandCopyAll();
 }
 
@@ -331,7 +325,6 @@ export const strandClearTrack = (track) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tracks.splice(track, 1, makeOneTrack());
-  get(dStrands)[sid].tracks.splice(track, 1, makeOneTrack());
 
   strandCopyTrack(track);
 }
@@ -342,7 +335,6 @@ export const strandClearLayer = (track, layer) =>
 {
   let sid = get(idStrand);
   get(aStrands)[sid].tracks[track].layers.splice(layer, 1, makeOneLayer());
-  get(dStrands)[sid].tracks[track].layers.splice(layer, 1, makeOneLayer());
 
   strandCopyLayer(track, layer);
 }
@@ -355,7 +347,6 @@ export const strandAppendTrack = (track) =>
   for (let s = 0; s < get(nStrands); ++s)
   {
     ++(get(aStrands)[s].tactives);
-    ++(get(dStrands)[s].tactives);
 
     if (get(aStrands)[s].selected)
     {
@@ -363,10 +354,7 @@ export const strandAppendTrack = (track) =>
       {
         let lasttrack = get(nTracks)-1;
         get(aStrands)[s].tracks.splice(lasttrack+1, 1);
-        get(dStrands)[s].tracks.splice(lasttrack+1, 1);
-
         get(aStrands)[s].tracks.splice(track+1, 0, makeOneTrack());
-        get(dStrands)[s].tracks.splice(track+1, 0, makeOneTrack());
       }
     }
   }
@@ -382,16 +370,12 @@ export const strandAppendLayer = (track, layer) =>
     if (get(aStrands)[s].selected)
     {
       ++(get(aStrands)[s].tracks[track].lactives);
-      ++(get(dStrands)[s].tracks[track].lactives);
 
       if (layer < get(aStrands)[s].tracks[track].lactives)
       {
         let lastlayer = get(nLayers)-1;
         get(aStrands)[s].tracks[track].layers.splice(lastlayer, 1);
-        get(dStrands)[s].tracks[track].layers.splice(lastlayer, 1);
-
         get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, makeOneLayer() );
-        get(dStrands)[s].tracks[track].layers.splice(layer+1, 0, makeOneLayer() );
       }
     }
   }
@@ -407,15 +391,11 @@ export const strandRemoveTrack = (track) =>
     if (get(aStrands)[s].selected)
     {
       --(get(aStrands)[s].tactives);
-      --(get(dStrands)[s].tactives);
 
       if (track < get(aStrands)[s].tactives)
       {
         get(aStrands)[s].tracks.splice(track, 1);
         get(aStrands)[s].tracks.push( makeOneTrack() );
-
-        get(dStrands)[s].tracks.splice(track, 1);
-        get(dStrands)[s].tracks.push( makeOneTrack() );
       }
     }
   }
@@ -431,15 +411,11 @@ export const strandRemoveLayer = (track, layer) =>
     if (get(aStrands)[s].selected)
     {
       --(get(aStrands)[s].tracks[track].lactives);
-      --(get(dStrands)[s].tracks[track].lactives);
 
       if (layer < get(aStrands)[s].tracks[track].lactives)
       {
         get(aStrands)[s].tracks[track].layers.splice(layer, 1);
         get(aStrands)[s].tracks[track].layers.push( makeOneLayer() );
-  
-        get(dStrands)[s].tracks[track].layers.splice(layer, 1);
-        get(dStrands)[s].tracks[track].layers.push( makeOneLayer() );
       }
     }
   }
@@ -455,9 +431,6 @@ export const strandSwapTracks = (track) =>
     {
       tsave = get(aStrands)[s].tracks.splice(track, 1)[0];
       get(aStrands)[s].tracks.splice(track+1, 0, tsave);
-
-      tsave = get(dStrands)[s].tracks.splice(track, 1)[0];
-      get(dStrands)[s].tracks.splice(track+1, 0, tsave);
     }
   }
 }
@@ -472,9 +445,6 @@ export const strandSwapLayers = (track, layer) =>
     {
       tsave = get(aStrands)[s].tracks[track].layers.splice(layer, 1)[0];
       get(aStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
-
-      tsave = get(dStrands)[s].tracks[track].layers.splice(layer, 1)[0];
-      get(dStrands)[s].tracks[track].layers.splice(layer+1, 0, tsave);
     }
   }
 }

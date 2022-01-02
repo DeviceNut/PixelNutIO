@@ -7,7 +7,7 @@ export let titleHelpDocs  = 'PixelNut! Docs';
 export const MQTT_BROKER_PORT       = 9001;   // MUST be 9001 for websocket
 export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
 export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
-export const SECS_RESPONSE_TIMEOUT  = 5;      // secs since last device notify/response
+export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel

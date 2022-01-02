@@ -45,7 +45,6 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   pixels: 0,            // number of pixels
   bright: 0,            // brightness percent
   delay: 0,             // delay msecs +/- MAX_DELAY
-  force: 0,             // force (0-MAX_FORCE_VALUE)
   first: 1,             // first pixel to draw (from 1)
                         // extern mode:
   xt_mode: false,       //  enabled=1
@@ -136,6 +135,18 @@ function deviceQuery(device, fsend)
   fsend(device.curname, queryStr_GetInfo);
 }
 
+function deviceAdd(name)
+{
+  console.log(`Device Add: "${name}"`);
+
+  let device = {...deviceState};
+  device.curname = name;
+  device.qstate = QSTATE_RESTART;
+  get(deviceList).push(device);
+
+  return device;
+}
+
 // create timer for receiving a connection notification
 // if device doesn't respond in time, stop and remove it
 let timeObj = 0;
@@ -200,16 +211,16 @@ export const onNotification = (msg, fsend) =>
 
   for (const device of get(deviceList))
   {
-    if (device.ignore) return; // don't add
-
     device.tstamp = curTimeSecs();
 
     if (device.curname === name)
     {
-      if (device.qstate === QSTATE_RESTART)
+      if (!device.ignore)
+      {
+        if (device.qstate === QSTATE_RESTART)
         deviceQuery(device, fsend);
-
-      return; // don't add this device
+      }
+      return; // don't add
     }
     else if (device.newname === name)
     {
@@ -218,23 +229,16 @@ export const onNotification = (msg, fsend) =>
       device.curname = name;
       device.newname = '';
 
-      return; // don't add this device
+      return; // don't add
     }
   }
 
-  console.log(`Device Add: "${name}"`);
-
-  let device = {...deviceState};
-  device.curname = name;
-  get(deviceList).push(device);
+  let device = deviceAdd(name);
 
   deviceQuery(device, fsend);
-
-  // triggers update to UI - MUST HAVE THIS
-  deviceList.set(get(deviceList));
 }
 
-export const onDeviceReply = (msg) =>
+export const onDeviceReply = (msg, fsend) =>
 {
   //console.log(`Device Reply: ${msg}`)
 
@@ -249,84 +253,79 @@ export const onDeviceReply = (msg) =>
     if (d.curname === name)
     {
       device = d;
+      if (device.ignore) return;
       break;
     }
   }
 
-  if (device !== null)
+  if (device === null)
+    device = deviceAdd(name);
+
+  device.tstamp = curTimeSecs();
+
+  if (reply[0] === respStr_Rebooted)
   {
-    if (device.ignore) return;
+    console.log(`Device Reboot: "${name}"`);
 
-    device.tstamp = curTimeSecs();
-
-    if (reply[0] === respStr_Rebooted)
+    if (device.active)
     {
-      console.log(`Device Reboot: "${name}"`);
+      // trigger error message title/text
+      msgDesc.set('The device you were using just restarted.');
+      msgTitle.set('Device Restart');
 
-      if (device.active)
-      {
-        // trigger error message title/text
-        msgDesc.set('The device you were using just restarted.');
-        msgTitle.set('Device Restart');
-
-        deviceReset();
-      }
-      else if (device.ready)
-      {
-        device.ready = false;
-        device.qstate = QSTATE_RESTART;
-      }
-      return;
+      deviceReset();
     }
-    else if (device.qstate === QSTATE_WAIT_RESP)
+    else if (device.ready)
     {
-      if (reply[0] === respStr_StartInfo)
-      {
-        //console.log('Starting device info...');
-        device.qstate = QSTATE_WAIT_DATA;
-        device.dinfo = '';
-        return;
-      }
-    }
-    else if (device.qstate === QSTATE_WAIT_DATA)
-    {
-      if (reply[0] === respStr_FinishInfo)
-      {
-        //console.log('...Ending device info');
-        try
-        {
-          device.report = JSON.parse(device.dinfo);
-          device.dinfo = ''; // done with input string
-
-          device.qstate = QSTATE_NONE;
-          device.ready = true;
-
-          console.log(`Device Ready: "${device.curname}"`)
-          //console.log(device.report);
-        }
-        catch (e)
-        {
-          console.warn(`Device Error: "${device.curname}" JSON=${device.dinfo}`);
-
-          if (++device.failcount >= MAX_DEVICE_FAIL_COUNT)
-          {
-            console.error(`Device Failed: "${device.curname}"`);
-            device.ignore = true;
-          }
-          else device.qstate = QSTATE_RESTART;
-        }
-        
-        // triggers update to UI - MUST HAVE THIS
-        deviceList.set(get(deviceList));
-      }
-      else
-      {
-        //console.log(`<< ${reply[0]}`);
-        device.dinfo += reply[0];
-      }
-      return;
+      device.ready = false;
+      device.qstate = QSTATE_RESTART;
     }
   }
+  else if (device.qstate === QSTATE_WAIT_RESP)
+  {
+    if (reply[0] === respStr_StartInfo)
+    {
+      //console.log('Starting device info...');
+      device.qstate = QSTATE_WAIT_DATA;
+      device.dinfo = '';
+    }
+    else console.warn(`Device Ignore: "${name}" reply=${reply[0]}`);
+  }
+  else if (device.qstate === QSTATE_WAIT_DATA)
+  {
+    if (reply[0] === respStr_FinishInfo)
+    {
+      //console.log('...Ending device info');
+      try
+      {
+        device.report = JSON.parse(device.dinfo);
+        device.dinfo = ''; // done with input string
 
-  console.warn(`>> Device Ignore: "${name}" reply=${reply[0]}`);
+        device.qstate = QSTATE_NONE;
+        device.ready = true;
+
+        console.log(`Device Ready: "${device.curname}"`)
+        //console.log(device.report);
+      }
+      catch (e)
+      {
+        console.warn(`Device Error: "${device.curname}" JSON=${device.dinfo}`);
+
+        if (++device.failcount >= MAX_DEVICE_FAIL_COUNT)
+        {
+          console.error(`Device Failed: "${device.curname}"`);
+          device.ignore = true;
+        }
+        else device.qstate = QSTATE_RESTART;
+      }
+      
+      // triggers update to UI - MUST HAVE THIS
+      deviceList.set(get(deviceList));
+    }
+    else
+    {
+      //console.log(`<< ${reply[0]}`);
+      device.dinfo += reply[0];
+    }
+  }
 }

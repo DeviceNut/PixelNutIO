@@ -1,9 +1,21 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
-  import { Grid, Row, Column } from "carbon-components-svelte";
 
-  import { pStrand } from './globals.js';
+  import {
+    Grid,
+    Row,
+    Column,
+    Modal,
+    Button
+  } from "carbon-components-svelte";
+
+  import {
+    pStrand,
+    msgTitle,
+    msgDesc
+  } from './globals.js';
+
   import { defCustomCmd } from './devcmds.js';
   import { userSetPattern } from './cmduser2.js';
 
@@ -23,6 +35,9 @@
     if ($pStrand.showCustom && ($pStrand.tactives === 0))
       userSetPattern(defCustomCmd);
   }
+
+  let openMessage;
+  $: openMessage = $msgTitle !== '';
 
 </script>
 
@@ -106,6 +121,16 @@
 {:else}
   <div style="margin-top:10px;"></div>
 {/if}
+
+<Modal
+  passiveModal
+  modalHeading={$msgTitle}
+  bind:open={openMessage}
+  on:close
+  >
+  <p>{$msgDesc}</p><br>
+  <Button kind="secondary" on:click={() => {openMessage = false; $msgTitle = '';}}>Continue</Button>
+</Modal>
 
 <style>
   .panel {

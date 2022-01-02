@@ -106,7 +106,7 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  curPattIdOld : -1,     // used to prevent unnecessary selections
+  curPattIdOld : -1,        // used to prevent unnecessary selections
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
@@ -247,12 +247,12 @@ export const strandCopyLayer = (track, layer) =>
 // to all the other currently selected strands
 export const strandCopyTrack = (track, doall) =>
 {
-  const sid = get(idStrand);
-  const strand = get(pStrand);
-  const isopen = strand.tracks[track].open;
+  const sid       = get(idStrand);
+  const strand    = get(pStrand);
+  const isopen    = strand.tracks[track].open;
   const trackbits = strand.tracks[track].trackBits;
-  const lactives = strand.tracks[track].lactives;
-  const props = strand.tracks[track].drawProps;
+  const lactives  = strand.tracks[track].lactives;
+  const props     = strand.tracks[track].drawProps;
 
   for (let s = 0; s < get(nStrands); ++s)
   {
@@ -299,16 +299,14 @@ export const strandCopyAll = () =>
 }
 
 // clears all main property values for the current strand to defaults
-export const strandClearTop = () =>
+export const strandClearTop = (strand) =>
 {
-  const strand = get(pStrand);
-  // NOTE: don't reset global brightness/delay FIXME?
-  strand.pixelOffset    = 0;
-  strand.doOverride     = false;
-  strand.degreeHue      = 0;
-  strand.pcentWhite     = 0;
-  strand.pcentCount     = DEF_PCENT_COUNT;
-  strand.forceValue     = DEF_FORCE_VALUE;
+  strand.pixelOffset  = 0;
+  strand.doOverride   = false;
+  strand.degreeHue    = 0;
+  strand.pcentWhite   = 0;
+  strand.pcentCount   = DEF_PCENT_COUNT;
+  strand.forceValue   = DEF_FORCE_VALUE;
 }
 
 // clears all values for all tracks in the current strand
@@ -321,7 +319,9 @@ export const strandClearAll = (track) =>
   get(dStrands)[sid].tactives = 0;
   get(dStrands)[sid].tracks = makeNewTracks();
 
-  strandClearTop();
+  strandClearTop(get(aStrands)[sid]);
+  strandClearTop(get(dStrands)[sid]);
+
   strandCopyAll();
 }
 

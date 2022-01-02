@@ -65,7 +65,7 @@ export const storePatternsInit = () =>
 
       if (patt !== '')
       {
-        const obj = { id:`${++bcount}`, text:text };
+        const obj = { id: ++bcount, text:text };
         lmenu.push(obj);
         lpatt.push(patt);
         ldesc.push(desc);

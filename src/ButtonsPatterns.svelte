@@ -13,8 +13,7 @@
 
   import {
     pStrand,
-    patsMenuOpen,
-    patsMenuItems
+    patsMenuOpen
   } from './globals.js';
 
   import {
@@ -24,7 +23,12 @@
 
   import { userClearPattern } from './cmduser2.js';
   import { sendStrandPattern } from './cmdsend.js';
-  import { MENUID_CUSTOM, menuCreate } from './menu.js';
+
+  import {
+    MENUID_BROWSER,
+    menuBrowser,
+    menuCreate
+  } from './menu.js';
 
   let openSave = false;
   let copyclip = false;
@@ -34,12 +38,7 @@
 
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
 
-  const doclear = () =>
-  {
-    userClearPattern();
-    $pStrand.curPatternId = MENUID_CUSTOM;
-  }
-
+  const doclear = () => { userClearPattern(); }
   const dostore = () => { sendStrandPattern(); }
 
   const dosave = () =>
@@ -56,8 +55,7 @@
     storePatternsInit();
     menuCreate();
 
-    // triggers update to UI - MUST HAVE THIS
-    $patsMenuItems = $patsMenuItems;
+    $pStrand.curPatternId = MENUID_BROWSER + menuBrowser.children.length;
   }
 
   function copyToClipboard()

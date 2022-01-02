@@ -68,42 +68,36 @@ import {
   {
     openDelete = false;
 
-    if (deleteall) storePatternRemAll();
+    if (deleteall)
+         storePatternRemAll();
     else storePatternRemove(delname);
 
     storePatternsInit();
     menuCreate();
 
     userClearPattern();
-    $pStrand.curPatternId = MENUID_BROWSER;
-
-    // triggers update to UI - MUST HAVE THIS
-    $patsMenuItems = $patsMenuItems;
+    $pStrand.curPatternId = MENUID_CUSTOM;
   }
 
   let isbrowser;
   $: isbrowser = ($pStrand.curPatternId > MENUID_BROWSER) &&
                  ($pStrand.curPatternId < MENUID_DEVICE);
 
-  $: doselect($pStrand.curPatternId);
   const doselect = (id) =>
   {
-    if (id === $pStrand.curPattIdOld)
-      return;
+    //console.log(`Selecting ID: cur=${$pStrand.curPatternId} new=${id}`);
 
-    //console.log(`Selecting id=${id}`);
+    if (id === $pStrand.curPatternId) return;
 
-    if ((id === MENUID_PRESETS)  ||
+    if ((id === MENUID_PRESETS) ||
         (id === MENUID_BROWSER) ||
         (id === MENUID_DEVICE))
       userClearPattern();
 
-    $pStrand.curPattIdOld = id;
-    $pStrand.curPatternId = id;
     $patsSelectedID = [ id ];
 
-    if ((id === MENUID_CUSTOM)   ||
-        (id === MENUID_PRESETS)  ||
+    if ((id === MENUID_CUSTOM)  ||
+        (id === MENUID_PRESETS) ||
         (id === MENUID_BROWSER) ||
         (id === MENUID_DEVICE))
       return;
@@ -154,12 +148,12 @@ import {
 {#if ($aStoredPatt.length > 0) }
   <div class="buttons">
     <button class="button-delete"
-      on:click={delall}
+      on:click={delone}
       disabled={!isbrowser}
       >Delete One
     </button>
     <button class="button-delete"
-      on:click={delone}
+      on:click={delall}
       disabled={!isbrowser}
       >Delete All
     </button>

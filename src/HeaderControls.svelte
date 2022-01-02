@@ -120,7 +120,7 @@
 
       <button class="button rite"
         on:click={doshow}
-        >Links
+        >Options
       </button>
 
       </div>

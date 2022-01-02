@@ -37,7 +37,7 @@
             background-color: var(--bg-color-controls-area);
             ">
 
-  <p style="margin-left:10px; font-size:.9em">Property Overrides:</p>
+  <p style="margin-left:10px; font-size:.9em">Allow Property Overrides:</p>
 
   <Row style="margin:10px 0 5px 10px; width:300px;">
     <Checkbox labelText="Hue"

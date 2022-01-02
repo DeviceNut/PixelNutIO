@@ -176,7 +176,7 @@ export const userStrandSelect = (index, combine) =>
 // triggers program error if parse fails
 export const userSetPattern = (pattern) =>
 {
-  console.log(`SetPattern: ${get(pStrand).curPatternName}`);
+  //console.log(`SetPattern: ${get(pStrand).curPatternName}`);
 
   strandClearAll();
 

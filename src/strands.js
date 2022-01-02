@@ -65,7 +65,8 @@ const oneLayer =
   pluginObj       : {},     // object returned from findEffectFromPlugin()
                             //  that contains all info on an effect
 
-  cmdstr          : ''      // command string for the current settings
+  cmdstr          : '',     // command string for the current settings
+  isnewstr        : false   // true if command string has changed
 }
 
 const drawProps =
@@ -99,13 +100,14 @@ const oneTrack =
   lactives        : 1,      // current number of active layers (>=1)
   layers          : [],     // list of 'oneLayer's for this track
   drawProps       : {},     // drawing properties for first layer
+  saveProps       : {}      // used to detect changes in properties
 }
 
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  curPattIdOld : -1,        // used to prevent unnecessary selections
+  curPattIdOld    : -1,     // used to prevent unnecessary selections
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
@@ -122,9 +124,9 @@ const oneStrand =
   pixelOffset     : 0,      // *pixel offset to start drawing from
 
   doOverride      : false,  // *true to override local properties with:
-  degreeHue       : 0,      // hue in degrees (0-MAX_DEGREES_HUE)
-  pcentWhite      : 0,      // percent whiteness
-  pcentCount      : 0,      // percent of pixels affected in range
+  degreeHue       : 0,      // *hue in degrees (0-MAX_DEGREES_HUE)
+  pcentWhite      : 0,      // *percent whiteness
+  pcentCount      : 0,      // *percent of pixels affected in range
 
   forceValue      : DEF_FORCE_VALUE, // force value for triggering
   numPixels       : 0,      // number of pixels in this strand

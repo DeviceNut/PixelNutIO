@@ -216,6 +216,7 @@ export const makeLayerCmdStr = (track, layer) =>
       cmdstr = cmdstr.concat(`${cmdStr_TrigRange}${player.trigRepRange} `);
   }
 
+  player.isnewstr = cmdstr !== player.cmdstr;
   player.cmdstr = cmdstr;
 }
 

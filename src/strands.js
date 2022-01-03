@@ -62,7 +62,8 @@ const oneLayer =
   forceRandom     : false,  // true if a random force is applied when triggering
   forceValue      : DEF_FORCE_VALUE, // percent force to apply (if not random)
 
-  pluginObj       : {},     // object returned from findEffectFromPlugin()
+  plugindex       : 0,      // index into effect list as chosen by user
+  pluginObj       : {},     // object returned from findEffectFromIndex()
                             //  that contains all info on an effect
 
   cmdstr          : '',     // command string for the current settings

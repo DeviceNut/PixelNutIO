@@ -16,7 +16,7 @@
   import {
     userSetEffect,
     userDoRestart
-  } from './cmduser1.js'
+  } from './cmduser2.js'
 
   export let track;
 
@@ -34,7 +34,7 @@
       size="sm"
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].pluginObj.index}
+      bind:selectedIndex={$pStrand.tracks[track].layers[DRAW_LAYER].plugindex}
       bind:items={$aEffectsDraw}
     />
     <button class="button-help"
@@ -53,7 +53,7 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].pluginObj.index]}
+        {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].plugindex]}
       </p>
     </Row>
   {/if}

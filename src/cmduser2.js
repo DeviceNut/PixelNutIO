@@ -7,6 +7,7 @@ import {
   pStrand,
   aStrands,
   eStrands,
+  findEffectFromIndex,
   findEffectFromPlugin
 } from './globals.js';
 
@@ -51,7 +52,7 @@ import {
   sendStrandPattern,
   sendPatternToStrand,
   sendStrandCmd,
-  sendLayerCmd
+  sendLayerCmdForce
 } from './cmdsend.js';
 
 import { resetEffectBits } from './cmduser1.js';
@@ -210,6 +211,39 @@ export const userClearPattern = () =>
   strand.showCustom = false;
 }
 
+// switch to new effect on this layer, specified by layer's plugindex
+export const userSetEffect = (track, layer) =>
+{
+  const strand = get(pStrand);
+  const player = strand.tracks[track].layers[layer];
+
+  //console.log(`seteffect (${track}.${layer}): index=${player.plugindex}`);
+
+  if (player.plugindex !== player.pluginObj.index)
+  {
+    const pobj = findEffectFromIndex(player.pluginObj.filter, player.plugindex);
+    const before = player.pluginObj.bits;
+    const after = pobj.bits;
+    player.pluginObj = pobj;
+
+    updateTriggerLayers();
+    updateAllTracks();
+
+    sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pobj.id}`);
+
+    const bits = before & ~after; // override bits being cleared
+    const props = get(pStrand).tracks[track].drawProps;
+
+    resetEffectBits(track, props, bits);
+  }
+}
+
+export const userDoRestart = (track, layer) =>
+{
+  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
+  sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pval}`);
+}
+
 // assume cannot get called if number of T/L's at max
 export const userAddTrackLayer = (track, layer, dofilter=false) =>
 {
@@ -222,7 +256,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
 
     effect = defDrawEffect;
     // send command to append new track and redraw layer, set effect
-    sendLayerCmd(track, layer, cmdStr_AppRemEffect, effect);
+    sendLayerCmdForce(track, layer, cmdStr_AppRemEffect, effect);
     track += 1;
   }
   else
@@ -231,7 +265,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
 
     effect = defFilterEffect;
     // send command to append new filter layer, set effect
-    sendLayerCmd(track, layer, cmdStr_AppRemEffect, effect);
+    sendLayerCmdForce(track, layer, cmdStr_AppRemEffect, effect);
     layer += 1;
   }
 
@@ -243,14 +277,14 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   updateAllTracks();
 
   if (strand.tracks[track].layers[layer].trigAtStart)
-    sendLayerCmd(track, layer, cmdStr_TrigAtStart);
+  sendLayerCmdForce(track, layer, cmdStr_TrigAtStart);
 }
 
 // assume cannot get called if only one T/L
 export const userRemTrackLayer = (track, layer) =>
 {
   // send command to delete current track/layer (no effect #)
-  sendLayerCmd(track, layer, cmdStr_AppRemEffect);
+  sendLayerCmdForce(track, layer, cmdStr_AppRemEffect);
 
   if (layer == DRAW_LAYER)
   {
@@ -277,7 +311,7 @@ export const userRemTrackLayer = (track, layer) =>
 export const userSwapTrackLayer = (track, layer) =>
 {
   // send command to swap track/layer (no effect #)
-  sendLayerCmd(track, layer, cmdStr_SelectEffect);
+  sendLayerCmdForce(track, layer, cmdStr_SelectEffect);
 
   if (layer === DRAW_LAYER)
        strandSwapTracks(track);
@@ -306,12 +340,12 @@ export const userSoloTrackLayer = (track, layer) =>
         {
           strand.tracks[i].layers[DRAW_LAYER].solo = false;
           strand.tracks[i].layers[DRAW_LAYER].mute = true;
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_LayerMute);
+          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute);
         }
         else if (strand.tracks[i].layers[DRAW_LAYER].mute === true)
         {
           strand.tracks[i].layers[DRAW_LAYER].mute = false;
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_LayerMute, 0);
+          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -322,7 +356,7 @@ export const userSoloTrackLayer = (track, layer) =>
         if (i !== track)
         {
           strand.tracks[i].layers[DRAW_LAYER].mute = false;
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_LayerMute, 0);
+          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -342,12 +376,12 @@ export const userSoloTrackLayer = (track, layer) =>
         {
           strand.tracks[track].layers[i].solo = false;
           strand.tracks[track].layers[i].mute = true;
-          sendLayerCmd(track, i, cmdStr_LayerMute);
+          sendLayerCmdForce(track, i, cmdStr_LayerMute);
         }
         else if (strand.tracks[track].layers[i].mute === true)
         {
           strand.tracks[track].layers[i].mute = false;
-          sendLayerCmd(track, i, cmdStr_LayerMute, 0);
+          sendLayerCmdForce(track, i, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -358,7 +392,7 @@ export const userSoloTrackLayer = (track, layer) =>
         if (i !== layer)
         {
           strand.tracks[track].layers[i].mute = false;
-          sendLayerCmd(track, i, cmdStr_LayerMute, 0);
+          sendLayerCmdForce(track, i, cmdStr_LayerMute, 0);
         }
       }
     }
@@ -374,7 +408,7 @@ export const userMuteTrackLayer = (track, layer) =>
   const enable = !strand.tracks[track].layers[layer].mute;
   strand.tracks[track].layers[layer].mute = enable; // toggle
 
-  sendLayerCmd(track, layer, cmdStr_LayerMute, enable ? undefined : 0);
+  sendLayerCmdForce(track, layer, cmdStr_LayerMute, enable ? undefined : 0);
 
   // turning off mute for a track/layer that is not on Solo
   // turns off the Solo for any other track/layer

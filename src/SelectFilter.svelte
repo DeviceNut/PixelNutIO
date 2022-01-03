@@ -16,7 +16,7 @@
   import {
     userSetEffect,
     userDoRestart
-  } from './cmduser1.js';
+  } from './cmduser2.js';
 
   export let track;
   export let layer;
@@ -35,7 +35,7 @@
       size="sm"
       type="inline"
       on:select={setEffect}
-      bind:selectedIndex={$pStrand.tracks[track].layers[layer].pluginObj.index}
+      bind:selectedIndex={$pStrand.tracks[track].layers[layer].plugindex}
       bind:items={$aEffectsFilter}
     />
     <button class="button-help"
@@ -55,7 +55,7 @@
                 color: var(--color-textbox);
                 background-color: var(--bg-color-textbox);">
       <p style="font-size:.9em;">
-        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].pluginObj.index]}
+        {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].plugindex]}
       </p>
     </Row>
   {/if}

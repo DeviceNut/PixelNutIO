@@ -1,9 +1,6 @@
 import { get } from 'svelte/store';
 
-import {
-  pStrand,
-  findEffectFromIndex
-} from './globals.js';
+import { pStrand } from './globals.js';
 
 import {
   strandCopyTop,
@@ -25,7 +22,6 @@ import {
   cmdStr_OR_Props2      ,
   cmdStr_SetOride       ,
   cmdStr_SetFirst       ,
-  cmdStr_SelectEffect   ,
   cmdStr_PcentXoffset   ,
   cmdStr_PcentXlength   ,
   cmdStr_PcentBright    ,
@@ -48,9 +44,7 @@ import {
 
 import {
   makeOrideBits,
-  updateLayerVals,
-  updateAllTracks,
-  updateTriggerLayers
+  updateLayerVals
 } from './cmdmake.js';
 
 import {
@@ -84,38 +78,6 @@ export const resetEffectBits = (track, props, bits) =>
     sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
     sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
   }
-}
-
-// switch to new effect on this layer, specified by layer's pluginObj.index
-export const userSetEffect = (track, layer) =>
-{
-  const strand = get(pStrand);
-  const player = strand.tracks[track].layers[layer];
-
-  //console.log(`seteffect: track=${track} layer=${layer} index: old=${pshadow.pluginObj.index} new=${player.pluginObj.index}`);
-
-  {
-    const pobj = findEffectFromIndex(player.pluginObj.filter, player.pluginObj.index);
-    const before = player.pluginObj.bits;
-    const after = pobj.bits;
-    player.pluginObj = pobj;
-
-    updateTriggerLayers();
-    updateAllTracks();
-
-    sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pobj.id}`);
-
-    const bits = before & ~after; // override bits being cleared
-    const props = get(pStrand).tracks[track].drawProps;
-
-    resetEffectBits(track, props, bits);
-  }
-}
-
-export const userDoRestart = (track, layer) =>
-{
-  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
-  sendLayerCmd(track, layer, cmdStr_SelectEffect, `${pval}`);
 }
 
 // Main Controls:

@@ -26,9 +26,10 @@
     userSetLength,
     userSetOrPixs,
     userSetBackwards,
-    userSetNoRepeat,
-    userDoRestart
+    userSetNoRepeat
   } from './cmduser1.js'
+
+  import { userDoRestart } from './cmduser2.js';
 
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';
   import SectionTrigger from './SectionTrigger.svelte';

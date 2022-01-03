@@ -41,7 +41,11 @@
   const dopause = () => { userSendPause(isPaused = !isPaused); }
 
   let openOptions = false;
-  const doshow = () => { openOptions = !openOptions; }
+  const doshow = () => // must toggle it here because value is not reset from within component
+  {
+    openOptions = false;
+    openOptions = true;
+  }
 
   const dodevs = () =>
   {
@@ -55,7 +59,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 680px)" let:matches>
+<MediaQuery query="(max-width: 700px)" let:matches>
   {#if matches}
     <div class="header">
       <input
@@ -72,15 +76,15 @@
         >&lt;&lt; Devices
       </button>
 
+      <button class="button center"
+        on:click={doshow}
+        >Options
+      </button>
+
       <button class="button center fixwidth"
         class:paused={isPaused}
         on:click={dopause}
         >{textPause}
-      </button>
-
-      <button class="button center"
-        on:click={doshow}
-        >Options
       </button>
 
       <button class="button center"
@@ -91,7 +95,7 @@
       </div>
   {/if}
 </MediaQuery>
-<MediaQuery query="(min-width: 681px)" let:matches>
+<MediaQuery query="(min-width: 701px)" let:matches>
   {#if matches }
     <div class="header">
 
@@ -100,10 +104,9 @@
         >&lt;&lt; Devices
       </button>
 
-      <button class="button left fixwidth"
-        class:paused={isPaused}
-        on:click={dopause}
-        >{textPause}
+      <button class="button left"
+        on:click={doshow}
+        >Options
       </button>
 
       <input
@@ -118,9 +121,10 @@
         >Docs &gt;&gt;
       </button>
 
-      <button class="button rite"
-        on:click={doshow}
-        >Options
+      <button class="button rite fixwidth"
+        class:paused={isPaused}
+        on:click={dopause}
+        >{textPause}
       </button>
 
       </div>
@@ -153,7 +157,7 @@
     background-color: var(--bg-color-header);
   }
   .title {
-    margin: 5px 10px 0 10px;
+    margin: 5px 5px 0 5px;
     padding: 3px;
     color: var(--color-title);
     background-color: var(--bg-color-title);
@@ -168,11 +172,11 @@
   }
   .button.left {
     float: left;
-    margin-left: 8px;
+    margin-left: 7px;
   }
   .button.rite {
     float: right;
-    margin-right: 8px;
+    margin-right: 7px;
   }
   .button.fixwidth {
     width: 63px;

@@ -13,7 +13,7 @@
   <div class="docenter">
     <div style="margin-top:15px;">
 
-      <MediaQuery query="(max-width: 680px)" let:matches>
+      <MediaQuery query="(max-width: 700px)" let:matches>
         {#if matches}
           <span style="display:block; text-align:center;
                        margin-bottom:10px; font-size:1.1em;"
@@ -21,7 +21,7 @@
           </span>
         {/if}
       </MediaQuery>
-      <MediaQuery query="(min-width: 681px)" let:matches>
+      <MediaQuery query="(min-width: 701px)" let:matches>
         {#if matches}
           <span style="font-size:1.1em;">Strands:</span>
         {/if}

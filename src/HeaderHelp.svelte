@@ -16,7 +16,11 @@
   $: prevPage = ($prevPageMode == PAGEMODE_DEVICES) ? "Devices" : "Controls";
 
   let openOptions = false;
-  const doshow = () => { openOptions = !openOptions; }
+  const doshow = () => // must toggle it here because value is not reset from within component
+  {
+    openOptions = false;
+    openOptions = true;
+  }
 
   const goback = () => { $curPageMode = $prevPageMode; }
 

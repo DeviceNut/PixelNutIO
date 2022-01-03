@@ -151,6 +151,7 @@ export const parsePattern = (pattern) =>
         get(pStrand).tracks[track].layers[layer].trigAtStart = false;
 
         //console.log(`parse: track=${track} layer=${layer} index=${obj.index} plugbits=${layerbits.toString(16)}`);
+        get(pStrand).tracks[track].layers[layer].plugindex = obj.index;
         get(pStrand).tracks[track].layers[layer].pluginObj = obj;
         break;
       }

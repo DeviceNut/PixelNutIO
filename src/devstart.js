@@ -36,6 +36,16 @@ import {
   preset_FilterEffectDescs
 } from './presets.js';
 
+import {
+  cmdStr_PcentBright,
+  cmdStr_MsecsDelay,
+  cmdStr_ValueHue,
+  cmdStr_PcentWhite,
+  cmdStr_PcentCount,
+  cmdStr_OrideBits,
+  cmdStr_LayerMute
+} from './devcmds.js';
+
 import { pluginBit_REDRAW } from './devcmds.js';
 import { deviceError } from './devtalk.js';
 import { strandCreateNew } from './strands.js';
@@ -82,10 +92,52 @@ function setStrandTop(strand, dvals)
 
 function setStrandPattern(strand, id, name='', pstr='', pdesc='')
 {
-  strand.setPattIdOld   = id;
+  strand.curPatternId   = id;
   strand.curPatternName = name;
   strand.curPatternCmd  = pstr;
   strand.curPatternDesc = pdesc;
+}
+
+function stripCmdStr(instr)
+{
+  //console.log(`instr="${instr}"`);
+
+  let outstr = '';
+  const cmds = instr.toUpperCase().split(/\s+/); // remove all spaces
+
+  for (let cmd of cmds)
+  {
+    if (cmd === '') continue;
+
+    const ch = cmd.substr(0, 1);
+    const val = parseInt(cmd.substr(1));
+
+    switch (ch)
+    {
+      default:
+      {
+        if (isNaN(val))
+             outstr += `${ch} `;
+        else outstr += `${ch}${val} `;
+        break;
+      }
+      case cmdStr_PcentBright:
+      case cmdStr_MsecsDelay:
+      case cmdStr_ValueHue:
+      case cmdStr_PcentWhite:
+      case cmdStr_PcentCount:
+      case cmdStr_OrideBits:
+      case cmdStr_LayerMute:
+      {
+        // strip from command
+        break;
+      }
+    }
+  }
+
+  outstr = outstr.trim();
+  //console.log(`outstr="${outstr}"`);
+  return outstr;
 }
 
 export let deviceStartup = (device) =>
@@ -243,36 +295,63 @@ export let deviceStartup = (device) =>
       for (let i = 0; i < menuPresets.children.length; ++i)
       {
         let name = menuPresets.children[i].text;
-        let idex = menuPresets.children[i].id - (MENUID_PRESETS+1);
-        //console.log(`Presets(${i}): ${name}`);
-        //console.log(`    ${apats[idex]}`);
-        //console.log(`    ${adesc[idex]}`);
-      }
+        let idex = menuPresets.children[i].id - (MENUID_PRESETS + 1);
 
-      apats = get(aStoredPatt);
-      adesc = get(aStoredDesc);
-      for (let i = 0; i < menuBrowser.children.length; ++i)
-      {
-        let name = menuBrowser.children[i].text;
-        let idex = menuBrowser.children[i].id - (MENUID_BROWSER+1);
-        //console.log(`Browser(${i}): ${name}`);
-        //console.log(`    ${apats[idex]}`);
-        //console.log(`    ${adesc[idex]}`);
-      }
-
-      for (let i = 0; i < device.report.patterns.length; ++i)
-      {
-        //console.log(`"${cmdstr}" == "${device.report.patterns[i].pcmd}"`);
-
-        if ((cmdname === device.report.patterns[i].name) &&
-            (cmdstr  === device.report.patterns[i].pcmd))
+        if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
         {
-          let cmdid = (devdex_base + i);
-          let cmdesc = device.report.patterns[i].desc;
+          //console.log(`Preset(${i}): ${cmdname}`);
+          //console.log(`  ${cmdstr}`);
+          //console.log(`  ${apats[idex]}`);
 
-          setStrandPattern(strand, cmdid, cmdname, cmdstr, cmdesc);
+          setStrandPattern(strand, (MENUID_PRESETS + i + 1), cmdname, cmdstr, adesc[idex]);
           found = true;
           break;
+        }
+      }
+
+      if (!found)
+      {
+        apats = get(aStoredPatt);
+        adesc = get(aStoredDesc);
+        for (let i = 0; i < menuBrowser.children.length; ++i)
+        {
+          let name = menuBrowser.children[i].text;
+          let idex = menuBrowser.children[i].id - (MENUID_BROWSER + 1);
+  
+          if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
+          {
+            //console.log(`s1="${stripCmdStr(cmdstr)}"`)
+            //console.log(`s2="${stripCmdStr(apats[idex])}"`)
+
+            //console.log(`Saved(${i}): ${cmdname}`);
+            //console.log(`  ${cmdstr}`);
+            //console.log(`  ${apats[idex]}`);
+  
+            setStrandPattern(strand, (MENUID_BROWSER + i + 1), cmdname, cmdstr, adesc[idex]);
+            found = true;
+            break;
+          }
+        }
+      }
+
+      if (!found)
+      {
+        for (let i = 0; i < device.report.patterns.length; ++i)
+        {
+          let name = device.report.patterns[i].name;
+          let pcmd = device.report.patterns[i].pcmd;
+          let desc = device.report.patterns[i].desc;
+
+          if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(pcmd)))
+          {
+            //console.log(`Device(${i}): ${cmdname}`);
+            //console.log(`  ${cmdstr}`);
+            //console.log(`  ${device.report.patterns[i].pcmd}`);
+
+            setStrandPattern(strand, (devdex_base + i), cmdname, cmdstr, desc);
+            found = true;
+            break;
+          }
         }
       }
 

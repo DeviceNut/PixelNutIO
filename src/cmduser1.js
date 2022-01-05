@@ -9,12 +9,6 @@ import {
 
 import {
   DRAW_LAYER            ,
-  pluginBit_ORIDE_HUE   ,
-  pluginBit_ORIDE_WHITE ,
-  pluginBit_ORIDE_COUNT ,
-  pluginBit_ORIDE_DELAY ,
-  pluginBit_ORIDE_DIR   ,
-  pluginBit_ORIDE_EXT   ,
   cmdStr_PullTrigger    ,
   cmdStr_OR_Bright      ,
   cmdStr_OR_Delay       ,
@@ -26,7 +20,7 @@ import {
   cmdStr_PcentXlength   ,
   cmdStr_PcentBright    ,
   cmdStr_MsecsDelay     ,
-  cmdStr_ValueHue      ,
+  cmdStr_ValueHue       ,
   cmdStr_PcentWhite     ,
   cmdStr_PcentCount     ,
   cmdStr_OrideBits      ,
@@ -52,39 +46,9 @@ import {
   sendLayerCmd
 } from './cmdsend.js';
 
+import { userDoRestart } from './cmduser2.js';
+
 ///////////////////////////////////////////////////////////
-
-export const userDoRestart = (track, layer) =>
-{
-  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
-  sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pval}`);
-}
-
-export const resetEffectBits = (track, props, bits) =>
-{
-  //console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
-
-  if (bits & pluginBit_ORIDE_HUE)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_ValueHue, props.valueHue);
-
-  if (bits & pluginBit_ORIDE_WHITE)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
-
-  if (bits & pluginBit_ORIDE_COUNT)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
-
-  if (bits & pluginBit_ORIDE_DELAY)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
-
-  if (bits & pluginBit_ORIDE_DIR)
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards ? 1 : undefined);
-
-  if (bits & pluginBit_ORIDE_EXT)
-  {
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
-    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
-  }
-}
 
 // Main Controls:
 
@@ -301,10 +265,12 @@ export const userSetTrigStart = (track, layer) =>
 {
   if (layer === undefined) layer = DRAW_LAYER;
 
-  const dostart = get(pStrand).tracks[track].layers[layer].trigAtStart;
+  const enable = get(pStrand).tracks[track].layers[layer].trigAtStart;
+
+  console.log(`userSetTrigStart(${track}.${layer}): enable=${enable}`);
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_TrigAtStart, (dostart ? undefined : 0));
+  sendLayerCmd(track, layer, cmdStr_TrigAtStart, (enable ? undefined : 0));
   // don't need to send value if enabling (1 is default)
 }
 
@@ -312,40 +278,39 @@ export const userSetTrigMain = (track, layer) =>
 {
   if (layer === undefined) layer = DRAW_LAYER;
 
-  const domain = get(pStrand).tracks[track].layers[layer].trigFromMain;
+  const enable = get(pStrand).tracks[track].layers[layer].trigFromMain;
 
+  console.log('userSetTrigMain');
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_TrigFromMain, (domain ? undefined : 0));
+  sendLayerCmd(track, layer, cmdStr_TrigFromMain, (enable ? undefined : 0));
   // don't need to send value if enabling (1 is default)
 }
 
 export const userSetTrigLayer = (track, layer) =>
 {
   const strand = get(pStrand);
-  const enable = strand.tracks[track].layers[layer].trigOnLayer;
+  const enable = strand.tracks[track].layers[layer].trigOnLayerShow;
   const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  //console.log(`triglayer: enable=${enable} index=${index}`);
+  console.log(`userSetTrigLayer: enable=${enable} index=${index}`);
+
+  updateLayerVals(track, layer);
 
   if (!enable && (index > 0)) // if disabling and was selected then reset selection
   {
     // always reset selection when disable
     strand.tracks[track].layers[layer].trigSrcListDex = 0;
-
-    updateLayerVals(track, layer);
-    sendLayerCmd(track, layer, cmdStr_TrigByEffect, undefined); // disable in device
+    sendLayerCmd(track, layer, cmdStr_TrigByEffect, undefined);
   }
 }
 
-// if this is called then onLayer has already been enabled
+// if this is called then trigOnLayerShow has already been enabled
 export const userSetTrigSource = (track, layer) =>
 {
   const strand = get(pStrand);
   const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  //console.log(`trigsource: index=${index}`);
-
-  updateLayerVals(track, layer);
+  console.log(`userSetTrigSource: index=${index}`);
 
   let devindex; // set to undefined, valid parm to sendLayerCmd()
   if (index > 0)
@@ -362,6 +327,7 @@ export const userSetTrigSource = (track, layer) =>
     strand.tracks[track].layers[layer].trigSrcLayerID = idval;
   }
 
+  updateLayerVals(track, layer);
   sendLayerCmd(track, layer, cmdStr_TrigByEffect, devindex);
 }
 
@@ -371,6 +337,7 @@ export const userSetTrigRepeat = (track, layer) =>
 
   const trepeat = get(pStrand).tracks[track].layers[layer].trigDoRepeat;
 
+  console.log('userSetTrigRepeat');
   updateLayerVals(track, layer);
 
   if (trepeat)
@@ -378,6 +345,7 @@ export const userSetTrigRepeat = (track, layer) =>
     let count;
     if (get(pStrand).tracks[track].layers[layer].trigForever) count = undefined;
     else count = get(pStrand).tracks[track].layers[layer].trigRepCount;
+
     sendLayerCmd(track, layer, cmdStr_TrigRepeating, count);
   }
   else sendLayerCmd(track, layer, cmdStr_TrigRepeating, 0); // disable
@@ -388,6 +356,7 @@ export const userSetTrigForever = (track, layer) =>
   const strand = get(pStrand);
   const forever = strand.tracks[track].layers[layer].trigForever;
 
+  console.log('userSetTrigForever');
   updateLayerVals(track, layer);
 
   if (get(pStrand).tracks[track].layers[layer].trigDoRepeat)
@@ -403,6 +372,7 @@ export const userSetTrigCount = (track, layer) =>
 {
   const count = get(pStrand).tracks[track].layers[layer].trigRepCount;
 
+  console.log('userSetTrigCount');
   updateLayerVals(track, layer);
 
   if (get(pStrand).tracks[track].layers[layer].trigDoRepeat)
@@ -416,6 +386,7 @@ export const userSetTrigOffset = (track, layer) =>
 {
   const offset = get(pStrand).tracks[track].layers[layer].trigRepOffset;
 
+  console.log('userSetTrigOffset');
   updateLayerVals(track, layer);
   sendLayerCmd(track, layer, cmdStr_TrigOffset, offset);
 }
@@ -424,6 +395,7 @@ export const userSetTrigRange = (track, layer) =>
 {
   const range = get(pStrand).tracks[track].layers[layer].trigRepRange;
 
+  console.log('userSetTrigRange');
   updateLayerVals(track, layer);
   sendLayerCmd(track, layer, cmdStr_TrigRange, range);
 }
@@ -434,6 +406,7 @@ export const userSetForceType = (track, layer) =>
 
   const force = isrand ? undefined : get(pStrand).tracks[track].layers[layer].forceValue;
 
+  console.log('userSetForceType');
   updateLayerVals(track, layer);
   sendLayerCmd(track, layer, cmdStr_TrigForce, force);
 }
@@ -442,6 +415,7 @@ export const userSetForceValue = (track, layer) =>
 {
   const force = get(pStrand).tracks[track].layers[layer].forceValue;
 
+  console.log('userSetForceValue');
   updateLayerVals(track, layer);
   sendLayerCmd(track, layer, cmdStr_TrigForce, force);
 }

@@ -10,16 +10,19 @@
   import {
     pStrand,
     aEffectsDraw,
-    aEffDrawDesc
+    aEffDrawDesc,
+    allowUpdates
   } from './globals.js';
 
-  import { userDoRestart } from './cmduser1.js'
-  import { userSetEffect } from './cmduser2.js'
+  import {
+    userDoRestart,
+    userSetEffect
+  } from './cmduser2.js'
 
   export let track;
 
-  const setEffect = () => { userSetEffect(track, DRAW_LAYER); }
-  const dorestart = () => { userDoRestart(track, DRAW_LAYER); }
+  const setEffect = () => { if ($allowUpdates) userSetEffect(track, DRAW_LAYER); }
+  const dorestart = () => { if ($allowUpdates) userDoRestart(track, DRAW_LAYER); }
 
   let helpon = false;
 

@@ -8,7 +8,8 @@ import {
   aStrands,
   eStrands,
   findEffectFromIndex,
-  findEffectFromPlugin
+  findEffectFromPlugin,
+  allowUpdates
 } from './globals.js';
 
 import {
@@ -26,10 +27,23 @@ import {
 
 import {
   DRAW_LAYER,
+  pluginBit_ORIDE_HUE,
+  pluginBit_ORIDE_WHITE,
+  pluginBit_ORIDE_COUNT,
+  pluginBit_ORIDE_DELAY,
+  pluginBit_ORIDE_DIR,
+  pluginBit_ORIDE_EXT,
   cmdStr_LayerMute,
   cmdStr_DeviceName,
   cmdStr_Pause,
   cmdStr_Resume,
+  cmdStr_PcentXoffset   ,
+  cmdStr_PcentXlength   ,
+  cmdStr_MsecsDelay     ,
+  cmdStr_ValueHue       ,
+  cmdStr_PcentWhite     ,
+  cmdStr_PcentCount     ,
+  cmdStr_Backwards      ,
   cmdStr_SelectEffect,
   cmdStr_AppRemEffect,
   cmdStr_TrigAtStart,
@@ -52,14 +66,40 @@ import {
   sendStrandPattern,
   sendPatternToStrand,
   sendStrandCmd,
+  sendLayerCmd,
   sendLayerCmdForce
 } from './cmdsend.js';
 
-import { resetEffectBits } from './cmduser1.js';
 import { parsePattern } from './cmdparse.js';
 import { MENUID_CUSTOM } from './menu.js';
 
 ///////////////////////////////////////////////////////////
+
+function resetEffectBits(track, props, bits)
+{
+  console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
+
+  if (bits & pluginBit_ORIDE_HUE)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_ValueHue, props.valueHue);
+
+  if (bits & pluginBit_ORIDE_WHITE)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentWhite, props.pcentWhite);
+
+  if (bits & pluginBit_ORIDE_COUNT)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentCount, props.pcentCount);
+
+  if (bits & pluginBit_ORIDE_DELAY)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_MsecsDelay, props.pcentDelay);
+
+  if (bits & pluginBit_ORIDE_DIR)
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_Backwards, props.dirBackwards ? 1 : undefined);
+
+  if (bits & pluginBit_ORIDE_EXT)
+  {
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXoffset, props.pcentXoffset);
+    sendLayerCmd(track, DRAW_LAYER, cmdStr_PcentXlength, props.pcentXlength);
+  }
+}
 
 export const userSetDevname = (devname) =>
 {
@@ -216,13 +256,19 @@ export const userClearPattern = (setid=true) =>
   }
 }
 
+export const userDoRestart = (track, layer) =>
+{
+  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
+  sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pval}`);
+}
+
 // switch to new effect on this layer, specified by layer's plugindex
 export const userSetEffect = (track, layer) =>
 {
   const strand = get(pStrand);
   const player = strand.tracks[track].layers[layer];
 
-  //console.log(`${track}.${layer}: PluginIndex ${player.pluginObj.index} => ${player.plugindex}`);
+  console.log(`${track}.${layer}: PluginIndex ${player.pluginObj.index} => ${player.plugindex}`);
 
   if (player.plugindex !== player.pluginObj.index)
   {
@@ -304,6 +350,9 @@ export const userRemTrackLayer = (track, layer) =>
 
   updateTriggerLayers();
   updateAllTracks();
+
+  // supress reactive changes until UI updated
+  allowUpdates.set(false);
 }
 
 // assume cannot get called if the T/L is the last

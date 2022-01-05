@@ -122,6 +122,8 @@ export const makeEntireCmdStr = () =>
     track.trackBits = tplugbits;
   }
 
+  //console.log(`makeEntireCmdStr: ${cmdstr}`);
+
   get(pStrand).curPatternCmd = cmdstr;
   get(pStrand).bitsOverride  = ridebits;
   get(pStrand).bitsEffects   = splugbits;
@@ -200,7 +202,7 @@ export const makeLayerCmdStr = (track, layer) =>
   if (player.trigFromMain)
     cmdstr = cmdstr.concat(`${cmdStr_TrigFromMain} `);
 
-  if (player.trigOnLayer)
+  if (player.trigOnLayerShow && (player.trigSrcListDex > 0))
     cmdstr = cmdstr.concat(`${cmdStr_TrigByEffect}${player.trigSrcLayerDex} `);
 
   if (player.trigDoRepeat)
@@ -217,7 +219,7 @@ export const makeLayerCmdStr = (track, layer) =>
   }
 
   player.isnewstr = cmdstr !== player.cmdstr;
-  //if (player.isnewstr) console.log(`MakeNewStr: "${player.cmdstr}" => "${cmdstr}"`);
+  if (player.isnewstr) console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
   player.cmdstr = cmdstr;
 }
 
@@ -237,10 +239,8 @@ export const makeTrigSourceList = () =>
   let count = 0;
   let devindex = 0;
 
-  items.push({ id:0,
-               devindex:0, sourceid:0,
-               track:0, layer:0,
-               text:'<none>' });
+  items.push({ id:0, devindex:0, sourceid:0,
+               track:0, layer:0, text:'<none>' });
 
   // create list of track/layers that can cause triggering
   for (let track = 0; track < strand.tactives; ++track)
@@ -252,13 +252,14 @@ export const makeTrigSourceList = () =>
         let sourceid = strand.tracks[track].layers[layer].uniqueID;
         let name = strand.tracks[track].layers[layer].pluginObj.name;
 
-        ++count;
-        items.push({ id:count,
-                     devindex:devindex, sourceid:sourceid,
-                     track:track, layer:layer,
+        items.push({ id: ++count,
+                     devindex: devindex,
+                     sourceid: sourceid,
+                     track: track,
+                     layer: layer,
                      text: `Track(${track+1}) Layer(${layer+1}) - ${name}` });
 
-        //console.log('tsource: ', items[count]);
+        console.log('tsource: ', items[count]);
       }
 
       ++devindex;
@@ -272,6 +273,7 @@ export const makeTrigSourceList = () =>
 // or position of tracks, layers, or effect settings
 export const updateTriggerLayers = () =>
 {
+  // make list of possible trigger sources
   makeTrigSourceList();
 
   const strand = get(pStrand);
@@ -282,7 +284,7 @@ export const updateTriggerLayers = () =>
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
-      if (strand.tracks[track].layers[layer].trigOnLayer)
+      if (strand.tracks[track].layers[layer].trigOnLayerShow)
       {
         let sourceid = strand.tracks[track].layers[layer].trigSrcLayerID;
         let found = false;
@@ -306,7 +308,7 @@ export const updateTriggerLayers = () =>
         {
           console.warn(`update: failed to find trigger source for: ${track}:${layer} ID=${sourceid}`);
 
-          strand.tracks[track].layers[layer].trigOnLayer = false;
+          strand.tracks[track].layers[layer].trigOnLayerShow = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0;
         }
       }
@@ -328,7 +330,7 @@ export const updateAllTracks = () =>
 
 export const updateLayerVals = (track, layer) =>
 {
-  //console.log(`updateLayerVals: track=${track} layer=${layer}`);
+  console.log(`updateLayerVals: track=${track} layer=${layer}`);
   makeLayerCmdStr(track, layer);
   strandCopyLayer(track, layer);
   makeEntireCmdStr();

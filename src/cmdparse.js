@@ -4,14 +4,14 @@ import {
   nTracks,
   nLayers,
   pStrand,
-  idStrand,
   findEffectFromPlugin
 } from './globals.js';
 
 import {
   overBit_DegreeHue,
   overBit_PcentWhite,
-  overBit_PcentCount 
+  overBit_PcentCount,
+  strandCopyLayer
 } from './strands.js';
 
 import {
@@ -43,7 +43,8 @@ import {
 
 import {
   makeTrigSourceList,
-  makeLayerCmdStr
+  makeLayerCmdStr,
+  makeEntireCmdStr
 } from './cmdmake.js';
 
 ///////////////////////////////////////////////////////////
@@ -285,7 +286,7 @@ export const parsePattern = (pattern) =>
             if (isNaN(val)) val = 0;
             else enable = true;
 
-            get(pStrand).tracks[track].layers[layer].trigOnLayer = enable;
+            get(pStrand).tracks[track].layers[layer].trigOnLayerShow = enable;
             get(pStrand).tracks[track].layers[layer].trigSrcLayerDex = val;
             break;
           }
@@ -341,7 +342,7 @@ export const parsePattern = (pattern) =>
     get(pStrand).tracks[track].trackBits = trackbits;
   }
 
-  // must create trigger source list,
+  // make list of possible trigger sources
   makeTrigSourceList();
 
   const strand = get(pStrand);
@@ -349,11 +350,12 @@ export const parsePattern = (pattern) =>
 
   // set list index and source ID for any layers that have a layer trigger set
   // disable the layer trigger if it fails to match one in the list
+  let remake = false;
   for (let track = 0; track < strand.tactives; ++track)
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
-      if (strand.tracks[track].layers[layer].trigOnLayer)
+      if (strand.tracks[track].layers[layer].trigOnLayerShow)
       {
         const devindex = strand.tracks[track].layers[layer].trigSrcLayerDex;
         let found = false;
@@ -366,9 +368,11 @@ export const parsePattern = (pattern) =>
             strand.tracks[track].layers[layer].trigSrcLayerID =
               strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
-            //console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
             //console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSrcLayerID}`)
 
+            makeLayerCmdStr(track, layer);
+            strandCopyLayer(track, layer);
             found = true;
             break;
           }
@@ -378,12 +382,14 @@ export const parsePattern = (pattern) =>
         {
           console.warn(`parse: failed to find trigger source for: ${devindex}`);
 
-          strand.tracks[track].layers[layer].trigOnLayer = false;
+          strand.tracks[track].layers[layer].trigOnLayerShow = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0; // indicates none chosen
         }
       }
     }
   }
+
+  if (remake) makeEntireCmdStr();
 
   return true;
 }

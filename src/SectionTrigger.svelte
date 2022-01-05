@@ -69,9 +69,9 @@
       <Checkbox labelText="From other effect"
         style="margin-top:10px;"
         on:check={setOnLayer}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayer}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayerShow}
       />
-      {#if $pStrand.tracks[track].layers[layer].trigOnLayer }
+      {#if $pStrand.tracks[track].layers[layer].trigOnLayerShow }
         <Dropdown
           style="margin-bottom:10px;"
           on:select={setSource}

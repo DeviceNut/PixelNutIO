@@ -2,7 +2,10 @@
 
   import { Row, Column, Checkbox } from "carbon-components-svelte";
 
-  import { pStrand } from './globals.js';
+  import {
+    pStrand,
+    allowUpdates
+  } from './globals.js';
 
   import {
     MAX_HUE_VALUE,
@@ -25,10 +28,10 @@
   export let track;
   
   // remove mouse obj from call, and add track parm
-  const sethue   = () => { userSetHue(track); }
-  const setwhite = () => { userSetWhite(track); }
-  const setcount = () => { userSetCount(track); }
-  const setovers = () => { userSetOverrides(track); }
+  const sethue   = () => { if ($allowUpdates) userSetHue(track); }
+  const setwhite = () => { if ($allowUpdates) userSetWhite(track); }
+  const setcount = () => { if ($allowUpdates) userSetCount(track); }
+  const setovers = () => { if ($allowUpdates) userSetOverrides(track); }
 
 </script>
 

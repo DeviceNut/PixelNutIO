@@ -1,6 +1,6 @@
 <script>
 
-import {
+  import {
     TreeView,
     Modal,
     Button,
@@ -16,6 +16,7 @@ import {
     patsOpenItems,
     patsSelectedID,
     patsMenuItems,
+    allowUpdates
   } from './globals.js';
 
   import {
@@ -76,7 +77,6 @@ import {
     menuCreate();
 
     userClearPattern();
-    $pStrand.curPatternId = MENUID_CUSTOM;
   }
 
   let isbrowser;
@@ -85,22 +85,25 @@ import {
 
   const doselect = (id) =>
   {
-    //console.log(`Selecting ID: cur=${$pStrand.curPatternId} new=${id}`);
+    console.log(`Pattern ID: ${$pStrand.curPatternId} => ${id}`);
 
     if (id === $pStrand.curPatternId) return;
+
+    $pStrand.curPatternId = id;
+    $patsSelectedID = [ id ];
+
+    if (id === MENUID_CUSTOM) return;
 
     if ((id === MENUID_PRESETS) ||
         (id === MENUID_BROWSER) ||
         (id === MENUID_DEVICE))
-      userClearPattern();
+    {
+      userClearPattern(false);
 
-    $patsSelectedID = [ id ];
-
-    if ((id === MENUID_CUSTOM)  ||
-        (id === MENUID_PRESETS) ||
-        (id === MENUID_BROWSER) ||
-        (id === MENUID_DEVICE))
+      // supress reactive changes until UI updated
+      if ($pStrand.showCustom) $allowUpdates = false;
       return;
+    }
 
     let pcmd;
     if (id < MENUID_BROWSER)
@@ -126,6 +129,9 @@ import {
     }
 
     userSetPattern(pcmd);
+
+    // supress reactive changes until UI updated
+    if ($pStrand.showCustom) $allowUpdates = false;
   }
 
 </script>

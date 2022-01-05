@@ -7,6 +7,7 @@
 
   import {
     pStrand,
+    allowUpdates
   } from './globals.js';
 
   import {
@@ -25,11 +26,9 @@
     userSetOffset,
     userSetLength,
     userSetOrPixs,
-    userSetBackwards,
-    userSetNoRepeat
+    userSetBack,
+    userSetNoRep
   } from './cmduser1.js'
-
-  import { userDoRestart } from './cmduser2.js';
 
   import SlidersPropsLocal from './SlidersPropsLocal.svelte';
   import SectionTrigger from './SectionTrigger.svelte';
@@ -37,14 +36,13 @@
 
   export let track;
 
-  const setBright = () => { userSetBright(   track); }
-  const setDelay  = () => { userSetDelay(    track); }
-  const setOffset = () => { userSetOffset(   track); }
-  const setLength = () => { userSetLength(   track); }
-  const setOrPixs = () => { userSetOrPixs(   track); }
-  const setBwards = () => { userSetBackwards(track); }
-  const setNoRep  = () => { userSetNoRepeat( track);
-                            userDoRestart(track, DRAW_LAYER) }
+  const setBright = () => { if ($allowUpdates) userSetBright(track); }
+  const setDelay  = () => { if ($allowUpdates) userSetDelay( track); }
+  const setOffset = () => { if ($allowUpdates) userSetOffset(track); }
+  const setLength = () => { if ($allowUpdates) userSetLength(track); }
+  const setOrPixs = () => { if ($allowUpdates) userSetOrPixs(track); }
+  const setBwards = () => { if ($allowUpdates) userSetBack(  track); }
+  const setNoRep  = () => { if ($allowUpdates) userSetNoRep( track); }
 
 </script>
 

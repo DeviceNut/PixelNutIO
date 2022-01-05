@@ -68,6 +68,8 @@ export let patsMenuItems  = writable([]);     // array of menu items for current
 export let patsSelectedID = writable([]);     // list of selected items
 export let patsOpenItems  = writable([]);     // list of expanded items
 
+export let allowUpdates   = writable(true);   // false to prevent UI updates
+
 export const findEffectFromPlugin = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())

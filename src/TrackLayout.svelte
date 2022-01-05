@@ -1,8 +1,24 @@
 <script>
 
-  import { Grid, Row, Column } from "carbon-components-svelte";
-  import { pStrand } from './globals.js';
+  import { afterUpdate } from 'svelte';
+
+  import {
+    Grid,
+    Row,
+    Column
+  } from "carbon-components-svelte";
+
+  import {
+    pStrand,
+    allowUpdates
+  } from './globals.js';
+
   import TrackLayers from './TrackLayers.svelte';
+
+  afterUpdate(() => {
+		//console.log('TrackLayout: updated');
+    $allowUpdates = true;
+	});
 
   export let numcols;
 

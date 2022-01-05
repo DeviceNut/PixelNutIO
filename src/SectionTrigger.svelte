@@ -5,7 +5,10 @@
     Dropdown
   } from "carbon-components-svelte";
 
-  import { pStrand } from './globals.js';
+  import {
+    pStrand,
+    allowUpdates
+   } from './globals.js';
 
   import {
     DRAW_LAYER,
@@ -33,17 +36,17 @@
   export let track;
   export let layer = DRAW_LAYER;
 
-  const autoStart  = () => { userSetTrigStart(  track, layer); }
-  const setMain    = () => { userSetTrigMain(   track, layer); }
-  const setOnLayer = () => { userSetTrigLayer(  track, layer); }
-  const setSource  = () => { userSetTrigSource( track, layer); }
-  const setRepeat  = () => { userSetTrigRepeat( track, layer); }
-  const setCount   = () => { userSetTrigCount(  track, layer); }
-  const setForever = () => { userSetTrigForever(track, layer); }
-  const setOffset  = () => { userSetTrigOffset( track, layer); }
-  const setRange   = () => { userSetTrigRange(  track, layer); }
-  const setFtype   = () => { userSetForceType(  track, layer); }
-  const setFvalue  = () => { userSetForceValue( track, layer); }
+  const autoStart  = () => { if ($allowUpdates) userSetTrigStart(  track, layer); }
+  const setMain    = () => { if ($allowUpdates) userSetTrigMain(   track, layer); }
+  const setOnLayer = () => { if ($allowUpdates) userSetTrigLayer(  track, layer); }
+  const setSource  = () => { if ($allowUpdates) userSetTrigSource( track, layer); }
+  const setRepeat  = () => { if ($allowUpdates) userSetTrigRepeat( track, layer); }
+  const setCount   = () => { if ($allowUpdates) userSetTrigCount(  track, layer); }
+  const setForever = () => { if ($allowUpdates) userSetTrigForever(track, layer); }
+  const setOffset  = () => { if ($allowUpdates) userSetTrigOffset( track, layer); }
+  const setRange   = () => { if ($allowUpdates) userSetTrigRange(  track, layer); }
+  const setFtype   = () => { if ($allowUpdates) userSetForceType(  track, layer); }
+  const setFvalue  = () => { if ($allowUpdates) userSetForceValue( track, layer); }
 
 </script>
 

@@ -13,15 +13,13 @@
     aEffDrawDesc
   } from './globals.js';
 
-  import {
-    userSetEffect,
-    userDoRestart
-  } from './cmduser2.js'
+  import { userDoRestart } from './cmduser1.js'
+  import { userSetEffect } from './cmduser2.js'
 
   export let track;
 
   const setEffect = () => { userSetEffect(track, DRAW_LAYER); }
-  const restart   = () => { userDoRestart(track, DRAW_LAYER); }
+  const dorestart = () => { userDoRestart(track, DRAW_LAYER); }
 
   let helpon = false;
 
@@ -42,7 +40,7 @@
       >?
     </button>
     <button class="button-restart"
-      on:click={restart}
+      on:click={dorestart}
       disabled={$pStrand.tracks[track].layers[DRAW_LAYER].mute}
       >Restart
     </button>

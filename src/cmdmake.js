@@ -217,12 +217,14 @@ export const makeLayerCmdStr = (track, layer) =>
   }
 
   player.isnewstr = cmdstr !== player.cmdstr;
+  //if (player.isnewstr) console.log(`MakeNewStr: "${player.cmdstr}" => "${cmdstr}"`);
   player.cmdstr = cmdstr;
 }
 
 // create partial command strings for all layers in a track
 export const makeTrackCmdStrs = (track) =>
 {
+  //console.log(`makeTrackCmdStrs: track=${track}`);
   let ptrack = get(pStrand).tracks[track];
   for (let i = 0; i < ptrack.lactives; ++i)
     makeLayerCmdStr(track, i);
@@ -326,6 +328,7 @@ export const updateAllTracks = () =>
 
 export const updateLayerVals = (track, layer) =>
 {
+  //console.log(`updateLayerVals: track=${track} layer=${layer}`);
   makeLayerCmdStr(track, layer);
   strandCopyLayer(track, layer);
   makeEntireCmdStr();

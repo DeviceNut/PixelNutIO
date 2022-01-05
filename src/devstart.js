@@ -297,12 +297,16 @@ export let deviceStartup = (device) =>
         let name = menuPresets.children[i].text;
         let idex = menuPresets.children[i].id - (MENUID_PRESETS + 1);
 
+        /*
+        if (cmdname == name)
+        {
+          console.log(`Preset(${i}): ${cmdname}`);
+          console.log(`  ${cmdstr}`);
+          console.log(`  ${apats[idex]}`);
+        }
+        */
         if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
         {
-          //console.log(`Preset(${i}): ${cmdname}`);
-          //console.log(`  ${cmdstr}`);
-          //console.log(`  ${apats[idex]}`);
-
           setStrandPattern(strand, (MENUID_PRESETS + i + 1), cmdname, cmdstr, adesc[idex]);
           found = true;
           break;
@@ -318,15 +322,16 @@ export let deviceStartup = (device) =>
           let name = menuBrowser.children[i].text;
           let idex = menuBrowser.children[i].id - (MENUID_BROWSER + 1);
   
+          /*
+          if (cmdname === name)
+          {
+            console.log(`Saved(${i}): ${cmdname}`);
+            console.log(`  ${cmdstr}`);
+            console.log(`  ${apats[idex]}`);
+          }
+          */
           if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
           {
-            //console.log(`s1="${stripCmdStr(cmdstr)}"`)
-            //console.log(`s2="${stripCmdStr(apats[idex])}"`)
-
-            //console.log(`Saved(${i}): ${cmdname}`);
-            //console.log(`  ${cmdstr}`);
-            //console.log(`  ${apats[idex]}`);
-  
             setStrandPattern(strand, (MENUID_BROWSER + i + 1), cmdname, cmdstr, adesc[idex]);
             found = true;
             break;
@@ -342,12 +347,16 @@ export let deviceStartup = (device) =>
           let pcmd = device.report.patterns[i].pcmd;
           let desc = device.report.patterns[i].desc;
 
+          /*
+          if (cmdname === name)
+          {
+            console.log(`Device(${i}): ${cmdname}`);
+            console.log(`  ${cmdstr}`);
+            console.log(`  ${device.report.patterns[i].pcmd}`);
+          }
+          */
           if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(pcmd)))
           {
-            //console.log(`Device(${i}): ${cmdname}`);
-            //console.log(`  ${cmdstr}`);
-            //console.log(`  ${device.report.patterns[i].pcmd}`);
-
             setStrandPattern(strand, (devdex_base + i), cmdname, cmdstr, desc);
             found = true;
             break;

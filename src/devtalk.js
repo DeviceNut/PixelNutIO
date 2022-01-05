@@ -253,13 +253,14 @@ export const onDeviceReply = (msg, fsend) =>
     if (d.curname === name)
     {
       device = d;
-      if (device.ignore) return;
       break;
     }
   }
 
   if (device === null)
     device = deviceAdd(name);
+
+  if (device.ignore) return;
 
   device.tstamp = curTimeSecs();
 

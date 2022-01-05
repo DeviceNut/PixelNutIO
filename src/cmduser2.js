@@ -193,22 +193,27 @@ export const userSetPattern = (pattern) =>
   else deviceError(`Failed parsing pattern: ${pattern}`);
 }
 
-export const userClearPattern = () =>
+export const userClearPattern = (setid=true) =>
 {
   const strand = get(pStrand);
-  strand.curPatternId   = MENUID_CUSTOM;
-  strand.curPatternName = '';
-  strand.curPatternCmd  = '';
-  strand.curPatternDesc = '';
 
-  strandClearAll();
-  makeEntireCmdStr();
-  sendStrandPattern(); // store/exec cleared pattern
+  if (setid) strand.curPatternId = MENUID_CUSTOM;
 
-  // triggers update to UI - MUST HAVE THIS
-  pStrand.set(get(pStrand));
+  if (strand.curPatternCmd !== '')
+  {
+    strand.curPatternName = '';
+    strand.curPatternCmd  = '';
+    strand.curPatternDesc = '';
 
-  strand.showCustom = false;
+    strand.showCustom = false;
+
+    strandClearAll();
+    makeEntireCmdStr();
+    sendStrandPattern(); // store/exec cleared pattern
+
+    // triggers update to UI - MUST HAVE THIS
+    pStrand.set(get(pStrand));
+  }
 }
 
 // switch to new effect on this layer, specified by layer's plugindex
@@ -217,7 +222,7 @@ export const userSetEffect = (track, layer) =>
   const strand = get(pStrand);
   const player = strand.tracks[track].layers[layer];
 
-  //console.log(`seteffect (${track}.${layer}): index=${player.plugindex}`);
+  //console.log(`${track}.${layer}: PluginIndex ${player.pluginObj.index} => ${player.plugindex}`);
 
   if (player.plugindex !== player.pluginObj.index)
   {
@@ -236,12 +241,6 @@ export const userSetEffect = (track, layer) =>
 
     resetEffectBits(track, props, bits);
   }
-}
-
-export const userDoRestart = (track, layer) =>
-{
-  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
-  sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pval}`);
 }
 
 // assume cannot get called if number of T/L's at max

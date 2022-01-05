@@ -110,19 +110,25 @@ export const sendStrandCmd = (cmdstr, cmdval) =>
 }
 
 // send layer-specific command/(value) to all selected strands
+// returns true if actually sent the command
 export const sendLayerCmd = (track, layer, cmdstr, cmdval) =>
 {
-  let devindex = convTrackLayerToIndex(track, layer);
-  if (devindex == null) return; // error pending
+  //console.log(`${track}.${layer}: ${cmdstr+(cmdval===undefined?'':cmdval)}`);
 
-  if (get(pStrand).tracks[track].layers[layer].isnewstr)
+  if (!get(pStrand).tracks[track].layers[layer].isnewstr) // pattern already sent
   {
-    if (cmdval !== undefined)
-      cmdstr = cmdstr.concat(cmdval);
-
-    sendStrandPattern(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
+    console.log(`-- ${cmdStr_AddrLayer}${devindex} ${cmdstr+(cmdval===undefined?'':cmdval)}`);
+    return false;
   }
-  else console.log(`not sending (${track}.${layer}): cmdstr=${cmdstr+cmdval}`);
+
+  let devindex = convTrackLayerToIndex(track, layer);
+  if (devindex == null) return false; // error pending
+
+  if (cmdval !== undefined)
+    cmdstr = cmdstr.concat(cmdval);
+
+  sendStrandPattern(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
+  return true;
 }
 
 // always layer-specific command/(value) to all selected strands

@@ -54,6 +54,12 @@ import {
 
 ///////////////////////////////////////////////////////////
 
+export const userDoRestart = (track, layer) =>
+{
+  const pval = get(pStrand).tracks[track].layers[layer].pluginObj.id;
+  sendLayerCmdForce(track, layer, cmdStr_SelectEffect, `${pval}`);
+}
+
 export const resetEffectBits = (track, props, bits) =>
 {
   //console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
@@ -160,7 +166,7 @@ export const userSetOverMode = () =>
 export const userSetProps = () =>
 {
   const strand = get(pStrand);
-  console.log('set props ...');
+  //console.log('set props ...');
 
   let hue = strand.opropsUser.valueHue;
   let wht = strand.opropsUser.pcentWhite;
@@ -212,25 +218,28 @@ export const userSetOrPixs = (track) =>
   const enable = get(pStrand).tracks[track].drawProps.orPixelVals;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : 0));
+  sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : undefined));
 }
 
-export const userSetBackwards = (track) =>
+export const userSetBack = (track) =>
 {
   const layer = DRAW_LAYER;
   const enable = get(pStrand).tracks[track].drawProps.dirBackwards;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? 1 : 0));
+  sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? 1 : undefined));
 }
 
-export const userSetNoRepeat = (track) =>
+export const userSetNoRep = (track) =>
 {
   const layer = DRAW_LAYER;
   const enable = get(pStrand).tracks[track].drawProps.noRepeating;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : 0));
+
+  // changing NoRepeat requires the track effect to be restarted
+  if (sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : undefined)))
+    userDoRestart(track, DRAW_LAYER);
 }
 
 // Track Properties:

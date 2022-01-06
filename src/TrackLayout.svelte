@@ -15,9 +15,13 @@
 
   import TrackLayers from './TrackLayers.svelte';
 
-  afterUpdate(() => {
-		console.log('TrackLayout: updated');
-    $allowUpdates = true;
+  afterUpdate(() =>
+  {
+    if (!$allowUpdates)
+    {
+      console.log('... allow updates');
+      $allowUpdates = true;
+    }
 	});
 
   export let numcols;

@@ -168,8 +168,21 @@ export const parsePattern = (pattern) =>
           case cmdStr_LayerMute:
           {
             // enable if no value follows command
-            const mute = isNaN(val) ? true : valueToBool(val);
-            get(pStrand).tracks[track].layers[layer].mute = mute;
+            if (isNaN(val))
+            {
+              get(pStrand).tracks[track].layers[layer].solo = false;
+              get(pStrand).tracks[track].layers[layer].mute = true;
+            }
+            else if (val == 2)
+            {
+              get(pStrand).tracks[track].layers[layer].solo = true;
+              get(pStrand).tracks[track].layers[layer].mute = false;
+            }
+            else
+            {
+              get(pStrand).tracks[track].layers[layer].solo = false;
+              get(pStrand).tracks[track].layers[layer].mute = (val == 1);
+            }
             break;
           }
           case cmdStr_PcentXoffset:

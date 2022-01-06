@@ -2,7 +2,6 @@ import { get } from 'svelte/store';
 
 import {
   pStrand,
-  idStrand,
   maxLenPattern
 } from './globals.js';
 
@@ -15,33 +14,34 @@ import {
 } from './strands.js';
 
 import {
-  DRAW_LAYER           ,
-  DEF_HUE_VALUE       ,
-  DEF_PCENT_BRIGHT     ,
-  DEF_PCENT_DELAY      ,
-  DEF_PCENT_COUNT      ,
-  DEF_FORCE_VALUE      ,
-  pluginBit_TRIGFORCE  ,
-  pluginBit_SENDFORCE  ,
-  cmdStr_PcentXoffset  ,
-  cmdStr_PcentXlength  ,
-  cmdStr_LayerMute     ,
-  cmdStr_SetEffect     ,
-  cmdStr_PcentBright   ,
-  cmdStr_MsecsDelay    ,
-  cmdStr_ValueHue     ,
-  cmdStr_PcentWhite    ,
-  cmdStr_PcentCount    ,
-  cmdStr_OrideBits     ,
-  cmdStr_Backwards     ,
-  cmdStr_CombinePixs   ,
-  cmdStr_NoRepeating   ,
-  cmdStr_TrigAtStart   ,
-  cmdStr_TrigByEffect  ,
-  cmdStr_TrigFromMain  ,
-  cmdStr_TrigRepeating ,
-  cmdStr_TrigOffset    ,
-  cmdStr_TrigRange     ,
+  DRAW_LAYER,
+  MUTEVAL_SOLO,
+  DEF_HUE_VALUE,
+  DEF_PCENT_BRIGHT,
+  DEF_PCENT_DELAY,
+  DEF_PCENT_COUNT,
+  DEF_FORCE_VALUE,
+  pluginBit_TRIGFORCE,
+  pluginBit_SENDFORCE,
+  cmdStr_PcentXoffset,
+  cmdStr_PcentXlength,
+  cmdStr_LayerMute,
+  cmdStr_SetEffect,
+  cmdStr_PcentBright,
+  cmdStr_MsecsDelay,
+  cmdStr_ValueHue,
+  cmdStr_PcentWhite,
+  cmdStr_PcentCount,
+  cmdStr_OrideBits,
+  cmdStr_Backwards,
+  cmdStr_CombinePixs,
+  cmdStr_NoRepeating,
+  cmdStr_TrigAtStart,
+  cmdStr_TrigByEffect,
+  cmdStr_TrigFromMain,
+  cmdStr_TrigRepeating,
+  cmdStr_TrigOffset,
+  cmdStr_TrigRange,
   cmdStr_TrigForce
 } from './devcmds.js';
 
@@ -100,7 +100,7 @@ export const makeEntireCmdStr = () =>
 
           if (layer.trigFromMain) trigused = true;
 
-          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}2`);
+          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${MUTEVAL_SOLO} `);
         }
         else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
@@ -115,7 +115,7 @@ export const makeEntireCmdStr = () =>
 
           if (layer.trigFromMain) trigused = true;
 
-          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}2`);
+          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${MUTEVAL_SOLO} `);
         }
         else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
@@ -128,10 +128,10 @@ export const makeEntireCmdStr = () =>
 
   //console.log(`makeEntireCmdStr: ${cmdstr}`);
 
-  get(pStrand).curPatternCmd = cmdstr;
-  get(pStrand).bitsOverride  = ridebits;
-  get(pStrand).bitsEffects   = splugbits;
-  get(pStrand).triggerUsed   = trigused;
+  strand.curPatternCmd = cmdstr;
+  strand.bitsOverride  = ridebits;
+  strand.bitsEffects   = splugbits;
+  strand.triggerUsed   = trigused;
 
   if (cmdstr.length > get(maxLenPattern))
     deviceError(`Exceeded max pattern length=${get(maxLenPattern)}`);
@@ -223,7 +223,10 @@ export const makeLayerCmdStr = (track, layer) =>
   }
 
   player.isnewstr = cmdstr !== player.cmdstr;
-  if (player.isnewstr) console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
+
+  if (player.isnewstr)
+    console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
+
   player.cmdstr = cmdstr;
 }
 
@@ -334,7 +337,7 @@ export const updateAllTracks = () =>
 
 export const updateLayerVals = (track, layer) =>
 {
-  console.log(`updateLayerVals: track=${track} layer=${layer}`);
+  //console.log(`updateLayerVals: track=${track} layer=${layer}`);
   makeLayerCmdStr(track, layer);
   strandCopyLayer(track, layer);
   makeEntireCmdStr();

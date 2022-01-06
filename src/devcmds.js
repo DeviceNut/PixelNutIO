@@ -4,6 +4,10 @@ export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_HUE_VALUE        = 255;    // maximum hue value
 export const MAX_FORCE_VALUE      = 255;    // maximum force value
 
+export const MUTEVAL_OFF          = 0;      // mute/solo off
+export const MUTEVAL_ON           = 1;      // mute on, solo off
+export const MUTEVAL_SOLO         = 2;      // solo on, mute off
+
                                             // default values:
 export const DEF_HUE_VALUE        = 192;    // hue value for purple
 export const DEF_PCENT_BRIGHT     = 50;     // percent brightness
@@ -53,7 +57,7 @@ export const cmdStr_AddrStrand    = "#";    // strand index
 export const cmdStr_AddrLayer     = "L";    // layer index
 
 // Commands that must be preceded by "L" command (value is):
-export const cmdStr_LayerMute     = "M";    // mute layer: none/0=off, 1=on
+export const cmdStr_LayerMute     = "M";    // mute/solo: 0=off, none/1=on, 2=solo
 export const cmdStr_SelectEffect  = "S";    // plugin number to switch (none to swap)
 export const cmdStr_AppRemEffect  = "Z";    // plugin number to append (none to remove)
 

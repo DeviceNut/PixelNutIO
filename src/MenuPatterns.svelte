@@ -94,44 +94,43 @@
 
     if (id === MENUID_CUSTOM) return;
 
-    if ((id === MENUID_PRESETS) ||
-        (id === MENUID_BROWSER) ||
-        (id === MENUID_DEVICE))
+    if ((id !== MENUID_PRESETS) &&
+        (id !== MENUID_BROWSER) &&
+        (id !== MENUID_DEVICE))
     {
-      userClearPattern(false);
+      let pcmd;
+      if (id < MENUID_BROWSER)
+      {
+        id -= MENUID_PRESETS+1;
+        $pStrand.curPatternName = menuPresets.children[id].text;
+        $pStrand.curPatternDesc = preset_PatDescs[id];
+        pcmd = preset_PatStrs[id];
+      }
+      else if (id < MENUID_DEVICE)
+      {
+        id -= MENUID_BROWSER+1;
+        $pStrand.curPatternName = menuBrowser.children[id].text;
+        $pStrand.curPatternDesc = $aStoredDesc[id];
+        pcmd = $aStoredPatt[id];
+      }
+      else
+      {
+        id -= MENUID_DEVICE+1;
+        $pStrand.curPatternName = menuDevice.children[id].text;
+        $pStrand.curPatternDesc = $aDeviceDesc[id];
+        pcmd = $aDevicePatt[id];
+      }
 
+      userSetPattern(pcmd);
+    }
+    else userClearPattern(false);
+
+    if ($pStrand.showCustom)
+    {
       // supress reactive changes until UI updated
-      if ($pStrand.showCustom) $allowUpdates = false;
-      return;
+      console.log('Supress updates...');
+      $allowUpdates = false;
     }
-
-    let pcmd;
-    if (id < MENUID_BROWSER)
-    {
-      id -= MENUID_PRESETS+1;
-      $pStrand.curPatternName = menuPresets.children[id].text;
-      $pStrand.curPatternDesc = preset_PatDescs[id];
-      pcmd = preset_PatStrs[id];
-    }
-    else if (id < MENUID_DEVICE)
-    {
-      id -= MENUID_BROWSER+1;
-      $pStrand.curPatternName = menuBrowser.children[id].text;
-      $pStrand.curPatternDesc = $aStoredDesc[id];
-      pcmd = $aStoredPatt[id];
-    }
-    else
-    {
-      id -= MENUID_DEVICE+1;
-      $pStrand.curPatternName = menuDevice.children[id].text;
-      $pStrand.curPatternDesc = $aDeviceDesc[id];
-      pcmd = $aDevicePatt[id];
-    }
-
-    userSetPattern(pcmd);
-
-    // supress reactive changes until UI updated
-    if ($pStrand.showCustom) $allowUpdates = false;
   }
 
 </script>

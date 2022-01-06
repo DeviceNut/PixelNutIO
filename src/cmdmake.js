@@ -99,6 +99,8 @@ export const makeEntireCmdStr = () =>
           ridebits |= makeOrideBits(strand, i);
 
           if (layer.trigFromMain) trigused = true;
+
+          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}2`);
         }
         else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
@@ -112,6 +114,8 @@ export const makeEntireCmdStr = () =>
           splugbits |= layer.pluginObj.bits;
 
           if (layer.trigFromMain) trigused = true;
+
+          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}2`);
         }
         else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }

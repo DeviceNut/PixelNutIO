@@ -34,9 +34,8 @@ import {
   updateTriggerLayers
 } from './cmdmake.js';
 
-import {
-  sendLayerCmdForce
-} from './cmdsend.js';
+import { sendLayerCmdForce } from './cmdsend.js';
+import { resetEffectBits } from './cmdpats.js';
 
 ///////////////////////////////////////////////////////////
 

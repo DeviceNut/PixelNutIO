@@ -10,7 +10,17 @@ import {
   strandClearAll
 } from './strands.js';
 
-import { cmdStr_SelectEffect } from './devcmds.js';
+import {
+  DRAW_LAYER,
+  pluginBit_ORIDE_HUE,
+  pluginBit_ORIDE_WHITE,
+  pluginBit_ORIDE_COUNT,
+  pluginBit_ORIDE_DELAY,
+  pluginBit_ORIDE_DIR,
+  pluginBit_ORIDE_EXT,
+  cmdStr_SelectEffect
+} from './devcmds.js';
+
 import { deviceError } from './devtalk.js';
 
 import {
@@ -21,6 +31,7 @@ import {
 
 import {
   sendStrandPattern,
+  sendLayerCmd,
   sendLayerCmdForce
 } from './cmdsend.js';
 

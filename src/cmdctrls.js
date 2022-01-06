@@ -36,8 +36,6 @@ import {
   sendLayerCmd
 } from './cmdsend.js';
 
-import { userDoRestart } from './cmdpats.js';
-
 ///////////////////////////////////////////////////////////
 
 // Main Controls:
@@ -190,9 +188,5 @@ export const userSetNoRep = (track) =>
   const enable = get(pStrand).tracks[track].drawProps.noRepeating;
 
   updateLayerVals(track, layer);
-
-  // changing NoRepeat requires the track effect to be restarted
-  if (sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : undefined)))
-    userDoRestart(track, DRAW_LAYER);
+  sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : undefined));
 }
-

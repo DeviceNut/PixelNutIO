@@ -21,7 +21,7 @@
     storePatternSave
   } from './browser.js';
 
-  import { userClearPattern } from './cmduser2.js';
+  import { userClearPattern } from './cmdpats.js';
   import { sendStrandPattern } from './cmdsend.js';
 
   import {

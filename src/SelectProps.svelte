@@ -1,6 +1,10 @@
 <script>
 
-  import { Row, Column, Checkbox } from "carbon-components-svelte";
+  import {
+    Row,
+    Column,
+    Checkbox
+  } from "carbon-components-svelte";
 
   import {
     pStrand,
@@ -21,13 +25,12 @@
     userSetWhite,
     userSetCount,
     userSetOverrides
-  } from './cmduser1.js';
+  } from './cmdprops.js';
 
   import SliderVal from './SliderVal.svelte';
 
   export let track;
   
-  // remove mouse obj from call, and add track parm
   const sethue   = () => { if ($allowUpdates) userSetHue(track); }
   const setwhite = () => { if ($allowUpdates) userSetWhite(track); }
   const setcount = () => { if ($allowUpdates) userSetCount(track); }

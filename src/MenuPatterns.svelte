@@ -33,7 +33,7 @@
   import {
     userSetPattern,
     userClearPattern
-  } from './cmduser2.js';
+  } from './cmdpats.js';
 
   import {
     MENUID_CUSTOM,

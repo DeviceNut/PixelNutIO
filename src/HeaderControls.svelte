@@ -19,7 +19,7 @@
   import {
     userSetDevname,
     userSendPause
-  } from './cmduser2.js';
+  } from './cmdhead.js';
 
   import UserOptions from './UserOptions.svelte';
 

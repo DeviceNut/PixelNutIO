@@ -29,7 +29,7 @@
     userSetTrigRange,
     userSetForceType,
     userSetForceValue
-  } from './cmduser1.js';
+  } from './cmdtrig.js';
 
   import SliderVal from './SliderVal.svelte';
 

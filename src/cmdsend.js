@@ -113,11 +113,13 @@ export const sendStrandCmd = (cmdstr, cmdval) =>
 // returns true if actually sent the command
 export const sendLayerCmd = (track, layer, cmdstr, cmdval) =>
 {
-  //console.log(`${track}.${layer}: ${cmdstr+(cmdval===undefined?'':cmdval)}`);
-
   if (!get(pStrand).tracks[track].layers[layer].isnewstr) // pattern already sent
   {
+    // for debug:
+    let devindex = convTrackLayerToIndex(track, layer);
+    if (devindex == null) return false; // error pending
     console.log(`-- ${cmdStr_AddrLayer}${devindex} ${cmdstr+(cmdval===undefined?'':cmdval)}`);
+
     return false;
   }
 

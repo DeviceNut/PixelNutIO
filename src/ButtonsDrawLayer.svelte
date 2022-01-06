@@ -2,7 +2,7 @@
  
   import { DRAW_LAYER } from './devcmds.js';
   import { pStrand, nTracks } from './globals.js';
-  import { userAddTrackLayer } from './cmduser2.js';
+  import { userAddTrackLayer } from './cmdacts.js';
 
   export let track;
 

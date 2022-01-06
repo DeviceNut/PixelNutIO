@@ -14,7 +14,7 @@
     userSwapTrackLayer,
     userSoloTrackLayer,
     userMuteTrackLayer
-  } from './cmduser2.js';
+  } from './cmdacts.js';
 
   export let track;
   export let layer;
@@ -38,8 +38,8 @@
     }
   }
 
-  const doadd  = () => { userAddTrackLayer(track, layer); }
-  const dorem  = () => { userRemTrackLayer(track, layer); }
+  const doadd  = () => { userAddTrackLayer( track, layer); }
+  const dorem  = () => { userRemTrackLayer( track, layer); }
   const doswap = () => { userSwapTrackLayer(track, layer); }
   const dosolo = () => { userSoloTrackLayer(track, layer); }
   const domute = () => { userMuteTrackLayer(track, layer); }

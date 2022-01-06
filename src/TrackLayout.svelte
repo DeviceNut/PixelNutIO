@@ -16,7 +16,7 @@
   import TrackLayers from './TrackLayers.svelte';
 
   afterUpdate(() => {
-		//console.log('TrackLayout: updated');
+		console.log('TrackLayout: updated');
     $allowUpdates = true;
 	});
 

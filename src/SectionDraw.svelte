@@ -28,10 +28,10 @@
     userSetOrPixs,
     userSetBack,
     userSetNoRep
-  } from './cmduser1.js'
+  } from './cmdctrls.js'
 
-  import SlidersPropsLocal from './SlidersPropsLocal.svelte';
-  import SectionTrigger from './SectionTrigger.svelte';
+  import SelectProps from './SelectProps.svelte';
+  import SelectTrigger from './SelectTrigger.svelte';
   import SliderVal from './SliderVal.svelte';
 
   export let track;
@@ -99,5 +99,5 @@
   </Row>
 </div>
 
-<SlidersPropsLocal {track} />
-<SectionTrigger {track} />
+<SelectProps {track} />
+<SelectTrigger {track} />

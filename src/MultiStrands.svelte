@@ -3,7 +3,7 @@
   import MediaQuery from "svelte-media-query";
   import { Checkbox } from "carbon-components-svelte";
   import { nStrands, aStrands, strandCombine } from './globals.js';
-  import { userStrandSelect, userStrandCombine } from './cmduser2.js';
+  import { userStrandSelect, userStrandCombine } from './cmdmulti.js';
 
 
 </script>

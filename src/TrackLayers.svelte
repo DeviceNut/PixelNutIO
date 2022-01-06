@@ -12,7 +12,7 @@
   import SelectDraw from './SelectDraw.svelte';
   import SectionDraw from './SectionDraw.svelte';
   import SelectFilter from './SelectFilter.svelte';
-  import SectionTrigger from './SectionTrigger.svelte';
+  import SelectTrigger from './SelectTrigger.svelte';
 
   export let track;
 
@@ -49,7 +49,7 @@
         {:else}
           <SelectFilter {track} {layer} />
           {#if $pStrand.tracks[track].layers[layer].open }
-            <SectionTrigger {track} {layer} />
+            <SelectTrigger {track} {layer} />
           {/if}
         {/if}
       </Column>

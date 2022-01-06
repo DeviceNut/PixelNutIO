@@ -17,7 +17,7 @@
   import {
     userDoRestart,
     userSetEffect
-  } from './cmduser2.js'
+  } from './cmdpats.js'
 
   export let track;
 

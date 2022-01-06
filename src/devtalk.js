@@ -165,6 +165,7 @@ function checkTimeout()
          ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
       {
         console.warn(`Device Lost: "${device.curname}"`);
+        console.log(`  secs: ${tstamp} ${device.tstamp}`)
 
         if (device.active)
         {

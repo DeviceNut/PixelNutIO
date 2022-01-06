@@ -17,7 +17,7 @@
   } from './globals.js';
 
   import { defCustomCmd } from './devcmds.js';
-  import { userSetPattern } from './cmduser2.js';
+  import { userSetPattern } from './cmdpats.js';
 
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';

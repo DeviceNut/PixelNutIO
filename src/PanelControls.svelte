@@ -12,9 +12,9 @@
     userSetDelay,
     userSetRotate,
     userSendTrigger
-  } from './cmduser1.js';
+  } from './cmdctrls.js';
 
-  import SlidersPropsGlobal from './SlidersPropsGlobal.svelte';
+  import SelectOrides from './SelectOrides.svelte';
   import SliderVal from './SliderVal.svelte';
 
 </script>
@@ -38,7 +38,7 @@
     />
 
     <div class="divider"></div>
-    <SlidersPropsGlobal/>
+    <SelectOrides/>
     <div class="divider"></div>
 
     <SliderVal name='Force'

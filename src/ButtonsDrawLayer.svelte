@@ -1,13 +1,13 @@
 <script>
  
   import { DRAW_LAYER } from './devcmds.js';
-  import { pStrand, nTracks } from './globals.js';
+  import { pStrand, nLayers } from './globals.js';
   import { userAddTrackLayer } from './cmdacts.js';
 
   export let track;
 
   let noadd;
-  $: noadd  = ($pStrand.tactives >= $nTracks);
+  $: noadd  = ($pStrand.tracks[track].lactives >= $nLayers);
 
   // adding filter layer only here
   const doadd = () => { userAddTrackLayer(track, DRAW_LAYER, true); }

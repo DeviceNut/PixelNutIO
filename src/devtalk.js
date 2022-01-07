@@ -141,6 +141,7 @@ function deviceAdd(name)
 
   let device = {...deviceState};
   device.curname = name;
+  device.tstamp = curTimeSecs();
   device.qstate = QSTATE_RESTART;
   get(deviceList).push(device);
 
@@ -161,6 +162,9 @@ function checkTimeout()
     {
       //console.log(`Device Check: "${device.curname}""`);
   
+      if ((tstamp - device.tstamp) > 2)
+        console.log(`Device Check? secs=${(tstamp - device.tstamp)}`);
+
       if (!device.ignore &&
          ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
       {
@@ -212,6 +216,10 @@ export const onNotification = (msg, fsend) =>
 
   for (const device of get(deviceList))
   {
+    let tstamp = curTimeSecs();
+    if ((tstamp - device.tstamp) > 2)
+      console.log(`Missing notifications? secs=${(tstamp - device.tstamp)}`);
+
     device.tstamp = curTimeSecs();
 
     if (device.curname === name)
@@ -219,7 +227,7 @@ export const onNotification = (msg, fsend) =>
       if (!device.ignore)
       {
         if (device.qstate === QSTATE_RESTART)
-        deviceQuery(device, fsend);
+          deviceQuery(device, fsend);
       }
       return; // don't add
     }
@@ -259,7 +267,10 @@ export const onDeviceReply = (msg, fsend) =>
   }
 
   if (device === null)
+  {
     device = deviceAdd(name);
+    // don't query: might already be doing so
+  }
 
   if (device.ignore) return;
 

@@ -18,6 +18,11 @@ import {
   pluginBit_ORIDE_DELAY,
   pluginBit_ORIDE_DIR,
   pluginBit_ORIDE_EXT,
+  cmdStr_ValueHue,
+  cmdStr_PcentWhite,
+  cmdStr_PcentCount,
+  cmdStr_MsecsDelay,
+  cmdStr_Backwards,
   cmdStr_SelectEffect
 } from './devcmds.js';
 

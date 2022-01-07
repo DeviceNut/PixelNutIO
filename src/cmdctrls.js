@@ -7,24 +7,24 @@ import {
 } from './strands.js';
 
 import {
-  DRAW_LAYER            ,
-  cmdStr_PullTrigger    ,
-  cmdStr_OR_Bright      ,
-  cmdStr_OR_Delay       ,
-  cmdStr_OR_Props1      ,
-  cmdStr_OR_Props2      ,
-  cmdStr_SetOride       ,
-  cmdStr_SetFirst       ,
-  cmdStr_PcentXoffset   ,
-  cmdStr_PcentXlength   ,
-  cmdStr_PcentBright    ,
-  cmdStr_MsecsDelay     ,
-  cmdStr_ValueHue       ,
-  cmdStr_PcentWhite     ,
-  cmdStr_PcentCount     ,
-  cmdStr_CombinePixs    ,
-  cmdStr_Backwards      ,
-  cmdStr_NoRepeating    ,
+  DRAW_LAYER,
+  cmdStr_PullTrigger,
+  cmdStr_OR_Bright,
+  cmdStr_OR_Delay,
+  cmdStr_OR_Props1,
+  cmdStr_OR_Props2,
+  cmdStr_SetOride,
+  cmdStr_SetFirst,
+  cmdStr_PcentXoffset,
+  cmdStr_PcentXlength,
+  cmdStr_PcentBright,
+  cmdStr_MsecsDelay,
+  cmdStr_ValueHue,
+  cmdStr_PcentWhite,
+  cmdStr_PcentCount,
+  cmdStr_CombinePixs,
+  cmdStr_Backwards,
+  cmdStr_NoRepeating
 } from './devcmds.js';
 
 import {

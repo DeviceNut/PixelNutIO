@@ -378,7 +378,7 @@ export const parsePattern = (pattern) =>
             strand.tracks[track].layers[layer].trigSrcLayerID =
               strand.tracks[ item.track ].layers[ item.layer ].uniqueID;
 
-            console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
+            //console.log(`parse: devindex=${devindex} => ${item.track}:${item.layer}`)
             //console.log(`parse: ID=${strand.tracks[track].layers[layer].trigSrcLayerID}`)
 
             makeLayerCmdStr(track, layer);

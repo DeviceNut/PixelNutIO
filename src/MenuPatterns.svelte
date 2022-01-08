@@ -85,7 +85,7 @@
 
   const doselect = (id) =>
   {
-    console.log(`Pattern ID: ${$pStrand.curPatternId} => ${id}`);
+    //console.log(`Pattern ID: ${$pStrand.curPatternId} => ${id}`);
 
     if (id === $pStrand.curPatternId) return;
 
@@ -131,7 +131,7 @@
     if ($pStrand.showCustom)
     {
       // supress reactive changes until UI updated
-      console.log('Supress updates...');
+      //console.log('Supress updates...');
       $allowUpdates = false;
     }
   }

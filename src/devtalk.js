@@ -41,7 +41,7 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   id: 0,                // globally unique ID
 }
 
-// format of each device strand info object:
+// format of strand info object sent from device:
 {
   pixels: 0,            // number of pixels
   bright: 0,            // brightness percent
@@ -57,7 +57,7 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   patstr: '',           // pattern string
 }
 
-// format of each device info object:
+// format of info object sent from device:
 {
   nstrands: 0,          // strand count (>= 1)
   npatterns: 0,         // custom device patterns

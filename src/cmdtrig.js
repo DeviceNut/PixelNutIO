@@ -47,7 +47,7 @@ export const userSetTrigLayer = (track, layer) =>
   const enable = strand.tracks[track].layers[layer].trigOnLayerShow;
   const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  console.log(`userSetTrigLayer: enable=${enable} index=${index}`);
+  //console.log(`userSetTrigLayer: enable=${enable} index=${index}`);
 
   updateLayerVals(track, layer);
 
@@ -65,7 +65,7 @@ export const userSetTrigSource = (track, layer) =>
   const strand = get(pStrand);
   const index = strand.tracks[track].layers[layer].trigSrcListDex;
 
-  console.log(`userSetTrigSource: index=${index}`);
+  //console.log(`userSetTrigSource: index=${index}`);
 
   let devindex; // set to undefined, valid parm to sendLayerCmd()
   if (index > 0)
@@ -125,7 +125,6 @@ export const userSetTrigCount = (track, layer) =>
 {
   const count = get(pStrand).tracks[track].layers[layer].trigRepCount;
 
-  console.log('userSetTrigCount');
   updateLayerVals(track, layer);
 
   if (get(pStrand).tracks[track].layers[layer].trigDoRepeat)

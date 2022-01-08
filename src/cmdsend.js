@@ -122,7 +122,7 @@ export const sendLayerCmd = (track, layer, cmdstr, cmdval) =>
   
     sendStrandPattern(`${cmdStr_AddrLayer}${devindex} ${cmdstr}`);
   }
-  //*
+  /*
   else
   {
     // for debug:

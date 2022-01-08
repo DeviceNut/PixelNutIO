@@ -19,7 +19,7 @@
   {
     if (!$allowUpdates)
     {
-      console.log('... allow updates');
+      //console.log('... allow updates');
       $allowUpdates = true;
     }
 	});

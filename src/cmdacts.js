@@ -106,7 +106,7 @@ export const userRemTrackLayer = (track, layer) =>
   // supress reactive changes until UI updated
   // NOTE: assuming custom panels displayed here
   //       because no other way to invoke this
-  console.log('Supress updates...');
+  //console.log('Supress updates...');
   allowUpdates.set(false);
 }
 

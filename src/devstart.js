@@ -171,9 +171,10 @@ export let deviceStartup = (device) =>
   for (let i = 0; i < device.report.plugins.length; ++i)
   {
     let bvalue = parseInt(device.report.plugins[i].bits, 16);
-    const item = { id:  device.report.plugins[i].id,
-                  bits: bvalue,
-                  text: device.report.plugins[i].name };
+
+    const item = { id:   device.report.plugins[i].id,
+                   bits: bvalue,
+                   text: device.report.plugins[i].name };
 
     if (bvalue & pluginBit_REDRAW)
     {

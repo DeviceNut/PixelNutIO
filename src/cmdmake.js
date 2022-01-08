@@ -237,6 +237,7 @@ export const makeTrigSourceList = () =>
   let count = 0;
   let devindex = 0;
 
+  // reference: trigSrcItem in strands.js
   items.push({ id:0, devindex:0, sourceid:0,
                track:0, layer:0, text:'<none>' });
 

@@ -112,6 +112,19 @@ const orideProps =
   pcentCount      : 0,      // percent of pixels affected in range
 }
 
+const trigSrcItem =
+{
+  // used by UI to display items to user:
+  id              : 0,      // list index
+  text            : '',     // display text
+
+  // used internally to identify source:
+  devindex        : 0,      // value sent to device (layer index)
+  sourceid        : 0,      // unique layer ID
+  track           : 0,      // track index
+  layer           : 0       // track layer index
+}
+
 const oneStrand =
 {
   selected        : false,  // true if selected for modification
@@ -140,7 +153,7 @@ const oneStrand =
   tactives        : 0,      // current number of active tracks
   tracks          : [],     // list of 'oneTrack's for this strand
 
-  trigSources     : [],     // list of trigger source layer info
+  trigSources     : [],     // list of 'trigSrcItem'
 }
 
 export const overBit_DegreeHue    = 1;      // overwrite valueHue
@@ -210,6 +223,7 @@ export const strandCopyTop = () =>
         strand.curPatternDesc = ps.curPatternDesc;
 
         strand.showCustom     = ps.showCustom;
+        strand.userCustom     = ps.userCustom;
 
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;
@@ -230,7 +244,9 @@ export const strandCopyTop = () =>
         strand.opropsUser.pcentWhite = ps.opropsUser.pcentWhite;
         strand.opropsUser.pcentCount = ps.opropsUser.pcentCount;
 
-        // TODO: copy triggerSources
+        strand.trigSources = [];
+        for (let i = 0; i < ps.trigSources.length; ++i)
+          strand.trigSources.push( {...ps.trigSources[i]} );
       }
       get(eStrands)[s] = strand.selected;
     }

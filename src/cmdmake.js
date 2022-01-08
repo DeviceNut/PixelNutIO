@@ -15,7 +15,8 @@ import {
 
 import {
   DRAW_LAYER,
-  MUTEVAL_SOLO,
+  ENABLEBIT_MUTE,
+  ENABLEBIT_SOLO,
   DEF_HUE_VALUE,
   DEF_PCENT_BRIGHT,
   DEF_PCENT_DELAY,
@@ -72,11 +73,11 @@ export const makeEntireCmdStr = () =>
   let ridebits = 0;
   let splugbits = 0;
   let trigused = false;
-  let strand = get(pStrand);
+  const strand = get(pStrand);
 
   for (let i = 0; i < strand.tactives; ++i)
   {
-    let track = strand.tracks[i];
+    const track = strand.tracks[i];
     let drawplugin = false;
     let tplugbits = 0;
 
@@ -84,13 +85,14 @@ export const makeEntireCmdStr = () =>
 
     for (let j = 0; j < track.lactives; ++j)
     {
-      let layer = track.layers[j];
-      //console.log(`makeAll: track=${i} layer=${j} bits=${layer.pluginObj.bits.toString(16)}`);
+      const layer = track.layers[j];
+      cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+
+      let bits = (layer.mute ? ENABLEBIT_MUTE:0) | (layer.solo ? ENABLEBIT_SOLO:0);
+      if (bits) cmdstr = cmdstr.concat(`${cmdStr_LayerMute} ${bits}`);
 
       if (j === DRAW_LAYER)
       {
-        cmdstr = cmdstr.concat(`${layer.cmdstr}`);
-
         drawplugin = !layer.mute;
         if (drawplugin)
         {
@@ -99,25 +101,14 @@ export const makeEntireCmdStr = () =>
           ridebits |= makeOrideBits(strand, i);
 
           if (layer.trigFromMain) trigused = true;
-
-          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${MUTEVAL_SOLO} `);
         }
-        else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
       }
-      else
+      else if (drawplugin && !layer.mute)
       {
-        cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+        tplugbits |= layer.pluginObj.bits;
+        splugbits |= layer.pluginObj.bits;
 
-        if (drawplugin && !layer.mute)
-        {
-          tplugbits |= layer.pluginObj.bits;
-          splugbits |= layer.pluginObj.bits;
-
-          if (layer.trigFromMain) trigused = true;
-
-          if (layer.solo) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${MUTEVAL_SOLO} `);
-        }
-        else cmdstr = cmdstr.concat(`${cmdStr_LayerMute} `);
+        if (layer.trigFromMain) trigused = true;
       }
     }
 

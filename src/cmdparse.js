@@ -16,6 +16,8 @@ import {
 
 import {
   DRAW_LAYER,
+  ENABLEBIT_MUTE,
+  ENABLEBIT_SOLO,
   DEF_HUE_VALUE,
   DEF_PCENT_BRIGHT,
   DEF_PCENT_COUNT,
@@ -167,21 +169,16 @@ export const parsePattern = (pattern) =>
         {
           case cmdStr_LayerMute:
           {
-            // enable if no value follows command
+            // enable mute only if no value follows command
             if (isNaN(val))
             {
-              get(pStrand).tracks[track].layers[layer].solo = false;
               get(pStrand).tracks[track].layers[layer].mute = true;
-            }
-            else if (val == 2)
-            {
-              get(pStrand).tracks[track].layers[layer].solo = true;
-              get(pStrand).tracks[track].layers[layer].mute = false;
+              get(pStrand).tracks[track].layers[layer].solo = false;
             }
             else
             {
-              get(pStrand).tracks[track].layers[layer].solo = false;
-              get(pStrand).tracks[track].layers[layer].mute = (val == 1);
+              get(pStrand).tracks[track].layers[layer].mute = (val & ENABLEBIT_MUTE) ? true : false;
+              get(pStrand).tracks[track].layers[layer].solo = (val & ENABLEBIT_SOLO) ? true : false;
             }
             break;
           }

@@ -4,9 +4,8 @@ export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_HUE_VALUE        = 255;    // maximum hue value
 export const MAX_FORCE_VALUE      = 255;    // maximum force value
 
-export const MUTEVAL_OFF          = 0;      // mute/solo off
-export const MUTEVAL_ON           = 1;      // mute on, solo off
-export const MUTEVAL_SOLO         = 2;      // solo on, mute off
+export const ENABLEBIT_MUTE       = 1;      // mute on
+export const ENABLEBIT_SOLO       = 2;      // solo on
 
                                             // default values:
 export const DEF_HUE_VALUE        = 192;    // hue value for purple

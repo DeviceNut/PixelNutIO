@@ -19,8 +19,8 @@ import {
 
 import {
   DRAW_LAYER,
-  MUTEVAL_OFF,
-  MUTEVAL_SOLO,
+  ENABLEBIT_MUTE,
+  ENABLEBIT_SOLO,
   cmdStr_LayerMute,
   cmdStr_SelectEffect,
   cmdStr_AppRemEffect,
@@ -41,7 +41,7 @@ import { resetEffectBits } from './cmdpats.js';
 
 ///////////////////////////////////////////////////////////
 
-// assume cannot get called if number of T/L's at max
+// assume cannot get called if number of track/layer's at max
 export const userAddTrackLayer = (track, layer, dofilter=false) =>
 {
   const strand = get(pStrand);
@@ -77,7 +77,7 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
   sendLayerCmdForce(track, layer, cmdStr_TrigAtStart);
 }
 
-// assume cannot get called if only one T/L
+// assume cannot get called if only one track/layer
 export const userRemTrackLayer = (track, layer) =>
 {
   // send command to delete current track/layer (no effect #)
@@ -110,7 +110,7 @@ export const userRemTrackLayer = (track, layer) =>
   allowUpdates.set(false);
 }
 
-// assume cannot get called if the T/L is the last
+// assume cannot get called if the track/layer is the last
 export const userSwapTrackLayer = (track, layer) =>
 {
   // send command to swap track/layer (no effect #)
@@ -124,31 +124,37 @@ export const userSwapTrackLayer = (track, layer) =>
   updateAllTracks();
 }
 
+// setting a track to Solo turns off its Mute but turns it on for all other
+// tracks, and also turns off the Solos for all other tracks, whereas turning
+// off the Solo turns off the Mutes for all other tracks.
+//
+// setting a filter layer to Solo turns it off all other filter layers
+// in the same track, and turns on the mute for all filter layers in the
+// same track (but not the drawing layer, which is always on).
+//
+// turning off a filter layer Solo turns off all Mutes for other filter
+// layers in this track.
 export const userSoloTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);
-  const enable = !strand.tracks[track].layers[layer].solo;
-  strand.tracks[track].layers[layer].solo = enable; // toggle
+  const player = strand.tracks[track].layers[layer];
+  player.solo = !player.solo;
+  player.mute = false;
 
-  // setting a track to Solo turns off its Mute but turns it on for all other
-  // tracks, and also turns off the Solos for all other tracks, whereas turning
-  // off the Solo turns off the Mutes for all other tracks.
+  let bits = (player.solo ? ENABLEBIT_SOLO:0);
+  sendLayerCmdForce(track, layer, cmdStr_LayerMute, bits);
+
   if (layer === DRAW_LAYER)
   {
-    if (enable)
+    if (player.solo)
     {
       for (let i = 0; i < strand.tactives; ++i)
       {
         if (i !== track)
         {
-          strand.tracks[i].layers[DRAW_LAYER].solo = false;
           strand.tracks[i].layers[DRAW_LAYER].mute = true;
-          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute);
-        }
-        else
-        {
-          strand.tracks[i].layers[DRAW_LAYER].mute = false;
-          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, MUTEVAL_SOLO);
+          strand.tracks[i].layers[DRAW_LAYER].solo = false;
+          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, ENABLEBIT_MUTE);
         }
       }
     }
@@ -159,38 +165,23 @@ export const userSoloTrackLayer = (track, layer) =>
         if (i !== track)
         {
           strand.tracks[i].layers[DRAW_LAYER].mute = false;
-          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, MUTEVAL_OFF);
-        }
-        else if (!strand.tracks[i].layers[DRAW_LAYER].mute)
-        {
-          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, MUTEVAL_OFF);
+          sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, 0);
         }
       }
     }
   }
-  // setting a filter layer to Solo turns it off all other filter layers
-  // in the same track, and turns on the mute for all filter layers in the
-  // same track (but not the drawing layer, which is always on).
-  //
-  // turning off a filter layer Solo turns off all Mutes for other filter
-  // layers in this track.
   else
   {
-    if (enable)
+    if (player.solo)
     {
       // DRAW_LAYER not affected
       for (let i = 1; i < strand.tracks[track].lactives; ++i)
       {
         if (i !== layer)
         {
-          strand.tracks[track].layers[i].solo = false;
           strand.tracks[track].layers[i].mute = true;
-          sendLayerCmdForce(track, i, cmdStr_LayerMute);
-        }
-        else
-        {
-          strand.tracks[track].layers[i].mute = false;
-          sendLayerCmdForce(track, i, cmdStr_LayerMute, MUTEVAL_SOLO);
+          strand.tracks[track].layers[i].solo = false;
+          sendLayerCmdForce(track, i, cmdStr_LayerMute, ENABLEBIT_MUTE);
         }
       }
     }
@@ -204,12 +195,8 @@ export const userSoloTrackLayer = (track, layer) =>
           if (strand.tracks[track].layers[i].mute)
           {
             strand.tracks[track].layers[i].mute = false;
-            sendLayerCmdForce(track, i, cmdStr_LayerMute, MUTEVAL_OFF);
+            sendLayerCmdForce(track, i, cmdStr_LayerMute, 0);
           }
-        }
-        else if (!strand.tracks[i].layers[i].mute)
-        {
-          sendLayerCmdForce(track, i, cmdStr_LayerMute, MUTEVAL_OFF);
         }
       }
     }
@@ -219,17 +206,19 @@ export const userSoloTrackLayer = (track, layer) =>
   makeEntireCmdStr();
 }
 
+// turning off mute for a track/layer that is not on Solo
+// turns off the Solo for any other track/layer, but leaves
+// the mute alone
 export const userMuteTrackLayer = (track, layer) =>
 {
   const strand = get(pStrand);
-  const enable = !strand.tracks[track].layers[layer].mute;
-  strand.tracks[track].layers[layer].mute = enable; // toggle
+  const player = strand.tracks[track].layers[layer];
+  player.mute = !player.mute;
 
-  sendLayerCmdForce(track, layer, cmdStr_LayerMute, enable ? undefined : MUTEVAL_OFF);
+  let bits = (player.mute ? ENABLEBIT_MUTE:0) | (player.solo ? ENABLEBIT_SOLO:0);
+  sendLayerCmdForce(track, layer, cmdStr_LayerMute, bits);
 
-  // turning off mute for a track/layer that is not on Solo
-  // turns off the Solo for any/all other track/layer
-  if (!enable && !strand.tracks[track].layers[layer].solo)
+  if (!player.mute && !player.solo)
   {
     if (layer === DRAW_LAYER)
     {
@@ -240,7 +229,9 @@ export const userMuteTrackLayer = (track, layer) =>
           if (strand.tracks[i].layers[DRAW_LAYER].solo)
           {
             strand.tracks[i].layers[DRAW_LAYER].solo = false;
-            sendLayerCmdForce(track, i, cmdStr_LayerMute, MUTEVAL_OFF);
+
+            let bits = (strand.tracks[i].layers[DRAW_LAYER].mute ? ENABLEBIT_MUTE:0);
+            sendLayerCmdForce(i, DRAW_LAYER, cmdStr_LayerMute, bits);
           }
         }
       }
@@ -255,7 +246,9 @@ export const userMuteTrackLayer = (track, layer) =>
           if (strand.tracks[track].layers[i].solo)
           {
             strand.tracks[track].layers[i].solo = false;
-            sendLayerCmdForce(track, i, cmdStr_LayerMute, MUTEVAL_OFF);
+
+            let bits = (strand.tracks[track].layers[i].mute ? ENABLEBIT_MUTE:0);
+            sendLayerCmdForce(track, i, cmdStr_LayerMute, bits);
           }
         }
       }

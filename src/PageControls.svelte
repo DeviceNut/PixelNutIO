@@ -27,11 +27,13 @@
   import TrackLayout from './TrackLayout.svelte';
 
   let pstr = '';
-  $: pstr = ($pStrand.showCustom ? "^" : "Customize");
+  $: pstr = ($pStrand.showCustom ? '^' : 'Customize');
 
   const toggleshow = () =>
   {
     $pStrand.showCustom = !$pStrand.showCustom;
+    $pStrand.userCustom = $pStrand.showCustom;
+
     if ($pStrand.showCustom && ($pStrand.tactives === 0))
       userSetPattern(defCustomCmd);
   }

@@ -122,6 +122,9 @@
       }
 
       userSetPattern(pcmd);
+
+      if ($pStrand.userCustom)
+          $pStrand.showCustom = true;
     }
     else userClearPattern(false);
 

@@ -215,6 +215,8 @@ export let deviceStartup = (device) =>
   if (tracklayers < MIN_LAYERS)
     return devInfoErr(`Too few layers: ${tracklayers} < ${MIN_LAYERS}`);
 
+  //console.log(`MaxCmdLen=${maxstrlen} nStrands=${numstrands} nTracks=${numtracks} nLayers/track=${tracklayers}`);
+
   nStrands.set(numstrands);
   nTracks.set(numtracks);
   nLayers.set(tracklayers);

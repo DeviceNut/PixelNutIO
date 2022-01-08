@@ -15,6 +15,7 @@ import {
  // Device Query/Responses:
 const queryStr_GetInfo    = "?";        // returns device info in JSON format
 const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
+const respStr_CmdFailed   = "<CmdFail>" // indicates device command failed
 const respStr_StartInfo   = "?<"        // indicates start of device info
 const respStr_FinishInfo  = ">?"        // indicates end of device info
 
@@ -294,6 +295,10 @@ export const onDeviceReply = (msg, fsend) =>
       device.qstate = QSTATE_RESTART;
     }
   }
+  else if (reply[0] === respStr_CmdFailed)
+  {
+    deviceError(`Command Failed: "${name}"`, 'Device Error');
+  }
   else if (device.qstate === QSTATE_WAIT_RESP)
   {
     if (reply[0] === respStr_StartInfo)
@@ -322,11 +327,11 @@ export const onDeviceReply = (msg, fsend) =>
       }
       catch (e)
       {
-        console.warn(`Device Error: "${device.curname}" JSON=${device.dinfo}`);
+        console.warn(`Device Parse Error: "${device.curname}" JSON=${device.dinfo}`);
 
         if (++device.failcount >= MAX_DEVICE_FAIL_COUNT)
         {
-          console.error(`Device Failed: "${device.curname}"`);
+          console.error(`Device Failed, Ignoring: "${device.curname}"`);
           device.ignore = true;
         }
         else device.qstate = QSTATE_RESTART;

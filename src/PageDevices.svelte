@@ -87,10 +87,16 @@
     if (!$mqttChangeIP)
     {
       $mqttChangeIP = true;
+
       storeBrokerRead(); // retrieve from browser store
-      doscan();
+      if ($mqttBrokerIP !== '')
+      {
+        doscan();
+        return;
+      }
     }
-    else openForm = true;
+
+    openForm = true;
   }
 
   const setaddr = () =>

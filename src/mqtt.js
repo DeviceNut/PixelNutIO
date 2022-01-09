@@ -26,6 +26,7 @@ export const mqttSend = (name, msg) =>
 function onConnect()
 {
   console.log('MQTT Subscribing...');
+
   mqtt.subscribe(topicDevNotify);
   mqtt.subscribe(topicDevReply);
 
@@ -38,7 +39,10 @@ function onLostConnect(rsp)
   if (rsp.errorCode !== 0)
   {
     console.warn(`MQTT Lost Connection: ${rsp.errorMessage}`);
+
     onConnection(false);
+    mqttConnected.set(false);
+
     mqtt = null; // prevent disconnecting (crash & hang)
   }
 }
@@ -48,11 +52,10 @@ function onFailure(rsp)
   console.warn(`MQTT Broker Failed: ${rsp.errorMessage}`);
 
   onConnection(false);
-  mqttConnected.set(true);
+  mqttConnected.set(false);
+  mqttBrokerFail.set(true);
 
   mqtt = null; // prevent disconnecting (crash & hang)
-
-  mqttBrokerFail.set(true);
 }
 
 function onMessage(message)
@@ -88,8 +91,6 @@ export const mqttConnect = (ipaddr) =>
 
     let options = {
       timeout: 1,
-      //reconnect: false,   // these are defaults
-      //cleanSession: true,
       onSuccess: onConnect,
       onFailure: onFailure,
     };
@@ -97,9 +98,6 @@ export const mqttConnect = (ipaddr) =>
 
     mqtt.onMessageArrived = onMessage;
     mqtt.onConnectionLost = onLostConnect;
-    //mqtt.disconnectedPublishing = true/false;
-    //mqtt.onMessageDelivered
-    //mqtt.onMessageArrived
   }
   else mqttBrokerFail.set(true);
 }

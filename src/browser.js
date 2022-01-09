@@ -24,10 +24,6 @@ export const storeBrokerRead = () =>
   let ipaddr = localStorage.getItem(SaveBrokerIPaddr);
   if (ipaddr === null) ipaddr = '';
   console.log(`Retrieving broker IP: ${ipaddr}`);
-  if (ipaddr === '')
-  {
-    // TODO check if passed IP from server
-  }
   mqttBrokerIP.set(ipaddr);
 }
 

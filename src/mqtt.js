@@ -1,8 +1,5 @@
-import { get } from 'svelte/store';
-
 import {
-  MQTT_BROKER_PORT,
-  mqttBrokerIP,
+  mqttConnected,
   mqttBrokerFail
 } from './globals.js';
 
@@ -12,9 +9,10 @@ import {
   onDeviceReply
 } from './devtalk.js';
 
-const topicDevNotify  = 'PixelNut/Notify';
-const topicCommand    = 'PixelNut/Cmd/'; // + devicename
-const topicDevReply   = 'PixelNut/Reply';
+const MQTT_BROKER_PORT  = 9001;   // MUST be 9001 for websocket
+const topicDevNotify    = 'PixelNut/Notify';
+const topicDevReply     = 'PixelNut/Reply';
+const topicCommand      = 'PixelNut/Cmd/'; // + devicename
 
 let mqtt = null;
 
@@ -32,6 +30,7 @@ function onConnect()
   mqtt.subscribe(topicDevReply);
 
   onConnection(true);
+  mqttConnected.set(true);
 }
 
 function onLostConnect(rsp)
@@ -47,7 +46,10 @@ function onLostConnect(rsp)
 function onFailure(rsp)
 {
   console.warn(`MQTT Broker Failed: ${rsp.errorMessage}`);
+
   onConnection(false);
+  mqttConnected.set(true);
+
   mqtt = null; // prevent disconnecting (crash & hang)
 
   mqttBrokerFail.set(true);
@@ -70,34 +72,34 @@ function onMessage(message)
   }
 }
 
-function genUniqueID()
-{
-  const id = '!' + (Math.random() + 1).toString(36).substr(-10);
-  console.log(`MQTT ID: ${id}`);
-  return id;
-};
-
-export const mqttConnect = () =>
+export const mqttConnect = (ipaddr) =>
 {
   onConnection(false);
   if (mqtt !== null) mqtt.disconnect();
 
-  mqtt = new Paho.Client(get(mqttBrokerIP), MQTT_BROKER_PORT, genUniqueID());
+  console.log(`MQTT Request connection: ${ipaddr}`);
 
-  console.log(`MQTT Connecting to ${get(mqttBrokerIP)}...`);
+  const clientid = '!' + (Math.random() + 1).toString(36).slice(-10);
+  mqtt = new Paho.Client(ipaddr, MQTT_BROKER_PORT, clientid);
 
-  let options = {
-    timeout: 1,
-    //reconnect: false,   // these are defaults
-    //cleanSession: true,
-    onSuccess: onConnect,
-    onFailure: onFailure,
-  };
-  mqtt.connect(options);
+  if (mqtt !== null)
+  {
+    console.log(`MQTT Connecting to ${ipaddr}...`);
 
-  mqtt.onMessageArrived = onMessage;
-  mqtt.onConnectionLost = onLostConnect;
-  //mqtt.disconnectedPublishing = true/false;
-  //mqtt.onMessageDelivered
-  //mqtt.onMessageArrived
+    let options = {
+      timeout: 1,
+      //reconnect: false,   // these are defaults
+      //cleanSession: true,
+      onSuccess: onConnect,
+      onFailure: onFailure,
+    };
+    mqtt.connect(options);
+
+    mqtt.onMessageArrived = onMessage;
+    mqtt.onConnectionLost = onLostConnect;
+    //mqtt.disconnectedPublishing = true/false;
+    //mqtt.onMessageDelivered
+    //mqtt.onMessageArrived
+  }
+  else mqttBrokerFail.set(true);
 }

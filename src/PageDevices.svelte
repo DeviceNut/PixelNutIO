@@ -13,15 +13,21 @@
   import {
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
+    mqttFetchingIP,
     mqttBrokerIP,
     mqttBrokerFail,
-    isConnected,
+    mqttConnected,
+    mqttChangeIP,
     deviceList,
     msgTitle,
     msgDesc
   } from './globals.js';
 
-  import { storeBrokerWrite } from './browser.js';
+  import {
+    storeBrokerRead,
+    storeBrokerWrite
+  } from './browser.js';
+
   import { mqttConnect } from './mqtt.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
@@ -34,45 +40,58 @@
   // but not if just returned from Controls or Docs normally
 
   let title;
-  $: title = $isConnected ? `Connected (${$mqttBrokerIP})` : scanning ? 'Connecting...' : 'Disconnected';
+  $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
 
+  let doconnect = true;
   let scanning = false;
   let openForm = false;
   let openError = false;
   let waitcount;
 
-  function doscan()
-  {
-    scanning = true;
-    mqttConnect();
-
-    waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
-    docheck();
-  }
-
   const docheck = () =>
   {
-    if ($mqttBrokerFail === true)
+    if ($mqttFetchingIP)
     {
-      scanning = false;
-      openError = true;
+      // wait while fetching broker IP from server
+    }
+    else if (doconnect)
+    {
+      doconnect = false;
+      mqttConnect($mqttBrokerIP);
     }
     // stop spinner if have device(s) or timeout
     else if (($deviceList.length > 0) || (--waitcount <= 0))
     {
       scanning = false;
-      if (!$mqttBrokerFail) storeBrokerWrite();
+
+      if ($mqttChangeIP) storeBrokerWrite();
     }
-    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
+
+    if (scanning) setTimeout(docheck, MSECS_CHECK_TIMEOUT);
+  }
+
+  function doscan()
+  {
+    scanning = true;
+    doconnect = true;
+    $mqttBrokerFail = false;
+
+    waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
+    docheck();
   }
 
   const doretry = () =>
   {
-    $mqttBrokerFail = false;
-    doscan();
-  }
+    openError = false;
 
-  const dochange = () => { openForm = true; }
+    if (!$mqttChangeIP)
+    {
+      $mqttChangeIP = true;
+      storeBrokerRead(); // retrieve from browser store
+      doscan();
+    }
+    else openForm = true;
+  }
 
   const setaddr = () =>
   {
@@ -81,10 +100,14 @@
     doscan();
   }
 
-  if ($mqttBrokerIP === '') dochange();
-
-  else if (!$isConnected || ($deviceList.length < 1))
+  if (!$mqttConnected || ($deviceList.length < 1))
     doscan();
+
+  $:if ($mqttBrokerFail)
+    {
+      scanning = false;
+      openError = true;
+    }
 
   let openMessage;
   $: openMessage = $msgTitle !== '';
@@ -96,21 +119,20 @@
 <div class="panel">
 
   <div class="scanbox">
-    <p style="margin-bottom:15px;">{title}</p>
+    <p style="margin-bottom:10px;">{title}</p>
     {#if scanning }
-      <Loading style="margin-left:42%;" withOverlay={false} />
-    {:else}
+      <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
+    {:else if !$mqttFetchingIP && $mqttChangeIP }
       <button class="button"
-        style="width:100px;"
-        on:click={dochange}
+        on:click={()=> {openForm = true;}}
         >Change
-    </button>
+      </button>
       <button class="button"
-        style="width:100px; margin-left:10px;"
-        on:click={doretry}
-        disabled={$isConnected}
+        style="margin-left:10px;"
+        on:click={doscan}
+        disabled={$mqttConnected}
         >Retry
-    </button>
+      </button>
     {/if}
   </div>
 
@@ -155,8 +177,8 @@
   bind:open={openError}
   on:close
   >
-  <p>No Message Broker found at {$mqttBrokerIP}.</p><br>
-  <Button kind="secondary" on:click={() => {openError = false; openForm = true;}}>Continue</Button>
+  <p>No Message Broker at {$mqttBrokerIP}.</p><br>
+  <Button kind="secondary" on:click={doretry}>Continue</Button>
 </Modal>
 
 <Modal
@@ -176,13 +198,13 @@
     text-align: center;
     background-color: var(--bg-color-panel);
   }
-  .active {
-    margin: 10px 0 10px 0;
-    font-style: italic;
-  }
   .scanbox {
-    min-height: 160px;
-    padding-top: 30px;
+    margin-top: 30px;
+  }
+  .active {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-style: italic;
   }
   .listbox {
     max-width: 400px;
@@ -194,6 +216,7 @@
     padding-top: 20px;
   }
   .button {
+    width: 100px;
     margin-top: 20px;
     padding: 8px;
     font-size:1.15em;

@@ -163,9 +163,8 @@ export const overBit_PcentCount   = 4;      // overwrite pcentCount
 function makeOneLayer()
 {
   let layer = {...oneLayer};
-  let str = (Math.random() + 1).toString(36);
-  layer.uniqueID = 'LID' + str.substring(str.length-6);
-  //console.log('ID=', layer.uniqueID);
+  layer.uniqueID = 'LID' + (Math.random() + 1).toString(36).slice(-8);
+  //console.log(`makeOneLayer: ID=${layer.uniqueID}`);
   return layer;
 }
 

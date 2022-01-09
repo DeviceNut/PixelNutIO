@@ -7,7 +7,6 @@ import {
   curPageMode,
   curDevice,
   deviceList,
-  isConnected,
   msgTitle,
   msgDesc
  } from './globals.js';
@@ -196,16 +195,14 @@ export const onConnection = (enabled) =>
   if (enabled) checkTimeout();
   else
   {
+    deviceList.set([]);
+
     if (timeObj)
     {
       clearTimeout(timeObj);
       timeObj = 0;
     } 
-
-    deviceList.set([]);
   }
-
-  isConnected.set(enabled);
 }
 
 export const onNotification = (msg, fsend) =>

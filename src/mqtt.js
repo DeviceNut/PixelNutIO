@@ -1,3 +1,5 @@
+import mqtt from 'mqtt/dist/mqtt.min';
+
 import {
   mqttConnected,
   mqttBrokerFail
@@ -14,56 +16,69 @@ const topicDevNotify    = 'PixelNut/Notify';
 const topicDevReply     = 'PixelNut/Reply';
 const topicCommand      = 'PixelNut/Cmd/'; // + devicename
 
-let mqtt = null;
+const clientID = '!' + (Math.random() + 1).toString(36).slice(-10);
+
+const mqttOptions = {
+  clientId: clientID,
+  clean: true,
+  connectTimeout: 1000,
+  reconnectPeriod: 0
+};
+
+let mqttClient = null;
 
 export const mqttSend = (name, msg) =>
 {
   console.log('>>', msg);
 
-  mqtt.publish(topicCommand + name, msg);
+  mqttClient.publish(topicCommand + name, msg);
 }
 
 function onConnect()
 {
   console.log('MQTT Subscribing...');
 
-  mqtt.subscribe(topicDevNotify);
-  mqtt.subscribe(topicDevReply);
+  mqttClient.subscribe(topicDevNotify, onSubscribe);
+  mqttClient.subscribe(topicDevReply, onSubscribe);
 
   onConnection(true);
   mqttConnected.set(true);
 }
 
-function onLostConnect(rsp)
+function onSubscribe(err)
 {
-  if (rsp.errorCode !== 0)
-  {
-    console.warn(`MQTT Lost Connection: ${rsp.errorMessage}`);
-
-    onConnection(false);
-    mqttConnected.set(false);
-
-    mqtt = null; // prevent disconnecting (crash & hang)
-  }
+  if (err) onError(err);
 }
 
-function onFailure(rsp)
+function onError(err)
 {
-  console.warn(`MQTT Broker Failed: ${rsp.errorMessage}`);
+  console.warn(`MQTT Error: ${err}`);
 
   onConnection(false);
   mqttConnected.set(false);
   mqttBrokerFail.set(true);
 
-  mqtt = null; // prevent disconnecting (crash & hang)
+  mqttClient.end();
+  mqttClient = null; // prevent disconnecting (crash & hang)
 }
 
-function onMessage(message)
+function onClose()
 {
-  let msg = message.payloadString;
-  //console.log(`MQTT Topic=${message.topic} Msg=${msg}`);
+  console.warn(`MQTT Close`);
 
-  switch (message.topic)
+  onConnection(false);
+  mqttConnected.set(false);
+
+  mqttClient = null; // prevent disconnecting (crash & hang)
+}
+
+function onMessage(topic, msg)
+{
+  msg = msg.toString();
+
+  //console.log(`MQTT Messge: Topic=${topic} Msg=${msg}`);
+
+  switch (topic)
   {
     case topicDevNotify:
       onNotification(msg, mqttSend);
@@ -78,26 +93,19 @@ function onMessage(message)
 export const mqttConnect = (ipaddr) =>
 {
   onConnection(false);
-  if (mqtt !== null) mqtt.disconnect();
+  if (mqttClient !== null) mqttClient.end();
 
   console.log(`MQTT Request connection: ${ipaddr}`);
 
-  const clientid = '!' + (Math.random() + 1).toString(36).slice(-10);
-  mqtt = new Paho.Client(ipaddr, MQTT_BROKER_PORT, clientid);
+  const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
+  mqttClient = mqtt.connect(mqttURL, mqttOptions);
 
-  if (mqtt !== null)
+  if (mqttClient !== null)
   {
-    console.log(`MQTT Connecting to ${ipaddr}...`);
-
-    let options = {
-      timeout: 1,
-      onSuccess: onConnect,
-      onFailure: onFailure,
-    };
-    mqtt.connect(options);
-
-    mqtt.onMessageArrived = onMessage;
-    mqtt.onConnectionLost = onLostConnect;
+    mqttClient.on('connect', onConnect);
+    mqttClient.on('message', onMessage);
+    mqttClient.on('error', onError);
+    mqttClient.on('close', onClose);
   }
   else mqttBrokerFail.set(true);
 }

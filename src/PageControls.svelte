@@ -5,15 +5,15 @@
   import {
     Grid,
     Row,
-    Column,
-    Modal,
-    Button
+    Column
   } from "carbon-components-svelte";
 
   import {
-    pStrand,
-    msgTitle,
-    msgDesc
+    curDevice,
+    curPageMode,
+    PAGEMODE_DEVICES,
+    mqttConnected,
+    pStrand
   } from './globals.js';
 
   import { defCustomCmd } from './devcmds.js';
@@ -38,8 +38,7 @@
       userSetPattern(defCustomCmd);
   }
 
-  let openMessage;
-  $: openMessage = $msgTitle !== '';
+  $: if (!$mqttConnected || !$curDevice) $curPageMode = PAGEMODE_DEVICES;
 
 </script>
 
@@ -123,16 +122,6 @@
 {:else}
   <div style="margin-top:10px;"></div>
 {/if}
-
-<Modal
-  passiveModal
-  modalHeading={$msgTitle}
-  bind:open={openMessage}
-  on:close
-  >
-  <p>{$msgDesc}</p><br>
-  <Button kind="secondary" on:click={() => {openMessage = false; $msgTitle = '';}}>Continue</Button>
-</Modal>
 
 <style>
   .panel {

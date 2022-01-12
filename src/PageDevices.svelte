@@ -13,7 +13,6 @@
   import {
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
-    mqttFetchingIP,
     mqttBrokerIP,
     mqttBrokerFail,
     mqttConnected,
@@ -42,7 +41,6 @@
   let title;
   $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
 
-  let doconnect = true;
   let scanning = false;
   let openForm = false;
   let openError = false;
@@ -50,31 +48,34 @@
 
   const docheck = () =>
   {
-    if ($mqttFetchingIP)
-    {
-      // wait while fetching broker IP from server
-    }
-    else if (doconnect)
-    {
-      doconnect = false;
-      mqttConnect($mqttBrokerIP);
-    }
-    // stop spinner if have device(s) or timeout
-    else if (($deviceList.length > 0) || (--waitcount <= 0))
+    console.log(`docheck: isconnected=${$mqttConnected}`);
+    if ($deviceList.length > 0) // successful
     {
       scanning = false;
 
       if ($mqttChangeIP) storeBrokerWrite();
     }
+    else if (--waitcount <= 0) // no devices found
+    {
+      scanning = false;
+    }
 
     if (scanning) setTimeout(docheck, MSECS_CHECK_TIMEOUT);
   }
 
+  function rescan()
+  {
+    console.log('rescan...');
+    $mqttConnected = false;
+    doscan();
+  }
+
   function doscan()
   {
+    console.log('doscan...');
     scanning = true;
-    doconnect = true;
-    $mqttBrokerFail = false;
+
+    if (!$mqttConnected) mqttConnect();
 
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
     docheck();
@@ -82,6 +83,7 @@
 
   const doretry = () =>
   {
+    console.log('doretry...');
     openError = false;
 
     if (!$mqttChangeIP)
@@ -99,21 +101,21 @@
     openForm = true;
   }
 
-  const setaddr = () =>
+  if (!$mqttBrokerFail && !$mqttConnected)
   {
-    openForm = false;
-    $mqttBrokerFail = false;
+    console.log('starting PageDevices...');
     doscan();
   }
 
-  if (!$mqttConnected || ($deviceList.length < 1))
-    doscan();
-
-  $:if ($mqttBrokerFail)
+  $: {
+    if ($mqttBrokerFail)
     {
+      console.log('broker failed...');
+      $mqttBrokerFail = false;
       scanning = false;
       openError = true;
     }
+  }
 
   let openMessage;
   $: openMessage = $msgTitle !== '';
@@ -128,7 +130,7 @@
     <p style="margin-bottom:10px;">{title}</p>
     {#if scanning }
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
-    {:else if !$mqttFetchingIP && $mqttChangeIP }
+    {:else if $mqttChangeIP }
       <button class="button"
         on:click={()=> {openForm = true;}}
         >Change
@@ -163,7 +165,7 @@
   bind:open={openForm}
   on:close
   >
-  <Form on:submit={setaddr} >
+  <Form on:submit={() => {openForm = false; rescan();}} >
     <FormGroup>
       <TextInput
         labelText="IP Address"

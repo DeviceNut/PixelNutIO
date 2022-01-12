@@ -1,6 +1,8 @@
+import { get } from 'svelte/store';
 import mqtt from 'mqtt/dist/mqtt.min';
 
 import {
+  mqttBrokerIP,
   mqttConnected,
   mqttBrokerFail
 } from './globals.js';
@@ -16,27 +18,36 @@ const topicDevNotify    = 'PixelNut/Notify';
 const topicDevReply     = 'PixelNut/Reply';
 const topicCommand      = 'PixelNut/Cmd/'; // + devicename
 
-const clientID = '!' + (Math.random() + 1).toString(36).slice(-10);
-
 const mqttOptions = {
-  clientId: clientID,
+  //clientId: clientID, // let it create random clientID
   clean: true,
   connectTimeout: 1000,
-  reconnectPeriod: 0
+  reconnectPeriod: 0 // don't auto-reconnect
 };
 
 let mqttClient = null;
 
+function outime(msg, err)
+{
+  let secs = Math.floor(Date.now() / 1000);
+  if (err) console.error(`${secs} ${msg}`);
+  else console.log(`${secs} ${msg}`);
+}
 export const mqttSend = (name, msg) =>
 {
-  console.log('>>', msg);
+  if (mqttClient)
+  {
+    outime(`>> ${msg}`);
 
-  mqttClient.publish(topicCommand + name, msg);
+    mqttClient.publish(topicCommand + name, msg);
+  }
+  else outime(`MQTT Send: disconnected (msg="${msg}")`, true);
 }
 
-function onConnect()
+function onConnect(connack)
 {
-  console.log('MQTT Subscribing...');
+  outime('MQTT Connected');
+  //console.log(connack); // cannot tell if reconnection
 
   mqttClient.subscribe(topicDevNotify, onSubscribe);
   mqttClient.subscribe(topicDevReply, onSubscribe);
@@ -52,31 +63,41 @@ function onSubscribe(err)
 
 function onError(err)
 {
-  console.warn(`MQTT Error: ${err}`);
+  outime(`MQTT Error: ${err}`, true);
 
-  onConnection(false);
-  mqttConnected.set(false);
-  mqttBrokerFail.set(true);
+  if (get(mqttConnected))
+  {
+    onConnection(false);
+    mqttConnected.set(false);
+    mqttBrokerFail.set(true);
+  }
 
-  mqttClient.end();
-  mqttClient = null; // prevent disconnecting (crash & hang)
+  if (mqttClient)
+  {
+    mqttClient.end();
+    mqttClient = null;
+  }
 }
 
 function onClose()
 {
-  console.warn(`MQTT Close`);
+  outime('MQTT Close');
 
-  onConnection(false);
-  mqttConnected.set(false);
+  if (get(mqttConnected))
+  {
+    onConnection(false);
+    mqttConnected.set(false);
+    //mqttBrokerFail.set(true); // TODO
+  }
 
-  mqttClient = null; // prevent disconnecting (crash & hang)
+  mqttClient = null;
 }
 
 function onMessage(topic, msg)
 {
   msg = msg.toString();
 
-  //console.log(`MQTT Messge: Topic=${topic} Msg=${msg}`);
+  //outime(`MQTT Messge: Topic=${topic} Msg=${msg}`);
 
   switch (topic)
   {
@@ -90,12 +111,19 @@ function onMessage(topic, msg)
   }
 }
 
-export const mqttConnect = (ipaddr) =>
+export const mqttConnect = () =>
 {
-  onConnection(false);
-  if (mqttClient !== null) mqttClient.end();
+  if (mqttClient !== null)
+  {
+    outime(`MQTT Disconnect`);
+    onConnection(false);
+    mqttClient.end();
+  }
 
-  console.log(`MQTT Request connection: ${ipaddr}`);
+  mqttBrokerFail.set(false);
+  let ipaddr = get(mqttBrokerIP);
+
+  outime(`MQTT DoConnect: ${ipaddr}`);
 
   const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
   mqttClient = mqtt.connect(mqttURL, mqttOptions);
@@ -106,6 +134,18 @@ export const mqttConnect = (ipaddr) =>
     mqttClient.on('message', onMessage);
     mqttClient.on('error', onError);
     mqttClient.on('close', onClose);
+    mqttClient.on('disconnect', onDisconnect);
+    mqttClient.on('offline', onOffline);
   }
   else mqttBrokerFail.set(true);
+}
+
+const onDisconnect = (packet) =>
+{
+  outime(`MQTT Disconnect: ${packet}`);
+}
+
+const onOffline = () =>
+{
+  outime('MQTT Offline');
 }

@@ -1,12 +1,11 @@
 <script>
 
-  import { onMount } from "svelte";
-
   import "carbon-components-svelte/css/g100.css";
+
+  import { Loading } from "carbon-components-svelte";
 
   import {
     reqStrForIP,
-    mqttFetchingIP,
     mqttBrokerIP,
     mqttChangeIP,
     PAGEMODE_DEVICES,
@@ -32,33 +31,34 @@
   let hip = window.location.origin;
   console.log(`Served from host: ${hip}`);
 
-  onMount(async () => {
-    await fetch(hip + reqStrForIP)
+  let promise = fetch(hip + reqStrForIP)
       .then(resp => resp.json())
       .then(data => {
         const ipaddr = data.mqttip;
         console.log(`App: MqttIP=${ipaddr}`);
-        mqttBrokerIP.set(ipaddr);
-        mqttFetchingIP.set(false);
+        $mqttBrokerIP = ipaddr;
       })
       .catch(error => {
         console.log('App: MqttIP not found');
         storeBrokerRead(); // retrieve from browser store
-        mqttFetchingIP.set(false);
-        mqttChangeIP.set(true);
+        $mqttChangeIP = true;
       });
-  });
-
-  $curPageMode = PAGEMODE_DEVICES;
 
 </script>
 
 <main>
-  {#if ($curPageMode === PAGEMODE_HELPDOCS)}
-    <PageHelp/>
-  {:else if ($curPageMode === PAGEMODE_CONTROLS)}
-    <PageControls/>
-  {:else}
-    <PageDevices/>
-  {/if}
+
+  {#await promise}
+    <p style="margin-bottom:100px;">Connecting to server...</p>
+    <Loading style="margin: 30px 0 0 42%;" withOverlay={false} />
+  {:then}
+    {#if ($curPageMode === PAGEMODE_HELPDOCS)}
+      <PageHelp/>
+    {:else if ($curPageMode === PAGEMODE_CONTROLS)}
+      <PageControls/>
+    {:else if ($curPageMode === PAGEMODE_DEVICES)}
+      <PageDevices/>
+    {/if}
+  {/await}
+
 </main>

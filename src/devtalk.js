@@ -3,8 +3,6 @@ import { get } from 'svelte/store';
 import {
   SECS_RESPONSE_TIMEOUT,
   MAX_DEVICE_FAIL_COUNT,
-  PAGEMODE_DEVICES,
-  curPageMode,
   curDevice,
   deviceList,
   msgTitle,
@@ -106,23 +104,34 @@ export let deviceError = (text, title=null) =>
   msgDesc.set(text);
   msgTitle.set(title);
 
-  deviceReset();
+  deviceReset(true);
 }
 
-// reset currently active device and return to the discovery page
-function deviceReset()
+// reset currently active device
+function deviceReset(remove)
 {
   let device = get(curDevice);
-  if (device !== null)
+  if (device && device.active)
   {
-    device.active = false;
+    console.log(`Device Reset: "${device.curname}`);
 
     curDevice.set(null);
-    if (get(curPageMode) !== PAGEMODE_DEVICES)
-      curPageMode.set(PAGEMODE_DEVICES);
 
-    // triggers update to UI - MUST HAVE THIS
-    deviceList.set(get(deviceList));
+    if (remove)
+    {
+      let newlist = [];
+
+      for (const d of get(deviceList))
+      {
+        if (d.curname === device.curname)
+        {
+          console.log(`Device Remove: "${device.curname}`);
+        }
+        else newlist.push(device);
+      }
+
+      deviceList.set(newlist);
+    }
   }
 }
 
@@ -151,6 +160,7 @@ function deviceAdd(name)
 // create timer for receiving a connection notification
 // if device doesn't respond in time, stop and remove it
 let timeObj = 0;
+let oldts = curTimeSecs();
 function checkTimeout()
 {
   let curlist = get(deviceList);
@@ -158,15 +168,21 @@ function checkTimeout()
   {
     let newlist = [];
     let tstamp = curTimeSecs();
+
+    let diff = (tstamp - oldts);
+    if (diff > SECS_RESPONSE_TIMEOUT)
+      console.log(`${tstamp} TimerDiff = ${diff}`);
+    oldts = tstamp;
+
     for (const device of curlist)
     {
       //console.log(`Device Check: "${device.curname}""`);
-  
+
       if ((tstamp - device.tstamp) > 2)
         console.log(`Device Check? secs=${(tstamp - device.tstamp)}`);
 
       if (!device.ignore &&
-         ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
+          ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
       {
         console.warn(`Device Lost: "${device.curname}"`);
         console.log(`  secs: ${tstamp} ${device.tstamp}`)
@@ -177,7 +193,7 @@ function checkTimeout()
           msgDesc.set('The device you were using just disconnected.');
           msgTitle.set('Device Disconnect');
 
-          deviceReset();
+          deviceReset(false);
         }
       }
       else newlist.push(device);
@@ -192,6 +208,8 @@ function checkTimeout()
 // if lose connection, clear devices
 export const onConnection = (enabled) =>
 {
+  oldts = curTimeSecs();
+
   if (enabled) checkTimeout();
   else
   {
@@ -284,7 +302,7 @@ export const onDeviceReply = (msg, fsend) =>
       msgDesc.set('The device you were using just restarted.');
       msgTitle.set('Device Restart');
 
-      deviceReset();
+      deviceReset(true);
     }
     else if (device.ready)
     {

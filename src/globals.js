@@ -12,9 +12,9 @@ export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
-export const PAGEMODE_DEVICES       = 0;      // list of devices to connect to
-export const PAGEMODE_CONTROLS      = 1;      // controls for specific device
-export const PAGEMODE_HELPDOCS      = 2;      // controls help documentation
+export const PAGEMODE_DEVICES       = 1;      // list of devices to connect to
+export const PAGEMODE_CONTROLS      = 2;      // controls for specific device
+export const PAGEMODE_HELPDOCS      = 3;      // controls help documentation
 
 export const MIN_TRACKS             = 4;      // minimum number of tracks
 export const MIN_LAYERS             = 4;      // minimum number of layers
@@ -23,7 +23,6 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let mqttFetchingIP = writable(true);   // true while fetching IP from server
 export let mqttBrokerIP   = writable('');     // MQTT broker IP from server/browser
 export let mqttBrokerFail = writable(false);  // true if broker connection failed
 export let mqttConnected  = writable(false);  // true if connected to that broker

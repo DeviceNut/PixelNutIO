@@ -4,7 +4,7 @@ import mqtt from 'mqtt/dist/mqtt.min';
 import {
   mqttBrokerIP,
   mqttConnected,
-  mqttBrokerFail
+  mqttConnFail
 } from './globals.js';
 
 import { 
@@ -27,26 +27,20 @@ const mqttOptions = {
 
 let mqttClient = null;
 
-function outime(msg, err)
-{
-  let secs = Math.floor(Date.now() / 1000);
-  if (err) console.error(`${secs} ${msg}`);
-  else console.log(`${secs} ${msg}`);
-}
 export const mqttSend = (name, msg) =>
 {
   if (mqttClient)
   {
-    outime(`>> ${msg}`);
+    console.log(`>> ${msg}`);
 
     mqttClient.publish(topicCommand + name, msg);
   }
-  else outime(`MQTT Send: disconnected (msg="${msg}")`, true);
+  else console.error(`MQTT Send: disconnected (msg="${msg}")`);
 }
 
 function onConnect(connack)
 {
-  outime('MQTT Connected');
+  //console.log('MQTT onConnect');
   //console.log(connack); // cannot tell if reconnection
 
   mqttClient.subscribe(topicDevNotify, onSubscribe);
@@ -63,13 +57,13 @@ function onSubscribe(err)
 
 function onError(err)
 {
-  outime(`MQTT Error: ${err}`, true);
+  console.error(`MQTT onError: ${err}`);
 
   if (get(mqttConnected))
   {
     onConnection(false);
     mqttConnected.set(false);
-    mqttBrokerFail.set(true);
+    mqttConnFail.set(true);
   }
 
   if (mqttClient)
@@ -81,13 +75,12 @@ function onError(err)
 
 function onClose()
 {
-  outime('MQTT Close');
+  console.log('MQTT onClose');
 
   if (get(mqttConnected))
   {
     onConnection(false);
     mqttConnected.set(false);
-    //mqttBrokerFail.set(true); // TODO
   }
 
   mqttClient = null;
@@ -97,7 +90,7 @@ function onMessage(topic, msg)
 {
   msg = msg.toString();
 
-  //outime(`MQTT Messge: Topic=${topic} Msg=${msg}`);
+  //console.log(`MQTT onMessge: Topic=${topic} Msg=${msg}`);
 
   switch (topic)
   {
@@ -111,21 +104,25 @@ function onMessage(topic, msg)
   }
 }
 
+// must not reconnect to the same already connect broker,
+// since the .end() call will cause an asynchronous call
+// to onClose() with the onConnect() call.
 export const mqttConnect = () =>
 {
   if (mqttClient !== null)
   {
-    outime(`MQTT Disconnect`);
+    console.log(`MQTT Connect: disconnect first`);
     onConnection(false);
     mqttClient.end();
   }
 
-  mqttBrokerFail.set(false);
+  mqttConnFail.set(true);
+  return;
+
   let ipaddr = get(mqttBrokerIP);
-
-  outime(`MQTT DoConnect: ${ipaddr}`);
-
   const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
+
+  console.log(`MQTT Connect: ${ipaddr}`);
   mqttClient = mqtt.connect(mqttURL, mqttOptions);
 
   if (mqttClient !== null)
@@ -134,18 +131,20 @@ export const mqttConnect = () =>
     mqttClient.on('message', onMessage);
     mqttClient.on('error', onError);
     mqttClient.on('close', onClose);
+
     mqttClient.on('disconnect', onDisconnect);
     mqttClient.on('offline', onOffline);
   }
-  else mqttBrokerFail.set(true);
+  else mqttConnFail.set(true);
 }
 
 const onDisconnect = (packet) =>
 {
-  outime(`MQTT Disconnect: ${packet}`);
+  console.log('MQTT onDisconnect');
+  console.log(packet);
 }
 
 const onOffline = () =>
 {
-  outime('MQTT Offline');
+  console.log('MQTT onOffline');
 }

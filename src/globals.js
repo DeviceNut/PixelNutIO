@@ -3,7 +3,6 @@ import { get, writable } from 'svelte/store';
 export const defDeviceName  = 'PixelNut!';
 export const titleDevices   = 'PixelNut! Devices';
 export const titleHelpDocs  = 'PixelNut! Docs';
-export const reqStrForIP    = '/MQTT-IP';           // request string for server to retrive MQTT IP
 
 export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
 export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
@@ -24,9 +23,10 @@ export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
 export let mqttBrokerIP   = writable('');     // MQTT broker IP from server/browser
-export let mqttBrokerFail = writable(false);  // true if broker connection failed
+export let mqttConnFail   = writable(false);  // true if broker connection failed
 export let mqttConnected  = writable(false);  // true if connected to that broker
 export let mqttChangeIP   = writable(false);  // true if user allowed to change IP
+                                              // true for development, else false
 
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device

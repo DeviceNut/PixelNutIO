@@ -13,10 +13,10 @@
   import {
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
-    mqttBrokerIP,
-    mqttBrokerFail,
-    mqttConnected,
     mqttChangeIP,
+    mqttBrokerIP,
+    mqttConnected,
+    mqttConnFail,
     deviceList,
     msgTitle,
     msgDesc
@@ -32,12 +32,6 @@
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
 
-  // when start this page, start "spinner" if:
-  // 1) no valid brokerIP or devices in list
-  // 2) just connected for first time (same as #1)
-  // 3) returned from Controls after error or disconnect
-  // but not if just returned from Controls or Docs normally
-
   let title;
   $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
 
@@ -48,26 +42,25 @@
 
   const docheck = () =>
   {
-    console.log(`docheck: isconnected=${$mqttConnected}`);
-    if ($deviceList.length > 0) // successful
+    console.log('docheck');
+
+    if ($mqttConnFail)
+    {
+      scanning = false;
+    }
+    else if ($mqttConnected)
     {
       scanning = false;
 
       if ($mqttChangeIP) storeBrokerWrite();
     }
-    else if (--waitcount <= 0) // no devices found
+    else if (--waitcount <= 0)
     {
       scanning = false;
+      openForm = true;
     }
 
-    if (scanning) setTimeout(docheck, MSECS_CHECK_TIMEOUT);
-  }
-
-  function rescan()
-  {
-    console.log('rescan...');
-    $mqttConnected = false;
-    doscan();
+    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
   }
 
   function doscan()
@@ -81,9 +74,26 @@
     docheck();
   }
 
+  let ipaddr = $mqttBrokerIP;
+  function rescan()
+  {
+    console.log(`rescan: ${ipaddr}`);
+    if (ipaddr !== '')
+    {
+      openForm = false;
+
+      //if ($mqttBrokerIP !== ipaddr)
+      {
+        $mqttBrokerIP = ipaddr;
+        $mqttConnected = false;
+        doscan();
+      }
+    }
+  }
+
   const doretry = () =>
   {
-    console.log('doretry...');
+    console.log('doretry');
     openError = false;
 
     if (!$mqttChangeIP)
@@ -99,19 +109,26 @@
     }
 
     openForm = true;
+    ipaddr = $mqttBrokerIP;
+    //$mqttBrokerIP = '';
   }
 
-  if (!$mqttBrokerFail && !$mqttConnected)
+  if (!$mqttConnFail && !$mqttConnected)
   {
-    console.log('starting PageDevices...');
-    doscan();
+    console.log(`PageDevices: IP=${$mqttBrokerIP}`);
+    if ($mqttBrokerIP === '') openForm = true;
+    else doscan();
   }
 
   $: {
-    if ($mqttBrokerFail)
+    if ($mqttConnFail)
     {
       console.log('broker failed...');
-      $mqttBrokerFail = false;
+
+      $mqttConnFail = false;
+      //$mqttBrokerIP = '';
+      ipaddr = '';
+
       scanning = false;
       openError = true;
     }
@@ -130,11 +147,13 @@
     <p style="margin-bottom:10px;">{title}</p>
     {#if scanning }
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
-    {:else if $mqttChangeIP }
-      <button class="button"
-        on:click={()=> {openForm = true;}}
-        >Change
-      </button>
+    {:else}
+      {#if $mqttChangeIP }
+        <button class="button"
+          on:click={()=> {openForm = true;}}
+          >Change
+        </button>
+      {/if}
       <button class="button"
         style="margin-left:10px;"
         on:click={doscan}
@@ -159,25 +178,29 @@
   <div class="divider"></div>
 </div>
 
-<Modal
-  passiveModal
-  modalHeading="Connect to Message Server"
-  bind:open={openForm}
-  on:close
-  >
-  <Form on:submit={() => {openForm = false; rescan();}} >
-    <FormGroup>
-      <TextInput
-        labelText="IP Address"
-        bind:value={$mqttBrokerIP}
-      />
-    </FormGroup>
-    <ButtonSet>
-      <Button kind="secondary" on:click={() => {openForm = false;}}>Cancel</Button>
-      <Button type="submit">Connect</Button>
-    </ButtonSet>
-  </Form>
-</Modal>
+{#if $mqttChangeIP }
+  <Modal
+    passiveModal
+    modalHeading="Connect to PixelNut Hub"
+    bind:open={openForm}
+    on:close
+    >
+    <Form on:submit={rescan} >
+      <FormGroup>
+        <TextInput
+          labelText="Address"
+          bind:value={ipaddr}
+        />
+      </FormGroup>
+      <ButtonSet>
+        <Button kind="secondary" on:click={() => {openForm = false;}}>Cancel</Button>
+        {#if ipaddr !== '' }
+          <Button type="submit">Connect</Button>
+        {/if}
+      </ButtonSet>
+    </Form>
+  </Modal>
+{/if}
 
 <Modal
   passiveModal
@@ -185,7 +208,7 @@
   bind:open={openError}
   on:close
   >
-  <p>No Message Broker at {$mqttBrokerIP}.</p><br>
+  <p>No PixelNut Hub ({$mqttBrokerIP}).</p><br>
   <Button kind="secondary" on:click={doretry}>Continue</Button>
 </Modal>
 

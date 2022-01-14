@@ -120,7 +120,7 @@ export const userSetEffect = (track, layer) =>
   const strand = get(pStrand);
   const player = strand.tracks[track].layers[layer];
 
-  console.log(`${track}.${layer}: PluginIndex ${player.pluginObj.index} => ${player.plugindex}`);
+  //console.log(`${track}.${layer}: PluginIndex ${player.pluginObj.index} => ${player.plugindex}`);
 
   if (player.plugindex !== player.pluginObj.index)
   {

@@ -15,7 +15,7 @@ const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
 const respStr_CmdFailed   = "<CmdFail>" // indicates device command failed
 const respStr_StartInfo   = "?<"        // indicates start of device info
 const respStr_FinishInfo  = ">?"        // indicates end of device info
-
+const strlen_CmdFailed    = respStr_CmdFailed.length;
                                         // device states:
 const QSTATE_NONE         = 0;          //  not querying device now
 const QSTATE_RESTART      = 1;          //  restart query on next notify
@@ -312,9 +312,10 @@ export const onDeviceReply = (msg, fsend) =>
       device.qstate = QSTATE_RESTART;
     }
   }
-  else if (reply[0] === respStr_CmdFailed)
+  else if (reply[0].slice(0,strlen_CmdFailed) === respStr_CmdFailed)
   {
-    deviceError(`Command Failed: "${name}"`, 'Device Error');
+    let errstr = reply[0].slice(respStr_CmdFailed.length);
+    deviceError(`Device failed command: ${errstr}`, 'Device Error');
   }
   else if ((device.qstate === QSTATE_WAIT_RESP) && (reply[0] === respStr_StartInfo))
   {

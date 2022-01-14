@@ -61,19 +61,19 @@
           waitstate = WAITSTATE_CONNECTING;
           waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
         }
-        else console.log('Waiting on disconnection...')
+        //else console.log('Waiting on disconnection...')
         break;
       }
       case WAITSTATE_CONNECTING:
       {
         if ($mqttConnected)
         {
-          console.log('Now connected')
+          //console.log('Now connected')
 
           waitstate = WAITSTATE_DEVICES;
           //waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
         }
-        else console.log('Waiting on connection...')
+        //else console.log('Waiting on connection...')
         break;
       }
       case WAITSTATE_DEVICES:
@@ -83,7 +83,7 @@
           done = true;
           waitstate = WAITSTATE_NONE;
         }
-        else console.log('Waiting for devices...')
+        //else console.log('Waiting for devices found...')
         break;
       }
     }

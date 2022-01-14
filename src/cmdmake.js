@@ -258,7 +258,7 @@ export const makeTrigSourceList = () =>
                      layer: layer,
                      text: `Track(${track+1}) Layer(${layer+1}) - ${name}` });
 
-        console.log('tsource: ', items[count]);
+        //console.log('tsource: ', items[count]);
       }
 
       ++devindex;

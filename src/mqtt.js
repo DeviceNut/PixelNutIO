@@ -2,7 +2,6 @@ import { get } from 'svelte/store';
 import mqtt from 'mqtt/dist/mqtt.min';
 
 import {
-  mqttBrokerIP,
   mqttConnected,
   mqttConnFail
 } from './globals.js';
@@ -26,6 +25,7 @@ const mqttOptions = {
 };
 
 let mqttClient = null;
+let mqttIPaddr = '';
 
 export const mqttSend = (name, msg) =>
 {
@@ -104,29 +104,31 @@ function onMessage(topic, msg)
   }
 }
 
-// must not reconnect to the same already connect broker,
-// since the .end() call will cause an asynchronous call
-// to onClose() with the onConnect() call.
-export const mqttConnect = () =>
+export const mqttDisconnect = () =>
 {
   if (mqttClient !== null)
   {
-    console.log(`MQTT Connect: disconnect first`);
+    console.log(`MQTT Disconnect: ${mqttIPaddr}`);
+
     onConnection(false);
+    mqttConnected.set(false);
+
     mqttClient.end();
+    mqttClient = null;
+    mqttIPaddr = '';
   }
+}
 
-  mqttConnFail.set(true);
-  return;
-
-  let ipaddr = get(mqttBrokerIP);
-  const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
-
+export const mqttConnect = (ipaddr) =>
+{
   console.log(`MQTT Connect: ${ipaddr}`);
+
+  const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
   mqttClient = mqtt.connect(mqttURL, mqttOptions);
 
   if (mqttClient !== null)
   {
+    mqttIPaddr = ipaddr;
     mqttClient.on('connect', onConnect);
     mqttClient.on('message', onMessage);
     mqttClient.on('error', onError);

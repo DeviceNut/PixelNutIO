@@ -11,28 +11,12 @@ import {
   menuBrowser
 } from './menu.js';
 
-const SaveBrokerIPaddr      = "PixelNut-BrokerIP";
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
 const SavePatternKeyDesc    = "PixelNut-Desc-";
 const SavePatternSeparator  = ',';
 
 ///////////////////////////////////////////////////////////
-
-export const storeBrokerRead = () =>
-{
-  let ipaddr = localStorage.getItem(SaveBrokerIPaddr);
-  if (ipaddr === null) ipaddr = '';
-  console.log(`Retrieving broker IP: ${ipaddr}`);
-  mqttBrokerIP.set(ipaddr);
-}
-
-export const storeBrokerWrite = () =>
-{
-  let ipaddr = get(mqttBrokerIP);
-  console.log(`Saving broker IP: ${ipaddr}`);
-  localStorage.setItem(SaveBrokerIPaddr, ipaddr);
-}
 
 export const storePatternsInit = () =>
 {

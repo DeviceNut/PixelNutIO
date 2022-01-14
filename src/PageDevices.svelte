@@ -3,17 +3,12 @@
   import {
     Loading,
     Modal,
-    Form,
-    FormGroup,
-    TextInput,
-    Button,
-    ButtonSet
+    Button
   } from "carbon-components-svelte";
 
   import {
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
-    mqttChangeIP,
     mqttBrokerIP,
     mqttConnected,
     mqttConnFail,
@@ -23,112 +18,104 @@
   } from './globals.js';
 
   import {
-    storeBrokerRead,
-    storeBrokerWrite
-  } from './browser.js';
-
-  import { mqttConnect } from './mqtt.js';
+    mqttDisconnect,
+    mqttConnect
+  } from './mqtt.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
+
+  const WAITSTATE_NONE        = 0;
+  const WAITSTATE_DISCONNECT  = 1;
+  const WAITSTATE_CONNECTING  = 2;
+  const WAITSTATE_DEVICES     = 3;
+  let waitstate = WAITSTATE_NONE;
 
   let title;
   $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
 
   let scanning = false;
-  let openForm = false;
   let openError = false;
   let waitcount;
 
-  const docheck = () =>
+  const waitfor = () =>
   {
-    console.log('docheck');
+    //console.log(`waitfor: state=${waitstate}`);
 
     if ($mqttConnFail)
     {
       scanning = false;
-    }
-    else if ($mqttConnected)
-    {
-      scanning = false;
-
-      if ($mqttChangeIP) storeBrokerWrite();
-    }
-    else if (--waitcount <= 0)
-    {
-      scanning = false;
-      openForm = true;
+      waitstate = WAITSTATE_NONE;
+      return;
     }
 
-    else setTimeout(docheck, MSECS_CHECK_TIMEOUT);
+    let done = false;
+    switch (waitstate)
+    {
+      case WAITSTATE_DISCONNECT:
+      {
+        if (!$mqttConnected)
+        {
+          mqttConnect($mqttBrokerIP);
+
+          waitstate = WAITSTATE_CONNECTING;
+          waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
+        }
+        else console.log('Waiting on disconnection...')
+        break;
+      }
+      case WAITSTATE_CONNECTING:
+      {
+        if ($mqttConnected)
+        {
+          console.log('Now connected')
+
+          waitstate = WAITSTATE_DEVICES;
+          //waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
+        }
+        else console.log('Waiting on connection...')
+        break;
+      }
+      case WAITSTATE_DEVICES:
+      {
+        if (deviceList.length > 0)
+        {
+          done = true;
+          waitstate = WAITSTATE_NONE;
+        }
+        else console.log('Waiting for devices...')
+        break;
+      }
+    }
+
+    if (!done && (--waitcount <= 0))
+      done = true;
+
+    if (done) scanning = false;
+    else setTimeout(waitfor, MSECS_CHECK_TIMEOUT);
   }
 
   function doscan()
   {
-    console.log('doscan...');
+    mqttDisconnect();
+    waitstate = WAITSTATE_DISCONNECT;
+
     scanning = true;
-
-    if (!$mqttConnected) mqttConnect();
-
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
-    docheck();
+    waitfor();
   }
 
-  let ipaddr = $mqttBrokerIP;
-  function rescan()
+  function didfail()
   {
-    console.log(`rescan: ${ipaddr}`);
-    if (ipaddr !== '')
-    {
-      openForm = false;
-
-      //if ($mqttBrokerIP !== ipaddr)
-      {
-        $mqttBrokerIP = ipaddr;
-        $mqttConnected = false;
-        doscan();
-      }
-    }
-  }
-
-  const doretry = () =>
-  {
-    console.log('doretry');
     openError = false;
-
-    if (!$mqttChangeIP)
-    {
-      $mqttChangeIP = true;
-
-      storeBrokerRead(); // retrieve from browser store
-      if ($mqttBrokerIP !== '')
-      {
-        doscan();
-        return;
-      }
-    }
-
-    openForm = true;
-    ipaddr = $mqttBrokerIP;
-    //$mqttBrokerIP = '';
+    $mqttConnFail = false;
   }
 
-  if (!$mqttConnFail && !$mqttConnected)
-  {
-    console.log(`PageDevices: IP=${$mqttBrokerIP}`);
-    if ($mqttBrokerIP === '') openForm = true;
-    else doscan();
-  }
+  if (!$mqttConnFail && !$mqttConnected) doscan();
 
   $: {
     if ($mqttConnFail)
     {
-      console.log('broker failed...');
-
-      $mqttConnFail = false;
-      //$mqttBrokerIP = '';
-      ipaddr = '';
-
       scanning = false;
       openError = true;
     }
@@ -147,17 +134,10 @@
     <p style="margin-bottom:10px;">{title}</p>
     {#if scanning }
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
-    {:else}
-      {#if $mqttChangeIP }
-        <button class="button"
-          on:click={()=> {openForm = true;}}
-          >Change
-        </button>
-      {/if}
+    {:else if !$mqttConnected }
       <button class="button"
         style="margin-left:10px;"
         on:click={doscan}
-        disabled={$mqttConnected}
         >Retry
       </button>
     {/if}
@@ -178,38 +158,14 @@
   <div class="divider"></div>
 </div>
 
-{#if $mqttChangeIP }
-  <Modal
-    passiveModal
-    modalHeading="Connect to PixelNut Hub"
-    bind:open={openForm}
-    on:close
-    >
-    <Form on:submit={rescan} >
-      <FormGroup>
-        <TextInput
-          labelText="Address"
-          bind:value={ipaddr}
-        />
-      </FormGroup>
-      <ButtonSet>
-        <Button kind="secondary" on:click={() => {openForm = false;}}>Cancel</Button>
-        {#if ipaddr !== '' }
-          <Button type="submit">Connect</Button>
-        {/if}
-      </ButtonSet>
-    </Form>
-  </Modal>
-{/if}
-
 <Modal
   passiveModal
   modalHeading={"Connection Failed"}
   bind:open={openError}
   on:close
   >
-  <p>No PixelNut Hub ({$mqttBrokerIP}).</p><br>
-  <Button kind="secondary" on:click={doretry}>Continue</Button>
+  <p>No PixelNut Hub found, retry again later.</p><br>
+  <Button kind="secondary" on:click={didfail}>Continue</Button>
 </Modal>
 
 <Modal
@@ -219,7 +175,7 @@
   on:close
   >
   <p>{$msgDesc}</p><br>
-  <Button kind="secondary" on:click={() => {openMessage = false; $msgTitle = '';}}>Continue</Button>
+  <Button kind="secondary" on:click={()=> {openMessage=false; $msgTitle='';}}>Continue</Button>
 </Modal>
 
 <style>

@@ -4,17 +4,12 @@
 
   import {
     mqttBrokerIP,
-    mqttChangeIP,
     PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
     curPageMode
   } from './globals.js';
 
-  import {
-    storePatternsInit,
-    storeBrokerRead
-  } from './browser.js';
-
+  import { storePatternsInit } from './browser.js';
   import { helpInit } from './helpmain.js';
 
   import PageHelp from './PageHelp.svelte';
@@ -29,10 +24,7 @@
 
   let ipaddr = window.location.hostname;
   if (ipaddr === 'localhost')
-  {
-    $mqttChangeIP = true;
-    storeBrokerRead(); // retrieve from browser store
-  }
+       $mqttBrokerIP = '192.168.8.175'; // DEBUG ONLY
   else $mqttBrokerIP = ipaddr;
 
 </script>

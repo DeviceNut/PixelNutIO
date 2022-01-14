@@ -4,10 +4,11 @@ export const defDeviceName  = 'PixelNut!';
 export const titleDevices   = 'PixelNut! Devices';
 export const titleHelpDocs  = 'PixelNut! Docs';
 
-export const MSECS_WAIT_CONNECTION  = 5000;   // total time to wait for MQTT connection
-export const MSECS_CHECK_TIMEOUT    = 800;    // interval between check for devices added
 export const SECS_RESPONSE_TIMEOUT  = 9;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
+
+export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for device connection
+export const MSECS_CHECK_TIMEOUT    = 1000;   // interval between connection check
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
@@ -22,10 +23,9 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let mqttBrokerIP   = writable('');     // MQTT broker IP from server/browser
+export let mqttBrokerIP   = writable('');     // MQTT broker IP (server if not debug)
 export let mqttConnFail   = writable(false);  // true if broker connection failed
 export let mqttConnected  = writable(false);  // true if connected to that broker
-export let mqttChangeIP   = writable(false);  // true if user allowed to change IP
                                               // true for development, else false
 
 export let deviceList     = writable([]);     // list of discovered devices

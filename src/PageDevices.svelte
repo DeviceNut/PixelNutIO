@@ -73,18 +73,23 @@
           waitstate = WAITSTATE_DEVICES;
           //waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
         }
-        //else console.log('Waiting on connection...')
+        else console.log('Waiting on connection...')
         break;
       }
       case WAITSTATE_DEVICES:
       {
-        if (deviceList.length > 0)
+        if ($deviceList.length > 0)
         {
-          done = true;
           waitstate = WAITSTATE_NONE;
+          // wait one more cycle
         }
         //else console.log('Waiting for devices found...')
         break;
+      }
+      default:
+      {
+        done = true;
+        break;        
       }
     }
 

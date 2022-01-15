@@ -213,7 +213,7 @@ export const onConnection = (enabled) =>
   if (enabled) checkTimeout();
   else
   {
-    console.log('Device Disconnect: clear all');
+    //console.log('Removing all devices');
     deviceList.set([]);
 
     if (timeObj)

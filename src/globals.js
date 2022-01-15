@@ -8,7 +8,7 @@ export const SECS_RESPONSE_TIMEOUT  = 9;      // secs since last device notify/r
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
 export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for device connection
-export const MSECS_CHECK_TIMEOUT    = 1000;   // interval between connection check
+export const MSECS_CHECK_TIMEOUT    = 750;    // interval between connection check
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 

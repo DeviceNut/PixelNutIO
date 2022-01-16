@@ -188,7 +188,7 @@
     max-width: 630px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bg-color-panel);
+    background-color: var(--bgc-panel);
   }
   .scanbox {
     margin-top: 30px;
@@ -202,7 +202,7 @@
     max-width: 400px;
     margin: 0 auto;
     padding-bottom: 20px;
-    background-color: var(--bg-color-controls-area);
+    background-color: var(--bgc-controls-area);
   }
   .listitem {
     padding-top: 20px;
@@ -216,6 +216,6 @@
   .divider {
     margin-top: 20px;
     padding-top: 5px;
-    background-color: var(--bg-color-divider);
+    background-color: var(--bgc-divider);
   }
 </style>

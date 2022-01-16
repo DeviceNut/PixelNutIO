@@ -149,18 +149,18 @@
     height: 45px;
     padding: 2px 0 10px 0;
     text-align: center;
-    background-color: var(--bg-color-header);
+    background-color: var(--bgc-header);
   }
   .header2 {
     height: 45px;
     text-align: center;
-    background-color: var(--bg-color-header);
+    background-color: var(--bgc-header);
   }
   .title {
     margin: 5px 5px 0 5px;
     padding: 3px;
-    color: var(--color-title);
-    background-color: var(--bg-color-title);
+    color: var(--fgc-title);
+    background-color: var(--bgc-title);
     font-size:1.2em;
   }
   .button {
@@ -182,7 +182,7 @@
     width: 63px;
   }
   .button.paused {
-    border: 1px solid var(--color-border-paused);
-    background-color: var(--bg-color-button-select);
+    border: 1px solid var(--fgc-border-paused);
+    background-color: var(--bgc-button-select);
   }
 </style>

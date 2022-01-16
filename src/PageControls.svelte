@@ -126,8 +126,8 @@
 <style>
   .panel {
     margin: 0 auto;
-    background-color: var(--bg-color-panel);
-    border: 2px solid var(--bg-color-panel-border);
+    background-color: var(--bgc-panel);
+    border: 2px solid var(--bgc-panel-border);
   }
   .panel1 {
     max-width: 630px;
@@ -137,25 +137,25 @@
   }
   .vertdiv {
     width: 3px;
-    background-color: var(--bg-color-panel-border);
+    background-color: var(--bgc-panel-border);
   }
   .divider {
     margin-top: 20px;
     margin-bottom: 15px;
     padding-top: 2px;
-    background-color: var(--bg-color-divider);
+    background-color: var(--bgc-divider);
   }
   .bdiv {
     cursor: pointer;
     height: 18px;
     padding-top: 2px;
     text-align: center;
-    background-color: var(--bg-color-button);
+    background-color: var(--bgc-button);
   }
   .bdiv2 {
     padding-top: 5px;
   }
   .btext {
-    color: var(--color-button);
+    color: var(--fgc-button);
   }
 </style>

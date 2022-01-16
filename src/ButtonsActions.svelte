@@ -88,7 +88,7 @@
   }
   .button.select {
     padding: 3px;
-    border: 2px solid var(--color-border-select);
-    background-color: var(--bg-color-button-select);
+    border: 2px solid var(--fgc-border-select);
+    background-color: var(--bgc-button-select);
   }
 </style>

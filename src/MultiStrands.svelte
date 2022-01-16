@@ -54,6 +54,6 @@
   .divider {
     margin-top: 10px;
     padding-top: 2px;
-    background-color: var(--bg-color-divider);
+    background-color: var(--bgc-divider);
   }
 </style>

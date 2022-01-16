@@ -40,7 +40,7 @@
 
 <div style="margin: 20px -5px 10px -5px;
             padding-top:15px; padding-bottom:10px;
-            background-color: var(--bg-color-controls-area);
+            background-color: var(--bgc-controls-area);
             ">
 
   <p style="margin-left:10px; font-size:.9em">Allow Property Overrides:</p>

@@ -44,7 +44,7 @@
     max-width: 630px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bg-color-header);
+    background-color: var(--bgc-header);
   }
   .title {
     position: absolute;
@@ -52,7 +52,7 @@
     transform: translate(-50%, 0);
     min-width: 250px;
     margin-top: 10px;
-    color: var(--color-title);
+    color: var(--fgc-title);
     font-size:1.5em;
   }
   .button-left {

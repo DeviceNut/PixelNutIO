@@ -1,35 +1,35 @@
 :root {
 
-	--color-title: #33aa66;
-	--bg-color-title: #444;
-	--bg-color-header: #333;
+	--fgc-title: #33aa66;
+	--bgc-title: #444;
+	--bgc-header: #333;
 
-	--bg-color-panel: #000;
-	--bg-color-panel-border: #333;
+	--bgc-panel: #000;
+	--bgc-panel-border: #333;
 
-	--bg-color-divider: #333;
-	--bg-color-disabled: #111;
+	--bgc-divider: #333;
+	--bgc-disabled: #111;
 
-	--bg-color-tracklayer-head: #222522;
-	--bg-color-tracklayer-area: #111;
-	--bg-color-controls-area: #222;
+	--bgc-tracklayer-head: #222522;
+	--bgc-tracklayer-area: #111;
+	--bgc-controls-area: #222;
 
-	--color-devicename: #aaa;
-	--color-textbox: #999;
-	--color-text-disabled: #555;
-	--bg-color-textbox: #333;
-	--bg-color-dropdown: #222;
+	--fgc-devicename: #aaa;
+	--fgc-textbox: #999;
+	--fgc-text-disabled: #555;
+	--bgc-textbox: #333;
+	--bgc-dropdown: #222;
 
-	--color-button: #fff;
-	--color-button-disabled: #999;
-	--bg-color-button: #444;
-	--bg-color-button-hover: #555;
-	--bg-color-button-active: #666;
-	--bg-color-button-border: #bbb;
+	--fgc-button: #fff;
+	--fgc-button-disabled: #999;
+	--bgc-button: #444;
+	--bgc-button-hover: #555;
+	--bgc-button-active: #666;
+	--bgc-button-border: #bbb;
 
-	--color-border-paused: #aa5500;
-	--color-border-select: #0066dd;
-	--bg-color-button-select: #222;
+	--fgc-border-paused: #aa5500;
+	--fgc-border-select: #0066dd;
+	--bgc-button-select: #222;
 }
 
 body {
@@ -68,31 +68,31 @@ input, select, textarea {
 }
 
 input:disabled {
-	color: var(--bg-color-disabled);
+	color: var(--bgc-disabled);
 }
 
 button {
-	color: var(--color-button);
-	background-color: var(--bg-color-button);
-	border: 1px solid var(--bg-color-button-border);
+	color: var(--fgc-button);
+	background-color: var(--bgc-button);
+	border: 1px solid var(--bgc-button-border);
 	border-radius: 5%;
 }
 
 button:hover {
 	cursor: pointer;
-	background-color: var(--bg-color-button-hover);
+	background-color: var(--bgc-button-hover);
 }
 
 button:disabled,button[disabled] {
 	pointer-events: none;
-	color: var(--color-button-disabled);
+	color: var(--fgc-button-disabled);
 	opacity: 0.35;
 }
 
 button:not(:disabled):active {
-	background-color: var(--bg-color-button-active);
+	background-color: var(--bgc-button-active);
 }
 
 button:focus {
-	background-color: var(--bg-color-button-active);
+	background-color: var(--bgc-button-active);
 }

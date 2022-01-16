@@ -46,14 +46,14 @@
     height: 45px;
     padding-top: 5px;
     text-align: center;
-    background-color: var(--bg-color-header);
+    background-color: var(--bgc-header);
   }
   .title {
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
     margin-top: 5px;
-    color: var(--color-title);
+    color: var(--fgc-title);
     font-size:1.5em;
   }
   .button-left {

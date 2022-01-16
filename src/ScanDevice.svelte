@@ -77,9 +77,9 @@
     text-align: left;
     width: 300px;
     padding: 10px;
-    color: var(--color-devicename);
-    background-color: var(--bg-color-textbox);
-    border: 1px solid var(--color-textbox);
+    color: var(--fgc-devicename);
+    background-color: var(--bgc-textbox);
+    border: 1px solid var(--fgc-textbox);
   }
   .devbox.expand {
     border-bottom: 0;
@@ -96,7 +96,7 @@
   }
   .devname:hover {
     cursor: pointer;
-    background-color: var(--bg-color-button-hover);
+    background-color: var(--bgc-button-hover);
   }
   .button {
     float: right;
@@ -106,9 +106,9 @@
     margin: 0 auto;
     width: 300px;
     padding: 0 10px 10px 10px;
-    color: var(--color-devicename);
-    background-color: var(--bg-color-dropdown);
-    border: 1px solid var(--color-textbox);
+    color: var(--fgc-devicename);
+    background-color: var(--bgc-dropdown);
+    border: 1px solid var(--fgc-textbox);
     border-top: 0;
     text-align: left;
     font-size: 0.9em;
@@ -124,7 +124,7 @@
     width: 120px;
   }
   .disprops {
-    color: var(--color-text-disabled);
+    color: var(--fgc-text-disabled);
   }
   .strand {
     font-style: italic;

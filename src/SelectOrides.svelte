@@ -24,14 +24,15 @@
   import SliderVal from './SliderVal.svelte';
 
   let bgc = '';
-  $: bgc = $pStrand.opropsUser.doEnable ? '#222' : '#111';
-  // cannot use css vars here, and style cannot access globals
+  $: {
+    if ($pStrand.opropsUser.doEnable)
+         bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-controls-area');
+    else bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-disabled');
+  } 
 
 </script>
 
-<div style="margin-top:15px; max-width:290px;
-            padding:10px; 0 3px 12px;
-            background-color: {bgc};">
+<div class="area" style="--mycolor: {bgc}">
 
   <Checkbox labelText="Override Track Properties"
     on:check={userSetOverMode}
@@ -62,3 +63,12 @@
               !($pStrand.bitsEffects  & pluginBit_COUNT)}
   />
 </div>
+
+<style>
+  .area {
+    margin-top: 15px;
+    max-width: 290px;
+    padding: 10px;
+    background-color: var(--mycolor);
+  }
+</style>

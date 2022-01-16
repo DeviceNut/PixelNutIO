@@ -43,21 +43,21 @@
   <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
     max={MAX_HUE_VALUE}
     onchange={userSetProps}
-    bind:cur={$pStrand.valueHue}
+    bind:cur={$pStrand.opropsUser.valueHue}
     disabled={!$pStrand.opropsUser.doEnable                 ||
               !($pStrand.bitsOverride & overBit_DegreeHue)  ||
               !($pStrand.bitsEffects  & pluginBit_COLOR)}
   />
   <SliderVal name='White&nbsp;'
     onchange={userSetProps}
-    bind:cur={$pStrand.pcentWhite}
+    bind:cur={$pStrand.opropsUser.pcentWhite}
     disabled={!$pStrand.opropsUser.doEnable                 ||
               !($pStrand.bitsOverride & overBit_PcentWhite) ||
               !($pStrand.bitsEffects  & pluginBit_COLOR)}
   />
   <SliderVal name='Count&nbsp;'
     onchange={userSetProps}
-    bind:cur={$pStrand.pcentCount}
+    bind:cur={$pStrand.opropsUser.pcentCount}
     disabled={!$pStrand.opropsUser.doEnable                 ||
               !($pStrand.bitsOverride & overBit_PcentCount) ||
               !($pStrand.bitsEffects  & pluginBit_COUNT)}

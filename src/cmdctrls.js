@@ -118,11 +118,13 @@ export const userSetOverMode = () =>
 export const userSetProps = () =>
 {
   const strand = get(pStrand);
-  //console.log('set props ...');
 
   let hue = strand.opropsUser.valueHue;
   let wht = strand.opropsUser.pcentWhite;
   let cnt = strand.opropsUser.pcentCount;
+
+  //console.log(`userSetProps: ${hue} ${wht} ${cnt}`);
+  //console.log(`userSetProps: ${strand.opropsSent.valueHue} ${strand.opropsSent.pcentWhite} ${strand.opropsSent.pcentCount}`);
 
   if ((hue !== strand.opropsSent.valueHue)   ||
       (wht !== strand.opropsSent.pcentWhite) ||

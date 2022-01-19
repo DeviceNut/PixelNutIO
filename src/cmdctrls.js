@@ -144,7 +144,7 @@ export const userSetOrPixs = (track) =>
   const enable = get(pStrand).tracks[track].drawProps.orPixelVals;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? 1 : undefined));
+  sendLayerCmd(track, layer, cmdStr_CombinePixs, (enable ? undefined : 0));
 }
 
 export const userSetBack = (track) =>
@@ -153,7 +153,7 @@ export const userSetBack = (track) =>
   const enable = get(pStrand).tracks[track].drawProps.dirBackwards;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? 1 : undefined));
+  sendLayerCmd(track, layer, cmdStr_Backwards, (enable ? undefined : 0));
 }
 
 export const userSetNoRep = (track) =>
@@ -162,5 +162,5 @@ export const userSetNoRep = (track) =>
   const enable = get(pStrand).tracks[track].drawProps.noRepeating;
 
   updateLayerVals(track, layer);
-  sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? 1 : undefined));
+  sendLayerCmd(track, layer, cmdStr_NoRepeating, (enable ? undefined : 0));
 }

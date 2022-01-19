@@ -59,7 +59,7 @@
     bind:checked={$pStrand.tracks[track].layers[layer].trigAtStart}
   />
   {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
-        ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
+       ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
     <Checkbox labelText="From main controls"
       style="margin-top:10px;"
       on:check={setMain}

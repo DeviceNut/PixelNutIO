@@ -221,7 +221,7 @@ export const makeLayerCmdStr = (track, layer) =>
   player.isnewstr = cmdstr !== player.cmdstr;
 
   //if (player.isnewstr)
-    console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
+  //  console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
 
   player.cmdstr = cmdstr;
 }

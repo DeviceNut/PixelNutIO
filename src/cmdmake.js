@@ -22,6 +22,8 @@ import {
   DEF_PCENT_DELAY,
   DEF_PCENT_COUNT,
   DEF_FORCE_VALUE,
+  pluginBit_DIRECTION,
+  pluginBit_NOREPEATING,
   pluginBit_TRIGFORCE,
   pluginBit_SENDFORCE,
   cmdStr_PcentXoffset,
@@ -142,7 +144,10 @@ export const makeLayerCmdStr = (track, layer) =>
 
   if (layer === DRAW_LAYER)
   {
+    let trackbits = get(pStrand).tracks[track].trackBits;
     let pdraw = get(pStrand).tracks[track].drawProps;
+
+    //console.log(`make: track=${track} bits=${trackbits.toString(16)}`);
 
     cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
 
@@ -171,13 +176,13 @@ export const makeLayerCmdStr = (track, layer) =>
     if (bits !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
 
-    if (pdraw.orPixelVals === true)
+    if (pdraw.orPixelVals)
       cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
 
-    if (pdraw.dirBackwards === true)
+    if (pdraw.dirBackwards && (trackbits & pluginBit_DIRECTION))
       cmdstr = cmdstr.concat(`${cmdStr_Backwards} `);
 
-    if (pdraw.noRepeating === true)
+    if (pdraw.noRepeating && (trackbits & pluginBit_NOREPEATING))
       cmdstr = cmdstr.concat(`${cmdStr_NoRepeating} `);
   }
   else cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
@@ -216,7 +221,7 @@ export const makeLayerCmdStr = (track, layer) =>
   player.isnewstr = cmdstr !== player.cmdstr;
 
   //if (player.isnewstr)
-  //  console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
+    console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
 
   player.cmdstr = cmdstr;
 }

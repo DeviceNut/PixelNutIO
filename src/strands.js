@@ -87,8 +87,8 @@ const drawProps =
   pcentXoffset    : 0,      // percent of pixels for offset
   pcentXlength    : 100,    // percent of pixels to be drawn
 
-  dirBackwards    : false,  // backwards drawing direction (decreasing pixel index)
   orPixelVals     : false,  // whether pixels overwrites (false) or are OR'ed (true)
+  dirBackwards    : false,  // backwards drawing direction (decreasing pixel index)
   noRepeating     : false,  // action does not repeat, else continuous
 }
 

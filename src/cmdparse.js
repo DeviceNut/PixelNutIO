@@ -46,6 +46,7 @@ import {
 import {
   makeTrigSourceList,
   makeLayerCmdStr,
+  makeTrackCmdStrs,
   makeEntireCmdStr
 } from './cmdmake.js';
 
@@ -119,8 +120,9 @@ export const parsePattern = (pattern) =>
 
           if (!firstone)
           {
-            makeLayerCmdStr(track, layer);
+            //console.log(`parse: track=${track} bits=${trackbits.toString(16)}`);
             get(pStrand).tracks[track].trackBits = trackbits;
+            makeTrackCmdStrs(track);
           }
 
           ++track;
@@ -136,8 +138,6 @@ export const parsePattern = (pattern) =>
         }
         else // filter effect
         {
-          makeLayerCmdStr(track, layer);
-
           if (get(pStrand).tracks[track].lactives >= get(nLayers))
           {
             console.warn('Too many layers');
@@ -348,8 +348,9 @@ export const parsePattern = (pattern) =>
   // make sure to finish last layer
   if ((track >= 0) && (layer >= 0))
   {
-    makeLayerCmdStr(track, layer);
+    //console.log(`parse: track=${track} bits=${trackbits.toString(16)}`);
     get(pStrand).tracks[track].trackBits = trackbits;
+    makeTrackCmdStrs(track);
   }
 
   // make list of possible trigger sources

@@ -1,10 +1,7 @@
 import { get } from 'svelte/store';
 
 import { pStrand } from './globals.js';
-
-import {
-  strandCopyTop,
-} from './strands.js';
+import { strandCopyTop } from './strands.js';
 
 import {
   DRAW_LAYER,
@@ -19,22 +16,13 @@ import {
   cmdStr_PcentXlength,
   cmdStr_PcentBright,
   cmdStr_MsecsDelay,
-  cmdStr_ValueHue,
-  cmdStr_PcentWhite,
-  cmdStr_PcentCount,
   cmdStr_CombinePixs,
   cmdStr_Backwards,
   cmdStr_NoRepeating
 } from './devcmds.js';
 
-import {
-  updateLayerVals
-} from './cmdmake.js';
-
-import {
-  sendStrandCmd,
-  sendLayerCmd
-} from './cmdsend.js';
+import { updateLayerVals } from './cmdmake.js';
+import { sendStrandCmd, sendLayerCmd } from './cmdsend.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -91,27 +79,12 @@ export const userSetOverMode = () =>
   const strand = get(pStrand);
   const oride = strand.opropsUser.doEnable;
 
-  if (oride !== strand.opropsSent.doOrideSave)
+  //console.log(`userSetOverMode: ${oride}`);
+
+  if (oride !== strand.opropsSent.doEnable)
   {
     strand.opropsSent.doEnable = oride;
     sendStrandCmd(cmdStr_SetOride, oride ? 1 : 0);
-
-    if (!oride) // must resend any props that were overriden
-    {
-      for (let i = 0; i < get(pStrand).tactives; ++i)
-      {
-        let props = get(pStrand).tracks[i].drawProps;
-
-        if (props.overHue)
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_ValueHue, `${props.valueHue}`);
-
-        if (props.overWhite)
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentWhite, `${props.pcentWhite}`);
-
-        if (props.overCount)
-          sendLayerCmd(i, DRAW_LAYER, cmdStr_PcentCount, `${props.pcentCount}`);
-      }
-    }
   }
 }
 
@@ -124,7 +97,6 @@ export const userSetProps = () =>
   let cnt = strand.opropsUser.pcentCount;
 
   //console.log(`userSetProps: ${hue} ${wht} ${cnt}`);
-  //console.log(`userSetProps: ${strand.opropsSent.valueHue} ${strand.opropsSent.pcentWhite} ${strand.opropsSent.pcentCount}`);
 
   if ((hue !== strand.opropsSent.valueHue)   ||
       (wht !== strand.opropsSent.pcentWhite) ||

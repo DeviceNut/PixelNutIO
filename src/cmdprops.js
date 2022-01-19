@@ -10,14 +10,9 @@ import {
   cmdStr_OrideBits
 } from './devcmds.js';
 
-import {
-  makeOrideBits,
-  updateLayerVals
-} from './cmdmake.js';
+import { makeOrideBits, updateLayerVals } from './cmdmake.js';
 
-import {
-  sendLayerCmd
-} from './cmdsend.js';
+import { sendLayerCmd } from './cmdsend.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -54,20 +49,10 @@ export const userSetOverrides = (track) =>
   const strand = get(pStrand);
   const bits = makeOrideBits(strand, track);
   const props = strand.tracks[track].drawProps;
+  const orides = strand.opropsUser;
+
+  //console.log(strand);
 
   updateLayerVals(track, layer);
-
   sendLayerCmd(track, layer, cmdStr_OrideBits, bits ? bits : undefined);
-
-  if (!props.overHue)
-       sendLayerCmd(track, layer, cmdStr_ValueHue, `${props.valueHue}`);
-  else sendLayerCmd(track, layer, cmdStr_ValueHue, `${strand.valueHue}`);
-
-  if (!props.overWhite)
-       sendLayerCmd(track, layer, cmdStr_PcentWhite, `${props.pcentWhite}`);
-  else sendLayerCmd(track, layer, cmdStr_PcentWhite, `${strand.pcentWhite}`);
-
-  if (!props.overCount)
-       sendLayerCmd(track, layer, cmdStr_PcentCount, `${props.pcentCount}`);
-  else sendLayerCmd(track, layer, cmdStr_PcentCount, `${strand.pcentCount}`);
 }

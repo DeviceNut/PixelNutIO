@@ -76,7 +76,7 @@ const drawProps =
   pcentDelay      : DEF_PCENT_DELAY,  // percent delay
 
   overHue         : false,  // true to allow global override
-  valueHue       : DEF_HUE_VALUE, // hue in degrees (0-MAX_HUE_VALUE)
+  valueHue        : DEF_HUE_VALUE, // hue in degrees (0-MAX_HUE_VALUE)
 
   overWhite       : false,  // true to allow global override
   pcentWhite      : 0,      // percent whiteness
@@ -339,12 +339,13 @@ export const strandClearAll = (track) =>
   strand.tactives = 0;
   strand.tracks = makeNewTracks();
 
-  strand.pixelOffset  = 0;
-  strand.doEnable   = false;
-  strand.valueHue    = 0;
-  strand.pcentWhite   = 0;
-  strand.pcentCount   = DEF_PCENT_COUNT;
-  strand.forceValue   = DEF_FORCE_VALUE;
+  strand.pixelOffset = 0;
+  strand.forceValue = DEF_FORCE_VALUE;
+
+  strand.opropsUser.doEnable = false;
+  strand.opropsUser.valueHue = 0;
+  strand.opropsUser.pcentWhite = 0;
+  strand.opropsUser.pcentCount = DEF_PCENT_COUNT;
 
   strandCopyAll();
 }

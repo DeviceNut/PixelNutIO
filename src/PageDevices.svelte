@@ -137,13 +137,11 @@
 
   <div class="scanbox">
     <p style="margin-bottom:10px;">{title}</p>
-    {#if scanning }
-      <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
-    {:else if !$mqttConnected }
+    {#if !scanning && !$mqttConnected }
       <button class="button"
         style="margin-left:10px;"
         on:click={doscan}
-        >Retry
+        >Reconnect
       </button>
     {/if}
   </div>
@@ -160,6 +158,9 @@
     {/each}
   </div>
 
+  {#if scanning }
+    <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
+  {/if}
   <div class="divider"></div>
 </div>
 

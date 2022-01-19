@@ -7,7 +7,8 @@ export const titleHelpDocs  = 'PixelNut! Docs';
 export const SECS_RESPONSE_TIMEOUT  = 9;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
-export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for device connection
+export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/connection
+export const MSECS_WAIT_DEVICES     = 2000;   // msecs to wait for device detection
 export const MSECS_CHECK_TIMEOUT    = 750;    // interval between connection check
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
@@ -71,15 +72,32 @@ export let patsOpenItems  = writable([]);     // list of expanded items
 
 export let allowUpdates   = writable(true);   // false to prevent UI updates
 
+const effectInfo = { filter:false, id:0, bits:0, name:'', index:0 };
+
 export const findEffectFromPlugin = (plugnum) =>
 {
   for (const [i, f] of get(aEffectsDraw).entries())
     if (f.id === plugnum)
-      return { filter:false, id:f.id, bits:f.bits, name:f.text, index:i };
+    {
+      let obj = {...effectInfo};
+      obj.id = f.id;
+      obj.bits = f.bits;
+      obj.name = f.text;
+      obj.index = i;
+      return obj;
+    }
 
   for (const [i, f] of get(aEffectsFilter).entries())
     if (f.id === plugnum)
-      return { filter:true, id:f.id, bits:f.bits, name:f.text, index:i };
+    {
+      let obj = {...effectInfo};
+      obj.filter = true;
+      obj.id = f.id;
+      obj.bits = f.bits;
+      obj.name = f.text;
+      obj.index = i;
+      return obj;
+    }
 
   return undefined;
 }

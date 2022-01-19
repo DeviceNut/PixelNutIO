@@ -9,6 +9,7 @@
   import {
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
+    MSECS_WAIT_DEVICES,
     mqttBrokerIP,
     mqttConnected,
     mqttConnFail,
@@ -71,7 +72,7 @@
           //console.log('Now connected')
 
           waitstate = WAITSTATE_DEVICES;
-          //waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
+          waitcount = (MSECS_WAIT_DEVICES / MSECS_CHECK_TIMEOUT);
         }
         else console.log('Waiting on connection...')
         break;

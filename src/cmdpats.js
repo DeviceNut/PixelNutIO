@@ -23,6 +23,8 @@ import {
   cmdStr_PcentCount,
   cmdStr_MsecsDelay,
   cmdStr_Backwards,
+  cmdStr_PcentXoffset,
+  cmdStr_PcentXlength,
   cmdStr_SelectEffect
 } from './devcmds.js';
 

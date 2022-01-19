@@ -270,7 +270,7 @@ export const makeTrigSourceList = () =>
 
 // must be called after any changes to the number
 // or position of tracks, layers, or effect settings
-export const updateTriggerLayers = () =>
+export const updateTriggerLayers = (delid=0) =>
 {
   // make list of possible trigger sources
   makeTrigSourceList();
@@ -287,25 +287,30 @@ export const updateTriggerLayers = () =>
       {
         let sourceid = strand.tracks[track].layers[layer].trigSrcLayerID;
         let found = false;
+        let dowarn = true;
 
-        for (const [i, item] of slist.entries())
+        if (delid !== sourceid)
         {
-          if (i > 0) // not <none>
+          for (const [i, item] of slist.entries())
           {
-            if (item.sourceid === sourceid)
+            if (i > 0) // not <none>
             {
-              found = true;
-              strand.tracks[track].layers[layer].trigSrcListDex = i;
-              strand.tracks[track].layers[layer].trigSrcLayerDex = item.devindex;
+              if (item.sourceid === sourceid)
+              {
+                found = true;
+                strand.tracks[track].layers[layer].trigSrcListDex = i;
+                strand.tracks[track].layers[layer].trigSrcLayerDex = item.devindex;
 
-              //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`);
+                //console.log(`update: devindex=${item.devindex} => ${item.track}:${item.layer}`);
+              }
             }
           }
         }
+        else dowarn = false;
 
         if (!found)
         {
-          console.warn(`update: failed to find trigger source for: ${track}:${layer} ID=${sourceid}`);
+          if (dowarn) console.warn(`update: failed to find trigger source for: ${track}:${layer} ID=${sourceid}`);
 
           strand.tracks[track].layers[layer].trigOnLayerShow = false;
           strand.tracks[track].layers[layer].trigSrcListDex = 0;

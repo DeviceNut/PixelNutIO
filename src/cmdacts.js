@@ -80,6 +80,8 @@ export const userAddTrackLayer = (track, layer, dofilter=false) =>
 // assume cannot get called if only one track/layer
 export const userRemTrackLayer = (track, layer) =>
 {
+  const strand = get(pStrand);
+
   // send command to delete current track/layer (no effect #)
   sendLayerCmdForce(track, layer, cmdStr_AppRemEffect);
 
@@ -90,7 +92,6 @@ export const userRemTrackLayer = (track, layer) =>
   }
   else
   {
-    const strand = get(pStrand);
     const props = strand.tracks[track].drawProps;
     const player = strand.tracks[track].layers[layer];
     const bits = player.pluginObj.bits;
@@ -100,7 +101,7 @@ export const userRemTrackLayer = (track, layer) =>
     strandRemoveLayer(track, layer);
   }
 
-  updateTriggerLayers();
+  updateTriggerLayers(strand.tracks[track].layers[layer].uniqueID);
   updateAllTracks();
 
   // supress reactive changes until UI updated

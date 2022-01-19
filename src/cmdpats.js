@@ -90,7 +90,7 @@ export const userClearPattern = (setid=true) =>
 
 export const resetEffectBits = (track, props, bits) =>
 {
-  //console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
+  console.log(`Reset Effect: track=${track} bits=${bits.toString(16)}`);
 
   if (bits & pluginBit_ORIDE_HUE)
     sendLayerCmd(track, DRAW_LAYER, cmdStr_ValueHue, props.valueHue);

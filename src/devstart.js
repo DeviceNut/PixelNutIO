@@ -37,6 +37,7 @@ import {
 } from './presets.js';
 
 import {
+  pluginBit_REDRAW,
   cmdStr_PcentBright,
   cmdStr_MsecsDelay,
   cmdStr_ValueHue,
@@ -46,7 +47,6 @@ import {
   cmdStr_LayerMute
 } from './devcmds.js';
 
-import { pluginBit_REDRAW } from './devcmds.js';
 import { deviceError } from './devtalk.js';
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';

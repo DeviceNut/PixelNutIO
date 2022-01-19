@@ -109,11 +109,11 @@ export const preset_PatDescs =
 export const preset_DrawEffectItems =
   [
     { id: 0,  bits: 0x8001, text: 'Draw All' },
-    { id: 1,  bits: 0x80FD, text: 'Draw Push' },
-    { id: 2,  bits: 0x809D, text: 'Draw Step' },
+    { id: 1,  bits: 0x80ED, text: 'Draw Push' },
+    { id: 2,  bits: 0x808D, text: 'Draw Step' },
     { id: 10, bits: 0x800F, text: 'Light Wave' },
     { id: 20, bits: 0x80FF, text: 'Comet Heads' },
-    { id: 30, bits: 0x801F, text: 'Ferris Wheel' },
+    { id: 30, bits: 0x800F, text: 'Ferris Wheel' },
     { id: 40, bits: 0x80B7, text: 'Block Scanner' },
     { id: 50, bits: 0x8007, text: 'Twinkle' },
     { id: 51, bits: 0x8007, text: 'Blinky' },

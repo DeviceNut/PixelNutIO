@@ -74,7 +74,7 @@
           waitstate = WAITSTATE_DEVICES;
           waitcount = (MSECS_WAIT_DEVICES / MSECS_CHECK_TIMEOUT);
         }
-        else console.log('Waiting on connection...')
+        //else console.log('Waiting on connection...')
         break;
       }
       case WAITSTATE_DEVICES:
@@ -132,9 +132,9 @@
 
 </script>
 
-<HeaderDevices/>
+<div class="page">
 
-<div class="panel">
+  <HeaderDevices/>
 
   <div class="scanbox">
     <p style="margin-bottom:10px;">{title}</p>
@@ -186,11 +186,12 @@
 </Modal>
 
 <style>
-  .panel {
+  .page {
     max-width: 630px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bgc-panel);
+    background-color: var(--bgc-page);
+    border: 2px solid var(--bdc-page);
   }
   .scanbox {
     margin-top: 30px;
@@ -204,7 +205,7 @@
     max-width: 400px;
     margin: 0 auto;
     padding-bottom: 20px;
-    background-color: var(--bgc-controls-area);
+    background-color: var(--bgc-panel-controls);
   }
   .listitem {
     padding-top: 20px;
@@ -218,6 +219,6 @@
   .divider {
     margin-top: 20px;
     padding-top: 5px;
-    background-color: var(--bgc-divider);
+    background-color: var(--bdc-page);
   }
 </style>

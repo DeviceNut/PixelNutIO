@@ -71,6 +71,6 @@
     height: 25px;
     width: 200px;
     margin: 5px 0 15px 60px;
-    padding: 3px;
+    padding: 1px 3px 3px 3px;
   }
 </style>

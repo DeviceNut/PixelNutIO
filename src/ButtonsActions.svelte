@@ -55,7 +55,7 @@
 <button class="button"
   on:click={dorem}
   disabled={norem}
-  >Rem
+  >Del
 </button>
 
 <button class="button"
@@ -88,7 +88,7 @@
   }
   .button.select {
     padding: 3px;
-    border: 2px solid var(--fgc-border-select);
-    background-color: var(--bgc-button-select);
+    background-color: var(--bgc-button-enabled);
+    border: 2px solid var(--bdc-button-enabled);
   }
 </style>

@@ -45,7 +45,7 @@
 <Grid style="margin-top:10px;">
   <MediaQuery query="(max-width: 1100px)" let:matches>
     {#if matches}
-      <div class="panel panel1">
+      <div class="page small">
         <Row>
           <Column>
             <HeaderControls/>
@@ -73,7 +73,7 @@
   </MediaQuery>
   <MediaQuery query="(min-width: 1101px)" let:matches>
     {#if matches }
-      <div class="panel panel2">
+      <div class="page large">
         <Row>
           <Column>
             <HeaderControls/>
@@ -124,38 +124,38 @@
 {/if}
 
 <style>
-  .panel {
+  .page {
     margin: 0 auto;
-    background-color: var(--bgc-panel);
-    border: 2px solid var(--bgc-panel-border);
+    background-color: var(--bgc-page);
+    border: 2px solid var(--bdc-page);
   }
-  .panel1 {
+  .small {
     max-width: 630px;
   }
-  .panel2 {
+  .large {
     max-width: 1050px;
   }
   .vertdiv {
     width: 3px;
-    background-color: var(--bgc-panel-border);
+    background-color: var(--bdc-page);
   }
   .divider {
     margin-top: 20px;
     margin-bottom: 15px;
     padding-top: 2px;
-    background-color: var(--bgc-divider);
+    background-color: var(--bdc-page);
   }
   .bdiv {
     cursor: pointer;
     height: 18px;
     padding-top: 2px;
     text-align: center;
-    background-color: var(--bgc-button);
+    background-color: var(--bgc-button-normal);
   }
   .bdiv2 {
     padding-top: 5px;
   }
   .btext {
-    color: var(--fgc-button);
+    color: var(--fgc-button-normal);
   }
 </style>

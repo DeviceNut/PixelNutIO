@@ -28,7 +28,7 @@
 
 </script>
 
-<div class="panel"
+<div class="page"
   class:col1={numcols === 1}
   class:col2={numcols === 2}
   class:col3={numcols === 3}
@@ -65,12 +65,12 @@
 </div>
 
 <style>
-  .panel {
+  .page {
     margin: 0 auto;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border: 2px solid var(--bgc-panel-border);
-    background-color: var(--bgc-panel);
+    background-color: var(--bgc-page);
+    border: 2px solid var(--bdc-page);
   }
   .col1 {
     max-width:630px;

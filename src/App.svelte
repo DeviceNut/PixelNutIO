@@ -1,6 +1,6 @@
 <script>
 
-  import "carbon-components-svelte/css/g100.css";
+  import "carbon-components-svelte/css/all.css";
 
   import {
     mqttBrokerIP,
@@ -26,6 +26,9 @@
   if (ipaddr === 'localhost')
        $mqttBrokerIP = '192.168.8.222'; // DEBUG ONLY
   else $mqttBrokerIP = ipaddr;
+
+  // "white", "g10", "g80", "g90", "g100"
+  $: document.documentElement.setAttribute("theme", "g100");
 
 </script>
 

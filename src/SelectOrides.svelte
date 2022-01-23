@@ -26,8 +26,8 @@
   let bgc = '';
   $: {
     if ($pStrand.opropsUser.doEnable)
-         bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-controls-area');
-    else bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-disabled');
+         bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-panel-controls');
+    else bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-panel-disabled');
   } 
 
 </script>

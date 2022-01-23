@@ -147,7 +147,7 @@
   .area {
     margin: 10px -5px 10px -5px;
     padding: 7px 0 10px 10px;
-    background-color: var(--bgc-controls-area);
+    background-color: var(--bgc-panel-controls);
   }
   .options {
     margin-top: 10px;

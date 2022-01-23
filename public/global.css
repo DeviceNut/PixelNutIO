@@ -1,86 +1,67 @@
 :root {
 
+	/*
+			fgc - foreground color
+			bgc - background color
+			bdc - border color
+	*/
+
+	/* main page: header, border, body */
+	--bgc-header: #333;
+	--bdc-page  : #333;
+	--bgc-page  : #000;
+
+	/* panel controls normal, disabled */
+	--bgc-panel-controls: #222;
+	--bgc-panel-disabled: #111;
+
+	/* custom track/layer header, areas */
+	--bgc-custom-head: #222;
+	--bgc-custom-area: #111;
+
+	/* device title text and background */
 	--fgc-title: #33aa66;
 	--bgc-title: #444;
-	--bgc-header: #333;
 
-	--bgc-panel: #000;
-	--bgc-panel-border: #333;
-
-	--bgc-divider: #333;
-	--bgc-disabled: #111;
-
-	--bgc-tracklayer-head: #222522;
-	--bgc-tracklayer-area: #111;
-	--bgc-controls-area: #222;
-
-	--fgc-devicename: #aaa;
-	--fgc-textbox: #999;
-	--fgc-text-disabled: #555;
+	/* for device/pattern/effect descriptions */
+	--fgc-textbox: #888;
 	--bgc-textbox: #333;
-	--bgc-dropdown: #222;
+	/* only used for device settings */
+	--fgc-device-name: #bbb;
+	--bdc-properties : #888;
+	--fgc-props-off  : #444;
 
-	--fgc-button: #fff;
-	--fgc-button-disabled: #999;
-	--bgc-button: #444;
-	--bgc-button-hover: #555;
-	--bgc-button-active: #666;
-	--bgc-button-border: #bbb;
+	/* button text/background:
+			enabled for Mute/Solo
+			paused for Pause/Resume
+			active on Hover or tab-select
+	*/
+	--fgc-button-normal  : #fff;
+	--fgc-button-disabled: #bbb;
 
-	--fgc-border-paused: #aa5500;
-	--fgc-border-select: #0066dd;
-	--bgc-button-select: #222;
+	--bgc-button-active  : #666;
+	--bgc-button-normal  : #444;
+	--bgc-button-enabled : #222;
+
+	--bdc-button-normal  : #bbb;
+	--bdc-button-paused  : #aa5500;
+	--bdc-button-enabled : #0066dd;
 }
 
-body {
-  font-family:'Trebuchet MS';
-}
-
-/*
-html, body {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-body {
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
-
-a {
-	color: rgb(0,100,200);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:visited {
-	color: rgb(0,80,160);
-}
-*/
-
-input, select, textarea {
+input {
 	-webkit-padding: 0.3em 0;
 	padding: 0.3em
 }
 
 input:disabled {
-	color: var(--bgc-disabled);
+	color: var(--bgc-panel-disabled);
 }
 
 button {
-	color: var(--fgc-button);
-	background-color: var(--bgc-button);
-	border: 1px solid var(--bgc-button-border);
+	color: var(--fgc-button-normal);
+	background-color: var(--bgc-button-normal);
+	border: 1px solid var(--bdc-button-normal);
 	border-radius: 5%;
-}
-
-button:hover {
-	cursor: pointer;
-	background-color: var(--bgc-button-hover);
 }
 
 button:disabled,button[disabled] {
@@ -90,6 +71,11 @@ button:disabled,button[disabled] {
 }
 
 button:not(:disabled):active {
+	background-color: var(--bgc-button-active);
+}
+
+button:hover {
+	cursor: pointer;
 	background-color: var(--bgc-button-active);
 }
 

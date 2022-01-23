@@ -182,7 +182,7 @@
     width: 63px;
   }
   .button.paused {
-    border: 1px solid var(--fgc-border-paused);
-    background-color: var(--bgc-button-select);
+    background-color: var(--bgc-button-enabled);
+    border: 1px solid var(--bdc-button-paused);
   }
 </style>

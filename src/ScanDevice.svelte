@@ -77,9 +77,9 @@
     text-align: left;
     width: 300px;
     padding: 10px;
-    color: var(--fgc-devicename);
+    color: var(--fgc-textbox);
     background-color: var(--bgc-textbox);
-    border: 1px solid var(--fgc-textbox);
+    border: 1px solid var(--bdc-properties);
   }
   .devbox.expand {
     border-bottom: 0;
@@ -93,10 +93,11 @@
     display: inline;
     padding: 5px;
     font-size:1.15em;
+    color: var(--fgc-device-name);
   }
   .devname:hover {
     cursor: pointer;
-    background-color: var(--bgc-button-hover);
+    background-color: var(--bgc-button-active);
   }
   .button {
     float: right;
@@ -106,9 +107,9 @@
     margin: 0 auto;
     width: 300px;
     padding: 0 10px 10px 10px;
-    color: var(--fgc-devicename);
-    background-color: var(--bgc-dropdown);
-    border: 1px solid var(--fgc-textbox);
+    color: var(--fgc-textbox);
+    background-color: var(--bgc-panel-controls);
+    border: 1px solid var(--bdc-properties);
     border-top: 0;
     text-align: left;
     font-size: 0.9em;
@@ -124,7 +125,7 @@
     width: 120px;
   }
   .disprops {
-    color: var(--fgc-text-disabled);
+    color: var(--fgc-props-off);
   }
   .strand {
     font-style: italic;

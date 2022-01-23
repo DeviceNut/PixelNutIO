@@ -251,6 +251,7 @@ export const makeTrigSourceList = () =>
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
     {
+      //console.log(strand.tracks[track].layers[layer]);
       if (strand.tracks[track].layers[layer].pluginObj.bits & pluginBit_SENDFORCE)
       {
         let sourceid = strand.tracks[track].layers[layer].uniqueID;
@@ -270,6 +271,7 @@ export const makeTrigSourceList = () =>
     }
   }
 
+  //console.log('trigger items: ', items)
   strand.trigSources = items;
 }
 

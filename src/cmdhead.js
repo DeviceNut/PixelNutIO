@@ -1,11 +1,8 @@
 import { get } from 'svelte/store';
 
 import { curDevice } from './globals.js';
-
-import {
-  sendCmdToDevice,
-  sendStrandCmd,
-} from './cmdsend.js';
+import { cmdStr_Pause, cmdStr_Resume } from './devcmds.js';
+import { sendCmdToDevice, sendStrandCmd } from './cmdsend.js';
 
 ///////////////////////////////////////////////////////////
 

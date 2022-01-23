@@ -4,17 +4,9 @@
     titleDevices,
     PAGEMODE_HELPDOCS,
     curPageMode,
-    prevPageMode
+    prevPageMode,
+    showOptions
   } from './globals.js';
-
-  import UserOptions from './UserOptions.svelte';
-
-  let openOptions = false;
-  const doshow = () => // must toggle it here because value is not reset from within component
-  {
-    openOptions = false;
-    openOptions = true;
-  }
 
   const dodocs = () =>
   {
@@ -26,7 +18,7 @@
 
 <div class="header">
   <button class="button-left"
-    on:click={doshow}
+    on:click={()=>{$showOptions = !$showOptions}}
     >Options
   </button>
   <span class="title">{titleDevices}</span>
@@ -35,8 +27,6 @@
     >Docs &gt;&gt;
   </button>
 </div>
-
-<UserOptions {openOptions} />
 
 <style>
   .header {

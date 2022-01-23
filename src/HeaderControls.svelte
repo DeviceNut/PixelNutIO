@@ -2,10 +2,7 @@
 
   import MediaQuery from "svelte-media-query";
 
-  import {
-    Modal,
-    Button
-  } from "carbon-components-svelte";
+  import { Modal, Button } from "carbon-components-svelte";
 
   import {
     defDeviceName,
@@ -13,15 +10,11 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    curDevice
+    curDevice,
+    showOptions
    } from './globals.js';
 
-  import {
-    userSetDevname,
-    userSendPause
-  } from './cmdhead.js';
-
-  import UserOptions from './UserOptions.svelte';
+  import { userSetDevname, userSendPause } from './cmdhead.js';
 
   let openError = false;
   let devname = $curDevice.curname;
@@ -39,13 +32,6 @@
   let textPause = '';
   $: textPause = (isPaused ? 'Resume' : 'Pause');
   const dopause = () => { userSendPause(isPaused = !isPaused); }
-
-  let openOptions = false;
-  const doshow = () => // must toggle it here because value is not reset from within component
-  {
-    openOptions = false;
-    openOptions = true;
-  }
 
   const dodevs = () =>
   {
@@ -77,7 +63,7 @@
       </button>
 
       <button class="button center"
-        on:click={doshow}
+        on:click={()=>{$showOptions = !$showOptions}}
         >Options
       </button>
 
@@ -105,7 +91,7 @@
       </button>
 
       <button class="button left"
-        on:click={doshow}
+        on:click={()=>{$showOptions = !$showOptions}}
         >Options
       </button>
 
@@ -130,8 +116,6 @@
       </div>
   {/if}
 </MediaQuery>
-
-<UserOptions {openOptions} />
 
 <Modal
   passiveModal

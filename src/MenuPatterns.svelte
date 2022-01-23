@@ -175,7 +175,7 @@
   on:close
   >
   <ButtonSet>
-    <Button kind="secondary" on:click={() => {openDelete = false;}}>Cancel</Button>
+    <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
     <Button on:click={dodelete}>Delete</Button>
   </ButtonSet>
 </Modal>

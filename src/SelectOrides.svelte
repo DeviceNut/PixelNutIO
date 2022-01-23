@@ -2,7 +2,7 @@
 
   import { Checkbox } from 'carbon-components-svelte';
 
-  import { pStrand } from './globals.js';
+  import { getColor, pStrand } from './globals.js';
 
   import {
     overBit_DegreeHue,
@@ -24,11 +24,7 @@
   import SliderVal from './SliderVal.svelte';
 
   let bgc = '';
-  $: {
-    if ($pStrand.opropsUser.doEnable)
-         bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-panel-controls');
-    else bgc = getComputedStyle(document.documentElement).getPropertyValue('--bgc-panel-disabled');
-  } 
+  $: bgc = getColor($pStrand.opropsUser.doEnable ? '--bgc-panel-controls' : '--bgc-panel-disabled');
 
 </script>
 

@@ -1,15 +1,5 @@
-import { get } from 'svelte/store';
-
-import {
-  mqttBrokerIP,
-  aStoredPatt,
-  aStoredDesc
-} from './globals.js';
-
-import {
-  MENUID_BROWSER,
-  menuBrowser
-} from './menu.js';
+import { aStoredPatt, aStoredDesc } from './globals.js';
+import { MENUID_BROWSER, menuBrowser } from './menu.js';
 
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
@@ -22,7 +12,6 @@ export const storePatternsInit = () =>
 {
   // if user has saved patterns:
   // retrieve command and search for built-ins
-  // else set to first one (Rainbow Ripple)
 
   let lmenu = [];
   let lpatt = [];
@@ -39,6 +28,7 @@ export const storePatternsInit = () =>
     for (const text of nlist)
     {
       if (text === '') continue;
+
       let patt = localStorage.getItem(SavePatternKeyCmd+text);
       let desc = localStorage.getItem(SavePatternKeyDesc+text);
       desc = [desc];
@@ -61,6 +51,7 @@ export const storePatternsInit = () =>
 export const storePatternSave = (name, desc, cmds) =>
 {
   if (!desc) desc = ''; // allow empty description
+
   if (name && cmds)
   {
     //console.log(`saving: ${name}:${desc}`);

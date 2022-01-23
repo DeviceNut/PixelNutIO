@@ -1,4 +1,3 @@
-
 export const DRAW_LAYER           = 0;      // drawing layer is always first layer of the track
 export const MAX_BYTE_VALUE       = 255;    // used for some default values
 export const MAX_HUE_VALUE        = 255;    // maximum hue value

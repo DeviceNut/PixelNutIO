@@ -111,3 +111,13 @@ export const findEffectFromIndex = (filter, index) =>
   else        f = get(aEffectsDraw)[index];
   return { filter:filter, id:f.id, bits:f.bits, name:f.text, index:index };
 }
+
+export const getColor = (name) =>
+{
+  return getComputedStyle(document.documentElement).getPropertyValue(name);
+}
+
+export const setColor = (name, color) =>
+{
+  document.documentElement.style.setProperty(name, color);
+}

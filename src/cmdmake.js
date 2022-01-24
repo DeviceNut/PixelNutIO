@@ -91,7 +91,7 @@ export const makeEntireCmdStr = () =>
       cmdstr = cmdstr.concat(`${layer.cmdstr}`);
 
       let bits = (layer.mute ? ENABLEBIT_MUTE:0) | (layer.solo ? ENABLEBIT_SOLO:0);
-      if (bits) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${bits}`);
+      if (bits) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${bits} `);
 
       if (j === DRAW_LAYER)
       {

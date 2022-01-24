@@ -4,7 +4,7 @@ export const defDeviceName  = 'PixelNut!';
 export const titleDevices   = 'PixelNut! Devices';
 export const titleHelpDocs  = 'PixelNut! Docs';
 
-export const SECS_RESPONSE_TIMEOUT  = 9;      // secs since last device notify/response
+export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
 export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/connection

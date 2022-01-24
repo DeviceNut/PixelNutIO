@@ -158,13 +158,13 @@ export const preset_DrawEffectDescs =
 export const preset_FilterEffectItems =
   [
     { id: 100, bits: 0x0160, text: 'Hue Set' },
-    { id: 101, bits: 0x0065, text: 'Hue Rotate' },
-    { id: 110, bits: 0x00A5, text: 'Color Meld' },
-    { id: 111, bits: 0x0060, text: 'Color Modify' },
+    { id: 101, bits: 0x0165, text: 'Hue Rotate' },
+    { id: 110, bits: 0x03A5, text: 'Color Meld' },
+    { id: 111, bits: 0x0360, text: 'Color Modify' },
     { id: 112, bits: 0x0304, text: 'Color Random' },
     { id: 120, bits: 0x0460, text: 'Count Set' },
-    { id: 121, bits: 0x0066, text: 'Count Surge' },
-    { id: 122, bits: 0x00E6, text: 'Count Wave' },
+    { id: 121, bits: 0x0466, text: 'Count Surge' },
+    { id: 122, bits: 0x04E6, text: 'Count Wave' },
     { id: 130, bits: 0x0860, text: 'Delay Set' },
     { id: 131, bits: 0x0864, text: 'Delay Surge' },
     { id: 132, bits: 0x08E4, text: 'Delay Wave' },

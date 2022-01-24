@@ -63,7 +63,7 @@ export const sendPatternToStrand = (s) =>
 {
   let sid = get(idStrand);
   if (sid !== s) sendStrandSwitch(s);
-  sendStoreExecPattern();
+  sendStoreExecPattern(true);
   if (sid !== s) sendStrandSwitch(sid);
 }
 

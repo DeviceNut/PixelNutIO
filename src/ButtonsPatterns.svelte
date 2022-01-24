@@ -39,7 +39,7 @@
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
 
   const doclear = () => { userClearPattern(); }
-  const dostore = () => { sendStrandPattern(); }
+  const dostore = () => { sendStrandPattern(false); }
 
   const dosave = () =>
   {

@@ -38,8 +38,8 @@ export const cmdStr_PullTrigger   = "!";    // trigger force applied
 export const cmdStr_Pause         = "[";    // none: pauses operation
 export const cmdStr_Resume        = "]";    // none: resumes operation
 export const cmdStr_ClearPattern  = "*";    // none: clears name/pattern
-export const cmdStr_FlashPatStr   = "=";    // flash sent pattern string
 export const cmdStr_FlashPatName  = "~";    // flash sent pattern name
+export const cmdStr_FlashPatStr   = "=";    // flash sent pattern string
 export const cmdStr_ExecFromFlash = "$";    // clear, exec pattern from flash
 
 // Override properties:                     // value is: (affects all strands)

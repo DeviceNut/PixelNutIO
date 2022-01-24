@@ -2,7 +2,8 @@ import { get } from 'svelte/store';
 
 import {
   pStrand,
-  findEffectFromIndex
+  findEffectFromIndex,
+  showCustom
 } from './globals.js';
 
 import {
@@ -79,7 +80,7 @@ export const userClearPattern = (setid=true) =>
     strand.curPatternCmd  = '';
     strand.curPatternDesc = '';
 
-    strand.showCustom = false;
+    showCustom.set(false);
 
     strandClearAll();
     makeEntireCmdStr();

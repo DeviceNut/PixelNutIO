@@ -13,7 +13,9 @@
     curPageMode,
     PAGEMODE_DEVICES,
     mqttConnected,
-    pStrand
+    pStrand,
+    showCustom,
+    userCustom
   } from './globals.js';
 
   import { defCustomCmd } from './devcmds.js';
@@ -27,14 +29,14 @@
   import TrackLayout from './TrackLayout.svelte';
 
   let pstr = '';
-  $: pstr = ($pStrand.showCustom ? '^' : 'Customize');
+  $: pstr = ($showCustom ? '^' : 'Customize');
 
   const toggleshow = () =>
   {
-    $pStrand.showCustom = !$pStrand.showCustom;
-    $pStrand.userCustom = $pStrand.showCustom;
+    $showCustom = !$showCustom;
+    $userCustom = $showCustom;
 
-    if ($pStrand.showCustom && ($pStrand.tactives === 0))
+    if ($showCustom && ($pStrand.tactives === 0))
       userSetPattern(defCustomCmd);
   }
 
@@ -62,7 +64,7 @@
             <div style="padding-left:10px;">
               <PanelControls/>
             </div>
-            <div class="bdiv" class:bdiv2={$pStrand.showCustom}
+            <div class="bdiv" class:bdiv2={$showCustom}
               on:click={toggleshow}>
               <span class="btext" >{pstr}</span>
             </div>
@@ -92,7 +94,7 @@
         </Row>
         <Row>
           <Column>
-            <div class="bdiv" class:bdiv2={$pStrand.showCustom}
+            <div class="bdiv" class:bdiv2={$showCustom}
               on:click={toggleshow}>
               <span class="btext" >{pstr}</span>
             </div>
@@ -103,7 +105,7 @@
   </MediaQuery>
 </Grid>
 
-{#if $pStrand.showCustom }
+{#if $showCustom }
   <MediaQuery query="(max-width: 1100px)" let:matches>
     {#if matches}
       <TrackLayout numcols={1} />

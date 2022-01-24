@@ -1,7 +1,7 @@
 <script>
 
   import { TextInput } from "carbon-components-svelte";
-  import { pStrand, patsMenuOpen } from './globals.js';
+  import { pStrand, patsMenuOpen, showCustom } from './globals.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
 
@@ -15,7 +15,7 @@
       style="width:250px; margin:0 auto;"
       placeholder='Name your pattern here'
       bind:value={$pStrand.curPatternName}
-      disabled={!$pStrand.showCustom}
+      disabled={!$showCustom}
       maxlength="32"
     />
   </div>

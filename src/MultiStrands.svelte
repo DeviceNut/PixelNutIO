@@ -2,9 +2,19 @@
 
   import MediaQuery from "svelte-media-query";
   import { Checkbox } from "carbon-components-svelte";
-  import { nStrands, aStrands, strandCombine } from './globals.js';
-  import { userStrandSelect, userStrandCombine } from './cmdmulti.js';
 
+  import {
+    nStrands,
+    aStrands,
+    strandCombine,
+    allowUpdates,
+    showCustom
+} from './globals.js';
+
+  import {
+    userStrandSelect,
+    userStrandCombine
+  } from './cmdmulti.js';
 
 </script>
 
@@ -30,7 +40,16 @@
       {#each $aStrands as _,n}
         <Checkbox labelText={n+1}
           style="display:inline-block; margin-left:20px;"
-          on:change={()=> {userStrandSelect(n, $strandCombine); }}
+          on:change={()=>
+          {
+            if ($showCustom)
+            {
+              // supress reactive changes until UI updated
+              //console.log('Supress updates...');
+              $allowUpdates = false;
+            }
+            userStrandSelect(n, $strandCombine);
+          }}
           bind:checked={$aStrands[n].selected}
         />
       {/each}

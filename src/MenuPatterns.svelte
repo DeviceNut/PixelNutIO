@@ -16,7 +16,9 @@
     patsOpenItems,
     patsSelectedID,
     patsMenuItems,
-    allowUpdates
+    allowUpdates,
+    showCustom,
+    userCustom
   } from './globals.js';
 
   import {
@@ -123,12 +125,11 @@
 
       userSetPattern(pcmd);
 
-      if ($pStrand.userCustom)
-          $pStrand.showCustom = true;
+      if ($userCustom) $showCustom = true;
     }
     else userClearPattern(false);
 
-    if ($pStrand.showCustom)
+    if ($showCustom)
     {
       // supress reactive changes until UI updated
       //console.log('Supress updates...');

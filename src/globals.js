@@ -33,6 +33,8 @@ export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device
 
 export let showOptions    = writable(false);  // true to display options dialog
+export let showCustom     = writable(false);  // true to display custom panels
+export let userCustom     = writable(false);  // true if user opened custom panels
 
 export let helpMenuOpen   = writable(true);   // true to display help menu
 export let helpActiveID   = writable(0);      // currently selected menu choice

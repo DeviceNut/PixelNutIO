@@ -129,9 +129,6 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
-  showCustom      : false,  // true if displaying customize panel
-  userCustom      : false,  // true if user selected customize panel
-
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
@@ -220,9 +217,6 @@ export const strandCopyTop = () =>
         strand.curPatternName = ps.curPatternName;
         strand.curPatternCmd  = ps.curPatternCmd;
         strand.curPatternDesc = ps.curPatternDesc;
-
-        strand.showCustom     = ps.showCustom;
-        strand.userCustom     = ps.userCustom;
 
         strand.bitsOverride   = ps.bitsOverride;
         strand.bitsEffects    = ps.bitsEffects;

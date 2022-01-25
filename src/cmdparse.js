@@ -357,6 +357,8 @@ export const parsePattern = (pattern) =>
   makeTrigSourceList();
 
   const strand = get(pStrand);
+  strand.modified = false; // 
+
   let slist = strand.trigSources;
 
   // set list index and source ID for any layers that have a layer trigger set

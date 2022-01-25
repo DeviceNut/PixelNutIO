@@ -79,44 +79,42 @@ export const makeEntireCmdStr = () =>
 
   for (let i = 0; i < strand.tactives; ++i)
   {
-    const track = strand.tracks[i];
+    const ptrack = strand.tracks[i];
     let drawplugin = false;
     let tplugbits = 0;
 
     // must have effect and not be muted to be enabled
 
-    for (let j = 0; j < track.lactives; ++j)
+    for (let j = 0; j < ptrack.lactives; ++j)
     {
-      const layer = track.layers[j];
-      cmdstr = cmdstr.concat(`${layer.cmdstr}`);
+      const player = ptrack.layers[j];
+      cmdstr = cmdstr.concat(`${player.cmdstr}`);
 
-      let bits = (layer.mute ? ENABLEBIT_MUTE:0) | (layer.solo ? ENABLEBIT_SOLO:0);
-      if (bits) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${bits} `);
-
+    let bits = (player.mute ? ENABLEBIT_MUTE:0) | (player.solo ? ENABLEBIT_SOLO:0);
       if (j === DRAW_LAYER)
       {
-        drawplugin = !layer.mute;
+        drawplugin = !player.mute;
         if (drawplugin)
         {
-          tplugbits |= layer.pluginObj.bits;
-          splugbits |= layer.pluginObj.bits;
-          ridebits |= makeOrideBits(strand, i);
+          tplugbits |= player.pluginObj.bits;
+          splugbits |= player.pluginObj.bits;
+          ridebits  |= makeOrideBits(strand, i);
 
-          if (layer.trigFromMain) trigused = true;
+          if (player.trigFromMain) trigused = true;
         }
       }
-      else if (drawplugin && !layer.mute)
+      else if (drawplugin && !player.mute)
       {
-        tplugbits |= layer.pluginObj.bits;
-        splugbits |= layer.pluginObj.bits;
+        tplugbits |= player.pluginObj.bits;
+        splugbits |= player.pluginObj.bits;
 
-        if (layer.trigFromMain) trigused = true;
+        if (player.trigFromMain) trigused = true;
       }
     }
 
     // track plugin bits includes bits from all layers
     //console.log(`makeAll: track=${i} trackBits=${tplugbits.toString(16)}`);
-    track.trackBits = tplugbits;
+    ptrack.trackBits = tplugbits;
   }
 
   //console.log(`makeEntireCmdStr: ${cmdstr}`);
@@ -152,6 +150,9 @@ export const makeLayerCmdStr = (track, layer) =>
 
     cmdstr = cmdstr.concat(`${cmdStr_SetEffect}${player.pluginObj.id} `);
 
+    let bits = (player.mute ? ENABLEBIT_MUTE:0) | (player.solo ? ENABLEBIT_SOLO:0);
+    if (bits) cmdstr = cmdstr.concat(`${cmdStr_LayerMute}${bits} `);
+
     if (pdraw.pcentXoffset !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_PcentXoffset}${pdraw.pcentXoffset} `);
 
@@ -173,9 +174,8 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentCount !== DEF_PCENT_COUNT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
 
-    let bits = makeOrideBits(strand, track);
-    if (bits !== 0)
-      cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
+    bits = makeOrideBits(strand, track);
+    if (bits) cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
 
     if (pdraw.orPixelVals)
       cmdstr = cmdstr.concat(`${cmdStr_CombinePixs} `);
@@ -220,10 +220,11 @@ export const makeLayerCmdStr = (track, layer) =>
   }
 
   player.isnewstr = cmdstr !== player.cmdstr;
+  //console.log(`make isnew=${player.isnewstr} cmdstr=${cmdstr}`);
+
   if (player.isnewstr)
   {
     //console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
-
     player.cmdstr = cmdstr;
     strand.modified = true;
     strand.idletime = 0;

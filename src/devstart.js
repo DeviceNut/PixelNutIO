@@ -71,6 +71,44 @@ function devInfoErr(msg)
   deviceError(msg, 'Device Error');
 }
 
+function stripCmdStr(instr)
+{
+  //console.log(`instr="${instr}"`);
+
+  let outstr = '';
+  const cmds = instr.toUpperCase().split(/\s+/); // remove all spaces
+
+  for (let cmd of cmds)
+  {
+    if (cmd === '') continue;
+
+    const ch = cmd.substr(0, 1);
+    const val = parseInt(cmd.substr(1));
+
+    switch (ch)
+    {
+      default:
+      {
+        if (isNaN(val))
+             outstr += `${ch} `;
+        else outstr += `${ch}${val} `;
+        break;
+      }
+      case cmdStr_PcentBright:
+      case cmdStr_MsecsDelay:
+      case cmdStr_LayerMute:
+      {
+        // strip from command
+        break;
+      }
+    }
+  }
+
+  outstr = outstr.trim();
+  //console.log(`outstr="${outstr}"`);
+  return outstr;
+}
+
 function setStrandTop(strand, dvals)
 {
   strand.pcentBright = dvals.bright;
@@ -266,7 +304,7 @@ export let deviceStartup = (device) =>
           console.log(`  ${apats[idex]}`);
         }
         */
-        if ((cmdname === name) && (cmdstr === apats[idex]))
+        if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
         {
           setStrandPattern(strand, (MENUID_PRESETS + i + 1), cmdname, cmdstr, adesc[idex]);
           found = true;
@@ -291,7 +329,7 @@ export let deviceStartup = (device) =>
             console.log(`  ${apats[idex]}`);
           }
           */
-          if ((cmdname === name) && (cmdstr === apats[idex]))
+          if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(apats[idex])))
           {
             setStrandPattern(strand, (MENUID_BROWSER + i + 1), cmdname, cmdstr, adesc[idex]);
             found = true;
@@ -316,7 +354,7 @@ export let deviceStartup = (device) =>
             console.log(`  ${device.report.patterns[i].pcmd}`);
           }
           */
-          if ((cmdname === name) && (cmdstr === pcmd))
+          if ((cmdname === name) && (stripCmdStr(cmdstr) === stripCmdStr(pcmd)))
           {
             setStrandPattern(strand, (devdex_base + i), cmdname, cmdstr, desc);
             found = true;

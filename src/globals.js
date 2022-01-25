@@ -11,6 +11,9 @@ export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/co
 export const MSECS_WAIT_DEVICES     = 2000;   // msecs to wait for device detection
 export const MSECS_CHECK_TIMEOUT    = 750;    // interval between connection check
 
+export const SECS_DEVSTORE_TOUT     = 10;     // secs user idle before store device pattern
+export const MSECS_DEVSTORE_CHECK   = 1000;   // msecs in between check for store timeout
+
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
 export const PAGEMODE_DEVICES       = 1;      // list of devices to connect to
@@ -75,6 +78,11 @@ export let patsSelectedID = writable([]);     // list of selected items
 export let patsOpenItems  = writable([]);     // list of expanded items
 
 export let allowUpdates   = writable(true);   // false to prevent UI updates
+
+export const curTimeSecs = () =>
+{
+  return Math.floor(Date.now() / 1000); // convert to seconds
+}
 
 const effectInfo = { filter:false, id:0, bits:0, name:'', index:0 };
 

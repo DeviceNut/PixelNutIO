@@ -22,7 +22,6 @@
   } from './browser.js';
 
   import { userClearPattern } from './cmdpats.js';
-  import { sendStrandPattern } from './cmdsend.js';
 
   import {
     MENUID_BROWSER,
@@ -39,7 +38,6 @@
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
 
   const doclear = () => { userClearPattern(); }
-  const dostore = () => { sendStrandPattern(false); }
 
   const dosave = () =>
   {
@@ -100,12 +98,6 @@
   </button>
 
   <button class="button-pattern"
-    on:click={dostore}
-    disabled={ ($pStrand.tactives === 0) }
-    >Store
-  </button>
-
-  <button class="button-pattern"
     on:click={() => {openSave = !openSave;}}
     disabled={ ($pStrand.tactives === 0) }
     >Save
@@ -147,7 +139,7 @@
     width: 55px;
     height: 40px;
     padding: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 6px;
+    margin-right: 6px;
   }
 </style>

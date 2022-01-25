@@ -6,7 +6,8 @@ import {
   curDevice,
   deviceList,
   msgTitle,
-  msgDesc
+  msgDesc,
+  curTimeSecs
  } from './globals.js';
 
  // Device Query/Responses:
@@ -88,11 +89,6 @@ export const deviceState =
   dinfo: {},            // holds raw JSON device output
   report: {}            // parsed device info object
 };
-
-function curTimeSecs()
-{
-  return Math.floor(Date.now() / 1000); // convert to seconds
-}
 
 export let deviceError = (text, title=null) =>
 {

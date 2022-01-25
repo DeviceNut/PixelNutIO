@@ -328,7 +328,7 @@ export let deviceStartup = (device) =>
       if (!found) // if doesn't match known patterns: add to device menu
       {
         let cmdid = devdex_last++;
-        let cmdesc = `Strand #${s+1}`;
+        let cmdesc = ''; // empty description
     
         if (cmdname === '') cmdname = `Unknown #${s}`;
         setStrandPattern(strand, cmdid, cmdname, cmdstr, cmdesc);

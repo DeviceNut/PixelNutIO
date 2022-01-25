@@ -129,6 +129,9 @@ const oneStrand =
 {
   selected        : false,  // true if selected for modification
 
+  modified        : false,  // true if pattern changed since last store
+  idletime        : 0,      // seconds since user has changed pattern
+
   curPatternId    : MENUID_CUSTOM, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmd   : '',     // current pattern command
@@ -213,6 +216,9 @@ export const strandCopyTop = () =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
+        strand.modified       = ps.modified;
+        strand.idletime       = ps.idletime;
+
         strand.curPatternId   = ps.curPatternId;
         strand.curPatternName = ps.curPatternName;
         strand.curPatternCmd  = ps.curPatternCmd;

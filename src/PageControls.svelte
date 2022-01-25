@@ -1,6 +1,7 @@
 <script>
 
   import MediaQuery from "svelte-media-query";
+  import { get } from 'svelte/store';
 
   import {
     Grid,
@@ -9,17 +10,23 @@
   } from "carbon-components-svelte";
 
   import {
+    SECS_DEVSTORE_TOUT,
+    MSECS_DEVSTORE_CHECK,
     curDevice,
     curPageMode,
     PAGEMODE_DEVICES,
     mqttConnected,
+    nStrands,
     pStrand,
+    aStrands,
     showCustom,
-    userCustom
+    userCustom,
+    curTimeSecs
   } from './globals.js';
 
   import { defCustomCmd } from './devcmds.js';
   import { userSetPattern } from './cmdpats.js';
+  import { sendStrandPattern } from './cmdsend.js';
 
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands from './MultiStrands.svelte';
@@ -40,7 +47,34 @@
       userSetPattern(defCustomCmd);
   }
 
-  $: if (!$mqttConnected || !$curDevice) $curPageMode = PAGEMODE_DEVICES;
+  $: if (!$mqttConnected || !$curDevice)
+      $curPageMode = PAGEMODE_DEVICES;
+
+  let prevsecs = curTimeSecs();
+  function checkStore()
+  {
+    let secs = curTimeSecs();
+    let sdiff = secs - prevsecs;
+    prevsecs = secs;
+
+    for (let s = 0; s < get(nStrands); ++s)
+    {
+      const strand = get(aStrands)[s];
+      if (strand.selected && strand.modified)
+      {
+        strand.idletime += sdiff;
+        if (strand.idletime > SECS_DEVSTORE_TOUT)
+        {
+          sendStrandPattern(false);
+          strand.modified = false;
+          strand.idletime = 0;
+        }
+      }
+    }
+
+    setTimeout(checkStore, MSECS_DEVSTORE_CHECK);
+  }
+  setTimeout(checkStore, MSECS_DEVSTORE_CHECK);
 
 </script>
 

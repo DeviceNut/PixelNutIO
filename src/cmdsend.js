@@ -44,8 +44,9 @@ export const sendStrandSwitch = (s) =>
 // to the device flash, and then starts it
 function sendStoreExecPattern(doexec)
 {
-  const patstr = get(pStrand).curPatternCmd;
-  let patname = get(pStrand).curPatternName;
+  const strand = get(pStrand);
+  const patstr = strand.curPatternCmd;
+  let patname = strand.curPatternName;
 
   if (patstr !== '')
   {
@@ -55,6 +56,8 @@ function sendStoreExecPattern(doexec)
     if (doexec) sendCmdToDevice(cmdStr_ExecFromFlash);
   }
   else sendCmdToDevice(cmdStr_ClearPattern);
+
+  strand.modified = false;
 }
 
 // sends current pattern to just the specified strand
@@ -67,8 +70,8 @@ export const sendPatternToStrand = (s) =>
   if (sid !== s) sendStrandSwitch(sid);
 }
 
-// stores current name/pattern to the device flash and
-// then executes that pattern, for all selected strands
+// stores current name/pattern to the device flash and then
+// optionally executes that pattern, for all selected strands
 export const sendStrandPattern = (doexec=true) =>
 {
   const sid = get(idStrand);

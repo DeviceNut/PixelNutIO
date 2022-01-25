@@ -133,19 +133,20 @@ export const makeEntireCmdStr = () =>
   //console.log(`splugbits=${splugbits.toString(16)}`);
 
   // triggers update to UI - MUST HAVE THIS
-  pStrand.set(get(pStrand));
+  pStrand.set(strand);
 }
 
 // create partial command string for one layer in a track
 export const makeLayerCmdStr = (track, layer) =>
 {
-  let player = get(pStrand).tracks[track].layers[layer];
+  const strand = get(pStrand);
+  const player = strand.tracks[track].layers[layer];
   let cmdstr = '';
 
   if (layer === DRAW_LAYER)
   {
-    let trackbits = get(pStrand).tracks[track].trackBits;
-    let pdraw = get(pStrand).tracks[track].drawProps;
+    let trackbits = strand.tracks[track].trackBits;
+    let pdraw = strand.tracks[track].drawProps;
 
     //console.log(`make: track=${track} bits=${trackbits.toString(16)}`);
 
@@ -172,7 +173,7 @@ export const makeLayerCmdStr = (track, layer) =>
     if (pdraw.pcentCount !== DEF_PCENT_COUNT)
       cmdstr = cmdstr.concat(`${cmdStr_PcentCount}${pdraw.pcentCount} `);
 
-    let bits = makeOrideBits(get(pStrand), track);
+    let bits = makeOrideBits(strand, track);
     if (bits !== 0)
       cmdstr = cmdstr.concat(`${cmdStr_OrideBits}${bits} `);
 
@@ -219,11 +220,14 @@ export const makeLayerCmdStr = (track, layer) =>
   }
 
   player.isnewstr = cmdstr !== player.cmdstr;
+  if (player.isnewstr)
+  {
+    //console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
 
-  //if (player.isnewstr)
-  //  console.log(`makeLayerCmdStr(${track}.${layer}): "${player.cmdstr}" => "${cmdstr}"`);
-
-  player.cmdstr = cmdstr;
+    player.cmdstr = cmdstr;
+    strand.modified = true;
+    strand.idletime = 0;
+  }
 }
 
 // create partial command strings for all layers in a track
@@ -332,7 +336,8 @@ export const updateAllTracks = () =>
   // rebuild all tracks to account for changes
   // to tracks/layers or trigger sources
 
-  for (let i = 0; i < get(pStrand).tactives; ++i)
+  const strand = get(pStrand);
+  for (let i = 0; i < strand.tactives; ++i)
     makeTrackCmdStrs(i);
 
   strandCopyTracks();

@@ -109,12 +109,12 @@ export const preset_PatDescs =
 export const preset_DrawEffectItems =
   [
     { id: 0,  bits: 0x8001, text: 'Draw All' },
-    { id: 1,  bits: 0x80ED, text: 'Draw Push' },
+    { id: 1,  bits: 0x80BD, text: 'Draw Push' },
     { id: 2,  bits: 0x808D, text: 'Draw Step' },
     { id: 10, bits: 0x800F, text: 'Light Wave' },
     { id: 20, bits: 0x80FF, text: 'Comet Heads' },
     { id: 30, bits: 0x800F, text: 'Ferris Wheel' },
-    { id: 40, bits: 0x80B7, text: 'Block Scanner' },
+    { id: 40, bits: 0x8097, text: 'Block Scanner' },
     { id: 50, bits: 0x8007, text: 'Twinkle' },
     { id: 51, bits: 0x8007, text: 'Blinky' },
     { id: 52, bits: 0x8007, text: 'Noise' },
@@ -124,26 +124,27 @@ export const preset_DrawEffectDescs =
   [
     "Draws all pixels with the current color.",
 
-    "Draws one pixel at a time with current color/brightness, inserting at the head. " +
-    "Triggering causes a new cycle to begin. If Force is 0 then cycle is not repeated. " +
-    "Can trigger other effects.",
+    "Draws one pixel at a time with current color/brightness, pushing new pixels from the end. " +
+    "When then end is reached, then pixels are cleared one at a time. " +
+    "Can trigger other effects on each clear cycle.",
 
-    "Draws one pixel at a time with current color/brightness, appending at the tail. " +
-    "Can trigger other effects.",
+    "Draws one pixel at a time with current color/brightness, appending at the front, " +
+    "then wrapping around when then end is reached. " +
+    "Can trigger other effects on each cycle.",
 
     "Light waves (brighness changes) in the current color that fluctuate (sine wave). " +
     "The Count property sets the wave frequency.",
 
     "Creates a bright head with a fading tail in the current color that moves. " +
     "The Count property determines its length, and triggering creates a new one. " +
-    "Can trigger other effects.",
+    "Can trigger other effects (if not repeated) when it falls off the end.",
 
     "Draws evenly spaced pixels using the current color, shifting them down one pixel " +
-    "at a time. The Count property determines amount of space between them. " +
-    "Can trigger other effects.",
+    "at a time. The Count property determines amount of space between them.",
 
     "Draws a block of pixels with the current color back and forth. " +
-    "The Count property sets the length of the block.",
+    "The Count property sets the length of the block. " +
+    "Can trigger other effects when block reaches each end.",
 
     "Scales pixel brightness levels up and down individually, using current color. " +
     "The Count property determines total number of pixels affected.",
@@ -177,13 +178,13 @@ export const preset_FilterEffectItems =
 export const preset_FilterEffectDescs =
   [
     "Directly sets Hue property once from Force value on each trigger (White uneffected). " +
-    "As Force increases the color hue moves around the color wheel.",
+    "Larger Forces mean larger color hue changes.",
 
     "Rotates Hue property around color wheel on each drawing step (White unaffected). " +
-    "Amount of change each time determined by trigger Force.",
+    "Amount of change each time is determined by the trigger Force.",
 
-    "Smoothly melds from current color (Hue and White properties) into another whenever color values are changed. " +
-    "Can trigger other effects.",
+    "Smoothly melds from current color (Hue and White properties) into the color that is changed. " +
+    "Can Trigger other effects when each new color is reached.",
 
     "Rotates Hue and White properties on each trigger, with the Force determining how much change is made.",
 
@@ -196,28 +197,28 @@ export const preset_FilterEffectDescs =
 
     "Modulates Count property with a cosine function. The wave height is half the maximum. " +
     "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
-    "Can trigger other effects.",
+    "Can trigger other effects when wave reaches its maximum.",
 
-    "Directly sets 'Delay' property from the Force value on every trigger. Increased Force reduces the delay; " +
+    "Directly sets Delay property from the Force value on every trigger. Increased Force reduces the delay; " +
     "at maximum Force the delay is minimal; a Force of 0 means a maximum delay.",
 
-    "Decreases 'Delay' property using the trigger Force, then increases it in even steps back to its original value." +
+    "Decreases Delay property using the trigger Force, then increases it in even steps back to its original value." +
     "The original value (when triggered the first time) must be greater than the minimum to have any effect.",
 
-    "Modulates 'Delay' property with a cosine function, down to its minimum and back. " +
+    "Modulates Delay property with a cosine function, down to its minimum and back. " +
     "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
-    "Can trigger other effects.",
+    "Can trigger other effects when wave reaches its maximum.",
 
-    "Increases 'Bright' property using the trigger Force, then decreases it in even steps back to its original value. " +
+    "Increases Bright property using the trigger Force, then decreases it in even steps back to its original value. " +
     "The original value (when triggered the first time) must be less than the maximum to have any effect.",
 
-    "Modulates 'Bright' property with a cosine function. The wave height is a third of the maximum. " +
+    "Modulates Bright property with a cosine function. The wave height is a third of the maximum. " +
     "The trigger Force determines the number of steps in the wave: larger Forces for quicker changes. " +
-    "Can trigger other effects.",
+    "Can trigger other effects when wave reaches its maximum.",
 
     "Expands/contracts the drawing window continuously, centered on the middle of the strand. " +
     "The Count property determines the size of the window on every step. " +
-    "Can trigger other effects.",
+    "Can trigger other effects when window reaches its maximum.",
 
-    "Toggles the drawing 'Direction' property on each trigger.",
+    "Toggles the drawing Direction property on each trigger.",
   ];

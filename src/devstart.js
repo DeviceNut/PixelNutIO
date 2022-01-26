@@ -40,10 +40,6 @@ import {
   pluginBit_REDRAW,
   cmdStr_PcentBright,
   cmdStr_MsecsDelay,
-  cmdStr_ValueHue,
-  cmdStr_PcentWhite,
-  cmdStr_PcentCount,
-  cmdStr_OrideBits,
   cmdStr_LayerMute
 } from './devcmds.js';
 
@@ -51,7 +47,11 @@ import { deviceError } from './devtalk.js';
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
-import { sendPatternToStrand } from './cmdsend.js';
+
+import {
+  sendStrandSwitch,
+  sendPatternToStrand
+} from './cmdsend.js';
 
 import {
   MENUID_CUSTOM,
@@ -264,6 +264,8 @@ export let deviceStartup = (device) =>
   // initialize each strand with its pattern
 
   let didclear = false;
+
+  sendStrandSwitch(0); // Must reset to use strand 0
 
   for (let s = 0; s < numstrands; ++s)
   {

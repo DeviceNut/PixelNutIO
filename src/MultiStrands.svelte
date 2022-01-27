@@ -7,7 +7,7 @@
     nStrands,
     sStrands,
     aStrands,
-    strandCombine
+    dupStrand
 } from './globals.js';
 
   import {
@@ -39,7 +39,7 @@
       {#each $aStrands as _,n}
         <Checkbox labelText={n+1}
           style="display:inline-block; margin-left:20px;"
-          on:change={()=>{userStrandSelect($strandCombine, n);}}
+          on:change={()=>{userStrandSelect($dupStrand, n);}}
           bind:checked={$aStrands[n].selected}
           disabled={$aStrands[n].selected && ($sStrands === 1)}
         />
@@ -47,7 +47,7 @@
 
       <Checkbox labelText='Dup'
         style="display:inline-block; margin-left:20px;"
-        on:check={()=> {userStrandCombine($strandCombine = !$strandCombine);}}
+        on:check={()=> {userStrandCombine($dupStrand = !$dupStrand);}}
       />
 
     </div>

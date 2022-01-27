@@ -1,9 +1,19 @@
 <script>
 
   import { TextInput } from "carbon-components-svelte";
-  import { pStrand, patsMenuOpen, showCustom } from './globals.js';
+  
+  import {
+    pStrand,
+    patsMenuOpen,
+    showCustom
+  } from './globals.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
+
+  const setname = () =>
+  {
+    //console.log(`New name: ${$pStrand.curPatternName}`);
+  }
 
 </script>
 
@@ -14,6 +24,7 @@
     <TextInput
       style="width:250px; margin:0 auto;"
       placeholder='Name your pattern here'
+      on:change={setname}
       bind:value={$pStrand.curPatternName}
       disabled={!$showCustom}
       maxlength="32"

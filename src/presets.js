@@ -70,7 +70,7 @@ export const preset_PatDescs =
     [
       "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered. " +
       "The first one changes colors on each change in direction, and the length can be modified with the Count property. " +
-      "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with Hue property."
+      "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with the Hue property."
     ],
     [
       "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect.  " +

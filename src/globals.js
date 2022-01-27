@@ -49,7 +49,7 @@ export let sStrands       = writable(0);      // number of strands currently sel
 export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
 export let pStrand        = writable([]);     // "points" to current strand in aStrands
-export let strandCombine  = writable(false);  // true to combine strands
+export let dupStrand      = writable(false);  // true to duplicate strands when selected
 
 export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track

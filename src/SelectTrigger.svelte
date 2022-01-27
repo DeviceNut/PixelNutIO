@@ -51,7 +51,8 @@
 </script>
 
 <div class="area">
-  <p class="options">Triggering Options:</p>
+
+  <p class="trig-int">Internal Triggers:</p>
 
   <Checkbox labelText="Once at start"
     style="margin-top:10px;"
@@ -60,26 +61,6 @@
   />
   {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
        ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
-    <Checkbox labelText="From main controls"
-      style="margin-top:10px;"
-      on:check={setMain}
-      bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
-    />
-    {#if (($pStrand.trigSources).length > 1) }
-      <Checkbox labelText="From other effect"
-        style="margin-top:10px;"
-        on:check={setOnLayer}
-        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayerShow}
-      />
-      {#if $pStrand.tracks[track].layers[layer].trigOnLayerShow }
-        <Dropdown
-          style="margin-bottom:10px;"
-          on:select={setSource}
-          bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigSrcListDex}
-          bind:items={$pStrand.trigSources}
-        />
-      {/if}
-    {/if}
     <Checkbox labelText="Auto generated"
       style="margin-top:10px;"
       on:check={setRepeat}
@@ -125,8 +106,7 @@
        ($pStrand.tracks[track].layers[layer].trigAtStart ||
         $pStrand.tracks[track].layers[layer].trigDoRepeat) }
 
-    <p style="margin-top:15px; font-size:.9em;">
-      Triggering Force:</p>
+    <p class="trig-force">Trigger Force:</p>
 
     <Checkbox labelText="Random force"
       style="margin-top:15px;"
@@ -141,6 +121,33 @@
     />
   {/if}
 
+  {#if !$pStrand.tracks[track].layers[layer].trigAtStart ||
+       ($pStrand.tracks[track].layers[layer].pluginObj.bits & pluginBit_REPTRIGS) }
+
+    <p class="trig-ext">External Triggers:</p>
+
+   <Checkbox labelText="From main controls"
+      style="margin-top:10px;"
+      on:check={setMain}
+      bind:checked={$pStrand.tracks[track].layers[layer].trigFromMain}
+    />
+    {#if (($pStrand.trigSources).length > 1) }
+      <Checkbox labelText="From other effect"
+        style="margin-top:10px;"
+        on:check={setOnLayer}
+        bind:checked={$pStrand.tracks[track].layers[layer].trigOnLayerShow}
+      />
+      {#if $pStrand.tracks[track].layers[layer].trigOnLayerShow }
+        <Dropdown
+          style="margin-bottom:10px;"
+          on:select={setSource}
+          bind:selectedIndex={$pStrand.tracks[track].layers[layer].trigSrcListDex}
+          bind:items={$pStrand.trigSources}
+        />
+      {/if}
+    {/if}
+  {/if}
+
 </div>
 
 <style>
@@ -149,8 +156,17 @@
     padding: 7px 0 10px 10px;
     background-color: var(--bgc-panel-controls);
   }
-  .options {
-    margin-top: 10px;
+  .trig-int {
+    margin-top: 15px;
+    font-size:.9em;
+  }
+  .trig-force {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size:.9em;
+  }
+  .trig-ext {
+    margin-top: 20px;
     margin-bottom: 15px;
     font-size:.9em;
   }

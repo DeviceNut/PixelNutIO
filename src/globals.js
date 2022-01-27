@@ -45,11 +45,11 @@ export let helpOpenItems  = writable([]);     // list of currently expanded item
 export let helpCurText    = writable('');     // text to display for selected item
 
 export let nStrands       = writable(0);      // number of physical strands
+export let sStrands       = writable(0);      // number of strands currently selected
 export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
-export let eStrands       = writable([]);     // array of current strand enables
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
-export let strandCombine  = writable(false);  // true to combine strands
 export let pStrand        = writable([]);     // "points" to current strand in aStrands
+export let strandCombine  = writable(false);  // true to combine strands
 
 export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track

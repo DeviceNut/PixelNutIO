@@ -5,10 +5,9 @@
 
   import {
     nStrands,
+    sStrands,
     aStrands,
-    strandCombine,
-    allowUpdates,
-    showCustom
+    strandCombine
 } from './globals.js';
 
   import {
@@ -40,17 +39,9 @@
       {#each $aStrands as _,n}
         <Checkbox labelText={n+1}
           style="display:inline-block; margin-left:20px;"
-          on:change={()=>
-          {
-            if ($showCustom)
-            {
-              // supress reactive changes until UI updated
-              //console.log('Supress updates...');
-              $allowUpdates = false;
-            }
-            userStrandSelect(n, $strandCombine);
-          }}
+          on:change={()=>{userStrandSelect($strandCombine, n);}}
           bind:checked={$aStrands[n].selected}
+          disabled={$aStrands[n].selected && ($sStrands === 1)}
         />
       {/each}
 

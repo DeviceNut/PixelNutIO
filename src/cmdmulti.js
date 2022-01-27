@@ -2,10 +2,12 @@ import { get } from 'svelte/store';
 
 import {
   nStrands,
+  sStrands,
   idStrand,
   pStrand,
   aStrands,
-  eStrands
+  allowUpdates,
+  showCustom
 } from './globals.js';
 
 import {
@@ -19,87 +21,97 @@ import {
 
 ///////////////////////////////////////////////////////////
 
+// passed value is the new setting
 export const userStrandCombine = (combine) =>
 {
-  if (!combine) // user turned off combine
+  // user turned off combine and more than one selected
+  if (!combine && (get(sStrands) > 1))
   {
-    // must disable all but the current one
-    for (let i = 0; i < get(nStrands); ++i)
+    const cur = get(idStrand);
+    const scount = get(nStrands);
+
+    // disable all but the current one
+    for (let i = 0; i < scount; ++i)
     {
-      if (i === get(idStrand))
-      {
-        get(aStrands)[i].selected = true;
-        get(eStrands)[i] = true;
-      }
-      else
-      {
-        get(aStrands)[i].selected = false;
-        get(eStrands)[i] = false;
-      }
+      if (i !== cur) get(aStrands)[i].selected = false;
+
+      //console.log(`StrandCombine: #${i} selected=${get(aStrands)[i].selected}`);
     }
 
-    aStrands.set(get(aStrands)); // triggers update
+    sStrands.set(1);
+    aStrands.set(get(aStrands)); // trigger update to other checkboxes
   }
 }
 
-export const userStrandSelect = (index, combine) =>
+// Must be called before selected is toggled
+// Assume disabling last strand is not allowed
+export const userStrandSelect = (combine, index) =>
 {
-  let cur = get(idStrand);
-  for (let s = 0; s < get(nStrands); ++s)
+  let newui = false;
+
+  if (combine)
   {
-    let wason = get(eStrands)[s];
-    let nowon = get(aStrands)[s].selected;
+    let cur = get(idStrand);
+    const scount = get(nStrands);
 
-    // hasnt' toggled in checkbox yet
-    if (s === index) nowon = !nowon;
+    const wason = get(aStrands)[index].selected;
+    get(aStrands)[index].selected = !wason;
 
-    if (wason !== nowon)
+    if (!wason)
     {
-      if (nowon && !combine && (s !== cur))
-      {
-        // user selected a different strand
-        get(aStrands)[cur].selected = false;
-        idStrand.set(s);
-        pStrand.set(get(aStrands)[s]);
-        sendStrandSwitch(s);
-        get(eStrands)[cur] = false;
-        get(eStrands)[s] = true;
-      }
-      else if (nowon && combine && (s !== cur))
-      {
-        get(eStrands)[cur] = true;
-        strandCopyAll();
+      //console.log(`Mirror current strand #${cur} onto #${index}`);
 
-        // mirror current strand by sending current pattern to newly selected strand
-        sendPatternToStrand(s);
-      }
-      else if (!nowon && combine && (s === cur))
-      {
-        // disabled the current strand, so set to first enabled one
-        for (let ss = 0; ss < get(nStrands); ++ss)
-        {
-          if (get(aStrands)[ss].selected)
-          {
-            idStrand.set(s);
-            pStrand.set(get(aStrands)[s]);
-            sendStrandSwitch(ss);
-            break;
-          }
-        }
-        get(eStrands)[s] = false;
-      }
-      else if (nowon && (s === cur))
-      {
-        // must resend entire current pattern
-        // after having all strands disabled
-        sendPatternToStrand(s);
-      }
-      else
-      {
-        // else just update current enables, but do nothing
-        // when just disabling one when others still enabled
-        get(eStrands)[s] = get(aStrands)[s].selected;
-      }
+      strandCopyAll();
+      sendPatternToStrand(index);
+
+      sStrands.set(get(sStrands)+1);
     }
+    else if (cur == index)
+    {
+      //console.log(`Disable current strand #${cur}`);
+
+      for (let s = 0; s < scount; ++s)
+      {
+        // set current to first enabled one
+        if (get(aStrands)[s].selected)
+        {
+          //console.log(`Set current strand to #${s}`);
+
+          idStrand.set(s);
+          pStrand.set(get(aStrands)[s]);
+          sendStrandSwitch(s);
+          break;
+        }
+      }
+
+      sStrands.set(get(sStrands)-1);
+      newui = true; // pStrand changed
+    }
+    else
+    {
+      //console.log(`Disable combined strand #${index}`);
+      sStrands.set(get(sStrands)-1);
+    }
+  }
+  else // index is new strand to switch to
+  {
+    //console.log(`StrandSelect: #${index}`);
+
+    get(aStrands)[get(idStrand)].selected = false; // clears previous checkbox
+
+    idStrand.set(index);
+    pStrand.set(get(aStrands)[index]);
+    sendStrandSwitch(index);
+
+    newui = true; // pStrand changed
+  }
+
+  //console.log(get(aStrands), get(pStrand));
+
+  if (newui && get(showCustom))
+  {
+    // supress reactive changes until UI updated
+    //console.log('Supress updates...');
+    allowUpdates.set(false);
   }
 }

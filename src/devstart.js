@@ -8,10 +8,10 @@ import {
   curPageMode,
   curDevice,
   nStrands,
+  sStrands,
   idStrand,
   pStrand,
   aStrands,
-  eStrands,
   nTracks,
   nLayers,
   maxLenPattern,
@@ -218,25 +218,19 @@ export let deviceStartup = (device) =>
   nTracks.set(numtracks);
   nLayers.set(tracklayers);
 
-  const sid = 0;
   let slist = [];
-  let elist = [];
-
   for (let s = 0; s < numstrands; ++s)
   {
     const strand = strandCreateNew(s);
-    const select = (s === sid) ? true : false;
 
-    strand.selected = select;
+    strand.selected = (s === 0) ? true : false;
     setStrandTop(strand, device.report.strands[s]);
 
     slist.push(strand);
-    elist.push(select);
   }
 
+  sStrands.set(1);
   aStrands.set(slist);
-  eStrands.set(elist);
-  pStrand.set(slist[sid]);
 
   // create pattern menu lists for this specific device
 

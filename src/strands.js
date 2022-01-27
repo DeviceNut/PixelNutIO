@@ -4,7 +4,6 @@ import {
   nStrands,
   idStrand,
   pStrand,
-  eStrands,
   aStrands,
   nTracks,
   nLayers
@@ -247,7 +246,6 @@ export const strandCopyTop = () =>
         for (let i = 0; i < ps.trigSources.length; ++i)
           strand.trigSources.push( {...ps.trigSources[i]} );
       }
-      get(eStrands)[s] = strand.selected;
     }
   }
 }
@@ -279,35 +277,32 @@ export const strandCopyLayer = (track, layer) =>
 
 // copy values in entire track from current strand
 // to all the other currently selected strands
-export const strandCopyTrack = (track, doall) =>
+export const strandCopyTrack = (track) =>
 {
   const sid       = get(idStrand);
-  const strand    = get(pStrand);
-  const isopen    = strand.tracks[track].open;
-  const trackbits = strand.tracks[track].trackBits;
-  const lactives  = strand.tracks[track].lactives;
-  const props     = strand.tracks[track].drawProps;
+  const strand1   = get(pStrand);
+  const ptrack1   = strand1.tracks[track];
 
   for (let s = 0; s < get(nStrands); ++s)
   {
     if (s !== sid)
     {
-      const strand = get(aStrands)[s];
-      if (strand.selected)
+      const strand2 = get(aStrands)[s];
+      if (strand2.selected)
       {
-        if (doall && !track) strand.tactives = strand.tactives;
+        strand2.tactives = strand1.tactives;
+        const ptrack2 = strand2.tracks[track];
 
-        const ptrack = strand.tracks[track];
+        ptrack2.open = ptrack1.open;
+        ptrack2.trackBits = ptrack1.trackbits;
+        ptrack2.lactives = ptrack1.lactives;
+        ptrack2.drawProps = {...ptrack1.dprops};
+        ptrack2.saveProps = {...ptrack1.sprops};
 
-        ptrack.open = isopen;
-        ptrack.trackBits = trackbits;
-        ptrack.lactives = lactives;
-        ptrack.drawProps = {...props};
-
-        for (let layer = 0; layer < lactives; ++layer)
+        for (let layer = 0; layer < ptrack1.lactives; ++layer)
         {
-          const player = strand.tracks[track].layers[layer];
-          ptrack.layers.splice(layer, 1, {...player});
+          const player = ptrack1.layers[layer];
+          ptrack2.layers.splice(layer, 1, {...player});
         }
       }
     }
@@ -321,7 +316,7 @@ export const strandCopyTracks = () =>
   const tactives = get(pStrand).tactives;
 
   for (let track = 0; track < tactives; ++track)
-    strandCopyTrack(track, true);
+    strandCopyTrack(track);
 }
 
 // copy all values for current strand to all other selected ones

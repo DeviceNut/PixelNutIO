@@ -20,6 +20,7 @@ import {
   ENABLEBIT_SOLO,
   DEF_HUE_VALUE,
   DEF_PCENT_BRIGHT,
+  DEF_PCENT_DELAY,
   DEF_PCENT_COUNT,
   cmdStr_PcentXoffset,
   cmdStr_PcentXlength,
@@ -46,8 +47,7 @@ import {
 import {
   makeTrigSourceList,
   makeLayerCmdStr,
-  makeTrackCmdStrs,
-  makeEntireCmdStr
+  makeTrackCmdStrs
 } from './cmdmake.js';
 
 ///////////////////////////////////////////////////////////
@@ -357,13 +357,10 @@ export const parsePattern = (pattern) =>
   makeTrigSourceList();
 
   const strand = get(pStrand);
-  strand.modified = false; // 
-
   let slist = strand.trigSources;
 
   // set list index and source ID for any layers that have a layer trigger set
   // disable the layer trigger if it fails to match one in the list
-  let remake = false;
   for (let track = 0; track < strand.tactives; ++track)
   {
     for (let layer = 0; layer < strand.tracks[track].lactives; ++layer)
@@ -402,7 +399,7 @@ export const parsePattern = (pattern) =>
     }
   }
 
-  if (remake) makeEntireCmdStr();
+  strand.modified = false; // mark pattern as unchanged
 
   return true;
 }

@@ -57,7 +57,7 @@ function sendStoreExecPattern(doexec)
   }
   else sendCmdToDevice(cmdStr_ClearPattern);
 
-  strand.modified = false;
+  strand.modified = false; // reset flag that triggers this call
 }
 
 // sends current pattern to just the specified strand

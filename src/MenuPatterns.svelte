@@ -3,8 +3,7 @@
   import {
     TreeView,
     Modal,
-    Button,
-    ButtonSet
+    Button
   } from "carbon-components-svelte";
 
   import {
@@ -170,15 +169,15 @@
 {/if}
 
 <Modal
+  size="sm"
   passiveModal
+  preventCloseOnClickOutside
   modalHeading={deltitle}
   bind:open={openDelete}
   on:close
   >
-  <ButtonSet>
-    <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
-    <Button on:click={dodelete}>Delete</Button>
-  </ButtonSet>
+  <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
+  <Button on:click={dodelete}>Delete</Button>
 </Modal>
 
 <style>

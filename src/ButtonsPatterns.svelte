@@ -7,8 +7,7 @@
     TextInput,
     TextArea,
     Checkbox,
-    Button,
-    ButtonSet
+    Button
   } from "carbon-components-svelte";
 
   import {
@@ -107,6 +106,7 @@
 
 <Modal
   passiveModal
+  preventCloseOnClickOutside
   modalHeading="Save Pattern in Browser"
   bind:open={openSave}
   on:close
@@ -127,10 +127,8 @@
       style="margin-top:-7px; margin-bottom:17px;"
       bind:checked={copyclip}
     />
-    <ButtonSet>
-      <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
-      <Button type="submit">Save</Button>
-    </ButtonSet>
+    <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
+    <Button type="submit">Save</Button>
   </Form>
 </Modal>
 

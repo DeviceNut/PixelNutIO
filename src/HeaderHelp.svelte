@@ -46,6 +46,7 @@
     margin-top: 5px;
     color: var(--fgc-title);
     font-size:1.5em;
+    font-style: italic;
   }
   .button-rite {
     float: right;

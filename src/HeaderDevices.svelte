@@ -44,6 +44,7 @@
     margin-top: 10px;
     color: var(--fgc-title);
     font-size:1.5em;
+    font-style: italic;
   }
   .button-left {
     float: left;

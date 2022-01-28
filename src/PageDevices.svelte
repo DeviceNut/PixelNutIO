@@ -166,7 +166,9 @@
 </div>
 
 <Modal
+  size="sm"
   passiveModal
+  preventCloseOnClickOutside
   modalHeading={"Connection Failed"}
   bind:open={openError}
   on:close
@@ -176,7 +178,9 @@
 </Modal>
 
 <Modal
+  size="sm"
   passiveModal
+  preventCloseOnClickOutside
   modalHeading={$msgTitle}
   bind:open={openMessage}
   on:close
@@ -202,10 +206,8 @@
     font-style: italic;
   }
   .listbox {
-    max-width: 400px;
     margin: 0 auto;
     padding-bottom: 20px;
-    background-color: var(--bgc-panel-controls);
   }
   .listitem {
     padding-top: 20px;

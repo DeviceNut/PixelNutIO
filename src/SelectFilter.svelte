@@ -54,7 +54,7 @@
   {#if helpon }
     <Row style="margin-left:-10px; margin-right:1px; padding:5px;
                 color: var(--fgc-textbox);
-                background-color: var(--bgc-textbox);">
+                background-color: var(--bgc-panel);">
       <p style="font-size:.9em;">
         {$aEffFilterDesc[$pStrand.tracks[track].layers[layer].plugindex]}
       </p>

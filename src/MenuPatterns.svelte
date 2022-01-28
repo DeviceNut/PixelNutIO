@@ -193,7 +193,7 @@
     margin-top: 2px;
     padding: 5px;
     color: var(--fgc-textbox);
-    background-color: var(--bgc-textbox);
+    background-color: var(--bgc-panel);
   }
   .buttons {
     margin-top: 15px;

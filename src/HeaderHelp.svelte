@@ -44,7 +44,6 @@
     left: 50%;
     transform: translate(-50%, 0);
     margin-top: 5px;
-    color: var(--fgc-title);
     font-size:1.5em;
     font-style: italic;
   }

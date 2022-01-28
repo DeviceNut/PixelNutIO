@@ -33,44 +33,39 @@
   class:col2={numcols === 2}
   class:col3={numcols === 3}
   >
-  <Grid>
-    <Row>
-      <Column>
+  <Row>
+    <Column>
+      {#each Array($pStrand.tactives) as _,track}
+        {#if ((track % numcols) === 0) }
+          <TrackLayers {track} />
+        {/if}
+      {/each}
+    </Column>
+    {#if (numcols > 1) }
+      <Column style="margin-left:5px;">
         {#each Array($pStrand.tactives) as _,track}
-          {#if ((track % numcols) === 0) }
+          {#if ((track % numcols) === 1) }
             <TrackLayers {track} />
           {/if}
         {/each}
       </Column>
-      {#if (numcols > 1) }
-        <Column style="margin-left:5px;">
-          {#each Array($pStrand.tactives) as _,track}
-            {#if ((track % numcols) === 1) }
-              <TrackLayers {track} />
-            {/if}
-          {/each}
-        </Column>
-      {/if}
-      {#if (numcols > 2) }
-        <Column style="margin-left:5px;">
-          {#each Array($pStrand.tactives) as _,track}
-            {#if ((track % numcols) === 2) }
-              <TrackLayers {track} />
-            {/if}
-          {/each}
-        </Column>
-      {/if}
-    </Row>
-  </Grid>
+    {/if}
+    {#if (numcols > 2) }
+      <Column style="margin-left:5px;">
+        {#each Array($pStrand.tactives) as _,track}
+          {#if ((track % numcols) === 2) }
+            <TrackLayers {track} />
+          {/if}
+        {/each}
+      </Column>
+    {/if}
+  </Row>
 </div>
 
 <style>
   .page {
     margin: 0 auto;
-    margin-bottom: 10px;
     padding-bottom: 10px;
-    background-color: var(--bgc-page);
-    border: 2px solid var(--bdc-page);
   }
   .col1 {
     max-width:630px;

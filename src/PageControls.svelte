@@ -100,7 +100,7 @@
             </div>
             <div class="bdiv" class:bdiv2={$showCustom}
               on:click={toggleshow}>
-              <span class="btext" >{pstr}</span>
+              <span>{pstr}</span>
             </div>
           </Column>
         </Row>
@@ -130,34 +130,35 @@
           <Column>
             <div class="bdiv" class:bdiv2={$showCustom}
               on:click={toggleshow}>
-              <span class="btext" >{pstr}</span>
+              <span>{pstr}</span>
             </div>
           </Column>
         </Row>
       </div>
     {/if}
   </MediaQuery>
-</Grid>
 
-{#if $showCustom }
-  <MediaQuery query="(max-width: 1100px)" let:matches>
-    {#if matches}
-      <TrackLayout numcols={1} />
-    {/if}
-  </MediaQuery>
-  <MediaQuery query="(min-width: 1101px) and (max-width: 1600px)" let:matches>
-    {#if matches }
-      <TrackLayout numcols={($pStrand.tactives < 2) ? ($pStrand.tactives) : 2} />
-    {/if}
-  </MediaQuery>
-  <MediaQuery query="(min-width: 1601px)" let:matches>
-    {#if matches }
-      <TrackLayout numcols={($pStrand.tactives < 3) ? ($pStrand.tactives) : 3} />
-    {/if}
-  </MediaQuery>
-{:else}
-  <div style="margin-top:10px;"></div>
-{/if}
+  {#if $showCustom }
+    <MediaQuery query="(max-width: 1100px)" let:matches>
+      {#if matches}
+        <TrackLayout numcols={1} />
+      {/if}
+    </MediaQuery>
+    <MediaQuery query="(min-width: 1101px) and (max-width: 1600px)" let:matches>
+      {#if matches }
+        <TrackLayout numcols={($pStrand.tactives < 2) ? ($pStrand.tactives) : 2} />
+      {/if}
+    </MediaQuery>
+    <MediaQuery query="(min-width: 1601px)" let:matches>
+      {#if matches }
+        <TrackLayout numcols={($pStrand.tactives < 3) ? ($pStrand.tactives) : 3} />
+      {/if}
+    </MediaQuery>
+  {:else}
+    <div style="margin-top:10px;"></div>
+  {/if}
+
+</Grid>
 
 <style>
   .page {
@@ -190,8 +191,5 @@
   }
   .bdiv2 {
     padding-top: 5px;
-  }
-  .btext {
-    color: var(--fgc-button-normal);
   }
 </style>

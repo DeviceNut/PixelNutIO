@@ -38,14 +38,10 @@
 
 </script>
 
-<div style="margin: 20px -5px 10px -5px;
-            padding-top:15px; padding-bottom:10px;
-            background-color: var(--bgc-panel-controls);
-            ">
+<div class="panel">
+  <p style="font-size:.9em">Allow Property Overrides:</p>
 
-  <p style="margin-left:10px; font-size:.9em">Allow Property Overrides:</p>
-
-  <Row style="margin:10px 0 5px 10px; width:300px;">
+  <Row style="margin:15px 0 5px 0;">
     <Checkbox labelText="Hue"
       on:check={setovers}
       bind:checked={$pStrand.tracks[track].drawProps.overHue}
@@ -66,7 +62,7 @@
     />
   </Row>
   <Row>
-    <Column style="margin-left:10px;">
+    <Column>
       <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
         max={MAX_HUE_VALUE}
         onchange={sethue}
@@ -94,3 +90,11 @@
     </Column>
   </Row>
 </div>
+
+<style>
+  .panel {
+    margin: 20px -5px 0 -5px;
+    padding: 10px;
+    background-color: var(--bgc-panel);
+  }
+</style>

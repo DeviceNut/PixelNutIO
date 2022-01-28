@@ -47,15 +47,15 @@
           </div>
           <div>
             <span class="infotext2">Bright={strand.bright}%</span>
-            <span class="infotext2" class:disprops={!strand.xt_mode}>Hue={strand.xt_hue}</span>
+            <span class="infotext2">Hue={strand.xt_hue}</span>
           </div>
           <div>
             <span class="infotext2">Delay={strand.delay}%</span>
-            <span class="infotext2" class:disprops={!strand.xt_mode}>White={strand.xt_white}%</span>
+            <span class="infotext2">White={strand.xt_white}%</span>
           </div>
           <div>
             <span class="infotext2">FirstPos={strand.first}</span>
-            <span class="infotext2" class:disprops={!strand.xt_mode}>Count={strand.xt_count}%</span>
+            <span class="infotext2">Count={strand.xt_count}%</span>
           </div>
           {#if (strand.patname !== '')}
             <div class="pattern-name">
@@ -91,7 +91,7 @@
   .devname {
     display: inline;
     padding: 2px;
-    color: var(--fgc-devname);
+    color: var(--fgc-editname);
     font-size:1.15em;
   }
   .devname:hover {
@@ -107,7 +107,7 @@
     width: 300px;
     padding: 0 10px 10px 10px;
     color: var(--fgc-textbox);
-    background-color: var(--bgc-panel-controls);
+    background-color: var(--bgc-panel);
     border: 1px solid var(--bdc-page);
     border-top: 0;
     text-align: left;
@@ -122,9 +122,6 @@
     display: inline-block;
     margin-top: 5px;
     width: 120px;
-  }
-  .disprops {
-    color: var(--fgc-text-disabled);
   }
   .strand {
     font-style: italic;

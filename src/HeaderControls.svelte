@@ -144,7 +144,7 @@
     margin: 5px 5px 0 5px;
     padding: 3px;
     color: var(--fgc-editname);
-    background-color: var(--bgc-editname);
+    background-color: var(--bgc-panel);
     font-size:1.2em;
   }
   .button {

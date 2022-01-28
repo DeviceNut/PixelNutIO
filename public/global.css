@@ -1,37 +1,16 @@
 :root {
 
-	/*
-			fgc - foreground color
-			bgc - background color
-			bdc - border color
-	*/
-
-	/* header title */
-	--fgc-title: rgb(120,100,200);
-	/* device name */
-	--fgc-devname: rgb(100,150,130);
-
-	/* device/pattern text and background */
-	--fgc-editname: #33aa66;
-	--bgc-editname: #444;
-
-	/* main page: header, border, body */
+	/* header, border, panel */
 	--bgc-header: #333;
 	--bdc-page  : #333;
 	--bgc-page  : #000;
+	--bgc-panel : #222;
 
-	/* panel controls normal, disabled */
-	--bgc-panel-controls: #222;
-	--bgc-panel-disabled: #111;
-
-	/* custom track/layer header, areas */
-	--bgc-custom-head: #222;
-	--bgc-custom-area: #111;
+	/* editable text (device/pattern) */
+	--fgc-editname: #33aa66;
 
 	/* for device/pattern/effect settings/descriptions */
-	--fgc-textbox: #888;
-	--bgc-textbox: #333;
-	--fgc-text-disabled: #555;
+	--fgc-textbox: #999;
 
 	/* button text/background:
 			enabled for Mute/Solo
@@ -53,10 +32,6 @@
 input {
 	-webkit-padding: 0.3em 0;
 	padding: 0.3em
-}
-
-input:disabled {
-	color: var(--bgc-panel-disabled);
 }
 
 button {

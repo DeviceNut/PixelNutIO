@@ -2,7 +2,7 @@
 
   import { Checkbox } from 'carbon-components-svelte';
 
-  import { getColor, pStrand } from './globals.js';
+  import { pStrand } from './globals.js';
 
   import {
     overBit_DegreeHue,
@@ -23,12 +23,9 @@
   
   import SliderVal from './SliderVal.svelte';
 
-  let bgc = '';
-  $: bgc = getColor($pStrand.opropsUser.doEnable ? '--bgc-panel-controls' : '--bgc-panel-disabled');
-
 </script>
 
-<div class="area" style="--mycolor: {bgc}">
+<div class="area">
 
   <Checkbox labelText="Override Track Properties"
     on:check={userSetOverMode}
@@ -65,6 +62,6 @@
     margin-top: 15px;
     max-width: 290px;
     padding: 10px;
-    background-color: var(--mycolor);
+    background-color: var(--bgc-panel);
   }
 </style>

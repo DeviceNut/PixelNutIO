@@ -11,7 +11,8 @@
     curPageMode,
     prevPageMode,
     curDevice,
-    showColors
+    showColors,
+    devPaused
    } from './globals.js';
 
   import { userSetDevname, userSendPause } from './cmdhead.js';
@@ -28,10 +29,9 @@
     }
   }
 
-  let isPaused = false;
   let textPause = '';
-  $: textPause = (isPaused ? 'Resume' : 'Pause');
-  const dopause = () => { userSendPause(isPaused = !isPaused); }
+  $: textPause = ($devPaused ? 'Resume' : 'Pause');
+  const dopause = () => { userSendPause($devPaused = !$devPaused); }
 
   const dodevs = () =>
   {
@@ -67,7 +67,7 @@
       </button>
 
       <button class="button center fixwidth"
-        class:paused={isPaused}
+        class:paused={$devPaused}
         on:click={dopause}
         >{textPause}
       </button>
@@ -106,7 +106,7 @@
       </button>
 
       <button class="button rite fixwidth"
-        class:paused={isPaused}
+        class:paused={$devPaused}
         on:click={dopause}
         >{textPause}
       </button>

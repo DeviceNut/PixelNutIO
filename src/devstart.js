@@ -5,6 +5,8 @@ import {
   MIN_LAYERS,
   MINLEN_MAXPATTERN,
   PAGEMODE_CONTROLS,
+  devVersion,
+  devPaused,
   curPageMode,
   curDevice,
   nStrands,
@@ -143,6 +145,10 @@ export let deviceStartup = (device) =>
   // now being actively controlled
   device.active = true;
   curDevice.set(device);
+
+  devPaused.set(device.report.ispaused);
+  devVersion.set(device.report.version);
+  console.log(`Device version: ${device.report.version}`);
 
   // create draw/filter effect lists with device specific items
 

@@ -6,24 +6,19 @@
 	--page-back  : #000;
 	--panel-back : #222;
 
-	/* editable text (device/pattern) */
+	/* text names (device/pattern) and settings/descriptions */
 	--text-names: #33aa66;
+	--text-lines: #999;
 
-	/* for device/pattern/effect settings/descriptions */
-	--text-descrips: #999;
-
-	/* button text/background:
-			enabled: Mute/Solo/Pause/Resume
-			select for Hover or tab-select
+	/* button text/background/borders:
+			'select' for Hover or tab-select
+			'enabled' for Mute/Solo/Pause/Resume
 	*/
 	--button-text-normal   : #fff;
-	--button-text-disabled : #bbb;
-
+	--button-border-normal : #bbb;
 	--button-back-select   : #666;
 	--button-back-normal   : #444;
 	--button-back-enabled  : #222;
-
-	--button-border-normal : #bbb;
 	--button-border-enabled: #0066dd;
 }
 
@@ -41,7 +36,7 @@ button {
 
 button:disabled,button[disabled] {
 	pointer-events: none;
-	color: var(--button-text-disabled);
+	color: var(--button-border-normal);
 	opacity: 0.35;
 }
 

@@ -15,7 +15,7 @@
   import PageHelp from './PageHelp.svelte';
   import PageDevices from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
-  import UserOptions from './UserOptions.svelte';
+  import UserColors from './UserColors.svelte';
 
   storePatternsInit();
   helpInit();
@@ -43,6 +43,6 @@
     <PageDevices/>
   {/if}
 
-  <UserOptions/>
+  <UserColors/>
 
 </main>

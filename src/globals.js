@@ -35,7 +35,7 @@ export let mqttConnected  = writable(false);  // true if connected to that broke
 export let deviceList     = writable([]);     // list of discovered devices
 export let curDevice      = writable(null);   // "points" to current device
 
-export let showOptions    = writable(false);  // true to display options dialog
+export let showColors     = writable(false);  // true to display colors dialog
 export let showCustom     = writable(false);  // true to display custom panels
 export let userCustom     = writable(false);  // true if user opened custom panels
 

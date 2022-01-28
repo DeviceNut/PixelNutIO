@@ -8,7 +8,7 @@
 
   import {
     aColorThemes,
-    showOptions,
+    showColors,
     getColor,
     setColor
   } from './globals.js';
@@ -21,13 +21,13 @@
   {
     let color = styles['page-color'];
     setColor('--page-back', color);
-    $showOptions = false;
+    $showColors = false;
   }
 
   let tindex = 0;
   const setTheme = () =>
   {
-    console.log(`Options: theme=${sdfsdf}`);
+    console.log(`Colors: theme=${sdfsdf}`);
   }
 
 </script>
@@ -35,8 +35,8 @@
 <Modal
   passiveModal
   preventCloseOnClickOutside
-  modalHeading={"User Options"}
-  bind:open={$showOptions}
+  modalHeading={"Program Colors"}
+  bind:open={$showColors}
   on:close
   >
 
@@ -73,7 +73,7 @@
   <div style="margin-top:20px;"></div>
 
   <Button on:click={docolor}>Save</Button>
-  <Button kind="secondary" on:click={()=>{$showOptions = false}}>Cancel</Button>
+  <Button kind="secondary" on:click={()=>{$showColors = false}}>Cancel</Button>
 
 </Modal>
 

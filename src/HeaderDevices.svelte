@@ -5,7 +5,7 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    showOptions
+    showColors
   } from './globals.js';
 
   const dodocs = () =>
@@ -18,8 +18,8 @@
 
 <div class="header">
   <button class="button-left"
-    on:click={()=>{$showOptions = !$showOptions}}
-    >Options
+    on:click={()=>{$showColors = !$showColors}}
+    >Colors
   </button>
   <span class="title">{titleDevices}</span>
   <button class="button-rite"

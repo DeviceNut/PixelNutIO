@@ -11,7 +11,7 @@
     curPageMode,
     prevPageMode,
     curDevice,
-    showOptions
+    showColors
    } from './globals.js';
 
   import { userSetDevname, userSendPause } from './cmdhead.js';
@@ -62,8 +62,8 @@
       </button>
 
       <button class="button center"
-        on:click={()=>{$showOptions = !$showOptions}}
-        >Options
+        on:click={()=>{$showColors = !$showColors}}
+        >Colors
       </button>
 
       <button class="button center fixwidth"
@@ -90,8 +90,8 @@
       </button>
 
       <button class="button left"
-        on:click={()=>{$showOptions = !$showOptions}}
-        >Options
+        on:click={()=>{$showColors = !$showColors}}
+        >Colors
       </button>
 
       <input class="editname"

@@ -48,8 +48,7 @@
 <MediaQuery query="(max-width: 700px)" let:matches>
   {#if matches}
     <div class="header">
-      <input
-        class="title"
+      <input class="editname"
         size=32 maxlength=32
         on:change={setname}
         bind:value={devname}
@@ -78,7 +77,7 @@
         >Docs &gt;&gt;
       </button>
 
-      </div>
+    </div>
   {/if}
 </MediaQuery>
 <MediaQuery query="(min-width: 701px)" let:matches>
@@ -95,8 +94,7 @@
         >Options
       </button>
 
-      <input
-        class="title"
+      <input class="editname"
         size=32 maxlength=32
         on:change={setname}
         bind:value={devname}
@@ -118,7 +116,9 @@
 </MediaQuery>
 
 <Modal
+  size="sm"
   passiveModal
+  preventCloseOnClickOutside
   modalHeading={"Setting Device Name"}
   bind:open={openError}
   on:close
@@ -140,11 +140,11 @@
     text-align: center;
     background-color: var(--bgc-header);
   }
-  .title {
+  .editname {
     margin: 5px 5px 0 5px;
     padding: 3px;
-    color: var(--fgc-title);
-    background-color: var(--bgc-title);
+    color: var(--fgc-editname);
+    background-color: var(--bgc-editname);
     font-size:1.2em;
   }
   .button {
@@ -152,7 +152,7 @@
     padding: 7px;
   }
   .button.center {
-    margin: 5px;
+    margin: 3px;
   }
   .button.left {
     float: left;

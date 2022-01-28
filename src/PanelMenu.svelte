@@ -1,11 +1,8 @@
 <script>
 
-  import { TextInput } from "carbon-components-svelte";
-  
   import {
     pStrand,
-    patsMenuOpen,
-    showCustom
+    patsMenuOpen
   } from './globals.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
@@ -21,13 +18,21 @@
   <MenuPatterns/>
 {:else if ($pStrand.tactives !== 0) }
   <div style="margin-top:20px; text-align:center;">
-    <TextInput
-      style="width:250px; margin:0 auto;"
+    <input class="editname"
       placeholder='Name your pattern here'
       on:change={setname}
       bind:value={$pStrand.curPatternName}
-      disabled={!$showCustom}
-      maxlength="32"
+      size=32 maxlength=32
     />
   </div>
 {/if}
+
+<style>
+  .editname {
+    margin: 5px 5px 0 5px;
+    padding: 3px;
+    color: var(--fgc-editname);
+    background-color: var(--bgc-editname);
+    font-size:1.1em;
+  }
+</style>

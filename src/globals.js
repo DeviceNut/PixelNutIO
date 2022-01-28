@@ -1,8 +1,8 @@
 import { get, writable } from 'svelte/store';
 
-export const defDeviceName  = 'PixelNut!';
-export const titleDevices   = 'PixelNut! Devices';
-export const titleHelpDocs  = 'PixelNut! Docs';
+export const defDeviceName  = 'MyPixelNut';
+export const titleDevices   = 'PixelNut Devices';
+export const titleHelpDocs  = 'PixelNut Docs';
 
 export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
@@ -78,6 +78,8 @@ export let patsSelectedID = writable([]);     // list of selected items
 export let patsOpenItems  = writable([]);     // list of expanded items
 
 export let allowUpdates   = writable(true);   // false to prevent UI updates
+
+export let aColorThemes   = writable([]);     // list of all color themes
 
 export const curTimeSecs = () =>
 {

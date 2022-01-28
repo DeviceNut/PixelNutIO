@@ -6,6 +6,15 @@
 			bdc - border color
 	*/
 
+	/* header title */
+	--fgc-title: rgb(120,100,200);
+	/* device name */
+	--fgc-devname: rgb(100,150,130);
+
+	/* device/pattern text and background */
+	--fgc-editname: #33aa66;
+	--bgc-editname: #444;
+
 	/* main page: header, border, body */
 	--bgc-header: #333;
 	--bdc-page  : #333;
@@ -19,17 +28,10 @@
 	--bgc-custom-head: #222;
 	--bgc-custom-area: #111;
 
-	/* device title text and background */
-	--fgc-title: #33aa66;
-	--bgc-title: #444;
-
-	/* for device/pattern/effect descriptions */
+	/* for device/pattern/effect settings/descriptions */
 	--fgc-textbox: #888;
 	--bgc-textbox: #333;
-	/* only used for device settings */
-	--fgc-device-name: #bbb;
-	--bdc-properties : #888;
-	--fgc-props-off  : #444;
+	--fgc-text-disabled: #555;
 
 	/* button text/background:
 			enabled for Mute/Solo
@@ -39,8 +41,8 @@
 	--fgc-button-normal  : #fff;
 	--fgc-button-disabled: #bbb;
 
-	--bgc-button-active  : #666;
 	--bgc-button-normal  : #444;
+	--bgc-button-active  : #666;
 	--bgc-button-enabled : #222;
 
 	--bdc-button-normal  : #bbb;

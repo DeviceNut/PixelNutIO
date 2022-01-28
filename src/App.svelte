@@ -25,7 +25,7 @@
 
   let ipaddr = window.location.hostname;
   if (ipaddr === 'localhost')
-       $mqttBrokerIP = '192.168.8.222'; // DEBUG ONLY
+       $mqttBrokerIP = '192.168.8.222'; // when running development server
   else $mqttBrokerIP = ipaddr;
 
   // "white", "g10", "g80", "g90", "g100"

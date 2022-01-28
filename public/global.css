@@ -24,7 +24,7 @@
 	--button-back-select   : #666;
 	--button-back-enabled  : #222;
 
-	--button-border-enabled: #bbb;
+	--button-border-normal : #bbb;
 	--button-border-paused : #aa5500;
 	--button-border-enabled: #0066dd;
 }
@@ -37,7 +37,7 @@ input {
 button {
 	color: var(--button-text-normal);
 	background-color: var(--button-back-normal);
-	border: 1px solid var(--button-border-enabled);
+	border: 1px solid var(--button-border-normal);
 	border-radius: 5%;
 }
 
@@ -47,15 +47,11 @@ button:disabled,button[disabled] {
 	opacity: 0.35;
 }
 
-button:not(:disabled):active {
+button:not(:disabled):active:focus {
 	background-color: var(--button-back-select);
 }
 
 button:hover {
 	cursor: pointer;
-	background-color: var(--button-back-select);
-}
-
-button:focus {
 	background-color: var(--button-back-select);
 }

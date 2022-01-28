@@ -13,19 +13,17 @@
 	--text-descrips: #999;
 
 	/* button text/background:
-			enabled for Mute/Solo
-			paused for Pause/Resume
-			active on Hover or tab-select
+			enabled: Mute/Solo/Pause/Resume
+			select for Hover or tab-select
 	*/
 	--button-text-normal   : #fff;
 	--button-text-disabled : #bbb;
 
-	--button-back-normal   : #444;
 	--button-back-select   : #666;
+	--button-back-normal   : #444;
 	--button-back-enabled  : #222;
 
 	--button-border-normal : #bbb;
-	--button-border-paused : #aa5500;
 	--button-border-enabled: #0066dd;
 }
 

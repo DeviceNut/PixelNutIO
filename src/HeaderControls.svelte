@@ -167,6 +167,6 @@
   }
   .button.paused {
     background-color: var(--button-back-enabled);
-    border: 1px solid var(--button-border-paused);
+    border: 2px solid var(--button-border-enabled);
   }
 </style>

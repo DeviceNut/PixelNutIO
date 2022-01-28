@@ -77,7 +77,7 @@
     text-align: left;
     width: 300px;
     padding: 10px;
-    color: var(--text-descrips);
+    color: var(--text-lines);
     background-color: var(--page-header);
   }
   .devbox.expand {
@@ -106,7 +106,7 @@
     margin: 0 auto;
     width: 300px;
     padding: 0 10px 10px 10px;
-    color: var(--text-descrips);
+    color: var(--text-lines);
     background-color: var(--panel-back);
     border: 1px solid var(--page-border);
     border-top: 0;

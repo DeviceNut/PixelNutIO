@@ -51,7 +51,7 @@
 
   {#if helpon }
     <Row style="margin-left:-10px; margin-right:1px; padding:5px;
-                color: var(--text-descrips);
+                color: var(--text-lines);
                 background-color: var(--panel-back);">
       <p style="font-size:.9em;">
         {$aEffDrawDesc[$pStrand.tracks[track].layers[DRAW_LAYER].plugindex]}

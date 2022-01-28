@@ -192,7 +192,7 @@
     font-size: .95em;
     margin-top: 2px;
     padding: 5px;
-    color: var(--text-descrips);
+    color: var(--text-lines);
     background-color: var(--panel-back);
   }
   .buttons {

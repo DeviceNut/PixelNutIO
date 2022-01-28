@@ -163,8 +163,8 @@
 <style>
   .page {
     margin: 0 auto;
-    background-color: var(--bgc-page);
-    border: 2px solid var(--bdc-page);
+    background-color: var(--page-back);
+    border: 2px solid var(--page-border);
   }
   .small {
     max-width: 630px;
@@ -174,20 +174,20 @@
   }
   .vertdiv {
     width: 3px;
-    background-color: var(--bdc-page);
+    background-color: var(--page-border);
   }
   .divider {
     margin-top: 20px;
     margin-bottom: 15px;
     padding-top: 2px;
-    background-color: var(--bdc-page);
+    background-color: var(--page-border);
   }
   .bdiv {
     cursor: pointer;
     height: 18px;
     padding-top: 2px;
     text-align: center;
-    background-color: var(--bgc-button-normal);
+    background-color: var(--button-back-normal);
   }
   .bdiv2 {
     padding-top: 5px;

@@ -20,7 +20,7 @@
   const docolor = () =>
   {
     let color = styles['page-color'];
-    setColor('--bgc-page', color);
+    setColor('--page-back', color);
     $showOptions = false;
   }
 

@@ -21,7 +21,7 @@
 
 </script> 
 
-<Row style="margin-top:10px; background-color:var(--bgc-header);">
+<Row style="margin-top:10px; background-color:var(--page-header);">
   <Column>
     <Revealer bind:isopen={$pStrand.tracks[track].open} name='Track' num={track+1} />
   </Column>
@@ -29,7 +29,7 @@
 </Row>
 <div style="display:{tstate};">
   {#each Array($pStrand.tracks[track].lactives) as _,layer}
-    <Row style="margin-top:10px; margin-left:-5px; background-color:var(--bgc-header);">
+    <Row style="margin-top:10px; margin-left:-5px; background-color:var(--page-header);">
       <Column>
         <Revealer bind:isopen={$pStrand.tracks[track].layers[layer].open} name='Layer' num={layer+1} />
       </Column>
@@ -40,7 +40,7 @@
       {/if}
     </Row>
     <Row style="margin-left:-5px;">
-      <Column style="padding-top:10px; padding-bottom:10px; background-color:var(--bgc-page);">
+      <Column style="padding-top:10px; padding-bottom:10px; background-color:var(--page-back);">
         {#if (layer === DRAW_LAYER) }
           <SelectDraw {track} />
           {#if $pStrand.tracks[track].layers[layer].open}

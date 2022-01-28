@@ -192,8 +192,8 @@
     font-size: .95em;
     margin-top: 2px;
     padding: 5px;
-    color: var(--fgc-textbox);
-    background-color: var(--bgc-panel);
+    color: var(--text-descrips);
+    background-color: var(--panel-back);
   }
   .buttons {
     margin-top: 15px;

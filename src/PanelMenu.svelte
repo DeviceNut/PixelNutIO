@@ -31,8 +31,8 @@
   .editname {
     margin: 5px 5px 0 5px;
     padding: 3px;
-    color: var(--fgc-editname);
-    background-color: var(--bgc-panel);
+    color: var(--text-names);
+    background-color: var(--panel-back);
     font-size:1.1em;
   }
 </style>

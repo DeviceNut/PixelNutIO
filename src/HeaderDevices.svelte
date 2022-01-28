@@ -34,7 +34,7 @@
     max-width: 630px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bgc-header);
+    background-color: var(--page-header);
   }
   .title {
     position: absolute;

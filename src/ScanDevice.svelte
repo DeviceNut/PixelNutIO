@@ -77,8 +77,8 @@
     text-align: left;
     width: 300px;
     padding: 10px;
-    color: var(--fgc-textbox);
-    background-color: var(--bgc-header);
+    color: var(--text-descrips);
+    background-color: var(--page-header);
   }
   .devbox.expand {
     border-bottom: 0;
@@ -91,12 +91,12 @@
   .devname {
     display: inline;
     padding: 2px;
-    color: var(--fgc-editname);
+    color: var(--text-names);
     font-size:1.15em;
   }
   .devname:hover {
     cursor: pointer;
-    background-color: var(--bgc-button-normal);
+    background-color: var(--button-back-normal);
   }
   .button {
     float: right;
@@ -106,9 +106,9 @@
     margin: 0 auto;
     width: 300px;
     padding: 0 10px 10px 10px;
-    color: var(--fgc-textbox);
-    background-color: var(--bgc-panel);
-    border: 1px solid var(--bdc-page);
+    color: var(--text-descrips);
+    background-color: var(--panel-back);
+    border: 1px solid var(--page-border);
     border-top: 0;
     text-align: left;
     font-size: 0.9em;

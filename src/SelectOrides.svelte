@@ -62,6 +62,6 @@
     margin-top: 15px;
     max-width: 290px;
     padding: 10px;
-    background-color: var(--bgc-panel);
+    background-color: var(--panel-back);
   }
 </style>

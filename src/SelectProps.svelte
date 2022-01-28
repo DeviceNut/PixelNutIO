@@ -95,6 +95,6 @@
   .panel {
     margin: 20px -5px 0 -5px;
     padding: 10px;
-    background-color: var(--bgc-panel);
+    background-color: var(--panel-back);
   }
 </style>

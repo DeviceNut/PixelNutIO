@@ -88,7 +88,7 @@
   }
   .button.select {
     padding: 3px;
-    background-color: var(--bgc-button-enabled);
-    border: 2px solid var(--bdc-button-enabled);
+    background-color: var(--button-back-enabled);
+    border: 2px solid var(--button-border-enabled);
   }
 </style>

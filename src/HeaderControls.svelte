@@ -133,18 +133,18 @@
     height: 45px;
     padding: 2px 0 10px 0;
     text-align: center;
-    background-color: var(--bgc-header);
+    background-color: var(--page-header);
   }
   .header2 {
     height: 45px;
     text-align: center;
-    background-color: var(--bgc-header);
+    background-color: var(--page-header);
   }
   .editname {
     margin: 5px 5px 0 5px;
     padding: 3px;
-    color: var(--fgc-editname);
-    background-color: var(--bgc-panel);
+    color: var(--text-names);
+    background-color: var(--panel-back);
     font-size:1.2em;
   }
   .button {
@@ -166,7 +166,7 @@
     width: 63px;
   }
   .button.paused {
-    background-color: var(--bgc-button-enabled);
-    border: 1px solid var(--bdc-button-paused);
+    background-color: var(--button-back-enabled);
+    border: 1px solid var(--button-border-paused);
   }
 </style>

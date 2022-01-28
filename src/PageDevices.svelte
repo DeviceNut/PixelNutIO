@@ -194,8 +194,8 @@
     max-width: 630px;
     margin: 0 auto;
     text-align: center;
-    background-color: var(--bgc-page);
-    border: 2px solid var(--bdc-page);
+    background-color: var(--page-back);
+    border: 2px solid var(--page-border);
   }
   .scanbox {
     margin-top: 30px;
@@ -221,6 +221,6 @@
   .divider {
     margin-top: 20px;
     padding-top: 5px;
-    background-color: var(--bdc-page);
+    background-color: var(--page-border);
   }
 </style>

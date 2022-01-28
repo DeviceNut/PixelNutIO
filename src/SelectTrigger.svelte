@@ -165,7 +165,7 @@
   .panel {
     margin: 10px -5px 0 -5px;
     padding: 10px;
-    background-color: var(--bgc-panel);
+    background-color: var(--panel-back);
   }
   .trig-force {
     margin-top: 20px;

@@ -37,7 +37,7 @@
     height: 45px;
     padding-top: 5px;
     text-align: center;
-    background-color: var(--bgc-header);
+    background-color: var(--page-header);
   }
   .title {
     position: absolute;

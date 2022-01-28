@@ -64,6 +64,6 @@
   .divider {
     margin-top: 10px;
     padding-top: 2px;
-    background-color: var(--bdc-page);
+    background-color: var(--page-border);
   }
 </style>

@@ -1,32 +1,32 @@
 :root {
 
 	/* header, border, panel */
-	--bgc-header: #333;
-	--bdc-page  : #333;
-	--bgc-page  : #000;
-	--bgc-panel : #222;
+	--page-header: #333;
+	--page-border: #333;
+	--page-back  : #000;
+	--panel-back : #222;
 
 	/* editable text (device/pattern) */
-	--fgc-editname: #33aa66;
+	--text-names: #33aa66;
 
 	/* for device/pattern/effect settings/descriptions */
-	--fgc-textbox: #999;
+	--text-descrips: #999;
 
 	/* button text/background:
 			enabled for Mute/Solo
 			paused for Pause/Resume
 			active on Hover or tab-select
 	*/
-	--fgc-button-normal  : #fff;
-	--fgc-button-disabled: #bbb;
+	--button-text-normal   : #fff;
+	--button-text-disabled : #bbb;
 
-	--bgc-button-normal  : #444;
-	--bgc-button-active  : #666;
-	--bgc-button-enabled : #222;
+	--button-back-normal   : #444;
+	--button-back-select   : #666;
+	--button-back-enabled  : #222;
 
-	--bdc-button-normal  : #bbb;
-	--bdc-button-paused  : #aa5500;
-	--bdc-button-enabled : #0066dd;
+	--button-border-enabled: #bbb;
+	--button-border-paused : #aa5500;
+	--button-border-enabled: #0066dd;
 }
 
 input {
@@ -35,27 +35,27 @@ input {
 }
 
 button {
-	color: var(--fgc-button-normal);
-	background-color: var(--bgc-button-normal);
-	border: 1px solid var(--bdc-button-normal);
+	color: var(--button-text-normal);
+	background-color: var(--button-back-normal);
+	border: 1px solid var(--button-border-enabled);
 	border-radius: 5%;
 }
 
 button:disabled,button[disabled] {
 	pointer-events: none;
-	color: var(--fgc-button-disabled);
+	color: var(--button-text-disabled);
 	opacity: 0.35;
 }
 
 button:not(:disabled):active {
-	background-color: var(--bgc-button-active);
+	background-color: var(--button-back-select);
 }
 
 button:hover {
 	cursor: pointer;
-	background-color: var(--bgc-button-active);
+	background-color: var(--button-back-select);
 }
 
 button:focus {
-	background-color: var(--bgc-button-active);
+	background-color: var(--button-back-select);
 }

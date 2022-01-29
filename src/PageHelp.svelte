@@ -26,7 +26,7 @@
   <Row>
     {#if $helpMenuOpen }
 
-      <MediaQuery query="(max-width: 800px)" let:matches>
+      <MediaQuery query="(max-width: 800.999px)" let:matches>
         {#if matches}
           <Row style="width:100%; margin:0 auto;">
             <Column style="">

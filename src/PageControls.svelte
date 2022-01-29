@@ -79,7 +79,7 @@
 </script>
 
 <Grid style="margin-top:10px;">
-  <MediaQuery query="(max-width: 1100px)" let:matches>
+  <MediaQuery query="(max-width: 1100.999px)" let:matches>
     {#if matches}
       <div class="page small">
         <Row>
@@ -139,12 +139,12 @@
   </MediaQuery>
 
   {#if $showCustom }
-    <MediaQuery query="(max-width: 1100px)" let:matches>
+    <MediaQuery query="(max-width: 1100.999px)" let:matches>
       {#if matches}
         <TrackLayout numcols={1} />
       {/if}
     </MediaQuery>
-    <MediaQuery query="(min-width: 1101px) and (max-width: 1600px)" let:matches>
+    <MediaQuery query="(min-width: 1101px) and (max-width: 1600.999px)" let:matches>
       {#if matches }
         <TrackLayout numcols={($pStrand.tactives < 2) ? ($pStrand.tactives) : 2} />
       {/if}
@@ -187,7 +187,7 @@
     height: 18px;
     padding-top: 2px;
     text-align: center;
-    background-color: var(--button-back-normal);
+    background-color: var(--btn-back-normal);
   }
   .bdiv2 {
     padding-top: 5px;

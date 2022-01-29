@@ -45,7 +45,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 700px)" let:matches>
+<MediaQuery query="(max-width: 700.999px)" let:matches>
   {#if matches}
     <div class="header">
       <input class="editname"
@@ -166,7 +166,7 @@
     width: 63px;
   }
   .button.paused {
-    background-color: var(--button-back-enabled);
-    border: 2px solid var(--button-border-enabled);
+    background-color: var(--btn-back-enabled);
+    border: 2px solid var(--btn-bord-enabled);
   }
 </style>

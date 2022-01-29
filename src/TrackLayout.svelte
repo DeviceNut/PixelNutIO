@@ -3,7 +3,6 @@
   import { afterUpdate } from 'svelte';
 
   import {
-    Grid,
     Row,
     Column
   } from "carbon-components-svelte";

@@ -15,7 +15,7 @@
   } from './cmdctrls.js';
 
   import SelectOrides from './SelectOrides.svelte';
-  import SliderVal from './SliderVal.svelte';
+  import SliderVal    from './SliderVal.svelte';
 
 </script>
 

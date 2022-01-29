@@ -333,7 +333,7 @@ export const onDeviceReply = (msg, fsend) =>
       console.log(`Device Ready: "${device.curname}"`)
       //console.log(device.report);
     }
-    catch (e)
+    catch(e)
     {
       console.warn(`Device Parse Error: "${device.curname}" JSON=${device.dinfo}`);
 

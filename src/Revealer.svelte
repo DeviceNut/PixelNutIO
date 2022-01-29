@@ -1,6 +1,6 @@
 <script>
  
-  import CaretUp32 from "carbon-icons-svelte/lib/CaretUp32";
+  import CaretUp32   from "carbon-icons-svelte/lib/CaretUp32";
   import CaretDown32 from "carbon-icons-svelte/lib/CaretDown32";
 
   export let name;

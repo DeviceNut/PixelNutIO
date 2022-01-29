@@ -1,18 +1,17 @@
 <script>
 
-  import { Row, Column } from "carbon-components-svelte";
+  import { Row, Column }  from "carbon-components-svelte";
 
-  import { pStrand } from './globals.js';
-  import { DRAW_LAYER } from './devcmds.js';
+  import { pStrand }      from './globals.js';
+  import { DRAW_LAYER }   from './devcmds.js';
 
-  import Revealer from './Revealer.svelte';
+  import Revealer         from './Revealer.svelte';
   import ButtonsDrawLayer from './ButtonsDrawLayer.svelte';
-  import ButtonsActions from './ButtonsActions.svelte';
-
-  import SelectDraw from './SelectDraw.svelte';
-  import SectionDraw from './SectionDraw.svelte';
-  import SelectFilter from './SelectFilter.svelte';
-  import SelectTrigger from './SelectTrigger.svelte';
+  import ButtonsActions   from './ButtonsActions.svelte';
+  import SelectDraw       from './SelectDraw.svelte';
+  import SectionDraw      from './SectionDraw.svelte';
+  import SelectFilter     from './SelectFilter.svelte';
+  import SelectTrigger    from './SelectTrigger.svelte';
 
   export let track;
 

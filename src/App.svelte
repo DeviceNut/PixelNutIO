@@ -1,21 +1,32 @@
 <script>
 
+  import { get } from "svelte/store";
+
   import "carbon-components-svelte/css/all.css";
 
   import {
     mqttBrokerIP,
     PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
-    curPageMode
+    curPageMode,
+    colorDefaults,
+    colorSettings,
+    colorThemes,
+    setColor
   } from './globals.js';
 
-  import { storePatternsInit } from './browser.js';
+  import {
+    storeColorsGet,
+    storeColorsSet,
+    storePatternsInit
+  } from './browser.js';
+
   import { helpInit } from './helpmain.js';
 
-  import PageHelp from './PageHelp.svelte';
-  import PageDevices from './PageDevices.svelte';
+  import PageHelp     from './PageHelp.svelte';
+  import PageDevices  from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
-  import UserColors from './UserColors.svelte';
+  import ColorsSelect from './ColorsSelect.svelte';
 
   storePatternsInit();
   helpInit();
@@ -29,7 +40,15 @@
   else $mqttBrokerIP = ipaddr;
 
   // "white", "g10", "g80", "g90", "g100"
-  $: document.documentElement.setAttribute("theme", "g100");
+  document.documentElement.setAttribute("theme", "g100");
+
+  let colors = storeColorsGet();
+  if (colors === null) colors = get(colorDefaults);
+  else colorSettings.set(colors);
+
+  for (let c in colors) setColor(c, colors[c]);
+
+  //console.log('Color Values: ', colors);
 
 </script>
 
@@ -43,6 +62,6 @@
     <PageDevices/>
   {/if}
 
-  <UserColors/>
+  <ColorsSelect/>
 
 </main>

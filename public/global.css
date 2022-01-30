@@ -1,50 +1,26 @@
-:root {
-
-	/* header, border, panel */
-	--page-header: #333;
-	--page-border: #333;
-	--page-back  : #000;
-	--panel-back : #222;
-
-	/* text names (device/pattern) and settings/descriptions */
-	--text-names: #33aa66;
-	--text-lines: #999;
-
-	/* button text/background/borders:
-			'select' for Hover or tab-select
-			'enabled' for Mute/Solo/Pause/Resume
-	*/
-	--button-text-normal   : #fff;
-	--button-border-normal : #bbb;
-	--button-back-select   : #666;
-	--button-back-normal   : #444;
-	--button-back-enabled  : #222;
-	--button-border-enabled: #0066dd;
-}
-
 input {
 	-webkit-padding: 0.3em 0;
 	padding: 0.3em
 }
 
 button {
-	color: var(--button-text-normal);
-	background-color: var(--button-back-normal);
-	border: 1px solid var(--button-border-normal);
+	color: var(--btn-text-normal);
+	background-color: var(--btn-back-normal);
+	border: 1px solid var(--btn-bord-normal);
 	border-radius: 5%;
 }
 
 button:disabled,button[disabled] {
 	pointer-events: none;
-	color: var(--button-border-normal);
+	color: var(--btn-bord-normal);
 	opacity: 0.35;
 }
 
 button:not(:disabled):active:focus {
-	background-color: var(--button-back-select);
+	background-color: var(--btn-back-selected);
 }
 
 button:hover {
 	cursor: pointer;
-	background-color: var(--button-back-select);
+	background-color: var(--btn-back-selected);
 }

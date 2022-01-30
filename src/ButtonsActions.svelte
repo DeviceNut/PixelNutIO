@@ -88,7 +88,7 @@
   }
   .button.select {
     padding: 3px;
-    background-color: var(--button-back-enabled);
-    border: 2px solid var(--button-border-enabled);
+    background-color: var(--btn-back-enabled);
+    border: 2px solid var(--btn-bord-enabled);
   }
 </style>

@@ -1,12 +1,45 @@
-import { aStoredPatt, aStoredDesc } from './globals.js';
-import { MENUID_BROWSER, menuBrowser } from './menu.js';
 
+import {
+  aColorThemes,
+  aStoredPatt,
+  aStoredDesc
+} from './globals.js';
+
+import {
+  MENUID_BROWSER,
+  menuBrowser
+} from './menu.js';
+
+const SavePatternColors     = "PixelNut-Colors";
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
 const SavePatternKeyDesc    = "PixelNut-Desc-";
 const SavePatternSeparator  = ',';
 
 ///////////////////////////////////////////////////////////
+
+export const storeColorsGet = () =>
+{
+  let colors = null;
+  let cstr = localStorage.getItem(SavePatternColors);
+
+  //console.log(`Get Colors = ${cstr}`);
+  try
+  {
+    colors = JSON.parse(cstr);
+    if (colors === '') colors = null;
+    //else console.log('Parsed Colors: ', colors);
+  }
+  catch(e) { console.warn(`Cannot parse colors: ${cstr}`); }
+  return colors;
+}
+
+export const storeColorsSet = (colors) =>
+{
+  const cstr = JSON.stringify(colors);
+  //console.log(`Set Colors: ${cstr}`);
+  localStorage.setItem(SavePatternColors, cstr);
+}
 
 export const storePatternsInit = () =>
 {

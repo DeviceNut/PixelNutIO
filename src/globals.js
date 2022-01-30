@@ -81,7 +81,23 @@ export let patsOpenItems  = writable([]);     // list of expanded items
 
 export let allowUpdates   = writable(true);   // false to prevent UI updates
 
-export let aColorThemes   = writable([]);     // list of all color themes
+const colors = { // default color scheme
+	'--text-names'        : '#33aa66',
+	'--text-lines'        : '#999999',
+	'--page-header'       : '#333333',
+	'--page-border'       : '#333333',
+	'--page-back'         : '#000000',
+	'--panel-back'        : '#222222',
+	'--btn-text-normal'   : '#ffffff',
+	'--btn-bord-normal'   : '#bbbbbb',
+	'--btn-back-selected' : '#666666',
+	'--btn-back-normal'   : '#444444',
+	'--btn-back-enabled'  : '#222222',
+	'--btn-bord-enabled'  : '#0066dd'
+};
+export let colorDefaults  = writable(colors); // saves default colors
+export let colorSettings  = writable(colors); // color settings object
+export let colorThemes    = writable([]);     // list of all color themes
 
 export const curTimeSecs = () =>
 {
@@ -126,10 +142,12 @@ export const findEffectFromIndex = (filter, index) =>
   return { filter:filter, id:f.id, bits:f.bits, name:f.text, index:index };
 }
 
+/* not needed, all global css variables are set from global vars
 export const getColor = (name) =>
 {
-  return getComputedStyle(document.documentElement).getPropertyValue(name);
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
+*/
 
 export const setColor = (name, color) =>
 {

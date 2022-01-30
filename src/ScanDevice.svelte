@@ -96,7 +96,7 @@
   }
   .devname:hover {
     cursor: pointer;
-    background-color: var(--button-back-normal);
+    background-color: var(--btn-back-normal);
   }
   .button {
     float: right;

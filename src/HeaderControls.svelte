@@ -45,7 +45,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 700.999px)" let:matches>
+<MediaQuery query="(max-width: 700px)" let:matches>
   {#if matches}
     <div class="header">
       <input class="editname"

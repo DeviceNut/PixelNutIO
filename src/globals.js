@@ -89,9 +89,9 @@ const colors = { // default color scheme
 	'--page-back'         : '#000000',
 	'--panel-back'        : '#222222',
 	'--btn-text-normal'   : '#ffffff',
+	'--btn-back-normal'   : '#444444',
 	'--btn-bord-normal'   : '#bbbbbb',
 	'--btn-back-selected' : '#666666',
-	'--btn-back-normal'   : '#444444',
 	'--btn-back-enabled'  : '#222222',
 	'--btn-bord-enabled'  : '#0066dd'
 };

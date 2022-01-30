@@ -12,7 +12,6 @@ button {
 
 button:disabled,button[disabled] {
 	pointer-events: none;
-	color: var(--btn-bord-normal);
 	opacity: 0.35;
 }
 

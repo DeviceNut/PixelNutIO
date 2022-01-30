@@ -19,7 +19,6 @@
     />
     Text Lines
   </label>
-  <div style="display:block; margin-top:10px;"></div>
 {/if}
 
 {#if type === 'page'}
@@ -54,7 +53,6 @@
     />
     Panel Background
   </label>
-  <div style="display:block; margin-top:10px;"></div>
 {/if}
 
 {#if type === 'buttons'}
@@ -69,17 +67,17 @@
   <label>
     <input type="color"
       style="margin-top:10px; padding:0"
-      bind:value={$colorSettings['--btn-bord-normal']}
+      bind:value={$colorSettings['--btn-back-normal']}
     />
-    Button Border
+    Button Background
   </label>
   <div style="display:block; margin-top:10px;"></div>
   <label>
     <input type="color"
       style="margin-top:10px; padding:0"
-      bind:value={$colorSettings['--btn-back-normal']}
+      bind:value={$colorSettings['--btn-bord-normal']}
     />
-    Button Background
+    Button Border
   </label>
   <div style="display:block; margin-top:10px;"></div>
   <label>
@@ -105,5 +103,4 @@
     />
     Button Border Enabled
   </label>
-  <div style="display:block; margin-top:10px;"></div>
 {/if}

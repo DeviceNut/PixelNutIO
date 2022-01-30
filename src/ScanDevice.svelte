@@ -96,7 +96,7 @@
   }
   .devname:hover {
     cursor: pointer;
-    background-color: var(--btn-back-normal);
+    background-color: var(--panel-back);
   }
   .button {
     float: right;
@@ -108,7 +108,7 @@
     padding: 0 10px 10px 10px;
     color: var(--text-lines);
     background-color: var(--panel-back);
-    border: 1px solid var(--page-border);
+    border: 2px solid var(--page-border);
     border-top: 0;
     text-align: left;
     font-size: 0.9em;

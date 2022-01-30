@@ -17,7 +17,6 @@
 
   import {
     storeColorsGet,
-    storeColorsSet,
     storePatternsInit
   } from './browser.js';
 
@@ -47,7 +46,6 @@
   else colorSettings.set(colors);
 
   for (let c in colors) setColor(c, colors[c]);
-
   //console.log('Color Values: ', colors);
 
 </script>

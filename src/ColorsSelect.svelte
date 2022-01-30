@@ -69,70 +69,89 @@
 <Modal
   passiveModal
   preventCloseOnClickOutside
-  modalHeading={"Select Program Colors"}
+  modalHeading={"Application Colors"}
   bind:open={$showColors}
   on:close
   >
-  <p class="title">Select overall theme:</p>
+  <div style="background-color:#000000; padding:20px;">
 
-  <p class="title">Select individual colors:</p>
+    <p class="title">Select overall theme:</p>
 
-  <MediaQuery query="(max-width: 670px)" let:matches>
-    {#if matches}
-      <Row>
-        <Column>
-          <ColorsList type="text"/>
-        </Column>
-      </Row>
-      <Row style="margin-top:10px;">
-        <Column>
-          <ColorsShow type="text"/>
-        </Column>
-      </Row>
-      <Row style="margin-top:10px;">
-        <Column>
-          <ColorsList type="page"/>
-        </Column>
-      </Row>
-      <Row style="margin-top:10px;">
-        <Column>
-          <ColorsShow type="page"/>
-        </Column>
-      </Row>
-      <Row style="margin-top:10px;">
-        <Column>
-          <ColorsList type="buttons"/>
-        </Column>
-      </Row>
-      <Row style="margin-top:10px;">
-        <Column>
-          <ColorsShow type="buttons"/>
-        </Column>
-      </Row>
-    {/if}
-  </MediaQuery>
-  <MediaQuery query="(min-width: 671px)" let:matches>
-    {#if matches}
-      <Row>
-        <Column style="max-width:280px;">
-          <ColorsList type="text"/>
-          <ColorsList type="page"/>
-          <ColorsList type="buttons"/>
-        </Column>
-        <Column style="margin-right:20px;">
-          <ColorsShow type="text"/>
-          <ColorsShow type="page"/>
-          <ColorsShow type="buttons"/>
-        </Column>
-      </Row>
-    {/if}
-  </MediaQuery>
+    <p class="title">Select individual colors:</p>
 
-  <div style="margin-top:30px;"></div>
+    <MediaQuery query="(max-width: 670px)" let:matches>
+      {#if matches}
+        <Row>
+          <Column>
+            <ColorsList type="text"/>
+          </Column>
+        </Row>
+        <Row style="margin-top:20px;">
+          <Column>
+            <ColorsShow type="text"/>
+          </Column>
+        </Row>
+        <Row style="margin-top:20px;">
+          <Column>
+            <ColorsList type="page"/>
+          </Column>
+        </Row>
+        <Row style="margin-top:20px;">
+          <Column>
+            <ColorsShow type="page"/>
+          </Column>
+        </Row>
+        <Row style="margin-top:20px;">
+          <Column>
+            <ColorsList type="buttons"/>
+          </Column>
+        </Row>
+        <Row style="margin-top:20px;">
+          <Column>
+            <ColorsShow type="buttons"/>
+          </Column>
+        </Row>
 
-  <Button                  on:click={dosave} >Save</Button>
-  <Button kind="secondary" on:click={cancel} >Cancel</Button>
-  <Button kind="secondary" on:click={restore}>Restore</Button>
+        <div style="margin-top:30px;"></div>
+
+        <Button on:click={dosave}>Save</Button>
+        <Button kind="secondary" on:click={cancel}>Cancel</Button>
+
+        <div style="display:block; margin-top:10px;"></div>
+        <Button kind="secondary" on:click={restore}>Set to default colors</Button>
+
+      {/if}
+    </MediaQuery>
+
+    <MediaQuery query="(min-width: 671px)" let:matches>
+      {#if matches}
+        <Row>
+          <Column style="max-width:280px;">
+            <ColorsList type="text"/>
+            <div style="margin-top:50px;"></div>
+            <ColorsList type="page"/>
+            <div style="margin-top:25px;"></div>
+            <ColorsList type="buttons"/>
+          </Column>
+          <Column style="margin-right:20px;">
+            <ColorsShow type="text"/>
+            <div style="margin-top:15px;"></div>
+            <ColorsShow type="page"/>
+            <div style="margin-top:10px;"></div>
+            <ColorsShow type="buttons"/>
+          </Column>
+        </Row>
+
+        <div style="margin-top:30px;"></div>
+
+        <Button on:click={dosave}>Save</Button>
+        <Button kind="secondary" on:click={cancel}>Cancel</Button>
+        <Button kind="secondary" on:click={restore}>Set to default colors</Button>
+
+      {/if}
+    </MediaQuery>
+
+  </div>
 
 </Modal>
 

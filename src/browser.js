@@ -1,6 +1,5 @@
 
 import {
-  aColorThemes,
   aStoredPatt,
   aStoredDesc
 } from './globals.js';

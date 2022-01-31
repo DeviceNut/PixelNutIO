@@ -30,22 +30,22 @@
 
     <div><button style="color:            {$colorSettings['--btn-text-normal']};
                         background-color: {$colorSettings['--btn-back-normal']};
-                        border: 1px solid {$colorSettings['--btn-bord-normal']};"
+                        border: 2px solid {$colorSettings['--btn-bord-normal']};"
                   >Normal</button></div>
 
     <div><button disabled style="color:   {$colorSettings['--btn-text-normal']};
                         background-color: {$colorSettings['--btn-back-normal']};
-                        border: 1px solid {$colorSettings['--btn-bord-normal']};"
+                        border: 2px solid {$colorSettings['--btn-bord-normal']};"
                   >Disabled</button></div>
 
     <div><button style="color:            {$colorSettings['--btn-text-normal']};
                         background-color: {$colorSettings['--btn-back-selected']};
-                        border: 1px solid {$colorSettings['--btn-bord-selected']};"
+                        border: 2px solid {$colorSettings['--btn-bord-selected']};"
                   >Selected</button></div>
 
     <div><button style="color:            {$colorSettings['--btn-text-normal']};
                         background-color: {$colorSettings['--btn-back-enabled']};
-                        border: 1px solid {$colorSettings['--btn-bord-enabled']};"
+                        border: 2px solid {$colorSettings['--btn-bord-enabled']};"
                   >Enabled</button></div>
   </div>
 {/if}

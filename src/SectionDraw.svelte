@@ -30,9 +30,9 @@
     userSetNoRep
   } from './cmdctrls.js'
 
-  import SelectProps from './SelectProps.svelte';
-  import SelectTrigger from './SelectTrigger.svelte';
-  import SliderVal from './SliderVal.svelte';
+  import SelectProps    from './SelectProps.svelte';
+  import SelectTrigger  from './SelectTrigger.svelte';
+  import SliderVal      from './SliderVal.svelte';
 
   export let track;
 

@@ -9,13 +9,14 @@
     PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
     curPageMode,
-    colorDefaults,
+    userThemeStr,
+    colorThemeDark,
     colorSettings,
-    colorThemes,
     setColor
   } from './globals.js';
 
   import {
+    storeThemeGet,
     storeColorsGet,
     storePatternsInit
   } from './browser.js';
@@ -38,14 +39,22 @@
        $mqttBrokerIP = '192.168.8.222'; // when running development server
   else $mqttBrokerIP = ipaddr;
 
-  // "white", "g10", "g80", "g90", "g100"
-  document.documentElement.setAttribute("theme", "g100");
+  let theme = storeThemeGet();
+  if (theme === null) theme = "g100"; // default
+  document.documentElement.setAttribute("theme", theme);
+  userThemeStr.set(theme);
 
   let colors = storeColorsGet();
-  if (colors === null) colors = get(colorDefaults);
-  else colorSettings.set(colors);
+  if (colors === null)
+  {
+    if (theme === "g10")
+         colors = get(colorThemeLite);
+    else colors = get(colorThemeDark);
+  }
 
+  colorSettings.set(colors);
   for (let c in colors) setColor(c, colors[c]);
+
   //console.log('Color Values: ', colors);
 
 </script>

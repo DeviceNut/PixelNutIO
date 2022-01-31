@@ -9,6 +9,7 @@ import {
   menuBrowser
 } from './menu.js';
 
+const SavePatternTheme      = "PixelNut-Theme";
 const SavePatternColors     = "PixelNut-Colors";
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
@@ -16,6 +17,16 @@ const SavePatternKeyDesc    = "PixelNut-Desc-";
 const SavePatternSeparator  = ',';
 
 ///////////////////////////////////////////////////////////
+
+export const storeThemeGet = () =>
+{
+  return localStorage.getItem(SavePatternTheme);
+}
+
+export const storeThemeSet = (tstr) =>
+{
+  localStorage.setItem(SavePatternTheme, tstr);
+}
 
 export const storeColorsGet = () =>
 {

@@ -81,7 +81,7 @@ export let patsOpenItems  = writable([]);     // list of expanded items
 
 export let allowUpdates   = writable(true);   // false to prevent UI updates
 
-const colors = { // default color scheme
+const colorsDark = { // default dark color scheme
 	'--text-names'        : '#33aa66',
 	'--text-lines'        : '#999999',
 	'--page-header'       : '#333333',
@@ -95,9 +95,27 @@ const colors = { // default color scheme
 	'--btn-back-enabled'  : '#222222',
 	'--btn-bord-enabled'  : '#0066dd'
 };
-export let colorDefaults  = writable(colors); // saves default colors
-export let colorSettings  = writable(colors); // color settings object
-export let colorThemes    = writable([]);     // list of all color themes
+
+const colorsLite = { // default light color scheme
+	'--text-names'        : '#33ee66',
+	'--text-lines'        : '#999999',
+	'--page-header'       : '#555555',
+	'--page-border'       : '#333333',
+	'--page-back'         : '#bbbbbb',
+	'--panel-back'        : '#777777',
+	'--btn-text-normal'   : '#ffffff',
+	'--btn-back-normal'   : '#444444',
+	'--btn-bord-normal'   : '#bbbbbb',
+	'--btn-back-selected' : '#666666',
+	'--btn-back-enabled'  : '#222222',
+	'--btn-bord-enabled'  : '#0066dd'
+};
+
+export let colorThemeDark = writable(colorsDark);
+export let colorThemeLite = writable(colorsLite);
+export let colorSettings  = writable({});     // current color settings
+export let userThemeStr   = writable("g100"); // carbon copy theme string
+// themes are: "white", "g10", "g80", "g90", "g100"
 
 export const curTimeSecs = () =>
 {

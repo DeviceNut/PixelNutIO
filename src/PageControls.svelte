@@ -187,6 +187,7 @@
     height: 18px;
     padding-top: 2px;
     text-align: center;
+    color: var(--btn-text-normal);
     background-color: var(--btn-back-normal);
   }
   .bdiv2 {

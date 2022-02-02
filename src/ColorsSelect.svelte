@@ -121,9 +121,9 @@
           <Row>
             <Column style="max-width:280px;">
               <ColorsList type="text"/>
-              <div style="margin-top:50px;"></div>
+              <div style="margin-top:70px;"></div>
               <ColorsList type="page"/>
-              <div style="margin-top:25px;"></div>
+              <div style="margin-top:50px;"></div>
               <ColorsList type="buttons"/>
             </Column>
             <Column style="margin-right:20px;">

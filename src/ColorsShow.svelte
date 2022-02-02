@@ -4,7 +4,7 @@
 
   export let type;
 
-  let textSample = "Lorem ipsum dolor sit amet, quisque et facilisis eros. Fusce mattis tempor dolor, eget magna fringilla vitae porta odio. Suspendisse potenti.";
+  let textSample = "Lorem ipsum dolor sit amet, quisque et facilisis eros. Fusce mattis tempor dolor, eget magna fringilla vitae porta odio.";
 
 </script>
 

@@ -13,6 +13,7 @@ export const helpInit = () =>
 
 export const helpText = (id) =>
 {
+  console.log(`help id=${id}`);
   return helpMap.get(id);
 }
 

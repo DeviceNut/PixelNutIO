@@ -8,8 +8,13 @@ export const helpText_1 = (hmap) =>
 "Help message 100",
   );
 
-  hmap.set(101,
-"Help message 101",
+  hmap.set(1000,
+"Help message 1000",
   );
-}
 
+hmap.set(1001,
+  "Help message 1001",
+    );
+}
+  
+  

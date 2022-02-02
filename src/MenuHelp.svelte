@@ -13,23 +13,21 @@
     helpText
   } from './helpmain.js';
 
-  let activeId = $helpActiveID;
-  let expandedIds = $helpOpenItems;
-
+  let selectedID;
   const dohelp = (id) =>
   {
     $helpCurText = helpText(id);
     $helpActiveID = id;
-    $helpOpenItems = expandedIds;
+    selectedID = [id];
   }
-  dohelp(activeId);
+  dohelp($helpActiveID);
 
 </script>
 
 <TreeView
   children={helpTopics}
-  bind:activeId
-  bind:expandedIds
-  on:select={({ detail }) => { dohelp(detail.id); }}
+  bind:activeId={$helpActiveID}
+  bind:selectedIds={selectedID}
+  bind:expandedIds={$helpOpenItems}
   on:focus={({ detail }) => { dohelp(detail.id); }}
 />

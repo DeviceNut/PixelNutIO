@@ -148,7 +148,6 @@ export let deviceStartup = (device) =>
 
   devPaused.set(device.report.ispaused);
   devVersion.set(device.report.version);
-  console.log(`Device version: ${device.report.version}`);
 
   // create draw/filter effect lists with device specific items
 

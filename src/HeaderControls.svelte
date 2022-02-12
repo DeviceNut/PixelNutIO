@@ -15,6 +15,10 @@
     devPaused
    } from './globals.js';
 
+
+  import { mqttSend }    from './mqtt.js';
+  import { deviceQuery } from './devtalk.js';
+
   import { userSetDevname, userSendPause } from './cmdhead.js';
 
   let openError = false;
@@ -36,7 +40,9 @@
   const dodevs = () =>
   {
     $curPageMode = PAGEMODE_DEVICES;
+    deviceQuery($curDevice, mqttSend);
   }
+
   const dodocs = () =>
   {
     $prevPageMode = $curPageMode;

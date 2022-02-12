@@ -90,6 +90,14 @@ export const deviceState =
   report: {}            // parsed device info object
 };
 
+export let deviceQuery = (device, fsend) =>
+{
+  //console.log(`Device Query: "${device.curname}"`)
+
+  device.qstate = QSTATE_WAIT_RESP;
+  fsend(device.curname, queryStr_GetInfo);
+}
+
 export let deviceError = (text, title=null) =>
 {
   if (title === null) title = 'Program Error';
@@ -129,14 +137,6 @@ function deviceReset(remove)
       deviceList.set(newlist);
     }
   }
-}
-
-function deviceQuery(device, fsend)
-{
-  //console.log(`Device Query: "${device.curname}"`)
-
-  device.qstate = QSTATE_WAIT_RESP;
-  fsend(device.curname, queryStr_GetInfo);
 }
 
 function deviceAdd(name)
@@ -330,7 +330,8 @@ export const onDeviceReply = (msg, fsend) =>
       device.qstate = QSTATE_NONE;
       device.ready = true;
 
-      console.log(`Device Ready: "${device.curname}"`)
+      console.log(`Device Ready: "${device.curname}" `)
+      console.log(`Device Version: ${device.report.version}`);
       //console.log(device.report);
     }
     catch(e)

@@ -57,7 +57,7 @@ function sendStoreExecPattern(doexec)
   }
   else sendCmdToDevice(cmdStr_ClearPattern);
 
-  strand.modified = false; // reset flag that triggers this call
+  strand.modified = false; // strand has now been saved
 }
 
 // sends current pattern to just the specified strand
@@ -97,7 +97,36 @@ export const sendStrandPattern = (doexec=true) =>
     sendStrandSwitch(sid)
 }
 
-// sends command/pattern to all selected strands
+// stores current name to the device flash for all selected strands
+export const sendStrandName = () =>
+{
+  const sid = get(idStrand);
+  let didswitch = false;
+  let lastid = sid;
+
+  const strand = get(pStrand);
+  let patname = strand.curPatternName;
+
+  for (let s = 0; s < get(nStrands); ++s)
+  {
+    if (get(aStrands)[s].selected)
+    {
+      if ((s != sid) || didswitch)
+      {
+        sendStrandSwitch(s)
+        didswitch = true;
+        lastid = s;
+      }
+
+      sendCmdToDevice(cmdStr_FlashPatName + patname);
+    }
+  }
+
+  if (didswitch && (lastid != sid))
+    sendStrandSwitch(sid)
+}
+
+// sends command to all selected strands
 function sendCmdToAllStrands(cmdstr)
 {
   const sid = get(idStrand);

@@ -316,12 +316,10 @@ export const onDeviceReply = (msg, fsend) =>
   else if (reply[0] === respStr_StartInfo)
   {
     if (device.qstate !== QSTATE_WAIT_RESP)
-    {
-      console.log('Switch to query response');
-      device.qstate = QSTATE_WAIT_DATA;
-    }
-    //else console.log('Starting query response...');
+         console.log('Switch to query response');
+    else console.log('Starting query response...');
 
+    device.qstate = QSTATE_WAIT_DATA;
     device.dinfo = '';
   }
   else if ((device.qstate === QSTATE_WAIT_DATA) &&

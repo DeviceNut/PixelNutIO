@@ -47,7 +47,7 @@
 
       <Checkbox labelText='Dup'
         style="display:inline-block; margin-left:20px;"
-        on:check={()=> {userStrandCombine($dupStrand = !$dupStrand);}}
+        on:change={()=> {userStrandCombine($dupStrand);}}
         bind:checked={$dupStrand}
         />
 

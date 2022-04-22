@@ -26,6 +26,7 @@ const mqttOptions = {
 
 let mqttClient = null;
 let mqttIPaddr = '';
+let mqttConnecting = false;
 
 export const mqttSend = (name, msg) =>
 {
@@ -48,6 +49,8 @@ function onConnect(connack)
 
   onConnection(true);
   mqttConnected.set(true);
+
+  mqttConnecting = false;
 }
 
 function onSubscribe(err)
@@ -71,6 +74,8 @@ function onError(err)
     mqttClient.end();
     mqttClient = null;
   }
+
+  mqttConnecting = false;
 }
 
 function onClose()
@@ -82,12 +87,19 @@ function onClose()
     onConnection(false);
     mqttConnected.set(false);
   }
+  else if (mqttConnecting)
+  {
+    mqttConnFail.set(true);
+    mqttConnecting = false;
+  }
 
   mqttClient = null;
 }
 
 function onMessage(topic, msg)
 {
+  mqttConnecting = false;
+
   msg = msg.toString();
 
   //console.log(`MQTT onMessge: Topic=${topic} Msg=${msg}`);
@@ -116,6 +128,7 @@ export const mqttDisconnect = () =>
     mqttClient.end();
     mqttClient = null;
     mqttIPaddr = '';
+    mqttConnecting = false;
   }
 }
 
@@ -123,6 +136,7 @@ export const mqttConnect = (ipaddr) =>
 {
   console.log(`MQTT Connect: ${ipaddr}`);
 
+  mqttConnecting = true;
   const mqttURL = `ws://${ipaddr}:${MQTT_BROKER_PORT}`
   mqttClient = mqtt.connect(mqttURL, mqttOptions);
 
@@ -137,7 +151,11 @@ export const mqttConnect = (ipaddr) =>
     mqttClient.on('disconnect', onDisconnect);
     mqttClient.on('offline', onOffline);
   }
-  else mqttConnFail.set(true);
+  else
+  {
+    mqttConnecting = false;
+    mqttConnFail.set(true);
+  }
 }
 
 const onDisconnect = (packet) =>

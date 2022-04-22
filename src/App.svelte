@@ -5,7 +5,9 @@
   import "carbon-components-svelte/css/all.css";
 
   import {
-    mqttBrokerIP,
+    ipAddrServer,
+    ipAddrBrowser,
+    ipAddrBroker,
     PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
     curPageMode,
@@ -18,6 +20,7 @@
   import {
     storeThemeGet,
     storeColorsGet,
+    storeBrokerRead,
     storePatternsInit
   } from './browser.js';
 
@@ -31,13 +34,22 @@
   storePatternsInit();
   helpInit();
 
-  let hip = window.location.origin;
-  console.log(`Served from host: ${hip}`);
+  $ipAddrServer = window.location.origin;
+  console.log(`Server Served from host: ${$ipAddrServer}`);
 
-  let ipaddr = window.location.hostname;
-  if (ipaddr === 'localhost')
-       $mqttBrokerIP = '192.168.8.222'; // when running development server
-  else $mqttBrokerIP = ipaddr;
+  let hostname = window.location.hostname;
+  console.log(`Server IP: ${hostname}`);
+
+  //if (hostname === 'localhost') // running development server
+
+  storeBrokerRead(); // retrieve BrokerIP from browser store
+  console.log(`Saved Broker IP: ${$ipAddrBrowser}`);
+
+  if ($ipAddrBrowser !== '')
+       $ipAddrBroker = $ipAddrBrowser;
+  else $ipAddrBroker = $ipAddrServer;
+
+  console.log(`Current Broker IP: ${$ipAddrBroker}`);
 
   let theme = storeThemeGet();
   if (theme === null) theme = "g100"; // default

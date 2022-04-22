@@ -34,22 +34,19 @@
   storePatternsInit();
   helpInit();
 
-  $ipAddrServer = window.location.origin;
-  console.log(`Server Served from host: ${$ipAddrServer}`);
+  $ipAddrServer = window.location.hostname;
+  console.log(`Server hostname: ${$ipAddrServer}`);
 
-  let hostname = window.location.hostname;
-  console.log(`Server IP: ${hostname}`);
-
-  //if (hostname === 'localhost') // running development server
+  //if ($ipAddrServer === 'localhost') // running development server
 
   storeBrokerRead(); // retrieve BrokerIP from browser store
-  console.log(`Saved Broker IP: ${$ipAddrBrowser}`);
+  //console.log(`Saved Broker IP: ${$ipAddrBrowser}`);
 
   if ($ipAddrBrowser !== '')
        $ipAddrBroker = $ipAddrBrowser;
   else $ipAddrBroker = $ipAddrServer;
 
-  console.log(`Current Broker IP: ${$ipAddrBroker}`);
+  //console.log(`Current Broker IP: ${$ipAddrBroker}`);
 
   let theme = storeThemeGet();
   if (theme === null) theme = "g100"; // default

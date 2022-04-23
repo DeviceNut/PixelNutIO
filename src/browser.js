@@ -66,7 +66,9 @@ export const storeBrokerWrite = () =>
 {
   let ipaddr = get(ipAddrBrowser);
   //console.log(`Saving broker IP: ${ipaddr}`);
-  localStorage.setItem(SaveBrokerIPaddr, ipaddr);
+  if (ipaddr === '')
+       localStorage.removeItem(SaveBrokerIPaddr);
+  else localStorage.setItem(SaveBrokerIPaddr, ipaddr);
 }
 
 export const storePatternsInit = () =>

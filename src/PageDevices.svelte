@@ -165,7 +165,11 @@
     if (saveaddr)
     {
       saveaddr = false;
-      $ipAddrBrowser = brokerip;
+
+      if (brokerip === $ipAddrServer)
+           $ipAddrBrowser = ''; // clear so use server by default
+      else $ipAddrBrowser = brokerip;
+
       storeBrokerWrite();
     }
 
@@ -261,7 +265,7 @@ on:close
     </FormGroup>
 
     <Checkbox
-      labelText="Save address to browser"
+      labelText="Set to default "
       style="margin-top:-7px; margin-bottom:20px;"
       bind:checked={saveaddr}
       disabled={brokerip === '' || brokerip === $ipAddrBrowser}

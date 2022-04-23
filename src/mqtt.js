@@ -44,11 +44,15 @@ function onConnect(connack)
   //console.log('MQTT onConnect');
   //console.log(connack); // cannot tell if reconnection
 
-  mqttClient.subscribe(topicDevNotify, onSubscribe);
-  mqttClient.subscribe(topicDevReply, onSubscribe);
-
-  onConnection(true);
-  mqttConnected.set(true);
+  if (mqttClient !== null)
+  {
+    mqttClient.subscribe(topicDevNotify, onSubscribe);
+    mqttClient.subscribe(topicDevReply, onSubscribe);
+  
+    onConnection(true);
+    mqttConnected.set(true);
+  }
+  else mqttConnFail.set(true);
 
   mqttConnecting = false;
 }

@@ -132,7 +132,7 @@ export const preset_DrawEffectDescs =
     "then wrapping around when then end is reached. " +
     "Can trigger other effects on each cycle.",
 
-    "Light waves (brighness changes) in the current color that fluctuate (sine wave). " +
+    "Light waves (brightness changes) in the current color that fluctuate (sine wave). " +
     "The Count property sets the wave frequency.",
 
     "Creates a bright head with a fading tail in the current color that moves. " +

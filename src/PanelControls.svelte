@@ -51,8 +51,7 @@
 
     <button class="button-trigger"
       on:click={userSendTrigger}
-      disabled={ ($pStrand.tactives === 0) ||
-                !($pStrand.triggerUsed) }
+      disabled={ ($pStrand.tactives === 0) || !$pStrand.triggerUsed }
       >Trigger
     </button>
 

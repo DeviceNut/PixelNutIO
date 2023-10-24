@@ -113,6 +113,7 @@
   >
   <Form on:submit={dosave} >
     <FormGroup>
+
       <TextInput
         labelText="Name"
         bind:value={$pStrand.curPatternName}
@@ -123,12 +124,15 @@
         bind:value={$pStrand.curPatternDesc}
       />
     </FormGroup>
-    <Checkbox labelText="Copy command string to clipboard"
+
+    <Checkbox
+      labelText="Copy command string to clipboard"
       style="margin-top:-7px; margin-bottom:17px;"
       bind:checked={copyclip}
     />
-    <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
     <Button type="submit">Save</Button>
+    <Button kind="secondary" on:click={() => {openSave = false;}}>Cancel</Button>
+
   </Form>
 </Modal>
 

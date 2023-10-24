@@ -81,6 +81,7 @@ export const cmdStr_TrigByEffect  = "A";    // layer index that will trigger thi
 export const cmdStr_TrigRepeating = "R";    // def/0=off, none=forever, else value=count
 export const cmdStr_TrigOffset    = "O";    // offset secs before range (def/none/0=default)
 export const cmdStr_TrigRange     = "N";    // range of random secs (def/none/0=default)
+//export const cmdStr_???         = "P";    // no longer used
 
 // Note: commands not starting with alpha char must be on a separate line
 ////////////////////////////////////////////////////////////////////////////////

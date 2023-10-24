@@ -316,8 +316,8 @@ export const onDeviceReply = (msg, fsend) =>
   else if (reply[0] === respStr_StartInfo)
   {
     if (device.qstate !== QSTATE_WAIT_RESP)
-         console.log('Switch to query response');
-    else console.log('Starting query response...');
+         console.log('Recognize query response');
+    else console.log('Receiving query response...');
 
     device.qstate = QSTATE_WAIT_DATA;
     device.dinfo = '';

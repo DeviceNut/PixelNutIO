@@ -8,7 +8,7 @@ import {
   msgTitle,
   msgDesc,
   curTimeSecs
- } from './globals.js';
+} from './globals.js';
 
  // Device Query/Responses:
 const queryStr_GetInfo    = "?";        // returns device info in JSON format

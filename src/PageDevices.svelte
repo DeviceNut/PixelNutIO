@@ -117,6 +117,75 @@
     $mqttConnFail = false;
   }
 
+  let haveBlue = false;
+  async function CheckBlue()
+  {
+    if (navigator.bluetooth && await navigator.bluetooth.getAvailability())
+    {
+      haveBlue = true;
+      console.log('BLE is supported');
+    }
+  }
+  CheckBlue();
+
+  const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
+  const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
+  const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
+
+  function handleNotifications(event)
+  {
+    let value = event.target.value;
+    // console.log('Notify:', event);
+
+    let str = '';
+    for (let i=0; i < value.byteLength; ++i)
+      str += String.fromCharCode(parseInt(value.getUint8(i)));
+
+    console.log('Reply:', str);
+  }
+
+  function asciiToUint8Array(str){
+    var chars = [];
+    for (var i = 0; i < str.length; ++i){
+      chars.push(str.charCodeAt(i));/*from  w  ww. j  a  v  a  2s.c o  m*/
+    }
+    return new Uint8Array(chars);
+  }
+
+  async function doBlue()
+  {
+    const device = await navigator.bluetooth.requestDevice({
+      // acceptAllDevices: true
+      filters: [{ namePrefix: "P!Pixel" }],
+      optionalServices: [SERVICE_UUID_UART]
+    });
+    console.log('BLE device:', device);
+
+    // doesn't work in Chrome on Windows...why?
+    // resp = await navigator.bluetooth.getDevices();
+    // console.log('BLE devices', resp);
+
+    const server = await device.gatt.connect();
+    console.log('BLE server:', server);
+
+    const service = await server.getPrimaryService(SERVICE_UUID_UART);    
+    console.log('BLE service:', service);
+
+    const char_rx = await service.getCharacteristic(CHAR_UUID_UART_RX);
+    const char_tx = await service.getCharacteristic(CHAR_UUID_UART_TX);
+    console.log('BLE chars:', char_rx, char_tx);
+
+    await char_rx.startNotifications();
+    console.log('started notifications...');
+    char_rx.addEventListener('characteristicvaluechanged', handleNotifications);
+
+    const query = asciiToUint8Array('?');
+    // console.log('query:', query);
+    await char_tx.writeValue(query);
+
+    console.log('Finishing BLE startup...');
+  }
+
   if (!$mqttConnFail && !$mqttConnected) doscan();
 
   $: {
@@ -148,7 +217,6 @@
   </div>
 
   <p class="active">Available Devices:</p>
-
   <div class="listbox">
     {#each $deviceList as device }
       {#if !device.ignore }
@@ -158,6 +226,14 @@
       {/if}
     {/each}
   </div>
+
+  {#if haveBlue}
+    <button class="button"
+      style="margin-left:10px;"
+      on:click={doBlue}
+      >Bluetooth
+    </button>
+  {/if}
 
   {#if scanning }
     <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
@@ -216,7 +292,7 @@
     width: 100px;
     margin-top: 20px;
     padding: 8px;
-    font-size:1.15em;
+    font-size:1.0em;
   }
   .divider {
     margin-top: 20px;

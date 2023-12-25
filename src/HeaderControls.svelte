@@ -13,7 +13,7 @@
     curDevice,
     showColors,
     devPaused
-   } from './globals.js';
+  } from './globals.js';
 
 
   import { mqttSend }    from './mqtt.js';
@@ -51,7 +51,7 @@
 
 </script>
 
-<MediaQuery query="(max-width: 700px)" let:matches>
+<MediaQuery query="(max-width: 750px)" let:matches>
   {#if matches}
     <div class="header">
       <input class="editname"
@@ -86,7 +86,7 @@
     </div>
   {/if}
 </MediaQuery>
-<MediaQuery query="(min-width: 701px)" let:matches>
+<MediaQuery query="(min-width: 751px)" let:matches>
   {#if matches }
     <div class="header">
 

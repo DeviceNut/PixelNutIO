@@ -167,7 +167,7 @@
     border: 2px solid var(--page-border);
   }
   .small {
-    max-width: 630px;
+    max-width: 800px;
   }
   .large {
     max-width: 1050px;

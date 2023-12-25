@@ -14,6 +14,7 @@ import {
   idStrand,
   pStrand,
   aStrands,
+  dupStrand,
   nTracks,
   nLayers,
   maxLenPattern,
@@ -386,6 +387,7 @@ export let deviceStartup = (device) =>
   // reset to use first strand
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
+  dupStrand.set(false);
 
   // setup device patterns/descriptions
   aDevicePatt.set(pcmds);

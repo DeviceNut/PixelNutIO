@@ -279,9 +279,9 @@ export const strandCopyLayer = (track, layer) =>
 // to all the other currently selected strands
 export const strandCopyTrack = (track) =>
 {
-  const sid       = get(idStrand);
-  const strand1   = get(pStrand);
-  const ptrack1   = strand1.tracks[track];
+  const sid     = get(idStrand);
+  const strand1 = get(pStrand);
+  const ptrack1 = strand1.tracks[track];
 
   for (let s = 0; s < get(nStrands); ++s)
   {

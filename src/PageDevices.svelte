@@ -3,6 +3,11 @@
   import {
     Loading,
     Modal,
+    Form,
+    FormGroup,
+    TextInput,
+    Checkbox,
+    ButtonSet,
     Button
   } from "carbon-components-svelte";
 
@@ -10,13 +15,18 @@
     MSECS_CHECK_TIMEOUT,
     MSECS_WAIT_CONNECTION,
     MSECS_WAIT_DEVICES,
-    mqttBrokerIP,
+    selectBroker,
+    ipAddrServer,
+    ipAddrBrowser,
+    ipAddrBroker,
     mqttConnected,
     mqttConnFail,
     deviceList,
     msgTitle,
     msgDesc
   } from './globals.js';
+
+  import { storeBrokerWrite } from './browser.js';
 
   import {
     mqttDisconnect,
@@ -34,6 +44,9 @@
 
   let title;
   $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
+
+  let openMessage;
+  $: openMessage = $msgTitle !== '';
 
   let scanning = false;
   let openError = false;
@@ -57,7 +70,7 @@
       {
         if (!$mqttConnected)
         {
-          mqttConnect($mqttBrokerIP);
+          mqttConnect($ipAddrBroker);
 
           waitstate = WAITSTATE_CONNECTING;
           waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
@@ -101,8 +114,16 @@
     else setTimeout(waitfor, MSECS_CHECK_TIMEOUT);
   }
 
+  function clearfail()
+  {
+    openError = false;
+    $mqttConnFail = false;
+  }
+
   function doscan()
   {
+    clearfail();
+
     mqttDisconnect();
     waitstate = WAITSTATE_DISCONNECT;
 
@@ -187,6 +208,8 @@
   }
 
   if (!$mqttConnFail && !$mqttConnected) doscan();
+  if (!$mqttConnFail && !$mqttConnected)
+    doscan();
 
   $: {
     if ($mqttConnFail)
@@ -196,8 +219,38 @@
     }
   }
 
-  let openMessage;
-  $: openMessage = $msgTitle !== '';
+  let openbroker = false;
+  let saveaddr = false;
+  let brokerip;
+
+  $: {
+    if ($selectBroker)
+    {
+      $selectBroker = false; 
+      brokerip = $ipAddrBroker;
+      openbroker = true;
+    }
+  }
+
+  function rescan()
+  {
+    openbroker = false;
+    $ipAddrBroker = brokerip;
+    console.log(`broker IP <= ${brokerip}`);
+
+    if (saveaddr)
+    {
+      saveaddr = false;
+
+      if (brokerip === $ipAddrServer)
+           $ipAddrBrowser = ''; // clear so use server by default
+      else $ipAddrBrowser = brokerip;
+
+      storeBrokerWrite();
+    }
+
+    doscan();
+  }
 
 </script>
 
@@ -245,24 +298,67 @@
   size="sm"
   passiveModal
   preventCloseOnClickOutside
-  modalHeading={"Connection Failed"}
-  bind:open={openError}
-  on:close
-  >
-  <p>No PixelNut Hub found, retry again later.</p><br>
-  <Button kind="secondary" on:click={didfail}>Continue</Button>
-</Modal>
-
-<Modal
-  size="sm"
-  passiveModal
-  preventCloseOnClickOutside
   modalHeading={$msgTitle}
   bind:open={openMessage}
   on:close
   >
   <p>{$msgDesc}</p><br>
   <Button kind="secondary" on:click={()=> {openMessage=false; $msgTitle='';}}>Continue</Button>
+</Modal>
+
+<Modal
+  size="sm"
+  passiveModal
+  preventCloseOnClickOutside
+  modalHeading={"Connection Failed"}
+  bind:open={openError}
+  on:close
+  >
+  <p>No PixelNut Hub found, retry again later.</p><br>
+  <Button kind="secondary" on:click={clearfail}>Continue</Button>
+</Modal>
+
+<Modal
+passiveModal
+preventCloseOnClickOutside
+modalHeading="Select Hub Address"
+bind:open={openbroker}
+on:close
+>
+  <Form on:submit={rescan} >
+    <FormGroup>
+
+      <ButtonSet>
+        <Button
+          kind="ghost"
+          on:click={()=>{brokerip = $ipAddrServer}}
+          disabled={brokerip === $ipAddrServer}
+          >Server
+        </Button>
+        <Button
+          kind="ghost"
+          on:click={()=>{brokerip = $ipAddrBrowser}}
+          disabled={$ipAddrBrowser === '' || brokerip === $ipAddrBrowser}
+          >Saved
+        </Button>
+      </ButtonSet>
+  
+      <div style="margin-top:20px;"></div>
+      <TextInput bind:value={brokerip} />
+    </FormGroup>
+
+    <Checkbox
+      labelText="Set to default "
+      style="margin-top:-7px; margin-bottom:20px;"
+      bind:checked={saveaddr}
+      disabled={brokerip === '' || brokerip === $ipAddrBrowser}
+      />
+    <ButtonSet>
+      <Button type="submit" disabled={brokerip === ''}>Connect</Button>
+      <Button kind="secondary" on:click={() => {openbroker = false;}}>Cancel</Button>
+    </ButtonSet>
+
+  </Form>
 </Modal>
 
 <style>

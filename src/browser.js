@@ -1,5 +1,7 @@
+import { get } from "svelte/store";
 
 import {
+  ipAddrBrowser,
   aStoredPatt,
   aStoredDesc
 } from './globals.js';
@@ -11,6 +13,7 @@ import {
 
 const SavePatternTheme      = "PixelNut-Theme";
 const SavePatternColors     = "PixelNut-Colors";
+const SaveBrokerIPaddr      = "PixelNut-Broker";
 const SavePatternNames      = "PixelNut-Names";
 const SavePatternKeyCmd     = "PixelNut-Cmds-";
 const SavePatternKeyDesc    = "PixelNut-Desc-";
@@ -49,6 +52,23 @@ export const storeColorsSet = (colors) =>
   const cstr = JSON.stringify(colors);
   //console.log(`Set Colors: ${cstr}`);
   localStorage.setItem(SavePatternColors, cstr);
+}
+
+export const storeBrokerRead = () =>
+{
+  let ipaddr = localStorage.getItem(SaveBrokerIPaddr);
+  if (ipaddr === null) ipaddr = '';
+  //console.log(`Retrieving broker IP: ${ipaddr}`);
+  ipAddrBrowser.set(ipaddr);
+}
+
+export const storeBrokerWrite = () =>
+{
+  let ipaddr = get(ipAddrBrowser);
+  //console.log(`Saving broker IP: ${ipaddr}`);
+  if (ipaddr === '')
+       localStorage.removeItem(SaveBrokerIPaddr);
+  else localStorage.setItem(SaveBrokerIPaddr, ipaddr);
 }
 
 export const storePatternsInit = () =>

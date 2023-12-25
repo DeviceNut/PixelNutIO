@@ -20,7 +20,7 @@ const strlen_CmdFailed    = respStr_CmdFailed.length;
                                         // device states:
 const QSTATE_NONE         = 0;          //  not querying device now
 const QSTATE_RESTART      = 1;          //  restart query on next notify
-const QSTATE_WAIT_RESP    = 2;          //  waiting for response
+const QSTATE_WAIT_RESP    = 2;          //  waiting for response (to command sent from here)
 const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
 /*
@@ -313,15 +313,19 @@ export const onDeviceReply = (msg, fsend) =>
     let errstr = reply[0].slice(respStr_CmdFailed.length);
     deviceError(`Device failed command: ${errstr}`, 'Device Error');
   }
-  else if ((device.qstate === QSTATE_WAIT_RESP) && (reply[0] === respStr_StartInfo))
+  else if (reply[0] === respStr_StartInfo)
   {
-    //console.log('Starting device info...');
+    if (device.qstate !== QSTATE_WAIT_RESP)
+         console.log('Recognize query response');
+    else console.log('Receiving query response...');
+
     device.qstate = QSTATE_WAIT_DATA;
     device.dinfo = '';
   }
-  else if ((device.qstate === QSTATE_WAIT_DATA) && (reply[0] === respStr_FinishInfo))
+  else if ((device.qstate === QSTATE_WAIT_DATA) &&
+            (reply[0] === respStr_FinishInfo))
   {
-    //console.log('...Ending device info');
+    //console.log('...Ending query response');
     try
     {
       device.report = JSON.parse(device.dinfo);

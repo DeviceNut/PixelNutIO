@@ -11,7 +11,6 @@
   } from './globals.js';
 
   import {
-    DRAW_LAYER,
     pluginBit_DELAY,
     pluginBit_DIRECTION,
     pluginBit_NOREPEATING,

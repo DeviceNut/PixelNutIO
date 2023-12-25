@@ -176,8 +176,8 @@
   bind:open={openDelete}
   on:close
   >
-  <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
   <Button on:click={dodelete}>Delete</Button>
+  <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
 </Modal>
 
 <style>

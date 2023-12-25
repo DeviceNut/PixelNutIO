@@ -5,7 +5,7 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
-    showColors
+    selectBroker
   } from './globals.js';
 
   const dodocs = () =>
@@ -18,8 +18,8 @@
 
 <div class="header">
   <button class="button-left"
-    on:click={()=>{$showColors = !$showColors}}
-    >Colors
+    on:click={()=>{$selectBroker = true}}
+    >Hub Address
   </button>
   <span class="title">{titleDevices}</span>
   <button class="button-rite"

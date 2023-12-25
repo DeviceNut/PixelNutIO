@@ -32,6 +32,14 @@ export const helpTopics =
             { id: 1001, text: "Topic 1001" },
           ],
         },
+        {
+          id: 110,
+          text: "Topic 110",
+          children: [
+            { id: 1010, text: "Topic 1010" },
+            { id: 1011, text: "Topic 1011" },
+          ],
+        },
       ],
     },
     {

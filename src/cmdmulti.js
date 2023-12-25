@@ -21,12 +21,16 @@ import {
 
 ///////////////////////////////////////////////////////////
 
-// passed value is the new setting
+// Must be called before selected is toggled
+// (passed value must be the previous setting)
 export const userStrandCombine = (combine) =>
 {
-  // user turned off combine and more than one selected
-  if (!combine && (get(sStrands) > 1))
+  //console.log(`StrandCombine: ${combine}`);
+
+  if (combine && (get(sStrands) > 1))
   {
+    // combine was on and more than one selected
+
     const cur = get(idStrand);
     const scount = get(nStrands);
 

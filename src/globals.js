@@ -27,7 +27,11 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let mqttBrokerIP   = writable('');     // MQTT broker IP (server if not debug)
+export let ipAddrServer   = writable('');     // IP address of website server
+export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser
+export let ipAddrBroker   = writable('');     // IP address of broker currently used
+export let selectBroker   = writable(false);  // true to display Select Brokers dialog
+
 export let mqttConnFail   = writable(false);  // true if broker connection failed
 export let mqttConnected  = writable(false);  // true if connected to that broker
                                               // true for development, else false

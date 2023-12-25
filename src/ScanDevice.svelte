@@ -19,7 +19,7 @@
       on:click={doctrls}
       >Controls
     </button>
-  {:else}
+  {:else if !device.ignore}
     <div class="devscan" >{device.curname}</div>
     <Loading style="display:inline-block; margin-left:20px;" small withOverlay={false} />
   {/if}

@@ -208,8 +208,6 @@
   }
 
   if (!$mqttConnFail && !$mqttConnected) doscan();
-  if (!$mqttConnFail && !$mqttConnected)
-    doscan();
 
   $: {
     if ($mqttConnFail)
@@ -319,12 +317,12 @@
 </Modal>
 
 <Modal
-passiveModal
-preventCloseOnClickOutside
-modalHeading="Select Hub Address"
-bind:open={openbroker}
-on:close
->
+  passiveModal
+  preventCloseOnClickOutside
+  modalHeading="Select Hub Address"
+  bind:open={openbroker}
+  on:close
+  >
   <Form on:submit={rescan} >
     <FormGroup>
 

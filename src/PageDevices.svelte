@@ -29,11 +29,6 @@
   import { storeBrokerWrite } from './browser.js';
 
   import {
-    bleSupported,
-    bleConnect,
-  } from './ble-com.js';
-
-  import {
     mqttDisconnect,
     mqttConnect
   } from './mqtt.js';
@@ -127,6 +122,8 @@
 
   function doscan()
   {
+    // console.log('MQTT scan...');
+
     clearfail();
 
     mqttDisconnect();
@@ -135,22 +132,6 @@
     scanning = true;
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
     waitfor();
-  }
-
-  let haveBlue = false;
-  let nameBlue = '';
-
-  async function CheckForBlue()
-  {
-    haveBlue = await bleSupported();
-  }
-  CheckForBlue();
-
-  async function doBlue()
-  {
-    scanning = true;
-    nameBlue = await bleConnect();
-    scanning = false;
   }
 
   if (!$mqttConnFail && !$mqttConnected) doscan();
@@ -224,19 +205,9 @@
     {/each}
   </div>
 
-  {#if haveBlue && !scanning}
-    <button class="button"
-      style="margin-left:10px;"
-      on:click={doBlue}
-      >Bluetooth
-    </button>
-    {nameBlue}
-  {/if}
-
   {#if scanning }
     <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
   {/if}
-  <div class="divider"></div>
 </div>
 
 <Modal
@@ -309,6 +280,7 @@
 <style>
   .page {
     max-width: 630px;
+    min-height: 400px;
     margin: 0 auto;
     text-align: center;
     background-color: var(--page-back);

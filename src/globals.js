@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store';
 
+export const appVersion     = 'PixelNutWeb 1.1';
 export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';
@@ -27,6 +28,7 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
+export let selectBLE      = writable(true);   // true to enable BLE instead of MQTT
 export let ipAddrServer   = writable('');     // IP address of website server
 export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser
 export let ipAddrBroker   = writable('');     // IP address of broker currently used

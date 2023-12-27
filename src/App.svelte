@@ -5,6 +5,8 @@
   import "carbon-components-svelte/css/all.css";
 
   import {
+    appVersion,
+    selectBLE,
     ipAddrServer,
     ipAddrBrowser,
     ipAddrBroker,
@@ -27,6 +29,7 @@
   import { helpInit } from './helpmain.js';
 
   import PageHelp     from './PageHelp.svelte';
+  import PageDevBle   from './PageDevBle.svelte';
   import PageDevices  from './PageDevices.svelte';
   import PageControls from './PageControls.svelte';
   import ColorsSelect from './ColorsSelect.svelte';
@@ -34,19 +37,26 @@
   storePatternsInit();
   helpInit();
 
+  console.log(appVersion);
+
   $ipAddrServer = window.location.hostname;
   console.log(`Server hostname: ${$ipAddrServer}`);
 
   //if ($ipAddrServer === 'localhost') // running development server
 
-  storeBrokerRead(); // retrieve BrokerIP from browser store
-  //console.log(`Saved Broker IP: ${$ipAddrBrowser}`);
+  console.log('BLE mode enabled:', $selectBLE);
 
-  if ($ipAddrBrowser !== '')
-       $ipAddrBroker = $ipAddrBrowser;
-  else $ipAddrBroker = $ipAddrServer;
+  if (!$selectBLE)
+  {
+    storeBrokerRead(); // retrieve BrokerIP from browser store
+    //console.log(`Saved Broker IP: ${$ipAddrBrowser}`);
 
-  //console.log(`Current Broker IP: ${$ipAddrBroker}`);
+    if ($ipAddrBrowser !== '')
+        $ipAddrBroker = $ipAddrBrowser;
+    else $ipAddrBroker = $ipAddrServer;
+
+    //console.log(`Current Broker IP: ${$ipAddrBroker}`);
+  }
 
   let theme = storeThemeGet();
   if (theme === null) theme = "g100"; // default
@@ -74,6 +84,8 @@
     <PageHelp/>
   {:else if ($curPageMode === PAGEMODE_CONTROLS)}
     <PageControls/>
+  {:else if $selectBLE}
+    <PageDevBle/>
   {:else}
     <PageDevices/>
   {/if}

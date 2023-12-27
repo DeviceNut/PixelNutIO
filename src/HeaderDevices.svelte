@@ -5,6 +5,7 @@
     PAGEMODE_HELPDOCS,
     curPageMode,
     prevPageMode,
+    selectBLE,
     selectBroker
   } from './globals.js';
 
@@ -17,10 +18,12 @@
 </script>
 
 <div class="header">
-  <button class="button-left"
-    on:click={()=>{$selectBroker = true}}
-    >Hub Address
-  </button>
+  {#if !$selectBLE}
+    <button class="button-left"
+      on:click={()=>{$selectBroker = true}}
+      >Hub Address
+    </button>
+  {/if}
   <span class="title">{titleDevices}</span>
   <button class="button-rite"
     on:click={dodocs}

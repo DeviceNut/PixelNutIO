@@ -31,18 +31,18 @@ var app = function (req, res)
 
         const ext = path.parse(pathname).ext;
         const map = {
-            '.ico': 'image/x-icon',
-            '.html': 'text/html',
-            '.js': 'text/javascript',
-            '.json': 'application/json',
-            '.css': 'text/css',
             '.png': 'image/png',
-            '.jpg': 'image/jpeg',
-            '.wav': 'audio/wav',
-            '.mp3': 'audio/mpeg',
-            '.svg': 'image/svg+xml',
-            '.pdf': 'application/pdf',
-            '.doc': 'application/msword'
+            '.html': 'text/html',
+            '.css': 'text/css',
+            '.js': 'text/javascript',
+            // '.ico': 'image/x-icon',
+            // '.jpg': 'image/jpeg',
+            // '.wav': 'audio/wav',
+            // '.mp3': 'audio/mpeg',
+            // '.svg': 'image/svg+xml',
+            // '.pdf': 'application/pdf',
+            // '.doc': 'application/msword'
+            // '.json': 'application/json',
         };
         mime = map[ext] || 'text/plain';
 
@@ -52,28 +52,28 @@ var app = function (req, res)
       }
     });
   }
-  else if (req.method == 'POST')
-  {
-    //console.log(`POST req=${req.url}`);
+  // else if (req.method == 'POST')
+  // {
+  //   //console.log(`POST req=${req.url}`);
 
-    let pathname = '.' + req.url;
+  //   let pathname = '.' + req.url;
 
-    fs.access(pathname, fs.F_OK, (err) =>
-    {
-      if (err)
-      {
-        console.log(`POST not found: ${pathname}`);
-        res.writeHead(404);
-        res.end();
-      }
-      else
-      {
-        console.log(`POST found: ${pathname}`);
-        res.writeHead(200);
-        res.end();
-      }
-    });
-  }
+  //   fs.access(pathname, fs.F_OK, (err) =>
+  //   {
+  //     if (err)
+  //     {
+  //       console.log(`POST not found: ${pathname}`);
+  //       res.writeHead(404);
+  //       res.end();
+  //     }
+  //     else
+  //     {
+  //       console.log(`POST found: ${pathname}`);
+  //       res.writeHead(200);
+  //       res.end();
+  //     }
+  //   });
+  // }
   else
   {
     console.log(`Unexpected request: ${req.method}`);

@@ -2,6 +2,20 @@ const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 
+// state of each device found
+const deviceState =
+{
+  curname: '',          // used as topic to talk to device
+  newname: '',          // used when renaming the device
+
+  tstamp: 0,            // secs of last notify/response
+  ignore: false,        // true to ignore this device
+  ready: true,         // true to stop spinner on UI
+  active: false,        // true after user selected
+
+  report: {}            // parsed device info object
+};
+
 let bleCharRx, bleCharTx;
 let replyWait = false;
 let replyStr = '';
@@ -9,7 +23,7 @@ let replyState = 0;
 let replyCount = 0;
 let queryType = 0;
 let replyError = false;
-const deviceInfo = {};
+let theDevice;
 
 async function WaitUntil(condition)
 {
@@ -69,15 +83,20 @@ function Notifications(event)
                 {
                   if (strs.length === 6)
                   {
-                    deviceInfo.nsegments  = parseInt(strs[0]);
-                    deviceInfo.curpat     = parseInt(strs[1]);
-                    deviceInfo.ncusts     = parseInt(strs[2]);
-                    deviceInfo.features   = parseInt(strs[3]);
-                    deviceInfo.nstrands   = parseInt(strs[4]);
-                    deviceInfo.xstrlen    = parseInt(strs[5]);
+                    theDevice.nsegments  = parseInt(strs[0]);
+                    theDevice.curpat     = parseInt(strs[1]);
+                    theDevice.ncusts     = parseInt(strs[2]);
+                    theDevice.features   = parseInt(strs[3]);
+                    theDevice.nstrands   = parseInt(strs[4]);
+                    theDevice.xstrlen    = parseInt(strs[5]);
 
-                    if (deviceInfo.nstrands < 1)
-                        deviceInfo.nstrands = 1;
+                    if (theDevice.nsegments < 0) // old firmware
+                    {
+                      theDevice.nsegments = -theDevice.nsegments;
+                      theDevice.nstrands = 1;
+                    }
+                    else if (theDevice.nstrands < 1)
+                      theDevice.nstrands = 1;
                   }
                   else replyError = true;
                   break;
@@ -86,11 +105,11 @@ function Notifications(event)
                 {
                   if (strs.length === 5)
                   {
-                    deviceInfo.npixels    = parseInt(strs[0]);
-                    deviceInfo.xlayers    = parseInt(strs[1]);
-                    deviceInfo.xtracks    = parseInt(strs[2]);
-                    deviceInfo.maxbright  = parseInt(strs[3]);
-                    deviceInfo.delayoff   = parseInt(strs[4]);
+                    theDevice.npixels    = parseInt(strs[0]);
+                    theDevice.xlayers    = parseInt(strs[1]);
+                    theDevice.xtracks    = parseInt(strs[2]);
+                    theDevice.maxbright  = parseInt(strs[3]);
+                    theDevice.delayoff   = parseInt(strs[4]);
                   }
                   else replyError = true;
                   break;
@@ -99,10 +118,10 @@ function Notifications(event)
                 {
                   if (strs.length >= 4)
                   {
-                    deviceInfo.xt_mode    = parseInt(strs[0]);
-                    deviceInfo.xt_hue     = parseInt(strs[1]);
-                    deviceInfo.xt_white   = parseInt(strs[2]);
-                    deviceInfo.xt_count   = parseInt(strs[3]);
+                    theDevice.xt_mode    = parseInt(strs[0]);
+                    theDevice.xt_hue     = parseInt(strs[1]);
+                    theDevice.xt_white   = parseInt(strs[2]);
+                    theDevice.xt_count   = parseInt(strs[3]);
                   }
                   else replyError = true;
                   break;
@@ -121,7 +140,7 @@ function Notifications(event)
           }
           if (!replyCount)
           {
-            console.log('BLE deviceinfo:', deviceInfo, replyError);
+            console.log('BLE deviceinfo:', theDevice, replyError);
             replyState = 0; // ignore all subsequent replies
             replyWait = false;
           }
@@ -143,7 +162,7 @@ export const bleSupported = async () =>
 {
   if (navigator.bluetooth && await navigator.bluetooth.getAvailability())
   {
-    console.log('BLE is supported:', navigator.bluetooth);
+    console.log('BLE is supported');
     return true;
   }
   console.log('BLE is NOT supported');
@@ -181,6 +200,8 @@ export const bleConnect = async () =>
   
     replyState = 1;
     replyWait = true;
+    theDevice = {...deviceState};
+
     await bleSendCmd('?');
     await WaitUntil(() => replyWait === false);
     console.log('BLE query 1 finished');
@@ -191,7 +212,8 @@ export const bleConnect = async () =>
     // await WaitUntil(() => replyWait === false);
     // console.log('BLE query 2 finished');
   
-    return device.name.slice(2);
+    theDevice.curname = device.name.slice(2);
+    return theDevice;
   }
   catch (err) { console.log('BLE Connect failed:', err) }
 

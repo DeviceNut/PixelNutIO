@@ -37,7 +37,7 @@ export let mqttConnected  = writable(false);  // true if connected to that broke
                                               // true for development, else false
 
 export let deviceList     = writable([]);     // list of discovered devices
-export let curDevice      = writable(null);   // "points" to current device
+export let curDevice      = writable(null);   // reference to current device
 
 export let devVersion     = writable(0);      // device version number *10
 export let devPaused      = writable(false);  // true if display in pause state

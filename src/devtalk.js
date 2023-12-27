@@ -72,7 +72,7 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 */
 
 // state of each device found
-export const deviceState =
+const deviceState =
 {
   curname: '',          // used as topic to talk to device
   newname: '',          // used when renaming the device

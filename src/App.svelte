@@ -30,7 +30,7 @@
 
   import PageHelp     from './PageHelp.svelte';
   import PageDevBle   from './PageDevBle.svelte';
-  import PageDevices  from './PageDevices.svelte';
+  import PageDevMqtt  from './PageDevMqtt.svelte';
   import PageControls from './PageControls.svelte';
   import ColorsSelect from './ColorsSelect.svelte';
 
@@ -87,7 +87,7 @@
   {:else if $selectBLE}
     <PageDevBle/>
   {:else}
-    <PageDevices/>
+    <PageDevMqtt/>
   {/if}
 
   <ColorsSelect/>

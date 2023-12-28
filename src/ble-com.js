@@ -2,20 +2,6 @@ const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 
-// state of each device found
-const deviceState =
-{
-  curname: '',          // used as topic to talk to device
-  newname: '',          // used when renaming the device
-
-  tstamp: 0,            // secs of last notify/response
-  ignore: false,        // true to ignore this device
-  ready: true,         // true to stop spinner on UI
-  active: false,        // true after user selected
-
-  report: {}            // parsed device info object
-};
-
 let bleCharRx, bleCharTx;
 let replyWait = false;
 let replyStr = '';
@@ -171,6 +157,7 @@ export const bleSupported = async () =>
 
 export const bleConnect = async () =>
 {
+  theDevice = null;
   try
   {
     const device = await navigator.bluetooth.requestDevice({
@@ -198,29 +185,43 @@ export const bleConnect = async () =>
     console.log('BLE start notifications...');
     bleCharRx.addEventListener('characteristicvaluechanged', Notifications);
   
-    replyState = 1;
-    replyWait = true;
     theDevice = {...deviceState};
-
-    await bleSendCmd('?');
-    await WaitUntil(() => replyWait === false);
-    console.log('BLE query 1 finished');
-  
-    // replyState = 1;
-    // replyWait = true;
-    // await bleSendCmd('?S');
-    // await WaitUntil(() => replyWait === false);
-    // console.log('BLE query 2 finished');
-  
+    theDevice.sendfun = bleSend;
     theDevice.curname = device.name.slice(2);
-    return theDevice;
+
+    console.log('Connected to:', theDevice.curname);
   }
   catch (err) { console.log('BLE Connect failed:', err) }
 
-  return '';
+  return theDevice;
 }
 
-export const bleSendCmd = async (cmd) =>
+export const bleSetup = async (device) =>
+{
+  theDevice = device;
+
+  replyState = 1;
+  replyWait = true;
+
+  await bleSend('?');
+  await WaitUntil(() => replyWait === false);
+  console.log('BLE query 1 finished');
+
+  theDevice.ready = true;
+  theDevice.oldcode = true;
+
+  // replyState = 1;
+  // replyWait = true;
+  // await bleSend('?S');
+  // await WaitUntil(() => replyWait === false);
+  // console.log('BLE query 2 finished');
+}
+
+export const bleStart = async () =>
+{
+}
+
+const bleSend = async (cmd) =>
 {
   console.log('BLE cmd:', cmd);
   const query = AsciiToUint8Array(cmd);

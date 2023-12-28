@@ -3,6 +3,7 @@ import { get } from 'svelte/store';
 import {
   SECS_RESPONSE_TIMEOUT,
   MAX_DEVICE_FAIL_COUNT,
+  deviceState,
   curDevice,
   deviceList,
   msgTitle,
@@ -30,7 +31,6 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   desc: '',             // description string
   pcmd: ''              // command string
 }
-
 // format of each custom device plugin object:
 {
   name: '',             // user name for plugin
@@ -38,7 +38,6 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   bits: 0x00,           // pluginBit_ values
   id: 0,                // globally unique ID
 }
-
 // format of strand info object sent from device:
 {
   pixels: 0,            // number of pixels
@@ -54,48 +53,15 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
   patname: ''           // pattern name
   patstr: '',           // pattern string
 }
-
-// format of info object sent from device:
-{
-  nstrands: 0,          // strand count (>= 1)
-  npatterns: 0,         // custom device patterns
-  nplugins: 0,          // custom device plugins
-
-  maxstrlen: 0,         // max length for cmds/patterns
-  numtracks: 0,         // number of tracks available
-  numlayers: 0,         // number of layers available
-
-  strands: [],          // list of strand info
-  patterns: [],         // list of pattern info
-  plugins: [],          // list of plugin info
-}
 */
 
-// state of each device found
-const deviceState =
-{
-  curname: '',          // used as topic to talk to device
-  newname: '',          // used when renaming the device
-
-  tstamp: 0,            // secs of last notify/response
-  qstate: QSTATE_NONE,  // query state of this device
-
-  failcount: 0,         // number of protocol failures
-  ignore: false,        // true to ignore this device
-
-  ready: false,         // true to stop spinner on UI
-  active: false,        // true after user selected
-
-  dinfo: {},            // holds raw JSON device output
-  report: {}            // parsed device info object
-};
-
-export let deviceQuery = (device, fsend) =>
+export const deviceQuery = (device) =>
 {
   //console.log(`Device Query: "${device.curname}"`)
 
+  device.doquery = false;
   device.qstate = QSTATE_WAIT_RESP;
-  fsend(device.curname, queryStr_GetInfo);
+  device.sendfun(device.curname, queryStr_GetInfo);
 }
 
 export let deviceError = (text, title=null) =>
@@ -139,7 +105,7 @@ function deviceReset(remove)
   }
 }
 
-function deviceAdd(name)
+function deviceAdd(name, sendfun)
 {
   console.log(`Device Add: "${name}"`);
 
@@ -147,6 +113,9 @@ function deviceAdd(name)
   device.curname = name;
   device.tstamp = curTimeSecs();
   device.qstate = QSTATE_RESTART;
+  device.dinfo = {}; // holds raw JSON device output
+  device.sendfun = sendfun;
+
   get(deviceList).push(device);
 
   return device;
@@ -220,7 +189,7 @@ export const onConnection = (enabled) =>
   }
 }
 
-export const onNotification = (msg, fsend) =>
+export const onNotification = (msg, sendfun) =>
 {
   const info = msg.split(',');
   const name = info[0];
@@ -241,7 +210,7 @@ export const onNotification = (msg, fsend) =>
       if (!device.ignore)
       {
         if (device.qstate === QSTATE_RESTART)
-          deviceQuery(device, fsend);
+          deviceQuery(device);
       }
       return; // don't add
     }
@@ -256,12 +225,12 @@ export const onNotification = (msg, fsend) =>
     }
   }
 
-  let device = deviceAdd(name);
+  let device = deviceAdd(name, sendfun);
 
-  deviceQuery(device, fsend);
+  deviceQuery(device);
 }
 
-export const onDeviceReply = (msg, fsend) =>
+export const onDeviceReply = (msg, sendfun) =>
 {
   //console.log(`Device Reply: ${msg}`)
 
@@ -282,7 +251,7 @@ export const onDeviceReply = (msg, fsend) =>
 
   if (device === null)
   {
-    device = deviceAdd(name);
+    device = deviceAdd(name, sendfun);
     // don't query: might already be doing so
   }
 

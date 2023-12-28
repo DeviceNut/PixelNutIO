@@ -16,9 +16,6 @@
   } from './globals.js';
 
 
-  import { mqttSend }    from './mqtt.js';
-  import { deviceQuery } from './devtalk.js';
-
   import { userSetDevname, userSendPause } from './cmdhead.js';
 
   let openError = false;
@@ -39,8 +36,9 @@
 
   const dodevs = () =>
   {
+    $curDevice.doshow = false; // close info panel
+    $curDevice.doquery = true; // force query when open
     $curPageMode = PAGEMODE_DEVICES;
-    deviceQuery($curDevice, mqttSend);
   }
 
   const dodocs = () =>

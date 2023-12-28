@@ -1,18 +1,23 @@
 <script>
 
   import { Loading } from "carbon-components-svelte";
-  import { deviceStartup } from './devstart.js';
 
   export let device;
+  export let devquery;
+  export let devstart;
 
-  let showinfo = false;
-  const moreinfo = () => { showinfo = !showinfo; }
+  const moreinfo = () =>
+  {
+    device.doshow = !device.doshow;
 
-  const doctrls = () => { deviceStartup(device) }
+    if (device.doshow && device.doquery)
+      devquery(device);
+  }
+  const doctrls = () => { devstart(device) }
 
 </script>
 
-<div class="devbox" class:expand={showinfo}>
+<div class="devbox" class:expand={device.doshow}>
   {#if device.ready }
     <div on:click={moreinfo} class="devname" >{device.curname}</div>
     <button class="button"
@@ -24,7 +29,7 @@
     <Loading style="display:inline-block; margin-left:20px;" small withOverlay={false} />
   {/if}
 </div>
-{#if showinfo }
+{#if device.doshow }
   <div class="infobox">
     <div>
       <span class="infotext1">Cmdlen={device.report.maxstrlen}</span>
@@ -76,7 +81,7 @@
     margin: 0 auto;
     text-align: left;
     width: 300px;
-    padding: 10px;
+    padding: 12px 10px 10px 10px;
     color: var(--text-lines);
     background-color: var(--page-header);
   }

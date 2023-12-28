@@ -2,20 +2,24 @@
 
   import {
     Loading,
-    Modal,
-    Button
   } from "carbon-components-svelte";
+
+  import {
+    deviceList,
+  } from './globals.js';
 
   import {
     bleSupported,
     bleConnect,
+    bleSetup,
+    bleStart,
   } from './ble-com.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
 
   let haveBlue = false;
-  let device = null;
+  let scanning = false;
 
   async function CheckForBlue()
   {
@@ -25,8 +29,17 @@
 
   const doBlue = async () =>
   {
-    device = null;
-    device = await bleConnect();
+    $deviceList = [];
+    scanning = true;
+    const device = await bleConnect();
+    scanning = false;
+
+    if (device)
+    {
+      $deviceList.push(device);
+      await bleSetup(device);
+      $deviceList = $deviceList; // make reactive
+    }
   }
 
 </script>
@@ -35,19 +48,28 @@
 
   <HeaderDevices/>
 
-  {#if !haveBlue}
-    <p>Bluetooth not supported in this browser</p>
+  <div class="controls">
 
-  {:else if device}
-    <ScanDevice {device} />
+    {#if !haveBlue}
+      <p>Bluetooth not supported in this browser</p>
 
-  {:else}
-    <button class="button"
-      style="margin-left:10px;"
-      on:click={doBlue}
-      >Select Bluetooth Device
-    </button>
-  {/if}
+    {:else if scanning }
+      <p>Connecting to device...</p>
+      <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
+    {:else}
+      <button class="button"
+        on:click={doBlue}
+        >Select Bluetooth Device
+      </button>
+    {/if}
+
+    {#if $deviceList.length}
+      <div style="margin-top:50px;">
+        <ScanDevice device={$deviceList[0]} devquery={bleSetup} devstart={bleStart} />
+      </div>
+    {/if}
+  </div>
+
 </div>
 
 <style>
@@ -59,14 +81,11 @@
     background-color: var(--page-back);
     border: 2px solid var(--page-border);
   }
-  .button {
+  .controls {
     margin: 50px 0 30px 0;
+  }
+  .button {
     padding: 10px;
     font-size:1.1em;
-  }
-  .divider {
-    margin-top: 20px;
-    padding-top: 5px;
-    background-color: var(--page-border);
   }
 </style>

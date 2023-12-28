@@ -1,10 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  convTrackLayerToIndex,
-} from './strands.js';
-
-import {
   nStrands,
   idStrand,
   pStrand,
@@ -21,7 +17,9 @@ import {
   cmdStr_AddrLayer
 } from './devcmds.js';
 
-import { mqttSend } from './mqtt.js';
+import {
+  convTrackLayerToIndex,
+} from './strands.js';
 
 ///////////////////////////////////////////////////////////
 
@@ -30,7 +28,7 @@ export const sendCmdToDevice = (cmdstr) =>
   let device = get(curDevice);
 
   if (device !== null)
-    mqttSend(device.curname, cmdstr);
+    device.sendfun(device.curname, cmdstr);
 
   else console.warn(`Device null on send: ${cmdstr}`);
 }

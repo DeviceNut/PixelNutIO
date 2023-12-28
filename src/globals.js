@@ -28,7 +28,9 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let selectBLE      = writable(true);   // true to enable BLE instead of MQTT
+export let selectBLE      = writable(false);  // false to use MQTT
+// export let selectBLE      = writable(true);   // true to use BLE
+
 export let ipAddrServer   = writable('');     // IP address of website server
 export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser
 export let ipAddrBroker   = writable('');     // IP address of broker currently used
@@ -38,7 +40,43 @@ export let mqttConnFail   = writable(false);  // true if broker connection faile
 export let mqttConnected  = writable(false);  // true if connected to that broker
                                               // true for development, else false
 
-export let deviceList     = writable([]);     // list of discovered devices
+// state of each device found
+export const deviceState =
+{
+  curname: '',          // used as topic to talk to device
+  newname: '',          // used when renaming the device
+
+  tstamp: 0,            // secs of last notify/response
+
+  failcount: 0,         // number of protocol failures
+  ignore: false,        // true to ignore this device
+
+  ready: false,         // true to stop spinner on UI
+  active: false,        // true after user selected
+
+  doshow: false,        // info panel on Devices page
+  doquery: false,       // true to re-query on open
+
+  oldcode: false,       // true if original BLE code
+
+  report: {             // device info from query
+    nstrands: 0,          // strand count (>= 1)
+    npatterns: 0,         // custom device patterns
+    nplugins: 0,          // custom device plugins
+  
+    maxstrlen: 0,         // max length for cmds/patterns
+    numtracks: 0,         // number of tracks available
+    numlayers: 0,         // number of layers available
+  
+    strands: [],          // list of strand info
+    patterns: [],         // list of pattern info
+    plugins: [],          // list of plugin info
+  },
+
+  sendfun: null           // send function (name,str)
+};
+
+export let deviceList     = writable([]);     // discovered devices (deviceState)
 export let curDevice      = writable(null);   // reference to current device
 
 export let devVersion     = writable(0);      // device version number *10

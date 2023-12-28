@@ -28,9 +28,12 @@
 
   import { storeBrokerWrite } from './browser.js';
 
+  import { deviceQuery } from './devtalk.js';
+  import { deviceStartup } from './devstart.js';
+
   import {
     mqttDisconnect,
-    mqttConnect
+    mqttConnect,
   } from './mqtt.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
@@ -199,7 +202,7 @@
     {#each $deviceList as device }
       {#if !device.ignore }
         <div class="listitem">
-          <ScanDevice {device} />
+          <ScanDevice {device} devquery={deviceQuery} devstart={deviceStartup} />
         </div>
       {/if}
     {/each}
@@ -306,10 +309,5 @@
     margin-top: 20px;
     padding: 8px;
     font-size:1.0em;
-  }
-  .divider {
-    margin-top: 20px;
-    padding-top: 5px;
-    background-color: var(--page-border);
   }
 </style>

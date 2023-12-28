@@ -28,8 +28,8 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
-export let selectBLE      = writable(false);  // false to use MQTT
-// export let selectBLE      = writable(true);   // true to use BLE
+// export let selectBLE      = writable(false);  // false to use MQTT
+export let selectBLE      = writable(true);   // true to use BLE
 
 export let ipAddrServer   = writable('');     // IP address of website server
 export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser

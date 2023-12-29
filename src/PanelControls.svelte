@@ -37,8 +37,8 @@
       max={$pStrand.numPixels-1}
     />
 
-    <div class="divider"></div>
-    <SelectOrides/>
+    <!-- <div class="divider"></div>
+    <SelectOrides/> -->
     <div class="divider"></div>
 
     <SliderVal name='Force'

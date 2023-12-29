@@ -5,6 +5,11 @@
   import "carbon-components-svelte/css/all.css";
 
   import {
+    Modal,
+    Button
+  } from "carbon-components-svelte";
+
+  import {
     appVersion,
     selectBLE,
     ipAddrServer,
@@ -16,7 +21,9 @@
     userThemeStr,
     colorThemeDark,
     colorSettings,
-    setColor
+    setColor,
+    msgTitle,
+    msgDesc
   } from './globals.js';
 
   import {
@@ -44,7 +51,7 @@
 
   //if ($ipAddrServer === 'localhost') // running development server
 
-  console.log('BLE mode enabled:', $selectBLE);
+  console.log('BLE mode:', $selectBLE);
 
   if (!$selectBLE)
   {
@@ -66,15 +73,23 @@
   let colors = storeColorsGet();
   if (colors === null)
   {
-    if (theme === "g10")
-         colors = get(colorThemeLite);
-    else colors = get(colorThemeDark);
+    if (theme === "g10") colors = get(colorThemeLite);
+    else                 colors = get(colorThemeDark);
   }
 
   colorSettings.set(colors);
   for (let c in colors) setColor(c, colors[c]);
 
   //console.log('Color Values: ', colors);
+
+  let openMessage;
+  $: openMessage = $msgTitle !== '';
+
+  const onCloseMsg = () =>
+  {
+    openMessage = false;
+    $msgTitle = '';
+  }
 
 </script>
 
@@ -91,5 +106,19 @@
   {/if}
 
   <ColorsSelect/>
+
+<Modal
+  size="sm"
+  passiveModal
+  preventCloseOnClickOutside
+  modalHeading={$msgTitle}
+  bind:open={openMessage}
+  on:close
+  >
+  <p>{$msgDesc}</p><br>
+  <Button kind="secondary" on:click={onCloseMsg}
+    >Continue
+  </Button>
+</Modal>
 
 </main>

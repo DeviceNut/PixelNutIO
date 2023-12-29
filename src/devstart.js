@@ -46,7 +46,7 @@ import {
   cmdStr_LayerMute
 } from './devcmds.js';
 
-import { deviceError } from './devtalk.js';
+import { deviceError } from './device.js';
 import { strandCreateNew } from './strands.js';
 import { parsePattern } from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
@@ -139,7 +139,7 @@ function setStrandPattern(strand, id, name='', pstr='', pdesc='')
   strand.curPatternDesc = pdesc;
 }
 
-export let deviceStartup = (device) =>
+export let devStartup = (device) =>
 {
   //console.log(`Connecting to: "${device.curname}"...`);
 

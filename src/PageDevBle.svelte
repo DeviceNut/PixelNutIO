@@ -29,15 +29,13 @@
 
   const doBlue = async () =>
   {
-    $deviceList = [];
     scanning = true;
-    const device = await bleConnect();
+    await bleConnect();
     scanning = false;
 
-    if (device)
+    if ($deviceList.length)
     {
-      $deviceList.push(device);
-      await bleSetup(device);
+      await bleSetup($deviceList[0]);
       $deviceList = $deviceList; // make reactive
     }
   }

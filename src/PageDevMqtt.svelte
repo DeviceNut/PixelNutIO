@@ -19,17 +19,15 @@
     ipAddrServer,
     ipAddrBrowser,
     ipAddrBroker,
-    mqttConnected,
-    mqttConnFail,
+    connectActive,
+    connectFail,
     deviceList,
-    msgTitle,
-    msgDesc
   } from './globals.js';
 
   import { storeBrokerWrite } from './browser.js';
 
-  import { deviceQuery } from './devtalk.js';
-  import { deviceStartup } from './devstart.js';
+  import { sendQuery } from './devtalk.js';
+  import { devStartup } from './devstart.js';
 
   import {
     mqttDisconnect,
@@ -46,10 +44,7 @@
   let waitstate = WAITSTATE_NONE;
 
   let title;
-  $: title = $mqttConnected ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
-
-  let openMessage;
-  $: openMessage = $msgTitle !== '';
+  $: title = $connectActive ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
 
   let scanning = false;
   let openError = false;
@@ -59,7 +54,7 @@
   {
     //console.log(`waitfor: state=${waitstate}`);
 
-    if ($mqttConnFail)
+    if ($connectFail)
     {
       scanning = false;
       waitstate = WAITSTATE_NONE;
@@ -71,7 +66,7 @@
     {
       case WAITSTATE_DISCONNECT:
       {
-        if (!$mqttConnected)
+        if (!$connectActive)
         {
           mqttConnect($ipAddrBroker);
 
@@ -83,7 +78,7 @@
       }
       case WAITSTATE_CONNECTING:
       {
-        if ($mqttConnected)
+        if ($connectActive)
         {
           //console.log('Now connected')
 
@@ -120,7 +115,7 @@
   function clearfail()
   {
     openError = false;
-    $mqttConnFail = false;
+    $connectFail = false;
   }
 
   function doscan()
@@ -137,10 +132,10 @@
     waitfor();
   }
 
-  if (!$mqttConnFail && !$mqttConnected) doscan();
+  if (!$connectActive && !$connectFail) doscan();
 
   $: {
-    if ($mqttConnFail)
+    if ($connectFail)
     {
       scanning = false;
       openError = true;
@@ -188,7 +183,7 @@
 
   <div class="scanbox">
     <p style="margin-bottom:10px;">{title}</p>
-    {#if !$mqttConnected && !scanning }
+    {#if !$connectActive && !scanning }
       <button class="button"
         style="margin-left:10px;"
         on:click={doscan}
@@ -202,7 +197,7 @@
     {#each $deviceList as device }
       {#if !device.ignore }
         <div class="listitem">
-          <ScanDevice {device} devquery={deviceQuery} devstart={deviceStartup} />
+          <ScanDevice {device} devquery={sendQuery} devstart={devStartup} />
         </div>
       {/if}
     {/each}
@@ -212,18 +207,6 @@
     <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
   {/if}
 </div>
-
-<Modal
-  size="sm"
-  passiveModal
-  preventCloseOnClickOutside
-  modalHeading={$msgTitle}
-  bind:open={openMessage}
-  on:close
-  >
-  <p>{$msgDesc}</p><br>
-  <Button kind="secondary" on:click={()=> {openMessage=false; $msgTitle='';}}>Continue</Button>
-</Modal>
 
 <Modal
   size="sm"

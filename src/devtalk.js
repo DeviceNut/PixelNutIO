@@ -3,15 +3,18 @@ import { get } from 'svelte/store';
 import {
   SECS_RESPONSE_TIMEOUT,
   MAX_DEVICE_FAIL_COUNT,
-  deviceState,
-  curDevice,
   deviceList,
   msgTitle,
   msgDesc,
   curTimeSecs
 } from './globals.js';
 
- // Device Query/Responses:
+import {
+  deviceAdd,
+  deviceError,
+} from './device.js';
+
+// Device Query/Responses:
 const queryStr_GetInfo    = "?";        // returns device info in JSON format
 const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
 const respStr_CmdFailed   = "<CmdFail>" // indicates device command failed
@@ -24,101 +27,22 @@ const QSTATE_RESTART      = 1;          //  restart query on next notify
 const QSTATE_WAIT_RESP    = 2;          //  waiting for response (to command sent from here)
 const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
-/*
-// format of each custom device pattern object:
+function AddNewDevice(name, sendfun)
 {
-  name: '',             // user name for pattern
-  desc: '',             // description string
-  pcmd: ''              // command string
-}
-// format of each custom device plugin object:
-{
-  name: '',             // user name for plugin
-  desc: ''              // description string
-  bits: 0x00,           // pluginBit_ values
-  id: 0,                // globally unique ID
-}
-// format of strand info object sent from device:
-{
-  pixels: 0,            // number of pixels
-  bright: 0,            // brightness percent
-  delay: 0,             // delay msecs +/- MAX_DELAY
-  first: 1,             // first pixel to draw (from 1)
-                        // extern mode:
-  xt_mode: false,       //  enabled=1
-  xt_hue: 0,            //  hue property (0-359)
-  xt_white: 0,          //  white property (percent)
-  xt_count: 0,          //  count property (percent)
+  const device = deviceAdd(name, sendfun);
 
-  patname: ''           // pattern name
-  patstr: '',           // pattern string
+  // add specific to this protocol members:
+  device.qstate = QSTATE_RESTART;
+  device.dinfo = {}; // holds raw JSON device output
 }
-*/
 
-export const deviceQuery = (device) =>
+export const sendQuery = (device) =>
 {
-  //console.log(`Device Query: "${device.curname}"`)
+  //console.log(`sendQuery: "${device.curname}"`)
 
   device.doquery = false;
   device.qstate = QSTATE_WAIT_RESP;
-  device.sendfun(device.curname, queryStr_GetInfo);
-}
-
-export let deviceError = (text, title=null) =>
-{
-  if (title === null) title = 'Program Error';
-
-  console.error(text == '' ? title : text);
-
-  // trigger error message title/text
-  msgDesc.set(text);
-  msgTitle.set(title);
-
-  deviceReset(true);
-}
-
-// reset currently active device
-function deviceReset(remove)
-{
-  let device = get(curDevice);
-  if (device && device.active)
-  {
-    console.log(`Device Reset: "${device.curname}`);
-
-    curDevice.set(null);
-
-    if (remove)
-    {
-      let newlist = [];
-
-      for (const d of get(deviceList))
-      {
-        if (d.curname === device.curname)
-        {
-          console.log(`Device Remove: "${device.curname}`);
-        }
-        else newlist.push(device);
-      }
-
-      deviceList.set(newlist);
-    }
-  }
-}
-
-function deviceAdd(name, sendfun)
-{
-  console.log(`Device Add: "${name}"`);
-
-  let device = {...deviceState};
-  device.curname = name;
-  device.tstamp = curTimeSecs();
-  device.qstate = QSTATE_RESTART;
-  device.dinfo = {}; // holds raw JSON device output
-  device.sendfun = sendfun;
-
-  get(deviceList).push(device);
-
-  return device;
+  device.send(device.curname, queryStr_GetInfo);
 }
 
 // create timer for receiving a connection notification
@@ -158,7 +82,7 @@ function checkTimeout()
           msgDesc.set('The device you were using just disconnected.');
           msgTitle.set('Device Disconnect');
 
-          deviceReset(false);
+          device.reset(device);
         }
       }
       else newlist.push(device);
@@ -210,7 +134,7 @@ export const onNotification = (msg, sendfun) =>
       if (!device.ignore)
       {
         if (device.qstate === QSTATE_RESTART)
-          deviceQuery(device);
+        sendQuery(device);
       }
       return; // don't add
     }
@@ -225,9 +149,9 @@ export const onNotification = (msg, sendfun) =>
     }
   }
 
-  let device = deviceAdd(name, sendfun);
+  let device = NewDevice(name, sendfun);
 
-  deviceQuery(device);
+  sendQuery(device);
 }
 
 export const onDeviceReply = (msg, sendfun) =>
@@ -251,7 +175,7 @@ export const onDeviceReply = (msg, sendfun) =>
 
   if (device === null)
   {
-    device = deviceAdd(name, sendfun);
+    device = NewDevice(name, sendfun);
     // don't query: might already be doing so
   }
 
@@ -269,7 +193,7 @@ export const onDeviceReply = (msg, sendfun) =>
       msgDesc.set('The device you were using just restarted.');
       msgTitle.set('Device Restart');
 
-      deviceReset(true);
+      device.reset(device);
     }
     else if (device.ready)
     {

@@ -17,7 +17,7 @@ import {
   DEF_FORCE_VALUE
 } from './devcmds.js';
 
-import { deviceError } from './devtalk.js';
+import { deviceError } from './device.js';
 import { MENUID_CUSTOM } from './menu.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.

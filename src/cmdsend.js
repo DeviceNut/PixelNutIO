@@ -28,7 +28,7 @@ export const sendCmdToDevice = (cmdstr) =>
   let device = get(curDevice);
 
   if (device !== null)
-    device.sendfun(device.curname, cmdstr);
+    device.send(device.curname, cmdstr);
 
   else console.warn(`Device null on send: ${cmdstr}`);
 }

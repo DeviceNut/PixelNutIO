@@ -5,9 +5,11 @@ export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';
 
+// only for new device protocol?:
 export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
+// only in MQTT mode:
 export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/connection
 export const MSECS_WAIT_DEVICES     = 2000;   // msecs to wait for device detection
 export const MSECS_CHECK_TIMEOUT    = 750;    // interval between connection check
@@ -28,56 +30,20 @@ export const MINLEN_MAXPATTERN      = 100;    // min value for max pattern lengt
 export let curPageMode    = writable(PAGEMODE_DEVICES);
 export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
+export let msgTitle       = writable('');     // non-empty to cause user message popup
+export let msgDesc        = writable('');     // description text for that message
+
 // export let selectBLE      = writable(false);  // false to use MQTT
 export let selectBLE      = writable(true);   // true to use BLE
 
+// these are only used in MQTT mode:
 export let ipAddrServer   = writable('');     // IP address of website server
 export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser
 export let ipAddrBroker   = writable('');     // IP address of broker currently used
 export let selectBroker   = writable(false);  // true to display Select Brokers dialog
 
-export let mqttConnFail   = writable(false);  // true if broker connection failed
-export let mqttConnected  = writable(false);  // true if connected to that broker
-                                              // true for development, else false
-
-// state of each device found
-export const deviceState =
-{
-  curname: '',          // used as topic to talk to device
-  newname: '',          // used when renaming the device
-
-  tstamp: 0,            // secs of last notify/response
-
-  failcount: 0,         // number of protocol failures
-  ignore: false,        // true to ignore this device
-
-  ready: false,         // true to stop spinner on UI
-  active: false,        // true after user selected
-
-  doshow: false,        // info panel on Devices page
-  doquery: false,       // true to re-query on open
-
-  oldcode: false,       // true if original BLE code
-
-  report: {             // device info from query
-    nstrands: 0,          // strand count (>= 1)
-    npatterns: 0,         // custom device patterns
-    nplugins: 0,          // custom device plugins
-  
-    maxstrlen: 0,         // max length for cmds/patterns
-    numtracks: 0,         // number of tracks available
-    numlayers: 0,         // number of layers available
-  
-    strands: [],          // list of strand info
-    patterns: [],         // list of pattern info
-    plugins: [],          // list of plugin info
-  },
-
-  sendfun: null           // send function (name,str)
-};
-
-export let deviceList     = writable([]);     // discovered devices (deviceState)
-export let curDevice      = writable(null);   // reference to current device
+export let connectActive  = writable(false);  // true if device connection active
+export let connectFail    = writable(false);  // true if device connection failed
 
 export let devVersion     = writable(0);      // device version number *10
 export let devPaused      = writable(false);  // true if display in pause state
@@ -90,19 +56,19 @@ export let helpActiveID   = writable(0);      // currently selected menu choice
 export let helpOpenItems  = writable([]);     // list of currently expanded items
 export let helpCurText    = writable('');     // text to display for selected item
 
+export let deviceList     = writable([]);     // discovered devices (deviceState)
+export let curDevice      = writable(null);   // reference to current device
+
 export let nStrands       = writable(0);      // number of physical strands
 export let sStrands       = writable(0);      // number of strands currently selected
 export let idStrand       = writable(0);      // current strand index (0...nStrands-1)
 export let aStrands       = writable([]);     // contains all strands/tracks/layers
-export let pStrand        = writable([]);     // "points" to current strand in aStrands
+export let pStrand        = writable([]);     // references current strand in aStrands
 export let dupStrand      = writable(false);  // true to duplicate strands when selected
 
 export let nTracks        = writable(0);      // total number of tracks
 export let nLayers        = writable(0);      // total layers for each track
 export let maxLenPattern  = writable(0);      // max length of pattern by device
-
-export let msgTitle       = writable('');     // non-empty to cause user message popup
-export let msgDesc        = writable('');     // description text for that message
 
                                               // for stored-in-browser:
 export let aStoredPatt    = writable([]);     // list of pattern strings

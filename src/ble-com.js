@@ -1,3 +1,43 @@
+import { get } from 'svelte/store';
+
+import {
+  deviceList,
+  msgTitle,
+  msgDesc,
+  PAGEMODE_CONTROLS,
+  curPageMode,
+  curDevice,
+  connectActive,
+  connectFail,
+  nStrands,
+  sStrands,
+  idStrand,
+  pStrand,
+  aStrands,
+  dupStrand,
+  nTracks,
+  nLayers,
+  maxLenPattern,
+  aStoredPatt,
+  aStoredDesc,
+  aDevicePatt,
+  aDeviceDesc,
+  aEffectsDraw,
+  aEffDrawDesc,
+  aEffectsFilter,
+  aEffFilterDesc,
+  MIN_TRACKS,
+  MIN_LAYERS,
+  MINLEN_MAXPATTERN,
+} from './globals.js';
+
+import {
+  strandInfo,
+  deviceAdd,
+} from './device.js';
+
+import { strandCreateNew } from './strands.js';
+
 const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
@@ -8,7 +48,8 @@ let replyStr = '';
 let replyState = 0;
 let replyCount = 0;
 let queryType = 0;
-let replyError = false;
+let replyError = 0;
+let querySegs = false;
 let theDevice;
 
 async function WaitUntil(condition)
@@ -22,6 +63,49 @@ function AsciiToUint8Array(str){
     chars.push(str.charCodeAt(i));
   }
   return new Uint8Array(chars);
+}
+
+function ReplyLine1(strs)
+{
+  if (strs.length === 6)
+  {
+    const strand = {...strandInfo};
+    theDevice.report.strands.push(strand);
+
+    theDevice.report.nstrands   = parseInt(strs[0]);
+    strand.patnum               = parseInt(strs[1]); // current pattern #
+    theDevice.report.npatterns  = parseInt(strs[2]);
+    const features              = parseInt(strs[3]); // 1 if no external patterns
+    const multistrand           = parseInt(strs[4]);
+    theDevice.report.maxstrlen  = parseInt(strs[5]);
+
+    if (features & 1) // must be able to support external patterns
+    {
+      replyError = 10;
+      return;
+    }
+
+    if (theDevice.report.nstrands < 0) // old firmware
+    {
+      theDevice.report.nstrands = -theDevice.report.nstrands;
+      multistrand = 11;
+    }
+
+    if (!multistrand && (theDevice.report.nstrands > 1))
+    {
+      replyError = 12;
+      return;
+    }
+
+    if ((theDevice.report.nstrands < 1) ||
+        (theDevice.report.patnum   < 1) ||
+        (theDevice.report.maxstrlen < MINLEN_MAXPATTERN))
+    {
+      replyError = 13;
+      return;
+    }
+  }
+  else replyError = 14;
 }
 
 function Notifications(event)
@@ -53,6 +137,7 @@ function Notifications(event)
             console.log('Failed to get query:', replyStr);
             replyState = 0; // ignore all subsequent replies
             replyWait = false;
+            replyError = 1;
           }
           break;
         }
@@ -67,49 +152,41 @@ function Notifications(event)
               {
                 case 2:
                 {
-                  if (strs.length === 6)
-                  {
-                    theDevice.nsegments  = parseInt(strs[0]);
-                    theDevice.curpat     = parseInt(strs[1]);
-                    theDevice.ncusts     = parseInt(strs[2]);
-                    theDevice.features   = parseInt(strs[3]);
-                    theDevice.nstrands   = parseInt(strs[4]);
-                    theDevice.xstrlen    = parseInt(strs[5]);
-
-                    if (theDevice.nsegments < 0) // old firmware
-                    {
-                      theDevice.nsegments = -theDevice.nsegments;
-                      theDevice.nstrands = 1;
-                    }
-                    else if (theDevice.nstrands < 1)
-                      theDevice.nstrands = 1;
-                  }
-                  else replyError = true;
+                  ReplyLine1(strs);
                   break;
                 }
                 case 1:
                 {
                   if (strs.length === 5)
                   {
-                    theDevice.npixels    = parseInt(strs[0]);
-                    theDevice.xlayers    = parseInt(strs[1]);
-                    theDevice.xtracks    = parseInt(strs[2]);
-                    theDevice.maxbright  = parseInt(strs[3]);
-                    theDevice.delayoff   = parseInt(strs[4]);
+                    const strand = theDevice.report.strands[0];
+                    strand.pixels               = parseInt(strs[0]);
+                    theDevice.report.numlayers  = parseInt(strs[1]);
+                    theDevice.report.numtracks  = parseInt(strs[2]);
+                    strand.bright               = parseInt(strs[3]);
+                    strand.delay                = parseInt(strs[4]);
+
+                    if ((theDevice.report.numlayers < MIN_TRACKS) ||
+                        (theDevice.report.tracklayers < MIN_LAYERS))
+                    {
+                      replyError = 21;
+                      break;
+                    }
                   }
-                  else replyError = true;
+                  else replyError = 20;
                   break;
                 }
                 case 0:
                 {
                   if (strs.length >= 4)
                   {
-                    theDevice.xt_mode    = parseInt(strs[0]);
-                    theDevice.xt_hue     = parseInt(strs[1]);
-                    theDevice.xt_white   = parseInt(strs[2]);
-                    theDevice.xt_count   = parseInt(strs[3]);
+                    const strand = theDevice.report.strands[0];
+                    strand.xt_mode  = parseInt(strs[0]);
+                    strand.xt_hue   = parseInt(strs[1]);
+                    strand.xt_white = parseInt(strs[2]);
+                    strand.xt_count = parseInt(strs[3]);
                   }
-                  else replyError = true;
+                  else replyError = 30;
                   break;
                 }
               }
@@ -119,26 +196,34 @@ function Notifications(event)
             {
               break;
             }
-            case 3:
+            case 1:
             {
+              ReplyLine1(strs);
+              if (!replyError) querySegs = true;
               break;
             }
           }
           if (!replyCount)
           {
-            console.log('BLE deviceinfo:', theDevice, replyError);
+            console.log('BLE deviceinfo:', theDevice);
             replyState = 0; // ignore all subsequent replies
             replyWait = false;
           }
           break;
         }
-        case 3:
+        case 3: // segment query
         {
           break;
         }
       }
 
       replyStr = '';
+
+      if (replyError && replyWait)
+      {
+        replyState = 0; // ignore all subsequent replies
+        replyWait = false;
+      }
     }
     else replyStr += String.fromCharCode(chval);
   }
@@ -158,6 +243,8 @@ export const bleSupported = async () =>
 export const bleConnect = async () =>
 {
   theDevice = null;
+  deviceList.set([]);
+
   try
   {
     const device = await navigator.bluetooth.requestDevice({
@@ -185,15 +272,24 @@ export const bleConnect = async () =>
     console.log('BLE start notifications...');
     bleCharRx.addEventListener('characteristicvaluechanged', Notifications);
   
-    theDevice = {...deviceState};
-    theDevice.sendfun = bleSend;
-    theDevice.curname = device.name.slice(2);
+    const name = device.name.slice(2);
+    theDevice = deviceAdd(name, bleSend);
 
     console.log('Connected to:', theDevice.curname);
-  }
-  catch (err) { console.log('BLE Connect failed:', err) }
 
-  return theDevice;
+    deviceList.set([theDevice]);
+    connectActive.set(true);
+    connectFail.set(false);
+  }
+  catch (err)
+  {
+    console.error('BLE Connect failed:', err);
+
+    // trigger error message title/text
+    msgTitle.set('Bluetooth Problem');
+    msgDesc.set(`Connect failed: ${err}`);
+    deviceList.set([]);
+  }
 }
 
 export const bleSetup = async (device) =>
@@ -208,17 +304,84 @@ export const bleSetup = async (device) =>
   console.log('BLE query 1 finished');
 
   theDevice.ready = true;
-  theDevice.oldcode = true;
+  theDevice.orgcode = true;
 
-  // replyState = 1;
-  // replyWait = true;
-  // await bleSend('?S');
-  // await WaitUntil(() => replyWait === false);
-  // console.log('BLE query 2 finished');
+  if (replyError)
+  {
+    console.error('BLE query failed:', replyError);
+
+    // trigger error message title/text
+    msgTitle.set('Device Problem');
+    msgDesc.set(`Cannot support this device: #${replyError}`);
+    deviceList.set([]);
+
+    connectActive.set(false);
+    connectFail.set(true);
+  }
+  else if (querySegs)
+  {
+    replyState = 3;
+    replyWait = true;
+    await bleSend('?S');
+    await WaitUntil(() => replyWait === false);
+    console.log('BLE query 2 finished');
+  }
 }
 
-export const bleStart = async () =>
+function setStrandTop(strand, dvals)
 {
+  strand.pcentBright = dvals.bright;
+  strand.pcentDelay  = dvals.delay;
+  strand.pixelOffset = dvals.first;
+  strand.numPixels   = dvals.pixels;
+
+  let mode = dvals.xt_mode ? true : false;
+  strand.opropsUser.doEnable   = mode;
+  strand.opropsUser.valueHue   = dvals.xt_hue;
+  strand.opropsUser.pcentWhite = dvals.xt_white;
+  strand.opropsUser.pcentCount = dvals.xt_count;
+
+  strand.opropsSent.doEnable   = mode;
+  strand.opropsSent.valueHue   = dvals.xt_hue;
+  strand.opropsSent.pcentWhite = dvals.xt_white;
+  strand.opropsSent.pcentCount = dvals.xt_count;
+}
+
+export const bleStart = async (device) =>
+{
+  device.active = true;
+  curDevice.set(device);
+  curPageMode.set(PAGEMODE_CONTROLS);
+
+  maxLenPattern.set(device.report.maxstrlen);
+
+  let numtracks = device.report.numtracks;
+  let numlayers = device.report.numlayers;
+  let tracklayers = numlayers / numtracks;
+
+  let numstrands = device.report.strands.length;
+  nStrands.set(numstrands);
+  nTracks.set(numtracks);
+  nLayers.set(tracklayers);
+
+  let slist = [];
+  for (let s = 0; s < numstrands; ++s)
+  {
+    const strand = strandCreateNew(s);
+
+    strand.selected = (s === 0) ? true : false;
+    setStrandTop(strand, device.report.strands[s]);
+
+    slist.push(strand);
+  }
+
+  sStrands.set(1);
+  aStrands.set(slist);
+
+  // reset to use first strand
+  idStrand.set(0);
+  pStrand.set(get(aStrands)[0]);
+  dupStrand.set(false);
 }
 
 const bleSend = async (cmd) =>

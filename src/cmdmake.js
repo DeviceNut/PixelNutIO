@@ -48,7 +48,7 @@ import {
   cmdStr_TrigForce
 } from './devcmds.js';
 
-import { deviceError } from './devtalk.js';
+import { deviceError } from './device.js';
 
 ///////////////////////////////////////////////////////////
 

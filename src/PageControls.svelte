@@ -15,7 +15,7 @@
     curDevice,
     curPageMode,
     PAGEMODE_DEVICES,
-    mqttConnected,
+    connectActive,
     nStrands,
     pStrand,
     aStrands,
@@ -47,7 +47,7 @@
       userSetPattern(defCustomCmd);
   }
 
-  $: if (!$mqttConnected || !$curDevice)
+  $: if (!$connectActive || !$curDevice)
       $curPageMode = PAGEMODE_DEVICES;
 
   let prevsecs = curTimeSecs();
@@ -98,10 +98,12 @@
             <div style="padding-left:10px;">
               <PanelControls/>
             </div>
-            <div class="bdiv" class:bdiv2={$showCustom}
-              on:click={toggleshow}>
-              <span>{pstr}</span>
-            </div>
+            {#if !$curDevice.orgcode}
+              <div class="bdiv" class:bdiv2={$showCustom}
+                on:click={toggleshow}>
+                <span>{pstr}</span>
+              </div>
+            {/if}
           </Column>
         </Row>
       </div>
@@ -126,19 +128,21 @@
             <PanelControls/>
           </Column>
         </Row>
-        <Row>
-          <Column>
-            <div class="bdiv" class:bdiv2={$showCustom}
-              on:click={toggleshow}>
-              <span>{pstr}</span>
-            </div>
-          </Column>
-        </Row>
+        {#if !$curDevice.orgcode}
+          <Row>
+            <Column>
+              <div class="bdiv" class:bdiv2={$showCustom}
+                on:click={toggleshow}>
+                <span>{pstr}</span>
+              </div>
+            </Column>
+          </Row>
+        {/if}
       </div>
     {/if}
   </MediaQuery>
 
-  {#if $showCustom }
+  {#if !$curDevice.orgcode && $showCustom }
     <MediaQuery query="(max-width: 1100px)" let:matches>
       {#if matches}
         <TrackLayout numcols={1} />

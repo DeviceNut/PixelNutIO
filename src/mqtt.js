@@ -3,8 +3,8 @@ import mqtt from 'mqtt/dist/mqtt.min';
 
 import {
   curTimeSecs,
-  mqttConnected,
-  mqttConnFail
+  connectActive,
+  connectFail
 } from './globals.js';
 
 import { 
@@ -52,9 +52,9 @@ function onConnect(connack)
     mqttClient.subscribe(topicDevReply, onSubscribe);
   
     onConnection(true);
-    mqttConnected.set(true);
+    connectActive.set(true);
   }
-  else mqttConnFail.set(true);
+  else connectFail.set(true);
 
   mqttConnecting = false;
 }
@@ -68,11 +68,11 @@ function onError(err)
 {
   console.error(`MQTT onError: ${err}`);
 
-  if (get(mqttConnected))
+  if (get(connectActive))
   {
     onConnection(false);
-    mqttConnected.set(false);
-    mqttConnFail.set(true);
+    connectActive.set(false);
+    connectFail.set(true);
   }
 
   if (mqttClient)
@@ -89,14 +89,14 @@ function onClose()
   let secs = curTimeSecs() - mqttConnectSecs;
   console.log(`MQTT onClose: secs=${secs}`);
 
-  if (get(mqttConnected))
+  if (get(connectActive))
   {
     onConnection(false);
-    mqttConnected.set(false);
+    connectActive.set(false);
   }
   else if (mqttConnecting)
   {
-    mqttConnFail.set(true);
+    connectFail.set(true);
     mqttConnecting = false;
   }
 
@@ -163,7 +163,7 @@ export const mqttConnect = (ipaddr) =>
   else
   {
     mqttConnecting = false;
-    mqttConnFail.set(true);
+    connectFail.set(true);
   }
 }
 

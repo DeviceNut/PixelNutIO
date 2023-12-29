@@ -29,7 +29,7 @@ import {
   cmdStr_SelectEffect
 } from './devcmds.js';
 
-import { deviceError } from './devtalk.js';
+import { deviceError } from './device.js';
 
 import {
   makeEntireCmdStr,

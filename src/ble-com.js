@@ -267,13 +267,20 @@ export const bleConnect = async () =>
     bleCharRx = await service.getCharacteristic(CHAR_UUID_UART_RX);
     bleCharTx = await service.getCharacteristic(CHAR_UUID_UART_TX);
     // console.log('BLE chars:', char_rx, char_tx);
-  
-    await bleCharRx.startNotifications();
-    console.log('BLE start notifications...');
+
+    // console.log('CharRX:', bleCharRx.properties);
+    // console.log('CharTX:', bleCharTx.properties);
+
+    if (!bleCharRx.properties.notify || !bleCharTx.properties.write)
+      throw 'Cannot read/write to device';
+
     bleCharRx.addEventListener('characteristicvaluechanged', Notifications);
   
+    console.log('BLE start notifications...');
+    await bleCharRx.startNotifications();
+
     const name = device.name.slice(2);
-    theDevice = deviceAdd(name, bleSend);
+    theDevice = deviceAdd(name, BleSend);
 
     console.log('Connected to:', theDevice.curname);
 
@@ -299,7 +306,7 @@ export const bleSetup = async (device) =>
   replyState = 1;
   replyWait = true;
 
-  await bleSend('?');
+  await BleQuery('?');
   await WaitUntil(() => replyWait === false);
   console.log('BLE query 1 finished');
 
@@ -322,7 +329,7 @@ export const bleSetup = async (device) =>
   {
     replyState = 3;
     replyWait = true;
-    await bleSend('?S');
+    await BleQuery('?S');
     await WaitUntil(() => replyWait === false);
     console.log('BLE query 2 finished');
   }
@@ -384,9 +391,32 @@ export const bleStart = async (device) =>
   dupStrand.set(false);
 }
 
-const bleSend = async (cmd) =>
+async function BleQuery(msg)
 {
-  console.log('BLE cmd:', cmd);
-  const query = AsciiToUint8Array(cmd);
+  console.log('Ble Write:', msg);
+  const query = AsciiToUint8Array(msg);
   await bleCharTx.writeValue(query);
 }
+
+let busy = false;
+const queue = [];
+function BleWrite()
+{
+  busy = true;
+  const msg = queue[0];
+  const query = AsciiToUint8Array(msg);
+  bleCharTx.writeValue(query).then(() =>
+  {
+    queue.shift();
+    // console.log('queue:', queue);
+    if (queue.length) BleWrite();
+    else busy = false;
+  });
+ }
+ function BleSend(msg)
+ {
+  console.log(`>> ${msg}`); //, queue);
+  queue.push(msg);
+  if (!busy) BleWrite();
+ }
+ 

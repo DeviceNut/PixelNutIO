@@ -30,7 +30,7 @@ let mqttIPaddr = '';
 let mqttConnecting = false;
 let mqttConnectSecs = 0;
 
-export const mqttSend = (name, msg) =>
+export const mqttSend = (msg, name) =>
 {
   if (mqttClient)
   {

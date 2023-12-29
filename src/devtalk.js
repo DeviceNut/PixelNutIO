@@ -44,7 +44,7 @@ export const sendQuery = (device) =>
 
   device.doquery = false;
   device.qstate = QSTATE_WAIT_RESP;
-  device.send(device.curname, queryStr_GetInfo);
+  device.send(queryStr_GetInfo, device.curname);
 }
 
 // create timer for receiving a connection notification

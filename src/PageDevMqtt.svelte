@@ -181,6 +181,11 @@
 
   <HeaderDevices/>
 
+  <button class="button"
+    on:click={()=>{$selectBroker = true}}
+    >Hub Address
+  </button>
+
   <div class="scanbox">
     <p style="margin-bottom:10px;">{title}</p>
     {#if !$connectActive && !scanning }
@@ -268,6 +273,7 @@
     max-width: 630px;
     min-height: 400px;
     margin: 0 auto;
+    padding: 5px;
     text-align: center;
     background-color: var(--page-back);
     border: 2px solid var(--page-border);

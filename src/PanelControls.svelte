@@ -1,6 +1,9 @@
 <script>
 
-  import { pStrand } from './globals.js';
+  import {
+    pStrand,
+    selectBLE,
+  } from './globals.js';
 
   import {
     MAX_FORCE_VALUE,
@@ -30,15 +33,17 @@
       onchange={userSetDelay}
       bind:cur={$pStrand.pcentDelay}
     />
-    <SliderVal name='Rotate'
-      onchange={userSetRotate}
-      bind:cur={$pStrand.pixelOffset}
-      min={0}
-      max={$pStrand.numPixels-1}
-    />
+    {#if !$selectBLE}
+      <SliderVal name='Rotate'
+        onchange={userSetRotate}
+        bind:cur={$pStrand.pixelOffset}
+        min={0}
+        max={$pStrand.numPixels-1}
+      />
+    {/if}
 
-    <!-- <div class="divider"></div>
-    <SelectOrides/> -->
+    <div class="divider"></div>
+    <!-- <SelectOrides/> -->
     <div class="divider"></div>
 
     <SliderVal name='Force'

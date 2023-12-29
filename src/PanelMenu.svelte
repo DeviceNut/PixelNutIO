@@ -1,7 +1,11 @@
 <script>
 
-  import { pStrand, patsMenuOpen } from './globals.js';
-  import { sendStrandName }        from './cmdsend.js';
+  import {
+    pStrand,
+    patsMenuOpen,
+  } from './globals.js';
+
+  import { sendStrandName } from './cmdsend.js';
 
   import MenuPatterns from './MenuPatterns.svelte';
 

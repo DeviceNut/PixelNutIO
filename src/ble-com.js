@@ -125,16 +125,15 @@ function Notifications(event)
       {
         case 1:
         {
-          if (strs[0] === 'P!')
+          replyCount = parseInt(strs[1]);
+
+          if ((strs[0] === 'P!') && (replyCount >= 1))
           {
-            replyCount = parseInt(strs[1]);
-            console.log('Get more lines:', --replyCount);
-            queryType = replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
+            queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
             replyState = 2;
           }
           else
           {
-            console.log('Failed to get query:', replyStr);
             replyState = 0; // ignore all subsequent replies
             replyWait = false;
             replyError = 1;
@@ -308,7 +307,7 @@ export const bleSetup = async (device) =>
 
   await BleQuery('?');
   await WaitUntil(() => replyWait === false);
-  console.log('BLE query 1 finished');
+  // console.log('BLE query 1 finished');
 
   theDevice.ready = true;
   theDevice.orgcode = true;
@@ -331,7 +330,7 @@ export const bleSetup = async (device) =>
     replyWait = true;
     await BleQuery('?S');
     await WaitUntil(() => replyWait === false);
-    console.log('BLE query 2 finished');
+    // console.log('BLE query 2 finished');
   }
 }
 

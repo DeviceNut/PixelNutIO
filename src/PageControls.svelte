@@ -1,7 +1,8 @@
 <script>
 
-  import MediaQuery from "svelte-media-query";
   import { get } from 'svelte/store';
+
+  import MediaQuery from "svelte-media-query";
 
   import {
     Grid,
@@ -167,6 +168,7 @@
 <style>
   .page {
     margin: 0 auto;
+    min-width: 330px;
     background-color: var(--page-back);
     border: 2px solid var(--page-border);
   }

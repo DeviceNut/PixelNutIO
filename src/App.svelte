@@ -107,6 +107,8 @@
 
   <ColorsSelect/>
 
+</main>
+
 <Modal
   size="sm"
   passiveModal
@@ -120,5 +122,3 @@
     >Continue
   </Button>
 </Modal>
-
-</main>

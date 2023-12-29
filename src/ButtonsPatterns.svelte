@@ -12,7 +12,8 @@
 
   import {
     pStrand,
-    patsMenuOpen
+    patsMenuOpen,
+    devPaused,
   } from './globals.js';
 
   import {
@@ -21,6 +22,7 @@
   } from './browser.js';
 
   import { userClearPattern } from './cmdpats.js';
+  import { userSendPause } from './cmdhead.js';
 
   import {
     MENUID_BROWSER,
@@ -33,6 +35,10 @@
 
   let menustr;
   $: menustr = $patsMenuOpen ? 'Close' : 'Select';
+
+  let textPause = '';
+  $: textPause = ($devPaused ? 'Resume' : 'Pause');
+  const dopause = () => { userSendPause($devPaused = !$devPaused); }
 
   const doselect = () => { $patsMenuOpen = !$patsMenuOpen; }
 
@@ -102,6 +108,12 @@
     >Save
   </button>
 
+  <button class="button-pattern"
+    class:paused={$devPaused}
+    on:click={dopause}
+    >{textPause}
+  </button>
+
 </div>
 
 <Modal
@@ -138,10 +150,14 @@
 
 <style>
   .button-pattern {
-    width: 55px;
+    width: 60px;
     height: 40px;
     padding: 4px;
-    margin-left: 6px;
-    margin-right: 6px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .button-pattern.paused {
+    background-color: var(--btn-back-enabled);
+    border: 2px solid var(--btn-bord-enabled);
   }
 </style>

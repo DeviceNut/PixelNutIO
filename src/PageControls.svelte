@@ -79,7 +79,7 @@
 
 </script>
 
-<Grid style="margin-top:10px;">
+<Grid style="margin-top:5px;">
   <MediaQuery query="(max-width: 1100px)" let:matches>
     {#if matches}
       <div class="page small">

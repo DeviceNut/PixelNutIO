@@ -1,11 +1,10 @@
-import { get, writable } from 'svelte/store';
+import { get } from 'svelte/store';
 
 import {
   curDevice,
   deviceList,
   msgTitle,
   msgDesc,
-  curTimeSecs,
 } from './globals.js';
 
 // format of each custom device pattern:
@@ -38,8 +37,11 @@ export const strandInfo =
   xt_white: 0,          //  white property (percent)
   xt_count: 0,          //  count property (percent)
 
-  patname: '',          // pattern name
-  patstr: '',           // pattern string
+  // information about the pattern:
+  patname: '',          // name
+  patdesc: '',          // description
+  patcmds: '',          // command string
+  patbits: '',          // feature bits
 };
 
 // state of each device found
@@ -48,12 +50,8 @@ const deviceState =
   curname: '',          // used as topic to talk to device
   newname: '',          // used when renaming the device
 
-  tstamp: 0,            // secs of last notify/response
-
-  failcount: 0,         // number of protocol failures
-  ignore: false,        // true to ignore this device
-
   ready: false,         // true to stop spinner on UI
+  ignore: false,        // true to ignore this device
   active: false,        // true after user selected
 
   doshow: false,        // info panel on Devices page
@@ -83,8 +81,9 @@ export let deviceAdd = (name, sendfun) =>
   console.log(`Device Add: "${name}"`);
 
   let device = {...deviceState};
+  device.report = {...deviceState.report};
+
   device.curname = name;
-  device.tstamp = curTimeSecs();
   device.send = sendfun;
 
   get(deviceList).push(device);

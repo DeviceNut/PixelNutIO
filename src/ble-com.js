@@ -29,6 +29,7 @@ import {
   MIN_TRACKS,
   MIN_LAYERS,
   MINLEN_MAXPATTERN,
+  waitTimeout,
 } from './globals.js';
 
 import {
@@ -36,6 +37,7 @@ import {
   deviceAdd,
 } from './device.js';
 
+import { orgpatGetInfo } from './orgpatts.js';
 import { strandCreateNew } from './strands.js';
 
 const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
@@ -119,7 +121,7 @@ function Notifications(event)
     if (chval === 10) // newline
     {
       const strs = replyStr.trim().split(' ');
-      console.log('Reply:', replyStr, strs);
+      console.log('BLE Reply:', replyStr); //, strs);
 
       switch (replyState)
       {
@@ -204,7 +206,7 @@ function Notifications(event)
           }
           if (!replyCount)
           {
-            console.log('BLE deviceinfo:', theDevice);
+            console.log('BLE device:', theDevice);
             replyState = 0; // ignore all subsequent replies
             replyWait = false;
           }
@@ -251,7 +253,7 @@ export const bleConnect = async () =>
       filters: [{ namePrefix: "P!" }],
       optionalServices: [SERVICE_UUID_UART]
     });
-    console.log('BLE device:', device);
+    console.log('BLE connecting...'); //, device);
   
     // doesn't work in Chrome on Windows...why?
     // resp = await navigator.bluetooth.getDevices();
@@ -275,7 +277,7 @@ export const bleConnect = async () =>
 
     bleCharRx.addEventListener('characteristicvaluechanged', Notifications);
   
-    console.log('BLE start notifications...');
+    // console.log('BLE start notifications...');
     await bleCharRx.startNotifications();
 
     const name = device.name.slice(2);
@@ -332,6 +334,21 @@ export const bleSetup = async (device) =>
     await WaitUntil(() => replyWait === false);
     // console.log('BLE query 2 finished');
   }
+
+  for (let i = 0; i < theDevice.report.nstrands; ++i)
+  {
+    const strand = theDevice.report.strands[i];
+    const info = orgpatGetInfo(strand.patnum);
+    if (info)
+    {
+      strand.patname  = info.name;
+      strand.patcmds  = info.cmds;
+      strand.patdesc  = info.desc;
+      strand.patbits  = info.bits;
+    }
+  }
+
+  // await waitTimeout(3);
 }
 
 function setStrandTop(strand, dvals)
@@ -341,7 +358,7 @@ function setStrandTop(strand, dvals)
   strand.pixelOffset = dvals.first;
   strand.numPixels   = dvals.pixels;
 
-  let mode = dvals.xt_mode ? true : false;
+  let mode = !!dvals.xt_mode;
   strand.opropsUser.doEnable   = mode;
   strand.opropsUser.valueHue   = dvals.xt_hue;
   strand.opropsUser.pcentWhite = dvals.xt_white;
@@ -371,12 +388,18 @@ export const bleStart = async (device) =>
   nLayers.set(tracklayers);
 
   let slist = [];
-  for (let s = 0; s < numstrands; ++s)
+  for (let i = 0; i < numstrands; ++i)
   {
-    const strand = strandCreateNew(s);
+    const strand = strandCreateNew(i);
 
-    strand.selected = (s === 0) ? true : false;
-    setStrandTop(strand, device.report.strands[s]);
+    strand.curPatternName = device.report.strands[i].patname;
+    strand.curPatternCmd  = device.report.strands[i].patcmds;
+    strand.curPatternDesc = device.report.strands[i].patdesc;
+    strand.bitsOverride = 0; // TODO
+    strand.bitsEffects = 0;
+  
+    strand.selected = !i;
+    setStrandTop(strand, device.report.strands[i]);
 
     slist.push(strand);
   }
@@ -388,11 +411,13 @@ export const bleStart = async (device) =>
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
   dupStrand.set(false);
+
+  console.log('Strands:', get(aStrands));
 }
 
 async function BleQuery(msg)
 {
-  console.log('Ble Write:', msg);
+  console.log('BLE Write:', msg);
   const query = AsciiToUint8Array(msg);
   await bleCharTx.writeValue(query);
 }
@@ -411,11 +436,10 @@ function BleWrite()
     if (queue.length) BleWrite();
     else busy = false;
   });
- }
- function BleSend(msg)
- {
+}
+function BleSend(msg)
+{
   console.log(`>> ${msg}`); //, queue);
   queue.push(msg);
   if (!busy) BleWrite();
- }
- 
+}

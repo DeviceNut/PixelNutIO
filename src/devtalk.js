@@ -31,8 +31,11 @@ function NewDevice(name, sendfun)
 {
   const device = deviceAdd(name, sendfun);
   console.log('NewDevice:', device);
+
   // add specific to this protocol members:
   device.qstate = QSTATE_RESTART;
+  device.tstamp = curTimeSecs(); // last notify/response
+  device.failcount = 0; // number of protocol failures
   device.dinfo = {}; // holds raw JSON device output
 
   return device;
@@ -99,8 +102,6 @@ function checkTimeout()
 // if lose connection, clear devices
 export const onConnection = (enabled) =>
 {
-  //oldts = curTimeSecs();
-
   if (enabled) checkTimeout();
   else
   {

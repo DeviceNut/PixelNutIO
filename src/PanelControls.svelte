@@ -43,7 +43,7 @@
     {/if}
 
     <div class="divider"></div>
-    <!-- <SelectOrides/> -->
+    <SelectOrides/>
     <div class="divider"></div>
 
     <SliderVal name='Force'

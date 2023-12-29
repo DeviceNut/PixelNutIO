@@ -44,7 +44,7 @@
     left: 50%;
     transform: translate(-50%, 0);
     min-width: 250px;
-    margin-top: 10px;
+    margin-top: 12px;
     font-size:1.5em;
     font-style: italic;
   }

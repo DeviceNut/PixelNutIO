@@ -95,9 +95,10 @@
 
 <main>
 
-  {#if ($curPageMode === PAGEMODE_HELPDOCS)}
-    <PageHelp/>
-  {:else if ($curPageMode === PAGEMODE_CONTROLS)}
+  <!-- {#if ($curPageMode === PAGEMODE_HELPDOCS)}
+    <PageHelp/> -->
+
+  {#if ($curPageMode === PAGEMODE_CONTROLS)}
     <PageControls/>
   {:else if $selectBLE}
     <PageDevBle/>

@@ -225,12 +225,12 @@ export let devStartup = (device) =>
   nLayers.set(tracklayers);
 
   let slist = [];
-  for (let s = 0; s < numstrands; ++s)
+  for (let i = 0; i < numstrands; ++i)
   {
-    const strand = strandCreateNew(s);
+    const strand = strandCreateNew(i);
 
-    strand.selected = (s === 0) ? true : false;
-    setStrandTop(strand, device.report.strands[s]);
+    strand.selected = !i;
+    setStrandTop(strand, device.report.strands[i]);
 
     slist.push(strand);
   }
@@ -274,7 +274,7 @@ export let devStartup = (device) =>
     pStrand.set(strand);
 
     let cmdname = device.report.strands[s].patname;
-    let cmdstr = device.report.strands[s].patstr.trim();
+    let cmdstr = device.report.strands[s].patcmds.trim();
 
     if (cmdstr === '') // no pattern running
     {

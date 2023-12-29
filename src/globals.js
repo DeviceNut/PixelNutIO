@@ -181,3 +181,8 @@ export const setColor = (name, color) =>
 {
   document.documentElement.style.setProperty(name, color);
 }
+
+export const waitTimeout = async (secs) =>
+{
+  await new Promise(resolve => setTimeout(resolve, secs*1000));
+}

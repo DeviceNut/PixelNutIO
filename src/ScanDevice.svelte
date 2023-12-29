@@ -68,7 +68,7 @@
             </div>
           {/if}
           <div class="pattern-string">
-            <span>{strand.patstr}</span>
+            <span>{strand.patcmds}</span>
           </div>
         </div>          
       </div>
@@ -90,7 +90,7 @@
   }
   .devscan {
     display: inline;
-    padding: 5px;
+    padding: 2px;
     font-size:1.15em;
   }
   .devname {

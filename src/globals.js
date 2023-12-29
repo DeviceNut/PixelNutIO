@@ -33,8 +33,8 @@ export let prevPageMode   = writable(PAGEMODE_DEVICES);
 export let msgTitle       = writable('');     // non-empty to cause user message popup
 export let msgDesc        = writable('');     // description text for that message
 
-// export let selectBLE      = writable(false);  // false to use MQTT
-export let selectBLE      = writable(true);   // true to use BLE
+export let selectBLE      = writable(false);  // false to use MQTT
+// export let selectBLE      = writable(true);   // true to use BLE
 
 // these are only used in MQTT mode:
 export let ipAddrServer   = writable('');     // IP address of website server

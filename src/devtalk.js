@@ -27,13 +27,15 @@ const QSTATE_RESTART      = 1;          //  restart query on next notify
 const QSTATE_WAIT_RESP    = 2;          //  waiting for response (to command sent from here)
 const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
-function AddNewDevice(name, sendfun)
+function NewDevice(name, sendfun)
 {
   const device = deviceAdd(name, sendfun);
-
+  console.log('NewDevice:', device);
   // add specific to this protocol members:
   device.qstate = QSTATE_RESTART;
   device.dinfo = {}; // holds raw JSON device output
+
+  return device;
 }
 
 export const sendQuery = (device) =>

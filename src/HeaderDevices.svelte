@@ -21,7 +21,7 @@
   {#if !$selectBLE}
     <button class="button-left"
       on:click={()=>{$selectBroker = true}}
-      >Hub Address
+      >Configure
     </button>
   {/if}
   <span class="title">{titleDevices}</span>

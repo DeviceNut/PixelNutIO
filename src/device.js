@@ -75,7 +75,7 @@ const deviceState =
     plugins: [],          // list of custPlugin
   },
 
-  sendfun: null           // send function (name,str)
+  send: null              // send function (name,str)
 };
 
 export let deviceAdd = (name, sendfun) =>

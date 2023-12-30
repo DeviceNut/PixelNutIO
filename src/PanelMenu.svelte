@@ -7,7 +7,7 @@
 
   import { sendStrandName } from './cmdsend.js';
 
-  import MenuPatterns from './MenuPatterns.svelte';
+  import NewPatMenu from './NewPatMenu.svelte';
 
   const setname = () =>
   {
@@ -18,7 +18,7 @@
 </script>
 
 {#if $patsMenuOpen }
-  <MenuPatterns/>
+  <NewPatMenu/>
 {:else if ($pStrand.tactives !== 0) }
   <div style="margin-top:20px; text-align:center;">
     <input class="editname"

@@ -9,7 +9,7 @@ import {
 import {
   MENUID_BROWSER,
   menuBrowser
-} from './menu.js';
+} from './newmenu.js';
 
 const SavePatternTheme      = "PixelNut-Theme";
 const SavePatternColors     = "PixelNut-Colors";

@@ -18,7 +18,6 @@ import {
 } from './devcmds.js';
 
 import { deviceError } from './device.js';
-import { MENUID_PRESETS } from './menu.js';
 
 // 1) To simplify track/layer access, a fixed number of layers are assigned to each track.
 // 2) Whenever tracks or layers are added or removed a new pattern has to be generated.
@@ -131,7 +130,7 @@ const oneStrand =
   modified        : false,  // true if pattern changed since last store
   idletime        : 0,      // seconds since user has changed pattern
 
-  curPatternId    : MENUID_PRESETS, // menu ID of current pattern
+  curPatternId    : 0,      // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
   curPatternCmds  : '',     // current pattern command
   curPatternDesc  : '',     // current pattern description

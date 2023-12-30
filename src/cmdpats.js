@@ -44,7 +44,7 @@ import {
 } from './cmdsend.js';
 
 import { parsePattern } from './cmdparse.js';
-import { MENUID_CUSTOM } from './menu.js';
+import { MENUID_CUSTOM } from './newmenu.js';
 
 ///////////////////////////////////////////////////////////
 

@@ -40,17 +40,6 @@ import {
 import { orgpatGetInfo } from './orgpatts.js';
 import { strandCreateNew } from './strands.js';
 
-import {
-  MENUID_CUSTOM,
-  MENUID_PRESETS,
-  MENUID_BROWSER,
-  MENUID_DEVICE,
-  menuPresets,
-  menuBrowser,
-  menuDevice,
-  menuCreate
-} from './menu.js';
-
 const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
@@ -425,8 +414,6 @@ export const bleStart = async (device) =>
   idStrand.set(0);
   pStrand.set(get(aStrands)[0]);
   dupStrand.set(false);
-
-  menuCreate(); // create entire menu
 
   console.log('Strands:', get(aStrands));
 }

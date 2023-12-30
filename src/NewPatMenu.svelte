@@ -45,7 +45,7 @@
     menuBrowser,
     menuDevice,
     menuCreate
-  } from './menu.js';
+  } from './newmenu.js';
 
   let openDelete = false;
   let delname, deltitle, deleteall;

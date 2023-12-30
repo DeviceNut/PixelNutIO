@@ -17,8 +17,9 @@
 </button>
 
 <div class="area"></div>
-<p class="setfont">Pattern Description:</p>
-<p class="descrip">{ $pStrand.curPatternDesc }</p>
+<p class="setfont">{`Name: ${$pStrand.curPatternName}`}</p>
+<p class="setfont">Description:</p>
+<p class="descrip">{@html $pStrand.curPatternDesc }</p>
 
 <style>
   .area {

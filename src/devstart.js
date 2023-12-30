@@ -65,7 +65,7 @@ import {
   menuBrowser,
   menuDevice,
   menuCreate
-} from './menu.js';
+} from './newmenu.js';
 
 ///////////////////////////////////////////////////////////
 

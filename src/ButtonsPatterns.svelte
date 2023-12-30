@@ -28,7 +28,7 @@
     MENUID_BROWSER,
     menuBrowser,
     menuCreate
-  } from './menu.js';
+  } from './newmenu.js';
 
   let openSave = false;
   let copyclip = false;

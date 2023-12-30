@@ -31,7 +31,7 @@
   import MultiStrands    from './MultiStrands.svelte';
   import ButtonsPatterns from './ButtonsPatterns.svelte';
   import PanelMenu       from './PanelMenu.svelte';
-  import PanelControls   from './PanelControls.svelte';
+  import PanelNewCtrls   from './PanelNewCtrls.svelte';
   import TrackLayout     from './TrackLayout.svelte';
 
   let pstr = '';
@@ -78,6 +78,7 @@
 </script>
 
 <Grid style="margin-top:5px;">
+
   <MediaQuery query="(max-width: 1100px)" let:matches>
     {#if matches}
       <div class="page small">
@@ -89,13 +90,13 @@
         </Row>
         <Row>
           <Column>
-            <div style="margin:15px; 20px; 0 20px;">
+            <div style="margin:15px 20px 0 20px;">
               <ButtonsPatterns/>
               <PanelMenu/>
             </div>
             <div class="divider"></div>
             <div style="padding-left:10px;">
-              <PanelControls/>
+              <PanelNewCtrls/>
             </div>
             <div class="bdiv" class:bdiv2={$showCustom}
               on:click={toggleshow}>
@@ -122,7 +123,7 @@
           </Column>
           <div class="vertdiv"></div>
           <Column>
-            <PanelControls/>
+            <PanelNewCtrls/>
           </Column>
         </Row>
         <Row>

@@ -2,31 +2,81 @@
 
   import {
     pStrand,
+    curDevice,
   } from './globals.js';
 
-  const onDropdown = async () =>
-  {
+  import {
+    pattNames,
+    orgpatGetInfo,
+  } from './orgpatts.js';
 
+  let showPatts = false;
+  let selected = [];
+
+  function SetSelection()
+  {
+    selected = [];
+    for (let i = 0; i < pattNames.length; ++i)
+      selected.push( (pattNames[i] === $pStrand.curPatternName) );
+  }
+  
+  const onOpenList = () =>
+  {
+    showPatts = !showPatts;
+    if (showPatts) SetSelection();
+  }
+
+  const onSelect = (i) =>
+  {
+    const patnum = i+1;
+    const info = orgpatGetInfo(patnum);
+    if (info)
+    {
+      // console.log('Selecting:', info);
+
+      $pStrand.curPatternName = info.name;
+      $pStrand.curPatternDesc = info.desc;
+
+      SetSelection();
+      $curDevice.send('.');
+      $curDevice.send('P ' + info.cmds);
+      $curDevice.send('.');
+      $curDevice.send(`${patnum}`);
+    }
   }
 
 </script>
 
 <button class="button"
-  on:click={onDropdown}
+  on:click={onOpenList}
   >Select Pattern
 </button>
 
-<div class="area"></div>
-<p class="setfont">{`Name: ${$pStrand.curPatternName}`}</p>
-<p class="setfont">Description:</p>
+{#if showPatts}
+  <div class="listbox">
+    {#each pattNames as patt,i}
+      <div>
+        <button class="button patbut" class:selected={selected[i]}
+          on:click={()=> onSelect(i)}
+          >{patt}
+        </button>
+      </div>
+    {/each}
+  </div>
+{:else}
+  <p class="title">{`Selected: ${$pStrand.curPatternName}`}</p>
+{/if}
+
+<p class="title">Description:</p>
 <p class="descrip">{@html $pStrand.curPatternDesc }</p>
 
 <style>
-  .area {
-    padding-top: 10px;
-    margin-left: 10px;
+  .listbox {
+    padding: 5px;
+    border: 1px solid var(--btn-bord-normal);
   }
-  .setfont {
+  .title {
+    margin-top: 10px;
     font-size: .98em;
   }
   .descrip {
@@ -38,7 +88,17 @@
   }
   .button {
     width: 100%;
+    margin-top: 3px;
     padding: 5px;
-    font-size:1em;
+    font-size:1.1em;
+  }
+  .patbut {
+    margin-top: 3px;
+    font-size:.9em;
+    border: none;
+  }
+  .selected {
+    background-color: var(--btn-back-selected);
+    border: 1px solid var(--btn-bord-enabled);
   }
 </style>

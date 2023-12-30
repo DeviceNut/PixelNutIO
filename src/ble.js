@@ -18,18 +18,10 @@ import {
   nTracks,
   nLayers,
   maxLenPattern,
-  aStoredPatt,
-  aStoredDesc,
-  aDevicePatt,
-  aDeviceDesc,
-  aEffectsDraw,
-  aEffDrawDesc,
-  aEffectsFilter,
-  aEffFilterDesc,
   MIN_TRACKS,
   MIN_LAYERS,
   MINLEN_MAXPATTERN,
-  waitTimeout,
+  // waitTimeout,
 } from './globals.js';
 
 import {
@@ -37,7 +29,11 @@ import {
   deviceAdd,
 } from './device.js';
 
-import { orgpatGetInfo } from './orgpatts.js';
+import {
+  MAX_FORCE_VALUE,
+  orgpatGetInfo,
+} from './orgpatts.js';
+
 import { strandCreateNew } from './strands.js';
 
 const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
@@ -342,13 +338,10 @@ export const bleSetup = async (device) =>
   {
     const strand = theDevice.report.strands[i];
     const info = orgpatGetInfo(strand.patnum);
-    if (info)
-    {
-      strand.patname  = info.name;
-      strand.patcmds  = info.cmds;
-      strand.patdesc  = info.desc;
-      strand.patbits  = info.bits;
-    }
+    strand.patname  = info.name;
+    strand.patcmds  = info.cmds;
+    strand.patdesc  = info.desc;
+    strand.patbits  = info.bits;
   }
 
   // await waitTimeout(3);
@@ -367,10 +360,10 @@ function setStrandTop(strand, dvals)
   strand.opropsUser.pcentWhite = dvals.xt_white;
   strand.opropsUser.pcentCount = dvals.xt_count;
 
-  strand.opropsSent.doEnable   = mode;
-  strand.opropsSent.valueHue   = dvals.xt_hue;
-  strand.opropsSent.pcentWhite = dvals.xt_white;
-  strand.opropsSent.pcentCount = dvals.xt_count;
+  // strand.opropsSent.doEnable   = mode;
+  // strand.opropsSent.valueHue   = dvals.xt_hue;
+  // strand.opropsSent.pcentWhite = dvals.xt_white;
+  // strand.opropsSent.pcentCount = dvals.xt_count;
 }
 
 export const bleStart = async (device) =>
@@ -400,6 +393,7 @@ export const bleStart = async (device) =>
     strand.curPatternDesc = device.report.strands[i].patdesc;
     strand.bitsOverride = 0; // TODO
     strand.bitsEffects = 0;
+    strand.forceValue = MAX_FORCE_VALUE/2;
   
     strand.selected = !i;
     setStrandTop(strand, device.report.strands[i]);

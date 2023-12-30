@@ -68,12 +68,12 @@
   .header {
     margin: 0 auto;
     height: 45px;
-    /* padding: 2px 0 10px 0; */
     text-align: center;
     background-color: var(--page-header);
   }
   .editname {
-    margin: 5px;
+    max-width: 190px;
+    margin-top: 5px;
     padding: 3px;
     color: var(--text-names);
     background-color: var(--panel-back);

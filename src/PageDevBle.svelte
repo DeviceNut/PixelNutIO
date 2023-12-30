@@ -41,7 +41,7 @@
   <div class="controls">
 
     {#if scanning }
-      <p>Connecting to device...</p>
+      <p>Scanning for devices...</p>
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
     {:else}
       <button class="button"

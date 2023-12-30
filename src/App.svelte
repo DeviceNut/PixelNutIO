@@ -125,6 +125,8 @@
 
   <ColorsSelect/>
 
+  <div style="height:10px;"/>
+
 </main>
 
 <Modal

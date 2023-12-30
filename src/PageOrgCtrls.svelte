@@ -18,7 +18,7 @@
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands   from './MultiStrands.svelte';
   import PanelOrgPatts  from './PanelOrgPatts.svelte';
-  import PanelControls  from './PanelControls.svelte';
+  import PanelOrgCtrls  from './PanelOrgCtrls.svelte';
 
   $: if (!$connectActive || !$curDevice) // not used - TODO
       $curPageMode = PAGEMODE_DEVICES;
@@ -26,6 +26,7 @@
 </script>
 
 <Grid style="margin-top:5px;">
+
   <MediaQuery query="(max-width: 750px)" let:matches>
     {#if matches}
       <div class="page ">
@@ -37,12 +38,12 @@
         </Row>
         <Row>
           <Column>
-            <div style="margin:15px; 20px; 0 20px;">
+            <div style="margin:15px 20px 0 20px;">
               <PanelOrgPatts/>
             </div>
             <div class="divider"></div>
             <div style="padding-left:10px;">
-              <PanelControls/>
+              <PanelOrgCtrls/>
             </div>
           </Column>
         </Row>
@@ -64,7 +65,7 @@
           </Column>
           <div class="vertdiv"></div>
           <Column>
-            <PanelControls/>
+            <PanelOrgCtrls/>
           </Column>
         </Row>
       </div>
@@ -76,7 +77,7 @@
 <style>
   .page {
     margin: 0 auto;
-    min-width: 330px;
+    min-width: 310px;
     background-color: var(--page-back);
     border: 2px solid var(--page-border);
   }

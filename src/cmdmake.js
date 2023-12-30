@@ -120,9 +120,9 @@ export const makeEntireCmdStr = () =>
   //console.log(`makeEntireCmdStr: ${cmdstr}`);
 
   strand.curPatternCmds = cmdstr;
-  strand.bitsOverride  = ridebits;
-  strand.bitsEffects   = splugbits;
-  strand.triggerUsed   = trigused;
+  strand.bitsOverride   = ridebits;
+  strand.bitsEffects    = splugbits;
+  strand.triggerUsed    = trigused;
 
   if (cmdstr.length > get(maxLenPattern))
     deviceError(`Exceeded max pattern length=${get(maxLenPattern)}`);

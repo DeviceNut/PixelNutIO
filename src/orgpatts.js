@@ -1,4 +1,6 @@
 
+export const MAX_FORCE_VALUE = 1000;
+
 export const pattNames =
 [
   "Rainbow Ripple",
@@ -33,20 +35,20 @@ const pattDescs =
 
   "This has bright twinkling without a background. The Hue property changes the twinkling color." +
   "<br><br>" +
-  "Occasional comets streak up and down and then disappear. One of the comets is red, and appears randomly every 3-6 seconds." +
+  "Occasional comets streak up and down and then disappear. One of the comets is red, and appears randomly every 3-6 seconds. " +
   "The other is orange and appears only when Triggered, with the Force determining its length.",
 
-  "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs." +
+  "Comets pairs, one in either direction, both of which change color hue occasionally. Triggering creates new comet pairs. " +
   "The comet color and tail lengths can be modified with the Hue, White, and Count properties.",
 
   "Two scanners (blocks of same brightness pixels that move back and forth), with only the first one visible initially until Triggered." +
   "<br><br>" +
-  "The first one changes colors on each change in direction, and the length can be modified with the Count property." +
+  "The first one changes colors on each change in direction, and the length can be modified with the Count property. " +
   "The second one (once Triggered) moves in the opposite direction, periodically surges in speed, and is modified with Hue property.",
 
   "Evenly spaced pixels move together around and around the strip, creating a \"Ferris Wheel\" effect." +
   "<br><br>" +
-  "The spokes periodically change colors, or can be modified with the Hue and White properties." +
+  "The spokes periodically change colors, or can be modified with the Hue and White properties. " +
   "The Count property determines the number of spokes. Triggering toggles the direction of the motion.",
 
   "The background is \"noise\" (randomly set pixels of random brightness), with the color modified by the Hue and White properties." +
@@ -65,11 +67,14 @@ const pattDescs =
   "<br><br>" +
   "Triggering causes a new target color to be is chosen, with larger Forces causing larger color changes.",
 
-  "Festive red and green twinkles, with an occasional white comet that streaks across." +
+  "Festive red and green twinkles, with an occasional white comet that streaks across. " +
   "The comet's whiteness can be modified, and Triggering creates more of them.",
 
-  "Combination of a purple scanner over a greenish twinkling background, with a red comet that is fired off every time the scanner " +
-  "bounces off the end of the strip, or when Triggered. The Hue property only affects the color of the twinkling."
+  "Combination of a purple scanner over a greenish twinkling background, with red comets." +
+  "<br><br>" +
+  "The comet is fired off every time the scanner bounces off the end of the strip, or when Triggered." +
+  "<br><br>" +
+  "The Hue property affects the color of the twinkling."
 ];
 
 const pattCmds =
@@ -109,7 +114,10 @@ const pattBits =
 export const orgpatGetInfo = (patnum) =>
 {
   if (patnum > pattNames.length) 
-    patnum -= 8; // skip basic patterns from app
+    patnum -= 7; // skip basic patterns from app
+
+  --patnum; // make into index;
+  if (patnum < 0) patnum = 0;
 
   return {
     name  : pattNames[patnum],

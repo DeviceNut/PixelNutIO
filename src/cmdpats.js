@@ -54,6 +54,8 @@ export const userSetPattern = (pattern) =>
 {
   //console.log(`SetPattern: ${get(pStrand).curPatternName}`);
 
+  sendStrandPattern(); // store/exec new pattern FIXME
+  return;
   strandClearAll();
 
   if (parsePattern(pattern)) // sets vars for current strand

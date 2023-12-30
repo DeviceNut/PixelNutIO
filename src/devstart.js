@@ -46,9 +46,9 @@ import {
   cmdStr_LayerMute
 } from './devcmds.js';
 
-import { deviceError } from './device.js';
-import { strandCreateNew } from './strands.js';
-import { parsePattern } from './cmdparse.js';
+import { deviceError }      from './device.js';
+import { strandCreateNew }  from './strands.js';
+import { parsePattern }     from './cmdparse.js';
 import { makeEntireCmdStr } from './cmdmake.js';
 
 import {
@@ -92,9 +92,8 @@ function stripCmdStr(instr)
     {
       default:
       {
-        if (isNaN(val))
-             outstr += `${ch} `;
-        else outstr += `${ch}${val} `;
+        if (isNaN(val)) outstr += `${ch} `;
+        else            outstr += `${ch}${val} `;
         break;
       }
       case cmdStr_PcentBright:
@@ -174,9 +173,11 @@ export let devStartup = (device) =>
   {
     let bvalue = parseInt(device.report.plugins[i].bits, 16);
 
-    const item = { id:   device.report.plugins[i].id,
-                   bits: bvalue,
-                   text: device.report.plugins[i].name };
+    const item = {
+      id:   device.report.plugins[i].id,
+      bits: bvalue,
+      text: device.report.plugins[i].name
+    };
 
     if (bvalue & pluginBit_REDRAW)
     {

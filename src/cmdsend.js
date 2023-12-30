@@ -46,6 +46,9 @@ function sendStoreExecPattern(doexec)
   const patstr = strand.curPatternCmd;
   let patname = strand.curPatternName;
 
+  sendCmdToDevice('P E2 T E101 T G'); // FIXME
+  return;
+
   if (patstr !== '')
   {
     sendCmdToDevice(cmdStr_FlashPatName + patname);

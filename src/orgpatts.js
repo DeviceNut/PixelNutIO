@@ -98,7 +98,7 @@ const pattBits =
 
 export const orgpatGetInfo = (patnum) =>
 {
-  patnum -= 7; // basic patterns from app
+  patnum -= 8; // basic patterns from app
   if (patnum > pattNames.length) return null;
   return {
     name  : pattNames[patnum],

@@ -9,7 +9,6 @@
   } from './globals.js';
 
   import {
-    bleSupported,
     bleConnect,
     bleSetup,
     bleStart,
@@ -18,14 +17,7 @@
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';
 
-  let haveBlue = false;
   let scanning = false;
-
-  async function CheckForBlue()
-  {
-    haveBlue = await bleSupported();
-  }
-  CheckForBlue();
 
   const doBlue = async () =>
   {
@@ -48,10 +40,7 @@
 
   <div class="controls">
 
-    {#if !haveBlue}
-      <p>Bluetooth not supported in this browser</p>
-
-    {:else if scanning }
+    {#if scanning }
       <p>Connecting to device...</p>
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
     {:else}

@@ -15,6 +15,7 @@
     ipAddrServer,
     ipAddrBrowser,
     ipAddrBroker,
+    PAGEMODE_DEVICES,
     PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
     curPageMode,
@@ -33,16 +34,18 @@
     storePatternsInit
   } from './browser.js';
 
-  import { helpInit } from './helpmain.js';
+  import { bleSupported } from './ble-com.js';
 
-  import PageHelp     from './PageHelp.svelte';
+  // import PageHelp     from './PageHelp.svelte';
   import PageDevBle   from './PageDevBle.svelte';
   import PageDevMqtt  from './PageDevMqtt.svelte';
   import PageControls from './PageControls.svelte';
   import ColorsSelect from './ColorsSelect.svelte';
 
+  // import { helpInit } from './helpmain.js';
+  // helpInit();
+
   storePatternsInit();
-  helpInit();
 
   console.log(appVersion);
 
@@ -51,7 +54,11 @@
 
   //if ($ipAddrServer === 'localhost') // running development server
 
-  console.log('BLE mode:', $selectBLE);
+  let haveBlue = true;
+  async function CheckForBlue()
+  {
+    haveBlue = await bleSupported();
+  }
 
   if (!$selectBLE)
   {
@@ -64,6 +71,7 @@
 
     //console.log(`Current Broker IP: ${$ipAddrBroker}`);
   }
+  else CheckForBlue();
 
   let theme = storeThemeGet();
   if (theme === null) theme = "g100"; // default
@@ -95,15 +103,19 @@
 
 <main>
 
-  <!-- {#if ($curPageMode === PAGEMODE_HELPDOCS)}
-    <PageHelp/> -->
-
-  {#if ($curPageMode === PAGEMODE_CONTROLS)}
+  {#if ($curPageMode === PAGEMODE_DEVICES)}
+    {#if $selectBLE && !haveBlue}
+      <p>Bluetooth not supported in this browser</p>
+    {:else if $selectBLE}
+      <PageDevBle/>
+    {:else}
+      <PageDevMqtt/>
+    {/if}
+  {:else if ($curPageMode === PAGEMODE_CONTROLS)}
     <PageControls/>
-  {:else if $selectBLE}
-    <PageDevBle/>
-  {:else}
-    <PageDevMqtt/>
+
+  <!-- {:else if ($curPageMode === PAGEMODE_HELPDOCS)}
+    <PageHelp/> -->
   {/if}
 
   <ColorsSelect/>

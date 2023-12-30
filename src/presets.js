@@ -24,18 +24,18 @@ export const preset_MenuItems =
     'E2 D20 T E101 F255 T I',
     'E1 D20 F1 T I E101 F255 T I',
     'E10 D60 T E101 T E120 F64 T I',
-    'E0 B50 D10 H163 W20 Q3 T E142 F65 I E50 B80 D10 W80 T',
-    'E50 B65 D10 H35 W80 Q3 T E20 B90 D30 C25 G R O3 N6 E20 B90 D30 H28 C45 U G T I E120 F1 I',
+    'E0 B50 D10 H232 W20 Q3 T E142 F65 I E50 B80 D10 W80 T',
+    'E50 B65 D10 H50 W80 Q3 T E20 B90 D30 C25 G R O3 N6 E20 B90 D30 H30 C45 U G T I E120 F1 I',
     'E20 D30 W25 C25 Q7 T I E101 F25 T E20 D20 W25 C25 Q7 U T I E101 F50 T',
-    'E40 D20 C25 Q4 T E111 A0 E40 D30 H192 C5 Q1 I E131 F255 R O15 N5',
+    'E40 D20 C25 Q4 T E111 A0 E40 D30 H270 C5 Q1 I E131 F255 R O15 N5',
     'E30 D60 C20 Q7 T E160 I E111 F T R O3 N7',
     'E52 D60 W35 C25 Q3 T E150 I E120 I',
     'E51 D60 C10 Q4 T E112 T E131 F255 T I',
     'E0 B80 D10 Q3 T E111 F R10 O10 E142 F65 T I',
-    'E0 D30 H21 T E110 F150 T I E111 A1',
-    'E50 K33 B65 D10 H252 C100 T E50 J34 K33 B65 D10 W100 C100 T E50 J67 K34 D10 H163 C100 T',
-    'E50 B60 D10 H0 T E50 B70 D15 H89 T E20 V B90 D30 H192 W80 C25 Q2 G I R20 O10',
-    'E50 B65 D10 H71 W30 Q1 V T E40 D50 H192 C10 T E20 D15 C20 H0 G T I A1',
+    'E0 D30 H30 T E110 F150 T I E111 A1',
+    'E50 K33 B65 D10 H355 C100 T E50 J34 K33 B65 D10 W100 C100 T E50 J67 K34 D10 H230 C100 T',
+    'E50 B60 D10 H0 T E50 B70 D15 H125 T E20 V B90 D30 H270 W80 C25 Q2 G I R20 O10',
+    'E50 B65 D10 H100 W30 Q1 V T E40 D50 H270 C10 T E20 D15 C20 H0 G T I A1',
   ];
 
 export const preset_PatDescs =
@@ -94,11 +94,11 @@ export const preset_PatDescs =
       "Triggering causes a new target color to be is chosen, with larger Forces causing larger color changes."
     ],
     [
-      "Celebrate the holiday with Red, White, and Blue twinkles!"
+      "Celebrate the July 4th holiday with Red, White, and Blue twinkles!"
     ],
     [
-      "Festive red and green twinkles, with an occasional white comet that streaks across them. " +
-      "The comet's whiteness can be modified, and Triggering creates them."
+      "Festive red and green twinkles, with an occasional white comet that streaks across. " +
+      "The comet's whiteness can be modified, and Triggering creates more of them."
     ],
     [
       "Combination of a purple scanner over a greenish twinkling background, with a red comet that is fired off every time the scanner " +

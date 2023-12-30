@@ -12,7 +12,7 @@
     bleConnect,
     bleSetup,
     bleStart,
-  } from './ble-com.js';
+  } from './ble.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
   import ScanDevice from './ScanDevice.svelte';

@@ -34,7 +34,7 @@
     storePatternsInit
   } from './browser.js';
 
-  import { bleSupported } from './ble-com.js';
+  import { bleSupported } from './ble.js';
 
   // import PageHelp     from './PageHelp.svelte';
   import PageDevBle   from './PageDevBle.svelte';

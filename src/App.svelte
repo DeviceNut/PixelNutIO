@@ -15,9 +15,10 @@
     ipAddrServer,
     ipAddrBrowser,
     ipAddrBroker,
-    PAGEMODE_DEVICES,
-    PAGEMODE_CONTROLS,
     PAGEMODE_HELPDOCS,
+    PAGEMODE_DEVICES,
+    PAGEMODE_CTRLS_ORG,
+    PAGEMODE_CTRLS_NEW,
     curPageMode,
     userThemeStr,
     colorThemeDark,
@@ -39,6 +40,7 @@
   // import PageHelp     from './PageHelp.svelte';
   import PageDevBle   from './PageDevBle.svelte';
   import PageDevMqtt  from './PageDevMqtt.svelte';
+  import PageCtrlsOrg from './PageCtrlsOrg.svelte';
   import PageControls from './PageControls.svelte';
   import ColorsSelect from './ColorsSelect.svelte';
 
@@ -111,7 +113,10 @@
     {:else}
       <PageDevMqtt/>
     {/if}
-  {:else if ($curPageMode === PAGEMODE_CONTROLS)}
+
+  {:else if ($curPageMode === PAGEMODE_CTRLS_ORG)}
+    <PageCtrlsOrg/>
+  {:else if ($curPageMode === PAGEMODE_CTRLS_NEW)}
     <PageControls/>
 
   <!-- {:else if ($curPageMode === PAGEMODE_HELPDOCS)}

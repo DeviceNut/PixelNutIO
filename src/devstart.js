@@ -4,7 +4,7 @@ import {
   MIN_TRACKS,
   MIN_LAYERS,
   MINLEN_MAXPATTERN,
-  PAGEMODE_CONTROLS,
+  PAGEMODE_CTRLS_NEW,
   devVersion,
   devPaused,
   curPageMode,
@@ -134,7 +134,7 @@ function setStrandPattern(strand, id, name='', pstr='', pdesc='')
 {
   strand.curPatternId   = id;
   strand.curPatternName = name;
-  strand.curPatternCmd  = pstr;
+  strand.curPatternCmds  = pstr;
   strand.curPatternDesc = pdesc;
 }
 
@@ -399,7 +399,7 @@ export let devStartup = (device) =>
   // sanity check if device still active
   if (get(curDevice) !== null)
   {
-    curPageMode.set(PAGEMODE_CONTROLS);
+    curPageMode.set(PAGEMODE_CTRLS_NEW);
 
     if (didclear)
     {

@@ -1,7 +1,5 @@
 <script>
 
-  import { get } from 'svelte/store';
-
   import MediaQuery from "svelte-media-query";
 
   import {
@@ -58,9 +56,9 @@
     let sdiff = secs - prevsecs;
     prevsecs = secs;
 
-    for (let s = 0; s < get(nStrands); ++s)
+    for (let s = 0; s < $nStrands; ++s)
     {
-      const strand = get(aStrands)[s];
+      const strand = $aStrands[s];
       if (strand.selected && strand.modified)
       {
         strand.idletime += sdiff;
@@ -99,12 +97,10 @@
             <div style="padding-left:10px;">
               <PanelControls/>
             </div>
-            {#if !$curDevice.orgcode}
-              <div class="bdiv" class:bdiv2={$showCustom}
-                on:click={toggleshow}>
-                <span>{pstr}</span>
-              </div>
-            {/if}
+            <div class="bdiv" class:bdiv2={$showCustom}
+              on:click={toggleshow}>
+              <span>{pstr}</span>
+            </div>
           </Column>
         </Row>
       </div>
@@ -129,21 +125,19 @@
             <PanelControls/>
           </Column>
         </Row>
-        {#if !$curDevice.orgcode}
-          <Row>
-            <Column>
-              <div class="bdiv" class:bdiv2={$showCustom}
-                on:click={toggleshow}>
-                <span>{pstr}</span>
-              </div>
-            </Column>
-          </Row>
-        {/if}
+        <Row>
+          <Column>
+            <div class="bdiv" class:bdiv2={$showCustom}
+              on:click={toggleshow}>
+              <span>{pstr}</span>
+            </div>
+          </Column>
+        </Row>
       </div>
     {/if}
   </MediaQuery>
 
-  {#if !$curDevice.orgcode && $showCustom }
+  {#if $showCustom }
     <MediaQuery query="(max-width: 1100px)" let:matches>
       {#if matches}
         <TrackLayout numcols={1} />

@@ -43,11 +43,8 @@ export const sendStrandSwitch = (s) =>
 function sendStoreExecPattern(doexec)
 {
   const strand = get(pStrand);
-  const patstr = strand.curPatternCmd;
+  const patstr = strand.curPatternCmds;
   let patname = strand.curPatternName;
-
-  sendCmdToDevice('P E2 T E101 T G'); // FIXME
-  return;
 
   if (patstr !== '')
   {

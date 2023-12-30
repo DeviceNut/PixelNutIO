@@ -19,9 +19,10 @@ export const MSECS_DEVSTORE_CHECK   = 1000;   // msecs in between check for stor
 
 export const HELPTEXT_HEIGHT        = 45;     // height of help text panel
 
+export const PAGEMODE_HELPDOCS      = 0;      // controls help documentation
 export const PAGEMODE_DEVICES       = 1;      // list of devices to connect to
-export const PAGEMODE_CONTROLS      = 2;      // controls for specific device
-export const PAGEMODE_HELPDOCS      = 3;      // controls help documentation
+export const PAGEMODE_CTRLS_ORG     = 2;      // orginal style device controls
+export const PAGEMODE_CTRLS_NEW     = 3;      // new protocol device controls
 
 export const MIN_TRACKS             = 4;      // minimum number of tracks
 export const MIN_LAYERS             = 4;      // minimum number of layers

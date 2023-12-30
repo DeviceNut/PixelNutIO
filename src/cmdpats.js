@@ -76,10 +76,10 @@ export const userClearPattern = (setid=true) =>
 
   if (setid) strand.curPatternId = MENUID_CUSTOM;
 
-  if (strand.curPatternCmd !== '')
+  if (strand.curPatternCmds !== '')
   {
     strand.curPatternName = '';
-    strand.curPatternCmd  = '';
+    strand.curPatternCmds  = '';
     strand.curPatternDesc = '';
 
     showCustom.set(false);

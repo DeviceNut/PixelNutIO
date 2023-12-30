@@ -133,7 +133,7 @@ const oneStrand =
 
   curPatternId    : MENUID_PRESETS, // menu ID of current pattern
   curPatternName  : '',     // name of current pattern
-  curPatternCmd   : '',     // current pattern command
+  curPatternCmds  : '',     // current pattern command
   curPatternDesc  : '',     // current pattern description
 
   bitsOverride    : 0x00,   // OR'ed overrides from all track layers
@@ -220,7 +220,7 @@ export const strandCopyTop = () =>
 
         strand.curPatternId   = ps.curPatternId;
         strand.curPatternName = ps.curPatternName;
-        strand.curPatternCmd  = ps.curPatternCmd;
+        strand.curPatternCmds  = ps.curPatternCmds;
         strand.curPatternDesc = ps.curPatternDesc;
 
         strand.bitsOverride   = ps.bitsOverride;

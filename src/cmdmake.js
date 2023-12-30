@@ -119,7 +119,7 @@ export const makeEntireCmdStr = () =>
 
   //console.log(`makeEntireCmdStr: ${cmdstr}`);
 
-  strand.curPatternCmd = cmdstr;
+  strand.curPatternCmds = cmdstr;
   strand.bitsOverride  = ridebits;
   strand.bitsEffects   = splugbits;
   strand.triggerUsed   = trigused;

@@ -57,8 +57,6 @@ const deviceState =
   doshow: false,        // info panel on Devices page
   doquery: false,       // true to re-query on open
 
-  orgcode: false,       // true if original BLE code
-
   report: {             // device info from query
     nstrands: 0,          // strand count (>= 1)
     npatterns: 0,         // custom device patterns

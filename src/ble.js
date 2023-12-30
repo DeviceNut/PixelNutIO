@@ -4,7 +4,7 @@ import {
   deviceList,
   msgTitle,
   msgDesc,
-  PAGEMODE_CONTROLS,
+  PAGEMODE_CTRLS_ORG,
   curPageMode,
   curDevice,
   connectActive,
@@ -50,7 +50,6 @@ import {
   menuDevice,
   menuCreate
 } from './menu.js';
-
 
 const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
@@ -303,12 +302,16 @@ export const bleConnect = async () =>
   }
   catch (err)
   {
-    console.error('BLE Connect failed:', err);
+    const estr = err.toString();
+    if (!estr.startsWith('NotFoundError'))
+    {
+      console.error('BLE Connect failed:', estr);
 
-    // trigger error message title/text
-    msgTitle.set('Bluetooth Problem');
-    msgDesc.set(`Connect failed: ${err}`);
-    deviceList.set([]);
+      // trigger error message title/text
+      msgTitle.set('Bluetooth Problem');
+      msgDesc.set(`Connect failed: ${err}`);
+      deviceList.set([]);
+    }
   }
 }
 
@@ -324,7 +327,6 @@ export const bleSetup = async (device) =>
   // console.log('BLE query 1 finished');
 
   theDevice.ready = true;
-  theDevice.orgcode = true;
 
   if (replyError)
   {
@@ -386,7 +388,7 @@ export const bleStart = async (device) =>
 {
   device.active = true;
   curDevice.set(device);
-  curPageMode.set(PAGEMODE_CONTROLS);
+  curPageMode.set(PAGEMODE_CTRLS_ORG);
 
   maxLenPattern.set(device.report.maxstrlen);
 
@@ -405,7 +407,7 @@ export const bleStart = async (device) =>
     const strand = strandCreateNew(i);
 
     strand.curPatternName = device.report.strands[i].patname;
-    strand.curPatternCmd  = device.report.strands[i].patcmds;
+    strand.curPatternCmds = device.report.strands[i].patcmds;
     strand.curPatternDesc = device.report.strands[i].patdesc;
     strand.bitsOverride = 0; // TODO
     strand.bitsEffects = 0;
@@ -436,17 +438,39 @@ async function BleQuery(msg)
   await bleCharTx.writeValue(query);
 }
 
+const MAXLEN_SEND = 20;
 let busy = false;
 const queue = [];
 function BleWrite()
 {
   busy = true;
-  const msg = queue[0];
+  // console.log('queue:', queue[0]);
+
+  let msg = queue[0];
+  if (msg.length > MAXLEN_SEND)
+  {
+    let str = '';
+    const words = msg.split(' ');
+
+    for (let i = 0; i < words.length; ++i)
+    {
+      const next = words[i];
+      if ((str.length + next.length + 1) >= MAXLEN_SEND)
+      {
+        msg = str;
+        queue[0] = words.slice(i).join(' ');
+        break;
+      }
+      str += next + ' ';
+    }
+  }
+  else queue[0] = null;
+
+  // console.log(`sending: "${msg}"`);
   const query = AsciiToUint8Array(msg);
   bleCharTx.writeValue(query).then(() =>
   {
-    queue.shift();
-    // console.log('queue:', queue);
+    if (!queue[0]) queue.shift();
     if (queue.length) BleWrite();
     else busy = false;
   });

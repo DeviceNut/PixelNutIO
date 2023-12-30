@@ -1,5 +1,5 @@
 
-const pattNames =
+export const pattNames =
 [
   "Rainbow Ripple",
   "Rainbow Roll",
@@ -16,7 +16,7 @@ const pattNames =
   "MashUp",
 ];
 
-const pattDesc =
+const pattDescs =
 [
   "Color hue changes \"ripple\" down the strip. The colors move through the spectrum, and appear stationary until Triggered.\n\n" +
   "The Force applied changes the amount of color change per pixel. At maximum Force the entire spectrum is displayed again.",
@@ -98,11 +98,12 @@ const pattBits =
 
 export const orgpatGetInfo = (patnum) =>
 {
-  patnum -= 8; // basic patterns from app
-  if (patnum > pattNames.length) return null;
+  if (patnum > pattNames.length) 
+    patnum -= 8; // skip basic patterns from app
+
   return {
     name  : pattNames[patnum],
-    desc  : pattDesc[patnum],
+    desc  : pattDescs[patnum],
     cmds  : pattCmds[patnum],
     bits  : pattBits[patnum],
   };

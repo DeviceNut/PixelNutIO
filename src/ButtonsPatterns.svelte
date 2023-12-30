@@ -54,7 +54,7 @@
 
     openSave = false;
 
-    storePatternSave($pStrand.curPatternName, $pStrand.curPatternDesc, $pStrand.curPatternCmd);
+    storePatternSave($pStrand.curPatternName, $pStrand.curPatternDesc, $pStrand.curPatternCmds);
     storePatternsInit();
     menuCreate();
 
@@ -65,7 +65,7 @@
   {
     let textArea = document.createElement("textarea");
 
-    textArea.value = $pStrand.curPatternCmd;
+    textArea.value = $pStrand.curPatternCmds;
 
     document.body.appendChild(textArea);
     textArea.focus();

@@ -11,16 +11,16 @@
   import {
     curDevice,
     curPageMode,
-    PAGEMODE_DEVICES,
     connectActive,
+    PAGEMODE_DEVICES,
   } from './globals.js';
 
   import HeaderControls from './HeaderControls.svelte';
-  import MultiStrands from './MultiStrands.svelte';
-  import PanelPatterns from './PanelPatterns.svelte';
-  import PanelControls from './PanelControls.svelte';
+  import MultiStrands   from './MultiStrands.svelte';
+  import PanelOrgPatts  from './PanelOrgPatts.svelte';
+  import PanelControls  from './PanelControls.svelte';
 
-  $: if (!$connectActive || !$curDevice)
+  $: if (!$connectActive || !$curDevice) // not used - TODO
       $curPageMode = PAGEMODE_DEVICES;
 
 </script>
@@ -38,7 +38,7 @@
         <Row>
           <Column>
             <div style="margin:15px; 20px; 0 20px;">
-              <PanelPatterns/>
+              <PanelOrgPatts/>
             </div>
             <div class="divider"></div>
             <div style="padding-left:10px;">
@@ -60,7 +60,7 @@
         </Row>
         <Row style="margin:10px 0 10px 10px;">
           <Column>
-            <PanelPatterns/>
+            <PanelOrgPatts/>
           </Column>
           <div class="vertdiv"></div>
           <Column>

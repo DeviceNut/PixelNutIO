@@ -27,12 +27,12 @@
   import { userSetPattern } from './cmdpats.js';
   import { sendStrandPattern } from './cmdsend.js';
 
-  import HeaderControls from './HeaderControls.svelte';
-  import MultiStrands from './MultiStrands.svelte';
+  import HeaderControls  from './HeaderControls.svelte';
+  import MultiStrands    from './MultiStrands.svelte';
   import ButtonsPatterns from './ButtonsPatterns.svelte';
-  import PanelMenu from './PanelMenu.svelte';
-  import PanelControls from './PanelControls.svelte';
-  import TrackLayout from './TrackLayout.svelte';
+  import PanelMenu       from './PanelMenu.svelte';
+  import PanelControls   from './PanelControls.svelte';
+  import TrackLayout     from './TrackLayout.svelte';
 
   let pstr = '';
   $: pstr = ($showCustom ? '^' : 'Customize');

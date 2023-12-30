@@ -40,8 +40,8 @@
   // import PageHelp     from './PageHelp.svelte';
   import PageDevBle   from './PageDevBle.svelte';
   import PageDevMqtt  from './PageDevMqtt.svelte';
-  import PageCtrlsOrg from './PageCtrlsOrg.svelte';
-  import PageControls from './PageControls.svelte';
+  import PageOrgCtrls from './PageOrgCtrls.svelte';
+  import PageNewCtrls from './PageNewCtrls.svelte';
   import ColorsSelect from './ColorsSelect.svelte';
 
   // import { helpInit } from './helpmain.js';
@@ -115,9 +115,9 @@
     {/if}
 
   {:else if ($curPageMode === PAGEMODE_CTRLS_ORG)}
-    <PageCtrlsOrg/>
+    <PageOrgCtrls/>
   {:else if ($curPageMode === PAGEMODE_CTRLS_NEW)}
-    <PageControls/>
+    <PageNewCtrls/>
 
   <!-- {:else if ($curPageMode === PAGEMODE_HELPDOCS)}
     <PageHelp/> -->

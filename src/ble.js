@@ -363,7 +363,7 @@ export const bleSetup = async (device) =>
     const strand = device.report.strands[i];
     const info = orgpatGetInfo(strand.patnum);
     strand.patname  = info.name;
-    strand.patcmds  = info.cmds;
+    strand.patstr   = info.cmds;
     strand.patdesc  = info.desc;
     strand.patbits  = info.bits;
   }
@@ -419,7 +419,7 @@ async function BleStart(device)
     const strand = strandCreateNew(i);
 
     strand.curPatternName = device.report.strands[i].patname;
-    strand.curPatternCmds = device.report.strands[i].patcmds;
+    strand.curPatternCmds = device.report.strands[i].patstr;
     strand.curPatternDesc = device.report.strands[i].patdesc;
     strand.curPatternBits = device.report.strands[i].patbits; // unique to legacy patterns
     strand.forceValue = MAX_FORCE_VALUE/2;

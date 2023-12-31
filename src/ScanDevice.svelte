@@ -68,7 +68,7 @@
               </div>
             {/if}
             <div class="pattern-string">
-              <span>{strand.patcmds}</span>
+              <span>{strand.patstr}</span>
             </div>
           </div>          
         </div>

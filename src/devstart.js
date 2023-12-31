@@ -275,7 +275,7 @@ export let devStart = (device) =>
     pStrand.set(strand);
 
     let cmdname = device.report.strands[s].patname;
-    let cmdstr = device.report.strands[s].patcmds.trim();
+    let cmdstr = device.report.strands[s].patstr.trim();
 
     if (cmdstr === '') // no pattern running
     {

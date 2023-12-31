@@ -39,9 +39,10 @@ export const strandInfo =
   xt_count: 0,          //  count property (percent)
 
   // information about the pattern:
+  // CANNOT change these names, part of new protocol
   patname: '',          // name
   patdesc: '',          // description
-  patcmds: '',          // command string
+  patstr:  '',          // command string
   patbits: '',          // feature bits
 };
 

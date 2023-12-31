@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 
-export const appVersion     = 'PixelNutWeb 1.1';
+export const appVersion     = 'PixelNutWeb 1.2';
 export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';

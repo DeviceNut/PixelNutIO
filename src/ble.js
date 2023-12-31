@@ -1,11 +1,12 @@
 import { get } from 'svelte/store';
 
 import {
-  deviceList,
+  SECS_QUERY_TIMEOUT,
   PAGEMODE_CTRLS_ORG,
   curPageMode,
   curDevice,
   devUpdate,
+  deviceList,
   connectActive,
   connectFail,
   nStrands,
@@ -50,11 +51,27 @@ let queryType = 0;
 let replyError = 0;
 let querySegs = false;
 let bleDevice = null;
-let theDevice;
+let theDevice = null;
 
 async function WaitUntil(condition)
 {
-  while (!condition()) await new Promise(resolve => setTimeout(resolve, 100));
+  let toutCount = 0;
+  const toutMax = SECS_QUERY_TIMEOUT * 1000;
+
+  while (!condition())
+  {
+    toutCount += 100;
+    if (toutCount > toutMax)
+    {
+      const estr = `Device not responding: ${replyState}.${replyCount}`;
+      deviceError(estr, 'Device Error');
+      deviceList.set([]);
+      return false;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  return true;
 }
 
 function AsciiToUint8Array(str){
@@ -326,25 +343,19 @@ export const bleSetup = async (device) =>
   replyWait = true;
 
   BleSend('?');
-  await WaitUntil(() => replyWait === false);
-  // console.log('BLE query 1 finished');
+  if (!await WaitUntil(() => replyWait === false)) return;
 
   if (replyError)
   {
     const estr = `Cannot support this device: #${replyError}`;
     deviceError(estr, 'Device Problem');
-
-    deviceList.set([]);
-    connectActive.set(false);
-    connectFail.set(true);
   }
   else if (querySegs)
   {
     replyState = 3;
     replyWait = true;
     BleSend('?S');
-    await WaitUntil(() => replyWait === false);
-    // console.log('BLE query 2 finished');
+    if (!await WaitUntil(() => replyWait === false)) return;
   }
 
   for (let i = 0; i < device.report.nstrands; ++i)

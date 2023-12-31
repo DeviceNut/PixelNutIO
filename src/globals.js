@@ -1,15 +1,18 @@
 import { get, writable } from 'svelte/store';
 
-export const appVersion     = 'PixelNutWeb 1.2';
+export const appVersion     = 'PixelNutWeb 1.3';
 export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';
 
-// only for new device protocol?:
+// only for new device protocol:
 export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
 
-// only in MQTT mode:
+// only for BLE connection:
+export const SECS_QUERY_TIMEOUT     = 3;      // secs since started query for info
+
+// only in MQTT connection:
 export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/connection
 export const MSECS_WAIT_DEVICES     = 2000;   // msecs to wait for device detection
 export const MSECS_CHECK_TIMEOUT    = 750;    // interval between connection check

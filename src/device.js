@@ -91,7 +91,6 @@ export let deviceAdd = (name) =>
 export let deviceError = (text, title=null) =>
 {
   if (title === null) title = 'Program Error';
-
   console.error(text == '' ? title : text);
 
   // trigger error message title/text
@@ -105,6 +104,7 @@ export let deviceError = (text, title=null) =>
 
 export let deviceReset = (device) =>
 {
+  if (!device) device = get(curDevice);
   console.log(`Device Reset: "${device.curname}`);
 
   let newlist = [];

@@ -2,8 +2,6 @@ import { get } from 'svelte/store';
 
 import {
   deviceList,
-  msgTitle,
-  msgDesc,
   PAGEMODE_CTRLS_ORG,
   curPageMode,
   curDevice,
@@ -28,6 +26,8 @@ import {
 import {
   strandInfo,
   deviceAdd,
+  deviceError,
+  deviceReset,
 } from './device.js';
 
 import {
@@ -49,6 +49,7 @@ let replyCount = 0;
 let queryType = 0;
 let replyError = 0;
 let querySegs = false;
+let bleDevice = null;
 let theDevice;
 
 async function WaitUntil(condition)
@@ -118,7 +119,7 @@ function Notifications(event)
     if (chval === 10) // newline
     {
       const strs = replyStr.trim().split(' ');
-      console.log('BLE Reply:', replyStr); //, strs);
+      // console.log('BLE reply:', replyStr); //, strs);
 
       switch (replyState)
       {
@@ -130,6 +131,7 @@ function Notifications(event)
 
           if ((strs[0] === 'P!') && (replyCount >= 1))
           {
+            console.log('BLE reply:', replyStr);
             queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
             replyState = 2;
           }
@@ -240,25 +242,38 @@ export const bleSupported = async () =>
   return false;
 }
 
-export const bleConnect = async () =>
+export const bleRequest = async () =>
 {
   theDevice = null;
   deviceList.set([]);
 
   try
   {
-    const device = await navigator.bluetooth.requestDevice({
+    bleDevice = await navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
       filters: [{ namePrefix: "P!" }],
       optionalServices: [SERVICE_UUID_UART]
     });
-    console.log('BLE connecting...'); //, device);
+
+    return !!bleDevice;
+  }
+  catch(err)
+  {
+    const estr = err.toString();
+    if (!estr.startsWith('NotFoundError'))
+      deviceError(estr, 'Device Pair Failed');
+  }
+
+  return false;
+}
+
+export const bleConnect = async () =>
+{
+  try
+  {
+    console.log('BLE connecting...'); //, bleDevice);
   
-    // doesn't work in Chrome on Windows...why?
-    // resp = await navigator.bluetooth.getDevices();
-    // console.log('BLE devices', resp);
-  
-    const server = await device.gatt.connect();
+    const server = await bleDevice.gatt.connect();
     // console.log('BLE server:', server);
   
     const service = await server.getPrimaryService(SERVICE_UUID_UART);    
@@ -279,11 +294,13 @@ export const bleConnect = async () =>
     // console.log('BLE start notifications...');
     await bleCharRx.startNotifications();
 
-    const name = device.name.slice(2);
+    const name = bleDevice.name.slice(2);
     theDevice = deviceAdd(name);
     theDevice.query = bleSetup;
     theDevice.start = BleStart;
-    theDevice.send = BleSend;
+    theDevice.stop  = BleStop;
+    theDevice.send  = BleSend;
+    theDevice.gatt  = bleDevice.gatt;
 
     console.log('Connected to:', theDevice.curname);
 
@@ -291,19 +308,13 @@ export const bleConnect = async () =>
     connectActive.set(true);
     connectFail.set(false);
   }
-  catch(err)
-  {
-    const estr = err.toString();
-    if (!estr.startsWith('NotFoundError'))
-    {
-      console.error('BLE Connect failed:', estr);
+  catch(err) { deviceError(err.toString(), 'Device Connect Failed'); }
+}
 
-      // trigger error message title/text
-      msgTitle.set('Bluetooth Problem');
-      msgDesc.set(`Connect failed: ${estr}`);
-      deviceList.set([]);
-    }
-  }
+async function BleStop(device)
+{
+  await device.gatt.disconnect();
+  deviceReset(device);
 }
 
 export const bleSetup = async (device) =>
@@ -320,11 +331,8 @@ export const bleSetup = async (device) =>
 
   if (replyError)
   {
-    console.error('BLE query failed:', replyError);
-
-    // trigger error message title/text
-    msgTitle.set('Device Problem');
-    msgDesc.set(`Cannot support this device: #${replyError}`);
+    const estr = `Cannot support this device: #${replyError}`;
+    deviceError(estr, 'Device Problem');
 
     deviceList.set([]);
     connectActive.set(false);
@@ -463,16 +471,10 @@ async function BleWrite()
   }
   catch(err)
   {
-    const estr = err.toString();
-    console.error('BLE Write failed:', estr);
-
-    // trigger error message title/text
-    msgTitle.set('Bluetooth Problem');
-    msgDesc.set(`Write failed: ${estr}`);
-
-    deviceList.set([]);
     connectActive.set(false);
     connectFail.set(true);
+
+    deviceError(err.toString(), 'Device Error');
   }
 }
 function BleSend(msg)

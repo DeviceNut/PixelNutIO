@@ -7,14 +7,19 @@
   export let device;
 
   const moreinfo = () => { device.doshow = !device.doshow; }
-  const doctrls = () => { device.start(device) }
+  const doctrls  = () => { device.start(device) }
+  const dostop   = () => { device.stop(device) }
 
 </script>
 
 <div class="devbox" class:expand={device.doshow}>
   {#if device.ready }
+    <button class="button-left"
+      on:click={dostop}
+      >X
+    </button>
     <div on:click={moreinfo} class="devname" >{device.curname}</div>
-    <button class="button"
+    <button class="button-rite"
       on:click={doctrls}
       >Controls
     </button>
@@ -77,7 +82,7 @@
     margin: 0 auto;
     text-align: left;
     width: 300px;
-    padding: 12px 10px 10px 10px;
+    padding: 12px 5px 10px 5px;
     color: var(--text-lines);
     background-color: var(--page-header);
   }
@@ -99,7 +104,13 @@
     cursor: pointer;
     background-color: var(--panel-back);
   }
-  .button {
+  .button-left {
+    float: left;
+    margin-top: -3px;
+    width: 30px;
+    margin-right: 15px;
+  }
+  .button-rite {
     float: right;
     margin-top: -3px;
   }

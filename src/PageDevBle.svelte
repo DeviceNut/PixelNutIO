@@ -10,6 +10,7 @@
   } from './globals.js';
 
   import {
+    bleRequest,
     bleConnect,
     bleSetup,
   } from './ble.js';
@@ -18,18 +19,27 @@
   import ScanDevice from './ScanDevice.svelte';
 
   let scanning = false;
+  let scanmesg = '';
 
   const doBlue = async () =>
   {
     scanning = true;
-    await bleConnect();
-    scanning = false;
+    scanmesg = 'Scanning for devices...';
+    const success = await bleRequest();
 
-    if ($deviceList.length)
+    if (success)
     {
-      await bleSetup($deviceList[0]);
-      $deviceList = $deviceList; // make reactive
+      scanmesg = 'Connecting to device...';
+      await bleConnect();
+      scanning = false;
+
+      if ($deviceList.length)
+      {
+        await bleSetup($deviceList[0]);
+        $deviceList = $deviceList; // make reactive
+      }
     }
+    else scanning = false;
   }
 
   if ($curDevice && $curDevice.doquery)
@@ -47,9 +57,10 @@
   <div class="controls">
 
     {#if scanning }
-      <p>Scanning for devices...</p>
+      <p>{scanmesg}</p>
       <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
     {:else}
+      <!-- TODO: disable if any device query is active -->
       <button class="button"
         on:click={doBlue}
         >Select Bluetooth Device

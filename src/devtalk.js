@@ -42,16 +42,23 @@ function NewDevice(name, sendfun)
   device.failcount = 0; // number of protocol failures
   device.dinfo = {}; // holds raw JSON device output
 
-  device.query = sendQuery;
+  device.query = SendQuery;
   device.start = devStart;
-  device.send = sendfun;
+  device.stop  = IgnoreDevice;
+  device.send  = sendfun;
 
   return device;
 }
 
-export const sendQuery = (device) =>
+function IgnoreDevice(device)
 {
-  //console.log(`sendQuery: "${device.curname}"`)
+  device.ignore = true;
+  deviceList.set(get(deviceList)); // update UI
+}
+
+function SendQuery(device)
+{
+  //console.log(`SendQuery: "${device.curname}"`)
 
   device.qstate = QSTATE_WAIT_RESP;
   device.send(queryStr_GetInfo, device.curname);
@@ -144,7 +151,7 @@ export const onNotification = (msg, sendfun) =>
       if (!device.ignore)
       {
         if (device.qstate === QSTATE_RESTART)
-        sendQuery(device);
+        SendQuery(device);
       }
       return; // don't add
     }
@@ -161,7 +168,7 @@ export const onNotification = (msg, sendfun) =>
 
   let device = NewDevice(name, sendfun);
 
-  sendQuery(device);
+  SendQuery(device);
 }
 
 export const onDeviceReply = (msg, sendfun) =>

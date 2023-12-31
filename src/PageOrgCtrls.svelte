@@ -20,7 +20,7 @@
   import PanelOrgPatts  from './PanelOrgPatts.svelte';
   import PanelOrgCtrls  from './PanelOrgCtrls.svelte';
 
-  $: if (!$connectActive || !$curDevice) // not used - TODO
+  $: if (!$connectActive || !$curDevice)
       $curPageMode = PAGEMODE_DEVICES;
 
 </script>

@@ -77,9 +77,9 @@
     {
       ok = document.execCommand('copy'); // FIXME: deprecated
     }
-    catch (error)
+    catch(err)
     {
-      errstr = error;
+      errstr = err.toString();
       ok = false;
     }
     if (!ok) console.warn(`Failed copying to clipboard: ${errstr}`);

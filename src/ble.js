@@ -291,7 +291,7 @@ export const bleConnect = async () =>
     connectActive.set(true);
     connectFail.set(false);
   }
-  catch (err)
+  catch(err)
   {
     const estr = err.toString();
     if (!estr.startsWith('NotFoundError'))
@@ -300,7 +300,7 @@ export const bleConnect = async () =>
 
       // trigger error message title/text
       msgTitle.set('Bluetooth Problem');
-      msgDesc.set(`Connect failed: ${err}`);
+      msgDesc.set(`Connect failed: ${estr}`);
       deviceList.set([]);
     }
   }
@@ -325,8 +325,8 @@ export const bleSetup = async (device) =>
     // trigger error message title/text
     msgTitle.set('Device Problem');
     msgDesc.set(`Cannot support this device: #${replyError}`);
-    deviceList.set([]);
 
+    deviceList.set([]);
     connectActive.set(false);
     connectFail.set(true);
   }
@@ -425,7 +425,7 @@ async function BleStart(device)
 const MAXLEN_SEND = 20;
 let busy = false;
 const queue = [];
-function BleWrite()
+async function BleWrite()
 {
   busy = true;
   // console.log('queue:', queue[0]);
@@ -450,14 +450,30 @@ function BleWrite()
   }
   else queue[0] = null;
 
-  // console.log(`sending: "${msg}"`);
-  const query = AsciiToUint8Array(msg);
-  bleCharTx.writeValue(query).then(() =>
+  try
   {
-    if (!queue[0]) queue.shift();
-    if (queue.length) BleWrite();
-    else busy = false;
-  });
+    // console.log(`sending: "${msg}"`);
+    const query = AsciiToUint8Array(msg);
+    await bleCharTx.writeValue(query).then(() =>
+    {
+      if (!queue[0]) queue.shift();
+      if (queue.length) BleWrite();
+      else busy = false;
+    });
+  }
+  catch(err)
+  {
+    const estr = err.toString();
+    console.error('BLE Write failed:', estr);
+
+    // trigger error message title/text
+    msgTitle.set('Bluetooth Problem');
+    msgDesc.set(`Write failed: ${estr}`);
+
+    deviceList.set([]);
+    connectActive.set(false);
+    connectFail.set(true);
+  }
 }
 function BleSend(msg)
 {

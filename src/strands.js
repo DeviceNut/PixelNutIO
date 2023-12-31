@@ -6,7 +6,8 @@ import {
   pStrand,
   aStrands,
   nTracks,
-  nLayers
+  nLayers,
+  makeCopyOf,
 } from './globals.js';
 
 import {
@@ -160,7 +161,7 @@ export const overBit_PcentCount   = 4;      // overwrite pcentCount
 
 function makeOneLayer()
 {
-  let layer = {...oneLayer};
+  let layer = makeCopyOf(oneLayer);
   layer.uniqueID = 'LID' + (Math.random() + 1).toString(36).slice(-8);
   //console.log(`makeOneLayer: ID=${layer.uniqueID}`);
   return layer;
@@ -168,7 +169,7 @@ function makeOneLayer()
 
 function makeOneTrack()
 {
-  let track = {...oneTrack};
+  let track = makeCopyOf(oneTrack);
   let layers = [];
 
   track.drawProps = {...drawProps};
@@ -193,7 +194,7 @@ function makeNewTracks(s)
 
 export const strandCreateNew = (s) =>
 {
-  let strand = {...oneStrand};
+  let strand = makeCopyOf(oneStrand);
   strand.opropsUser = {...orideProps};
   strand.opropsSent = {...orideProps};
   strand.tracks = makeNewTracks();
@@ -265,7 +266,7 @@ export const strandCopyLayer = (track, layer) =>
       const strand = get(aStrands)[s];
       if (strand.selected)
       {
-        strand.tracks[track].layers.splice(layer, 1, {...player});
+        strand.tracks[track].layers.splice(layer, 1, makeCopyOf(player));
 
         if (layer === 0)
           strand.tracks[track].drawProps = {...props};
@@ -301,7 +302,7 @@ export const strandCopyTrack = (track) =>
         for (let layer = 0; layer < ptrack1.lactives; ++layer)
         {
           const player = ptrack1.layers[layer];
-          ptrack2.layers.splice(layer, 1, {...player});
+          ptrack2.layers.splice(layer, 1, makeCopyOf(player));
         }
       }
     }

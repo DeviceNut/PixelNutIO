@@ -26,8 +26,8 @@
 
   const dodevs = () =>
   {
-    $curDevice.doshow = false; // close info panel
-    $curDevice.doquery = true; // force query when open
+    $curDevice.doshow = false;  // close info panel
+    $curDevice.doquery = true;  // force re-query on return
     $curPageMode = PAGEMODE_DEVICES;
   }
 

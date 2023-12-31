@@ -11,26 +11,31 @@
 
   import {
     MAX_FORCE_VALUE,
+    patBit_TrigForce,
+    patBit_Triggering,
+    patBits_Properties,
+    patBit_DegreeHue,
+    patBit_PcentWhite,
+    patBit_PcentCount,
   } from './orgpatts.js';
 
   import {
     MAX_HUE_VALUE,
     cmdStr_OR_Bright,
-    cmdStr_OR_Delay,
-    cmdStr_SetOride,
     cmdStr_PullTrigger,
-    pluginBit_COLOR,
-    pluginBit_COUNT,
-    pluginBit_TRIGFORCE
   } from './devcmds.js';
 
-  import {
-    overBit_DegreeHue,
-    overBit_PcentWhite,
-    overBit_PcentCount 
-  } from './strands.js';
-
   import SliderVal from './SliderVal.svelte';
+
+  // these have changed in new protocol:
+  const cmdStr_OR_Delay   = ":";    // delay percent to apply
+  const cmdStr_SetOride   = "_";    // 0=disable 1=enable override
+  const cmdStr_OR_Props   = "=";    // followed by: hue white count
+
+  // 8-bit signed value
+  const MINVAL_DELAY      = -128;
+  const MAXVAL_DELAY      = 127;
+  const RANGE_DELAY       = 255;
 
   const userSetBright = () =>
   {
@@ -39,17 +44,23 @@
 
   const userSetDelay = () =>
   {
-
+    // convert percent into +/- MAXVAL_DELAY
+    const delay = Math.floor(($pStrand.pcentDelay / 100) * RANGE_DELAY) + MINVAL_DELAY;
+    $curDevice.send(cmdStr_OR_Delay + `${delay}`);
   }
 
   const userSetOverMode = () =>
   {
-
+    const overide = $pStrand.opropsUser.doEnable ? 1 : 0;
+    $curDevice.send(cmdStr_SetOride + `${overide}`);
   }
 
   const userSetProps = () =>
   {
-
+    const hue   = $pStrand.opropsUser.valueHue;
+    const white = $pStrand.opropsUser.pcentWhite;
+    const count = $pStrand.opropsUser.pcentCount;
+    $curDevice.send(cmdStr_OR_Props + `${hue} ${white} ${count}`);
   }
 
   const userSendTrigger = () =>
@@ -77,29 +88,26 @@
       <Checkbox labelText="Override Track Properties"
         on:check={userSetOverMode}
         bind:checked={$pStrand.opropsUser.doEnable}
-        disabled={$pStrand.bitsOverride === 0}
+        disabled={!($pStrand.curPatternBits & patBits_Properties)}
       />
       <SliderVal name='Hue&nbsp;&nbsp;&nbsp;'
         max={MAX_HUE_VALUE}
         onchange={userSetProps}
         bind:cur={$pStrand.opropsUser.valueHue}
-        disabled={!$pStrand.opropsUser.doEnable                 ||
-                  !($pStrand.bitsOverride & overBit_DegreeHue)  ||
-                  !($pStrand.bitsEffects  & pluginBit_COLOR)}
+        disabled={!$pStrand.opropsUser.doEnable ||
+                  !($pStrand.curPatternBits & patBit_DegreeHue)}
       />
       <SliderVal name='White&nbsp;'
         onchange={userSetProps}
         bind:cur={$pStrand.opropsUser.pcentWhite}
-        disabled={!$pStrand.opropsUser.doEnable                 ||
-                  !($pStrand.bitsOverride & overBit_PcentWhite) ||
-                  !($pStrand.bitsEffects  & pluginBit_COLOR)}
+        disabled={!$pStrand.opropsUser.doEnable ||
+                  !($pStrand.curPatternBits & patBit_PcentWhite)}
       />
       <SliderVal name='Count&nbsp;'
         onchange={userSetProps}
         bind:cur={$pStrand.opropsUser.pcentCount}
-        disabled={!$pStrand.opropsUser.doEnable                 ||
-                  !($pStrand.bitsOverride & overBit_PcentCount) ||
-                  !($pStrand.bitsEffects  & pluginBit_COUNT)}
+        disabled={!$pStrand.opropsUser.doEnable ||
+                  !($pStrand.curPatternBits & patBit_PcentCount)}
       />
     </div>
 
@@ -108,11 +116,11 @@
     <SliderVal name='Force'
       max={MAX_FORCE_VALUE}
       bind:cur={$pStrand.forceValue}
-      disabled={ !($pStrand.bitsEffects & pluginBit_TRIGFORCE) }
+      disabled={ !($pStrand.curPatternBits & patBit_TrigForce) }
       />
 
     <button class="button-trigger"
-      disabled={ !($pStrand.bitsEffects & pluginBit_TRIGFORCE) }
+      disabled={ !($pStrand.curPatternBits & patBit_Triggering) }
       on:click={userSendTrigger}
       >Trigger
     </button>

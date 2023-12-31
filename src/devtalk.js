@@ -14,6 +14,8 @@ import {
   deviceError,
 } from './device.js';
 
+import { devStart } from './devstart.js';
+
 // Device Query/Responses:
 const queryStr_GetInfo    = "?";        // returns device info in JSON format
 const respStr_Rebooted    = "<Reboot>"  // indicates device just rebooted
@@ -29,14 +31,20 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
 function NewDevice(name, sendfun)
 {
-  const device = deviceAdd(name, sendfun);
+  const device = deviceAdd(name);
   console.log('NewDevice:', device);
 
   // add specific to this protocol members:
+
   device.qstate = QSTATE_RESTART;
   device.tstamp = curTimeSecs(); // last notify/response
+
   device.failcount = 0; // number of protocol failures
   device.dinfo = {}; // holds raw JSON device output
+
+  device.query = sendQuery;
+  device.start = devStart;
+  device.send = sendfun;
 
   return device;
 }
@@ -45,7 +53,6 @@ export const sendQuery = (device) =>
 {
   //console.log(`sendQuery: "${device.curname}"`)
 
-  device.doquery = false;
   device.qstate = QSTATE_WAIT_RESP;
   device.send(queryStr_GetInfo, device.curname);
 }

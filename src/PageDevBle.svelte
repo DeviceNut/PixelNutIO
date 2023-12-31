@@ -5,13 +5,13 @@
   } from "carbon-components-svelte";
 
   import {
+    curDevice,
     deviceList,
   } from './globals.js';
 
   import {
     bleConnect,
     bleSetup,
-    bleStart,
   } from './ble.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
@@ -30,6 +30,12 @@
       await bleSetup($deviceList[0]);
       $deviceList = $deviceList; // make reactive
     }
+  }
+
+  if ($curDevice && $curDevice.doquery)
+  {
+    $curDevice.doquery = false;
+    $curDevice.query($curDevice);
   }
 
 </script>
@@ -52,7 +58,7 @@
 
     {#if $deviceList.length}
       <div style="margin-top:50px;">
-        <ScanDevice device={$deviceList[0]} devquery={bleSetup} devstart={bleStart} />
+        <ScanDevice device={$deviceList[0]} />
       </div>
     {/if}
   </div>

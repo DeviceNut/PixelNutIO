@@ -26,9 +26,6 @@
 
   import { storeBrokerWrite } from './browser.js';
 
-  import { sendQuery } from './devtalk.js';
-  import { devStartup } from './devstart.js';
-
   import {
     mqttDisconnect,
     mqttConnect,
@@ -202,7 +199,7 @@
     {#each $deviceList as device }
       {#if !device.ignore }
         <div class="listitem">
-          <ScanDevice {device} devquery={sendQuery} devstart={devStartup} />
+          <ScanDevice {device} />
         </div>
       {/if}
     {/each}

@@ -33,7 +33,7 @@ const pattDescs =
   "<br><br>" +
   "Triggering causes the background brightness to swell up and down, with the amount of Force determining the speed of the swelling.",
 
-  "This has bright twinkling without a background. The Hue property changes the twinkling color." +
+  "This has bright twinkling without a background. The Hue and White properties changes the twinkling color." +
   "<br><br>" +
   "Occasional comets streak up and down and then disappear. One of the comets is red, and appears randomly every 3-6 seconds. " +
   "The other is orange and appears only when Triggered, with the Force determining its length.",
@@ -93,6 +93,13 @@ const pattCmds =
   "E50 B60 D10 H0 T E50 B70 D15 H125 T E20 V1 B90 D30 H270 W80 C25 Q2 F0 T I20 O10 G",
   "E50 V1 B65 D10 H100 W30 Q1 T E40 D50 H270 C10 T E20 D15 C20 A1 F0 T I G"
 ];
+
+export const patBit_TrigForce   = 0x20; // enable force (if trigger)
+export const patBit_Triggering  = 0x10; // enable triggering
+export const patBits_Properties = 0x07; // enable properties:
+export const patBit_DegreeHue   = 0x01; // change color
+export const patBit_PcentWhite  = 0x02; // change white
+export const patBit_PcentCount  = 0x04; // change count
 
 const pattBits =
 [

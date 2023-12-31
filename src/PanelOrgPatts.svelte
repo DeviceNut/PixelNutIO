@@ -32,10 +32,12 @@
     const info = orgpatGetInfo(patnum);
     if (info)
     {
-      // console.log('Selecting:', info);
-
       $pStrand.curPatternName = info.name;
       $pStrand.curPatternDesc = info.desc;
+      $pStrand.curPatternBits = info.bits;
+      $pStrand.opropsUser.doEnable = false;
+
+      // console.log('Selecting:', $pStrand);
 
       SetSelection();
       $curDevice.send('.');

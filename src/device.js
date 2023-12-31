@@ -5,6 +5,7 @@ import {
   deviceList,
   msgTitle,
   msgDesc,
+  makeCopyOf,
 } from './globals.js';
 
 // format of each custom device pattern:
@@ -55,7 +56,7 @@ const deviceState =
   active: false,        // true after user selected
 
   doshow: false,        // info panel on Devices page
-  doquery: false,       // true to re-query on open
+  doquery: false,       // true to re-query on return
 
   report: {             // device info from query
     nstrands: 0,          // strand count (>= 1)
@@ -71,18 +72,17 @@ const deviceState =
     plugins: [],          // list of custPlugin
   },
 
-  send: null              // send function (name,str)
+  query: null,            // queries devices for info (device)
+  start: null,            // inits devices for control (device)
+  send: null,             // sends string to device (str, name)
 };
 
-export let deviceAdd = (name, sendfun) =>
+export let deviceAdd = (name) =>
 {
   console.log(`Device Add: "${name}"`);
 
-  let device = {...deviceState};
-  device.report = {...deviceState.report};
-
+  let device = makeCopyOf(deviceState);
   device.curname = name;
-  device.send = sendfun;
 
   get(deviceList).push(device);
   return device;

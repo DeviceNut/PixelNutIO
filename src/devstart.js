@@ -138,7 +138,7 @@ function setStrandPattern(strand, id, name='', pstr='', pdesc='')
   strand.curPatternDesc = pdesc;
 }
 
-export let devStartup = (device) =>
+export let devStart = (device) =>
 {
   //console.log(`Connecting to: "${device.curname}"...`);
 

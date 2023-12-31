@@ -7,6 +7,7 @@ import {
   PAGEMODE_CTRLS_ORG,
   curPageMode,
   curDevice,
+  devUpdate,
   connectActive,
   connectFail,
   nStrands,
@@ -123,6 +124,8 @@ function Notifications(event)
       {
         case 1:
         {
+          theDevice.report.strands = [];
+
           replyCount = parseInt(strs[1]);
 
           if ((strs[0] === 'P!') && (replyCount >= 1))
@@ -277,7 +280,10 @@ export const bleConnect = async () =>
     await bleCharRx.startNotifications();
 
     const name = device.name.slice(2);
-    theDevice = deviceAdd(name, BleSend);
+    theDevice = deviceAdd(name);
+    theDevice.query = bleSetup;
+    theDevice.start = BleStart;
+    theDevice.send = BleSend;
 
     console.log('Connected to:', theDevice.curname);
 
@@ -303,15 +309,14 @@ export const bleConnect = async () =>
 export const bleSetup = async (device) =>
 {
   theDevice = device;
+  device.ready = false;
 
   replyState = 1;
   replyWait = true;
 
-  await BleQuery('?');
+  BleSend('?');
   await WaitUntil(() => replyWait === false);
   // console.log('BLE query 1 finished');
-
-  theDevice.ready = true;
 
   if (replyError)
   {
@@ -329,14 +334,14 @@ export const bleSetup = async (device) =>
   {
     replyState = 3;
     replyWait = true;
-    await BleQuery('?S');
+    BleSend('?S');
     await WaitUntil(() => replyWait === false);
     // console.log('BLE query 2 finished');
   }
 
-  for (let i = 0; i < theDevice.report.nstrands; ++i)
+  for (let i = 0; i < device.report.nstrands; ++i)
   {
-    const strand = theDevice.report.strands[i];
+    const strand = device.report.strands[i];
     const info = orgpatGetInfo(strand.patnum);
     strand.patname  = info.name;
     strand.patcmds  = info.cmds;
@@ -345,6 +350,12 @@ export const bleSetup = async (device) =>
   }
 
   // await waitTimeout(3);
+
+  device.doshow = true;
+  device.ready = true;
+
+  // triggers update to UI - MUST HAVE THIS
+  devUpdate.set( !get(devUpdate) );
 }
 
 function setStrandTop(strand, dvals)
@@ -366,7 +377,7 @@ function setStrandTop(strand, dvals)
   // strand.opropsSent.pcentCount = dvals.xt_count;
 }
 
-export const bleStart = async (device) =>
+async function BleStart(device)
 {
   device.active = true;
   curDevice.set(device);
@@ -391,8 +402,7 @@ export const bleStart = async (device) =>
     strand.curPatternName = device.report.strands[i].patname;
     strand.curPatternCmds = device.report.strands[i].patcmds;
     strand.curPatternDesc = device.report.strands[i].patdesc;
-    strand.bitsOverride = 0; // TODO
-    strand.bitsEffects = 0;
+    strand.curPatternBits = device.report.strands[i].patbits; // unique to legacy patterns
     strand.forceValue = MAX_FORCE_VALUE/2;
   
     strand.selected = !i;
@@ -410,13 +420,6 @@ export const bleStart = async (device) =>
   dupStrand.set(false);
 
   console.log('Strands:', get(aStrands));
-}
-
-async function BleQuery(msg)
-{
-  console.log('BLE Write:', msg);
-  const query = AsciiToUint8Array(msg);
-  await bleCharTx.writeValue(query);
 }
 
 const MAXLEN_SEND = 20;

@@ -59,6 +59,7 @@ export let helpCurText    = writable('');     // text to display for selected it
 
 export let deviceList     = writable([]);     // discovered devices (deviceState)
 export let curDevice      = writable(null);   // reference to current device
+export let devUpdate      = writable(false);  // toggle to update device info on Devices page
 
 export let nStrands       = writable(0);      // number of physical strands
 export let sStrands       = writable(0);      // number of strands currently selected
@@ -181,6 +182,12 @@ export const getColor = (name) =>
 export const setColor = (name, color) =>
 {
   document.documentElement.style.setProperty(name, color);
+}
+
+// works for objects and strings
+export const makeCopyOf = (item)=>
+{
+  return JSON.parse(JSON.stringify(item));
 }
 
 export const waitTimeout = async (secs) =>

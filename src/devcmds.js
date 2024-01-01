@@ -7,7 +7,7 @@ export const ENABLEBIT_MUTE       = 1;      // mute on
 export const ENABLEBIT_SOLO       = 2;      // solo on
 
                                             // default values:
-export const DEF_HUE_VALUE        = 192;    // hue value for purple
+export const DEF_HUE_VALUE        = 270;    // hue value for purple
 export const DEF_PCENT_BRIGHT     = 50;     // percent brightness
 export const DEF_PCENT_DELAY      = 50;     // percent delay of max
 export const DEF_PCENT_COUNT      = 50;     // percent pixel count

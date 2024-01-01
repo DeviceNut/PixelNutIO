@@ -85,7 +85,7 @@
     <div class="divider"></div>
 
     <div class="area">
-      <Checkbox labelText="Override Track Properties"
+      <Checkbox labelText="Override Properties"
         on:check={userSetOverMode}
         bind:checked={$pStrand.opropsUser.doEnable}
         disabled={!($pStrand.curPatternBits & patBits_Properties)}

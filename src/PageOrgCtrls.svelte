@@ -8,20 +8,10 @@
     Column
   } from "carbon-components-svelte";
 
-  import {
-    curDevice,
-    curPageMode,
-    connectActive,
-    PAGEMODE_DEVICES,
-  } from './globals.js';
-
   import HeaderControls from './HeaderControls.svelte';
   import MultiStrands   from './MultiStrands.svelte';
   import PanelOrgPatts  from './PanelOrgPatts.svelte';
   import PanelOrgCtrls  from './PanelOrgCtrls.svelte';
-
-  $: if (!$connectActive || !$curDevice)
-      $curPageMode = PAGEMODE_DEVICES;
 
 </script>
 

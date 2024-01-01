@@ -12,6 +12,7 @@ import {
 import {
   deviceAdd,
   deviceError,
+  deviceReset,
 } from './device.js';
 
 import { devStart } from './devstart.js';
@@ -101,7 +102,7 @@ function checkTimeout()
           msgDesc.set('The device you were using just disconnected.');
           msgTitle.set('Device Disconnect');
 
-          device.reset(device);
+          deviceReset(device);
         }
       }
       else newlist.push(device);
@@ -210,7 +211,7 @@ export const onDeviceReply = (msg, sendfun) =>
       msgDesc.set('The device you were using just restarted.');
       msgTitle.set('Device Restart');
 
-      device.reset(device);
+      deviceReset(device);
     }
     else if (device.ready)
     {

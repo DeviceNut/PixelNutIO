@@ -75,6 +75,7 @@ const deviceState =
 
   query: null,            // queries devices for info (device)
   start: null,            // inits devices for control (device)
+  stop: null,             // disconnects/ignores device (device)
   send: null,             // sends string to device (str, name)
 };
 

@@ -7,8 +7,6 @@ import {
   curDevice,
   devUpdate,
   deviceList,
-  connectActive,
-  connectFail,
   nStrands,
   sStrands,
   idStrand,
@@ -322,8 +320,6 @@ export const bleConnect = async () =>
     console.log('Connected to:', theDevice.curname);
 
     deviceList.set([theDevice]);
-    connectActive.set(true);
-    connectFail.set(false);
   }
   catch(err) { deviceError(err.toString(), 'Device Connect Failed'); }
 }
@@ -482,9 +478,6 @@ async function BleWrite()
   }
   catch(err)
   {
-    connectActive.set(false);
-    connectFail.set(true);
-
     deviceError(err.toString(), 'Device Error');
   }
 }

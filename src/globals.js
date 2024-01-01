@@ -45,7 +45,6 @@ export let ipAddrServer   = writable('');     // IP address of website server
 export let ipAddrBrowser  = writable('');     // IP address of broker saved in browser
 export let ipAddrBroker   = writable('');     // IP address of broker currently used
 export let selectBroker   = writable(false);  // true to display Select Brokers dialog
-
 export let connectActive  = writable(false);  // true if device connection active
 export let connectFail    = writable(false);  // true if device connection failed
 
@@ -113,7 +112,7 @@ const colorsDark = { // default dark color scheme
 
 const colorsLite = { // default light color scheme
 	'--text-names'        : '#33ee66',
-	'--text-lines'        : '#999999',
+	'--text-lines'        : '#eeeeee',
 	'--page-header'       : '#555555',
 	'--page-border'       : '#333333',
 	'--page-back'         : '#bbbbbb',
@@ -132,9 +131,16 @@ export let colorSettings  = writable({});     // current color settings
 export let userThemeStr   = writable("g100"); // carbon copy theme string
 // themes are: "white", "g10", "g80", "g90", "g100"
 
-export const curTimeSecs = () =>
+/* not needed, all global css variables are set from global vars
+export const getColor = (name) =>
 {
-  return Math.floor(Date.now() / 1000); // convert to seconds
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+*/
+
+export const setColor = (name, color) =>
+{
+  document.documentElement.style.setProperty(name, color);
 }
 
 const effectInfo = { filter:false, id:0, bits:0, name:'', index:0 };
@@ -175,22 +181,15 @@ export const findEffectFromIndex = (filter, index) =>
   return { filter:filter, id:f.id, bits:f.bits, name:f.text, index:index };
 }
 
-/* not needed, all global css variables are set from global vars
-export const getColor = (name) =>
-{
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-}
-*/
-
-export const setColor = (name, color) =>
-{
-  document.documentElement.style.setProperty(name, color);
-}
-
 // works for objects and strings
 export const makeCopyOf = (item)=>
 {
   return JSON.parse(JSON.stringify(item));
+}
+
+export const curTimeSecs = () =>
+{
+  return Math.floor(Date.now() / 1000); // convert to seconds
 }
 
 export const waitTimeout = async (secs) =>

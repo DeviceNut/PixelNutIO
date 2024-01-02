@@ -33,7 +33,7 @@ const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 function NewDevice(name, sendfun)
 {
   const device = deviceAdd(name);
-  console.log('NewDevice:', device);
+  // console.log('NewDevice:', device);
 
   // add specific to this protocol members:
 

@@ -176,7 +176,6 @@
 </script>
 
 <div class="page">
-
   <HeaderDevices/>
 
   <button class="button"
@@ -184,30 +183,30 @@
     >Hub Address
   </button>
 
-  <div class="scanbox">
-    <p style="margin-bottom:10px;">{title}</p>
-    {#if !$connectActive && !scanning }
-      <button class="button"
-        style="margin-left:10px;"
-        on:click={doscan}
-        >Reconnect
-      </button>
-    {/if}
-  </div>
+  <div style="margin-top:30px;"/>
 
-  <p class="active">Available Devices:</p>
-  <div class="listbox">
-    {#each $deviceList as device }
-      {#if !device.ignore }
-        <div class="listitem">
-          <ScanDevice {device} />
-        </div>
-      {/if}
-    {/each}
-  </div>
+  <p style="margin-bottom:10px;">{title}</p>
+  {#if !$connectActive && !scanning }
+    <button class="button"
+      style="margin-left:10px;"
+      on:click={doscan}
+      >Reconnect
+    </button>
+  {/if}
 
   {#if scanning }
     <Loading style="margin: 25px 0 10px 42%;" withOverlay={false} />
+  {:else if $connectActive }
+    <p class="active">Available Devices:</p>
+    <div class="listbox">
+      {#each $deviceList as device }
+        {#if !device.ignore }
+          <div class="listitem">
+            <ScanDevice {device} />
+          </div>
+        {/if}
+      {/each}
+    </div>
   {/if}
 </div>
 
@@ -275,9 +274,6 @@
     text-align: center;
     background-color: var(--page-back);
     border: 2px solid var(--page-border);
-  }
-  .scanbox {
-    margin-top: 30px;
   }
   .active {
     margin-top: 30px;

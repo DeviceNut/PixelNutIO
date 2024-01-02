@@ -6,7 +6,15 @@
 
   export let device;
 
-  const moreinfo = () => { device.doshow = !device.doshow; }
+  const moreinfo = () =>
+  {
+    device.doshow = !device.doshow;
+    if (device.doshow && device.doquery)
+    {
+      device.doquery = false;
+      device.query(device);
+    }
+  }
   const doctrls  = () => { device.start(device) }
   const dostop   = () => { device.stop(device) }
 

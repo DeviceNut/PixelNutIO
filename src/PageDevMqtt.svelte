@@ -22,6 +22,7 @@
     connectActive,
     connectFail,
     deviceList,
+    curDevice,
   } from './globals.js';
 
   import { storeBrokerWrite } from './browser.js';
@@ -40,16 +41,39 @@
   const WAITSTATE_DEVICES     = 3;
   let waitstate = WAITSTATE_NONE;
 
-  let title;
-  $: title = $connectActive ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
-
   let scanning = false;
   let openError = false;
   let waitcount;
 
-  const waitfor = () =>
+  let openbroker = false;
+  let saveaddr = false;
+  let brokerip;
+
+  let title;
+  $: title = $connectActive ? `Connected` : scanning ? 'Connecting...' : 'Disconnected';
+
+  if (!$connectActive && !$connectFail) doscan();
+
+  $: {
+    if ($connectFail)
+    {
+      scanning = false;
+      openError = true;
+    }
+  }
+
+  $: {
+    if ($selectBroker)
+    {
+      $selectBroker = false; 
+      brokerip = $ipAddrBroker;
+      openbroker = true;
+    }
+  }
+
+  function WaitFor()
   {
-    //console.log(`waitfor: state=${waitstate}`);
+    //console.log(`WaitFor: state=${waitstate}`);
 
     if ($connectFail)
     {
@@ -106,7 +130,7 @@
       done = true;
 
     if (done) scanning = false;
-    else setTimeout(waitfor, MSECS_CHECK_TIMEOUT);
+    else setTimeout(WaitFor, MSECS_CHECK_TIMEOUT);
   }
 
   function clearfail()
@@ -126,30 +150,7 @@
 
     scanning = true;
     waitcount = (MSECS_WAIT_CONNECTION / MSECS_CHECK_TIMEOUT);
-    waitfor();
-  }
-
-  if (!$connectActive && !$connectFail) doscan();
-
-  $: {
-    if ($connectFail)
-    {
-      scanning = false;
-      openError = true;
-    }
-  }
-
-  let openbroker = false;
-  let saveaddr = false;
-  let brokerip;
-
-  $: {
-    if ($selectBroker)
-    {
-      $selectBroker = false; 
-      brokerip = $ipAddrBroker;
-      openbroker = true;
-    }
+    WaitFor();
   }
 
   function rescan()

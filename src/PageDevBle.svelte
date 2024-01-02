@@ -21,6 +21,12 @@
   let scanning = false;
   let scanmesg = '';
 
+  if ($curDevice && $curDevice.doquery)
+  {
+    $curDevice.doquery = false;
+    $curDevice.query($curDevice);
+  }
+
   const doBlue = async () =>
   {
     scanning = true;
@@ -40,12 +46,6 @@
       }
     }
     else scanning = false;
-  }
-
-  if ($curDevice && $curDevice.doquery)
-  {
-    $curDevice.doquery = false;
-    $curDevice.query($curDevice);
   }
 
 </script>

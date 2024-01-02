@@ -5,6 +5,9 @@ export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';
 
+// export let selectBLE      = writable(false);  // false to use MQTT
+export let selectBLE      = writable(true);   // true to use BLE
+
 // only for new device protocol:
 export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response
 export const MAX_DEVICE_FAIL_COUNT  = 3;      // ignore device if fail this many times
@@ -36,9 +39,6 @@ export let prevPageMode   = writable(PAGEMODE_DEVICES);
 
 export let msgTitle       = writable('');     // non-empty to cause user message popup
 export let msgDesc        = writable('');     // description text for that message
-
-// export let selectBLE      = writable(false);  // false to use MQTT
-export let selectBLE      = writable(true);   // true to use BLE
 
 // these are only used in MQTT mode:
 export let ipAddrServer   = writable('');     // IP address of website server

@@ -57,12 +57,10 @@
 {#if showPatts}
   <div class="listbox">
     {#each pattNames as patt,i}
-      <div>
-        <button class="button patbut" class:selected={selected[i]}
-          on:click={()=> onSelect(i)}
-          >{patt}
-        </button>
-      </div>
+      <button class="button patbut" class:selected={selected[i]}
+        on:click={()=> onSelect(i)}
+        >{patt}
+      </button>
     {/each}
   </div>
 {:else}
@@ -74,7 +72,7 @@
 
 <style>
   .listbox {
-    padding: 5px;
+    padding: 2px 10px 10px 10px;
     border: 1px solid var(--btn-bord-normal);
   }
   .title {
@@ -95,7 +93,8 @@
     font-size:1.1em;
   }
   .patbut {
-    margin-top: 3px;
+    display:block;
+    margin-top: 7px;
     font-size:.9em;
     border: none;
   }

@@ -12,7 +12,6 @@
   import {
     bleRequest,
     bleConnect,
-    bleSetup,
   } from './ble.js';
 
   import HeaderDevices from './HeaderDevices.svelte';
@@ -31,9 +30,8 @@
   {
     scanning = true;
     scanmesg = 'Scanning for devices...';
-    const success = await bleRequest();
 
-    if (success)
+    if ( await bleRequest() )
     {
       scanmesg = 'Connecting to device...';
       await bleConnect();
@@ -41,7 +39,7 @@
 
       if ($deviceList.length)
       {
-        await bleSetup($deviceList[0]);
+        await $deviceList[0].setup();
         $deviceList = $deviceList; // make reactive
       }
     }
@@ -51,7 +49,6 @@
 </script>
 
 <div class="page">
-
   <HeaderDevices/>
 
   <div class="controls">

@@ -22,7 +22,6 @@
     connectActive,
     connectFail,
     deviceList,
-    curDevice,
   } from './globals.js';
 
   import { storeBrokerWrite } from './browser.js';

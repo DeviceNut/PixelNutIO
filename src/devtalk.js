@@ -1,21 +1,16 @@
 import { get } from 'svelte/store';
 
 import {
-  SECS_RESPONSE_TIMEOUT,
   MAX_DEVICE_FAIL_COUNT,
   deviceList,
   msgTitle,
   msgDesc,
-  curTimeSecs
 } from './globals.js';
 
 import {
-  deviceAdd,
   deviceError,
   deviceReset,
 } from './device.js';
-
-import { devStart } from './devstart.js';
 
 // Device Query/Responses:
 const queryStr_GetInfo    = "?";        // returns device info in JSON format
@@ -26,184 +21,26 @@ const respStr_FinishInfo  = ">?"        // indicates end of device info
 const strlen_CmdFailed    = respStr_CmdFailed.length;
                                         // device states:
 const QSTATE_NONE         = 0;          //  not querying device now
-const QSTATE_RESTART      = 1;          //  restart query on next notify
-const QSTATE_WAIT_RESP    = 2;          //  waiting for response (to command sent from here)
+const QSTATE_RESTART      = 1;          //  resend query on next notify
+const QSTATE_WAIT_QUERY   = 2;          //  waiting for response to query
 const QSTATE_WAIT_DATA    = 3;          //  waiting for more data
 
-function NewDevice(name, sendfun)
+export const devQuery = (device) =>
 {
-  const device = deviceAdd(name);
-  // console.log('NewDevice:', device);
-
-  // add specific to this protocol members:
-
-  device.qstate = QSTATE_RESTART;
-  device.tstamp = curTimeSecs(); // last notify/response
-
-  device.failcount = 0; // number of protocol failures
-  device.dinfo = {}; // holds raw JSON device output
-
-  device.query = SendQuery;
-  device.start = devStart;
-  device.stop  = IgnoreDevice;
-  device.send  = sendfun;
-
-  return device;
-}
-
-function IgnoreDevice(device)
-{
-  device.ignore = true;
-  deviceList.set(get(deviceList)); // update UI
-}
-
-function SendQuery(device)
-{
-  //console.log(`SendQuery: "${device.curname}"`)
-
-  device.qstate = QSTATE_WAIT_RESP;
-  device.send(queryStr_GetInfo, device.curname);
-}
-
-// create timer for receiving a connection notification
-// if device doesn't respond in time, stop and remove it
-let timeObj = 0;
-//let oldts = curTimeSecs();
-function checkTimeout()
-{
-  let curlist = get(deviceList);
-  if (curlist.length > 0)
+  if ((device.qstate === undefined) || (device.qstate === QSTATE_RESTART))
   {
-    let newlist = [];
-    let tstamp = curTimeSecs();
+    console.log(`SendQuery: "${device.curname}"`, device.qstate);
 
-    /*
-    let diff = (tstamp - oldts);
-    if (diff > SECS_RESPONSE_TIMEOUT)
-      console.log(`${tstamp} TimerDiff = ${diff}`);
-    oldts = tstamp;
-    */
-    for (const device of curlist)
-    {
-      //console.log(`Device Check: "${device.curname}""`);
-
-      //if ((tstamp - device.tstamp) > 2)
-      //  console.log(`Device Check? secs=${(tstamp - device.tstamp)}`);
-
-      if (!device.ignore &&
-          ((device.tstamp + SECS_RESPONSE_TIMEOUT) < tstamp))
-      {
-        console.warn(`Device Lost: "${device.curname}"`);
-        //console.log(`  secs: ${tstamp} ${device.tstamp}`)
-
-        if (device.active)
-        {
-          // trigger error message title/text
-          msgDesc.set('The device you were using just disconnected.');
-          msgTitle.set('Device Disconnect');
-
-          deviceReset(device);
-        }
-      }
-      else newlist.push(device);
-    }
-
-    deviceList.set(newlist);
-  }
-
-  timeObj = setTimeout(checkTimeout, (1000 * SECS_RESPONSE_TIMEOUT));
-}
-
-// if lose connection, clear devices
-export const onConnection = (enabled) =>
-{
-  if (enabled) checkTimeout();
-  else
-  {
-    //console.log('Removing all devices');
-    deviceList.set([]);
-
-    if (timeObj)
-    {
-      clearTimeout(timeObj);
-      timeObj = 0;
-    } 
+    device.qstate = QSTATE_WAIT_QUERY;
+    device.send(queryStr_GetInfo, device.curname);
   }
 }
 
-export const onNotification = (msg, sendfun) =>
+export const devReply = (device, reply) =>
 {
-  const info = msg.split(',');
-  const name = info[0];
-
-  //console.log(`Device Notify: "${name}" IP=${info[1]}`);
-
-  for (const device of get(deviceList))
-  {
-    /*
-    let tstamp = curTimeSecs();
-    if ((tstamp - device.tstamp) > 2)
-      console.log(`Missing notifications? secs=${(tstamp - device.tstamp)}`);
-    */
-    device.tstamp = curTimeSecs();
-
-    if (device.curname === name)
-    {
-      if (!device.ignore)
-      {
-        if (device.qstate === QSTATE_RESTART)
-        SendQuery(device);
-      }
-      return; // don't add
-    }
-    else if (device.newname === name)
-    {
-      console.log(`Device Rename: "${name}"`);
-
-      device.curname = name;
-      device.newname = '';
-
-      return; // don't add
-    }
-  }
-
-  let device = NewDevice(name, sendfun);
-
-  SendQuery(device);
-}
-
-export const onDeviceReply = (msg, sendfun) =>
-{
-  //console.log(`Device Reply: ${msg}`)
-
-  const reply = msg.split('\n');
-  const name = reply[0];
-  reply.shift();
-
-  let device = null;
-  const dlist = get(deviceList);
-  for (const d of dlist)
-  {
-    if (d.curname === name)
-    {
-      device = d;
-      break;
-    }
-  }
-
-  if (device === null)
-  {
-    device = NewDevice(name, sendfun);
-    // don't query: might already be doing so
-  }
-
-  if (device.ignore) return;
-
-  device.tstamp = curTimeSecs();
-
   if (reply[0] === respStr_Rebooted)
   {
-    console.log(`Device Reboot: "${name}"`);
+    console.log(`Device Reboot: "${device.curname}"`);
 
     if (device.active)
     {
@@ -226,7 +63,7 @@ export const onDeviceReply = (msg, sendfun) =>
   }
   else if (reply[0] === respStr_StartInfo)
   {
-    if (device.qstate !== QSTATE_WAIT_RESP)
+    if (device.qstate !== QSTATE_WAIT_QUERY)
          console.log('Recognize query response');
     else console.log('Receiving query response...');
 
@@ -269,5 +106,5 @@ export const onDeviceReply = (msg, sendfun) =>
     //console.log(`<< ${reply[0]}`);
     device.dinfo += reply[0];
   }
-  else console.warn(`Device Ignore: "${name}" reply=${reply[0]}`);
+  else console.warn(`Device Ignore: "${device.curname}" reply=${reply[0]}`);
 }

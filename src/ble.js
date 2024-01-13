@@ -40,6 +40,9 @@ const SERVICE_UUID_UART = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_TX = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 const CHAR_UUID_UART_RX = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E".toLowerCase();
 
+const REPLYSTR_ORG_PROTO = 'P!';
+const REPLYSTR_NEW_PROTO = 'P!!';
+
 let bleCharRx, bleCharTx;
 let replyWait = false;
 let replyStr = '';
@@ -70,14 +73,6 @@ async function WaitUntil(condition)
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   return true;
-}
-
-function AsciiToUint8Array(str){
-  var chars = [];
-  for (var i = 0; i < str.length; ++i){
-    chars.push(str.charCodeAt(i));
-  }
-  return new Uint8Array(chars);
 }
 
 function ReplyLine1(strs)
@@ -123,7 +118,7 @@ function ReplyLine1(strs)
   else replyError = 14;
 }
 
-function Notifications(event)
+function OnNotification(event)
 {
   let value = event.target.value;
   // console.log('Notify:', event);
@@ -134,17 +129,15 @@ function Notifications(event)
     if (chval === 10) // newline
     {
       const strs = replyStr.trim().split(' ');
-      // console.log('BLE reply:', replyStr); //, strs);
+      console.log('BLE reply:', replyStr); //, strs);
 
       switch (replyState)
       {
         case 1:
         {
-          theDevice.report.strands = [];
-
           replyCount = parseInt(strs[1]);
 
-          if ((strs[0] === 'P!') && (replyCount >= 1))
+          if ((strs[0] === REPLYSTR_ORG_PROTO) && (replyCount >= 1))
           {
             console.log('BLE reply:', replyStr);
             queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
@@ -156,6 +149,8 @@ function Notifications(event)
             replyWait = false;
             replyError = 1;
           }
+
+          theDevice.report.strands = [];
           break;
         }
         case 2:
@@ -209,7 +204,7 @@ function Notifications(event)
               }
               break;
             }
-            case 2:
+            case 2: // TODO: multi-segments
             {
               break;
             }
@@ -228,7 +223,7 @@ function Notifications(event)
           }
           break;
         }
-        case 3: // segment query
+        case 3: // TODO: segment query
         {
           break;
         }
@@ -304,18 +299,23 @@ export const bleConnect = async () =>
     if (!bleCharRx.properties.notify || !bleCharTx.properties.write)
       throw 'Cannot read/write to device';
 
-    bleCharRx.addEventListener('characteristicvaluechanged', Notifications);
+    bleCharRx.addEventListener('characteristicvaluechanged', OnNotification);
   
     // console.log('BLE start notifications...');
     await bleCharRx.startNotifications();
 
-    const name = bleDevice.name.slice(2);
+    const devorg = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
+    const name = bleDevice.name.slice(devorg ? 3 : 2);
+
     theDevice = deviceAdd(name);
-    theDevice.query = bleSetup;
-    theDevice.start = BleStart;
+    theDevice.query = DevQuery;
+    theDevice.start = DevStart;
     theDevice.stop  = BleStop;
     theDevice.send  = BleSend;
-    theDevice.gatt  = bleDevice.gatt;
+
+    // specific to BLE devices:
+    theDevice.newproto = false; // true if device responds with new protocol
+    theDevice.gatt = bleDevice.gatt;
 
     console.log('Connected to:', theDevice.curname);
 
@@ -324,13 +324,7 @@ export const bleConnect = async () =>
   catch(err) { deviceError(err.toString(), 'Device Connect Failed'); }
 }
 
-async function BleStop(device)
-{
-  await device.gatt.disconnect();
-  deviceReset(device);
-}
-
-export const bleSetup = async (device) =>
+async function DevQuery(device)
 {
   theDevice = device;
   device.ready = false;
@@ -392,7 +386,7 @@ function setStrandTop(strand, dvals)
   // strand.opropsSent.pcentCount = dvals.xt_count;
 }
 
-async function BleStart(device)
+async function DevStart(device)
 {
   device.active = true;
   curDevice.set(device);
@@ -437,9 +431,16 @@ async function BleStart(device)
   console.log('Strands:', get(aStrands));
 }
 
+async function BleStop(device)
+{
+  await device.gatt.disconnect();
+  deviceReset(device);
+}
+
 const MAXLEN_SEND = 20;
 let busy = false;
 const queue = [];
+
 async function BleWrite()
 {
   busy = true;
@@ -468,19 +469,21 @@ async function BleWrite()
   try
   {
     // console.log(`sending: "${msg}"`);
-    const query = AsciiToUint8Array(msg);
-    await bleCharTx.writeValue(query).then(() =>
+
+    const chars = [];
+    for (let i = 0; i < msg.length; ++i) chars.push(msg.charCodeAt(i));
+    const cmdvals = new Uint8Array(chars);
+
+    await bleCharTx.writeValue(cmdvals).then(() =>
     {
       if (!queue[0]) queue.shift();
       if (queue.length) BleWrite();
       else busy = false;
     });
   }
-  catch(err)
-  {
-    deviceError(err.toString(), 'Device Error');
-  }
+  catch(err) { deviceError(err.toString(), 'Device Error'); }
 }
+
 function BleSend(msg)
 {
   console.log(`>> ${msg}`); //, queue);

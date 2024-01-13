@@ -89,7 +89,7 @@
   .devbox {
     margin: 0 auto;
     text-align: left;
-    width: 300px;
+    width: 400px;
     padding: 12px 5px 10px 5px;
     color: var(--text-lines);
     background-color: var(--page-header);
@@ -124,7 +124,7 @@
   }
   .infobox {
     margin: 0 auto;
-    width: 300px;
+    width: 400px;
     padding: 0 10px 10px 10px;
     color: var(--text-lines);
     background-color: var(--panel-back);

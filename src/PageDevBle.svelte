@@ -39,7 +39,7 @@
 
       if ($deviceList.length)
       {
-        await $deviceList[0].setup();
+        await $deviceList[0].query($deviceList[0]);
         $deviceList = $deviceList; // make reactive
       }
     }

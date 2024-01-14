@@ -13,12 +13,8 @@ import {
 } from './globals.js';
 
 import { deviceAdd } from './device.js';
+import { devQuery, devReply } from './devtalk.js';
 import { devStart } from './devstart.js';
-
-import {
-  devQuery,
-  devReply
-} from './devtalk.js';
 
 const MQTT_BROKER_PORT  = 9001;   // MUST be 9001 for websocket
 const topicDevNotify    = 'PixelNut/Notify';
@@ -185,7 +181,6 @@ function AddDevice(name)
 
   device.tstamp = curTimeSecs(); // last notify/response
 
-  device.failcount = 0; // number of protocol failures
   device.dinfo = {}; // holds raw JSON device output
 
   device.query = devQuery;
@@ -207,7 +202,7 @@ function DeviceNotify(msg)
   const info = msg.split(',');
   const name = info[0];
 
-  // console.log(`Notification: "${name}" IP=${info[1]}`);
+  // console.log(`DeviceNotify: "${name}" IP=${info[1]}`);
 
   for (const device of get(deviceList))
   {

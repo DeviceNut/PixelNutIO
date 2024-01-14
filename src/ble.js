@@ -29,6 +29,9 @@ import {
   deviceReset,
 } from './device.js';
 
+import { devQuery, devReply } from './devtalk.js';
+import { devStart } from './devstart.js';
+
 import {
   MAX_FORCE_VALUE,
   orgpatGetInfo,
@@ -128,10 +131,16 @@ function OnNotification(event)
     const chval = value.getUint8(i);
     if (chval === 10) // newline
     {
-      const strs = replyStr.trim().split(' ');
-      console.log('BLE reply:', replyStr); //, strs);
+      // console.log('BLE reply:', replyStr);
 
-      switch (replyState)
+      const strs = replyStr.trim().split(' ');
+
+      if (theDevice.newproto)
+      {
+        if (!devReply(theDevice, strs))
+          replyError = 1;
+      }
+      else switch (replyState)
       {
         case 1:
         {
@@ -143,12 +152,7 @@ function OnNotification(event)
             queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
             replyState = 2;
           }
-          else
-          {
-            replyState = 0; // ignore all subsequent replies
-            replyWait = false;
-            replyError = 1;
-          }
+          else replyError = 2;
 
           theDevice.report.strands = [];
           break;
@@ -215,7 +219,8 @@ function OnNotification(event)
               break;
             }
           }
-          if (!replyCount)
+
+          if (!replyCount) // success
           {
             console.log('BLE device:', theDevice);
             replyState = 0; // ignore all subsequent replies
@@ -231,10 +236,11 @@ function OnNotification(event)
 
       replyStr = '';
 
-      if (replyError && replyWait)
+      if (replyError) // failure
       {
         replyState = 0; // ignore all subsequent replies
         replyWait = false;
+        break;
       }
     }
     else replyStr += String.fromCharCode(chval);
@@ -304,12 +310,12 @@ export const bleConnect = async () =>
     // console.log('BLE start notifications...');
     await bleCharRx.startNotifications();
 
-    const devorg = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
-    const name = bleDevice.name.slice(devorg ? 3 : 2);
+    const devnew = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
+    const name = bleDevice.name.slice(devnew ? 3 : 2);
 
     theDevice = deviceAdd(name);
-    theDevice.query = DevQuery;
-    theDevice.start = DevStart;
+    theDevice.query = !devnew ? DevQuery : devQuery;
+    theDevice.start = !devnew ? DevStart : devStart;
     theDevice.stop  = BleStop;
     theDevice.send  = BleSend;
 

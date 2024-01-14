@@ -1,7 +1,6 @@
 import { get } from 'svelte/store';
 
 import {
-  MAX_DEVICE_FAIL_COUNT,
   deviceList,
   msgTitle,
   msgDesc,
@@ -49,6 +48,7 @@ export const devReply = (device, reply) =>
       msgTitle.set('Device Restart');
 
       deviceReset(device);
+      return false;
     }
     else if (device.ready)
     {
@@ -60,6 +60,7 @@ export const devReply = (device, reply) =>
   {
     let errstr = reply[0].slice(respStr_CmdFailed.length);
     deviceError(`Device failed command: ${errstr}`, 'Device Error');
+    return false;
   }
   else if (reply[0] === respStr_StartInfo)
   {
@@ -88,14 +89,9 @@ export const devReply = (device, reply) =>
     }
     catch(e)
     {
-      console.warn(`Device Parse Error: "${device.curname}" JSON=${device.dinfo}`);
-
-      if (++device.failcount >= MAX_DEVICE_FAIL_COUNT)
-      {
-        console.error(`Device Failed, Ignoring: "${device.curname}"`);
-        device.ignore = true;
-      }
-      else device.qstate = QSTATE_RESTART;
+      console.error(`Device Parse Error: "${device.curname}" JSON=${device.dinfo}`);
+      device.ignore = true;
+      return false;
     }
     
     // triggers update to UI - MUST HAVE THIS
@@ -107,4 +103,6 @@ export const devReply = (device, reply) =>
     device.dinfo += reply[0];
   }
   else console.warn(`Device Ignore: "${device.curname}" reply=${reply[0]}`);
+
+  return true;
 }

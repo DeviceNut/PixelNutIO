@@ -5,8 +5,8 @@ export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut Devices';
 export const titleHelpDocs  = 'PixelNut Docs';
 
-export let selectBLE      = writable(false);  // false to use MQTT
-// export let selectBLE      = writable(true);   // true to use BLE
+// export let selectBLE      = writable(false);  // false to use MQTT
+export let selectBLE      = writable(true);   // true to use BLE
 
 // only for new device protocol:
 export const SECS_RESPONSE_TIMEOUT  = 7;      // secs since last device notify/response

@@ -5,6 +5,7 @@ import {
   PAGEMODE_CTRLS_ORG,
   curPageMode,
   curDevice,
+  connectActive,
   devUpdate,
   deviceList,
   nStrands,
@@ -133,104 +134,113 @@ function OnNotification(event)
     {
       // console.log('BLE reply:', replyStr);
 
-      const strs = replyStr.trim().split(' ');
-
       if (theDevice.newproto)
       {
-        if (!devReply(theDevice, strs))
+        if (!devReply(theDevice, replyStr))
+        {
           replyError = 1;
+          const estr = `Cannot support this device: #${replyError}`;
+          deviceError(estr, 'Device Problem');
+          deviceList.set([]);
+          theDevice = null;
+        }
       }
-      else switch (replyState)
+      else
       {
-        case 1:
-        {
-          replyCount = parseInt(strs[1]);
+        const strs = replyStr.trim().split(' ');
 
-          if ((strs[0] === REPLYSTR_ORG_PROTO) && (replyCount >= 1))
-          {
-            console.log('BLE reply:', replyStr);
-            queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
-            replyState = 2;
-          }
-          else replyError = 2;
-
-          theDevice.report.strands = [];
-          break;
-        }
-        case 2:
+        switch (replyState)
         {
-          --replyCount;
-          switch (queryType)
+          case 1:
           {
-            case 3:
+            replyCount = parseInt(strs[1]);
+  
+            if ((strs[0] === REPLYSTR_ORG_PROTO) && (replyCount >= 1))
             {
-              switch (replyCount)
+              console.log('BLE reply:', replyStr);
+              queryType = --replyCount; // 1,2,3 (multi-strand, multi-segs, single strand/seg)
+              replyState = 2;
+            }
+            else replyError = 2;
+  
+            theDevice.report.strands = [];
+            break;
+          }
+          case 2:
+          {
+            --replyCount;
+            switch (queryType)
+            {
+              case 3:
               {
-                case 2:
+                switch (replyCount)
                 {
-                  ReplyLine1(strs);
-                  break;
-                }
-                case 1:
-                {
-                  if (strs.length === 5)
+                  case 2:
                   {
-                    const strand = theDevice.report.strands[0];
-                    strand.pixels               = parseInt(strs[0]);
-                    theDevice.report.numlayers  = parseInt(strs[1]);
-                    theDevice.report.numtracks  = parseInt(strs[2]);
-                    strand.bright               = parseInt(strs[3]);
-                    strand.delay                = parseInt(strs[4]);
-
-                    if ((theDevice.report.numlayers < MIN_TRACKS) ||
-                        (theDevice.report.tracklayers < MIN_LAYERS))
+                    ReplyLine1(strs);
+                    break;
+                  }
+                  case 1:
+                  {
+                    if (strs.length === 5)
                     {
-                      replyError = 21;
-                      break;
+                      const strand = theDevice.report.strands[0];
+                      strand.pixels               = parseInt(strs[0]);
+                      theDevice.report.numlayers  = parseInt(strs[1]);
+                      theDevice.report.numtracks  = parseInt(strs[2]);
+                      strand.bright               = parseInt(strs[3]);
+                      strand.delay                = parseInt(strs[4]);
+  
+                      if ((theDevice.report.numlayers < MIN_TRACKS) ||
+                          (theDevice.report.tracklayers < MIN_LAYERS))
+                      {
+                        replyError = 21;
+                        break;
+                      }
                     }
+                    else replyError = 20;
+                    break;
                   }
-                  else replyError = 20;
-                  break;
-                }
-                case 0:
-                {
-                  if (strs.length >= 4)
+                  case 0:
                   {
-                    const strand = theDevice.report.strands[0];
-                    strand.xt_mode  = parseInt(strs[0]);
-                    strand.xt_hue   = parseInt(strs[1]);
-                    strand.xt_white = parseInt(strs[2]);
-                    strand.xt_count = parseInt(strs[3]);
+                    if (strs.length >= 4)
+                    {
+                      const strand = theDevice.report.strands[0];
+                      strand.xt_mode  = parseInt(strs[0]);
+                      strand.xt_hue   = parseInt(strs[1]);
+                      strand.xt_white = parseInt(strs[2]);
+                      strand.xt_count = parseInt(strs[3]);
+                    }
+                    else replyError = 30;
+                    break;
                   }
-                  else replyError = 30;
-                  break;
                 }
+                break;
               }
-              break;
+              case 2: // TODO: multi-segments
+              {
+                break;
+              }
+              case 1:
+              {
+                ReplyLine1(strs);
+                if (!replyError) querySegs = true;
+                break;
+              }
             }
-            case 2: // TODO: multi-segments
+  
+            if (!replyCount) // success
             {
-              break;
+              console.log('BLE device:', theDevice);
+              replyState = 0; // ignore all subsequent replies
+              replyWait = false;
             }
-            case 1:
-            {
-              ReplyLine1(strs);
-              if (!replyError) querySegs = true;
-              break;
-            }
+            break;
           }
-
-          if (!replyCount) // success
+          case 3: // TODO: segment query
           {
-            console.log('BLE device:', theDevice);
-            replyState = 0; // ignore all subsequent replies
-            replyWait = false;
+            break;
           }
-          break;
-        }
-        case 3: // TODO: segment query
-        {
-          break;
         }
       }
 
@@ -289,6 +299,8 @@ export const bleConnect = async () =>
   {
     console.log('BLE connecting...'); //, bleDevice);
   
+    bleDevice.addEventListener('gattserverdisconnected', OnDisconnect);
+
     const server = await bleDevice.gatt.connect();
     // console.log('BLE server:', server);
   
@@ -297,7 +309,7 @@ export const bleConnect = async () =>
   
     bleCharRx = await service.getCharacteristic(CHAR_UUID_UART_RX);
     bleCharTx = await service.getCharacteristic(CHAR_UUID_UART_TX);
-    // console.log('BLE chars:', char_rx, char_tx);
+    // console.log('BLE chars:', bleCharRx, bleCharTx);
 
     // console.log('CharRX:', bleCharRx.properties);
     // console.log('CharTX:', bleCharTx.properties);
@@ -310,8 +322,9 @@ export const bleConnect = async () =>
     // console.log('BLE start notifications...');
     await bleCharRx.startNotifications();
 
-    const devnew = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
+    let devnew = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
     const name = bleDevice.name.slice(devnew ? 3 : 2);
+    devnew = true;
 
     theDevice = deviceAdd(name);
     theDevice.query = !devnew ? DevQuery : devQuery;
@@ -320,14 +333,27 @@ export const bleConnect = async () =>
     theDevice.send  = BleSend;
 
     // specific to BLE devices:
-    theDevice.newproto = false; // true if device responds with new protocol
+    theDevice.newproto = devnew; // true if device responds with new protocol
     theDevice.gatt = bleDevice.gatt;
 
     console.log('Connected to:', theDevice.curname);
 
+    connectActive.set(true);
     deviceList.set([theDevice]);
   }
   catch(err) { deviceError(err.toString(), 'Device Connect Failed'); }
+}
+
+function OnDisconnect(event)
+{
+  // console.log('Device disconnect:', theDevice, event);
+  if (theDevice)
+  {
+    deviceError(theDevice.curname, 'Device Disconnect');
+    theDevice = null;
+  }
+  deviceList.set([]);
+  connectActive.set(false);
 }
 
 async function DevQuery(device)
@@ -493,6 +519,6 @@ async function BleWrite()
 function BleSend(msg)
 {
   console.log(`>> ${msg}`); //, queue);
-  queue.push(msg);
+  queue.push(msg + '\n');
   if (!busy) BleWrite();
 }

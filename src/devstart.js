@@ -395,10 +395,12 @@ export let devStart = (device) =>
   aDeviceDesc.set(descs);
   menuDevice.children = items;
   menuCreate(); // create entire menu
-
+  
   // sanity check if device still active
   if (get(curDevice) !== null)
   {
+    // console.log('Starting...', get(curDevice));
+
     curPageMode.set(PAGEMODE_CTRLS_NEW);
 
     if (didclear)

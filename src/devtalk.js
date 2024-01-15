@@ -32,12 +32,14 @@ export const devQuery = (device) =>
 
     device.qstate = QSTATE_WAIT_QUERY;
     device.send(queryStr_GetInfo, device.curname);
+
+    // TODO: timeout if not valid response in 10 seconds
   }
 }
 
 export const devReply = (device, reply) =>
 {
-  if (reply[0] === respStr_Rebooted)
+  if (reply === respStr_Rebooted)
   {
     console.log(`Device Reboot: "${device.curname}"`);
 
@@ -56,13 +58,13 @@ export const devReply = (device, reply) =>
       device.qstate = QSTATE_RESTART;
     }
   }
-  else if (reply[0].slice(0,strlen_CmdFailed) === respStr_CmdFailed)
+  else if (reply.slice(0,strlen_CmdFailed) === respStr_CmdFailed)
   {
-    let errstr = reply[0].slice(respStr_CmdFailed.length);
+    let errstr = reply.slice(respStr_CmdFailed.length);
     deviceError(`Device failed command: ${errstr}`, 'Device Error');
     return false;
   }
-  else if (reply[0] === respStr_StartInfo)
+  else if (reply === respStr_StartInfo)
   {
     if (device.qstate !== QSTATE_WAIT_QUERY)
          console.log('Recognize query response');
@@ -72,7 +74,7 @@ export const devReply = (device, reply) =>
     device.dinfo = '';
   }
   else if ((device.qstate === QSTATE_WAIT_DATA) &&
-            (reply[0] === respStr_FinishInfo))
+            (reply === respStr_FinishInfo))
   {
     //console.log('...Ending query response');
     try
@@ -99,10 +101,10 @@ export const devReply = (device, reply) =>
   }
   else if (device.qstate === QSTATE_WAIT_DATA)
   {
-    //console.log(`<< ${reply[0]}`);
-    device.dinfo += reply[0];
+    // console.log(`<< ${reply}`);
+    device.dinfo += reply;
   }
-  else console.warn(`Device Ignore: "${device.curname}" reply=${reply[0]}`);
+  else console.warn(`Device Ignore: "${device.curname}" reply=${reply}`);
 
   return true;
 }

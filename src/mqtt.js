@@ -263,7 +263,7 @@ function DeviceReply(msg)
 
   device.tstamp = curTimeSecs();
 
-  devReply(device, reply);
+  devReply(device, reply[0]);
 }
 
 function OnMessage(topic, msg)

@@ -277,7 +277,7 @@ export const bleRequest = async () =>
   {
     bleDevice = await navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
-      filters: [{ namePrefix: "P!" }],
+      filters: [{ namePrefix: REPLYSTR_ORG_PROTO }],
       optionalServices: [SERVICE_UUID_UART]
     });
 
@@ -324,7 +324,6 @@ export const bleConnect = async () =>
 
     let devnew = bleDevice.name.startsWith(REPLYSTR_NEW_PROTO);
     const name = bleDevice.name.slice(devnew ? 3 : 2);
-    devnew = true;
 
     theDevice = deviceAdd(name);
     theDevice.query = !devnew ? DevQuery : devQuery;

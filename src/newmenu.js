@@ -4,7 +4,7 @@ import {
   patsOpenItems
 } from './globals.js';
 
-import { preset_MenuItems } from './presets.js';
+import { preset_MenuItems } from './newpatts.js';
 
 export const MENUID_CUSTOM          = 0;      // must be 0
 export const MENUID_PRESETS         = 1;      // must be 1

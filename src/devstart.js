@@ -37,7 +37,7 @@ import {
   preset_DrawEffectDescs,
   preset_FilterEffectItems,
   preset_FilterEffectDescs
-} from './presets.js';
+} from './newpatts.js';
 
 import {
   pluginBit_REDRAW,

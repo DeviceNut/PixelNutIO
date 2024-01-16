@@ -23,7 +23,7 @@
   import {
     preset_PatStrs,
     preset_PatDescs
-  } from './presets.js';
+  } from './newpatts.js';
 
   import {
     storePatternsInit,
@@ -48,20 +48,22 @@
   } from './newmenu.js';
 
   let openDelete = false;
-  let delname, deltitle, deleteall;
+  let delname, deltitle, deltext, deleteall;
 
   const delone = () =>
   {
+    deltitle = 'Delete Saved Pattern:';
     delname = $pStrand.curPatternName;
-    deltitle = `Delete Saved Pattern: "${delname}"`;
+    deltext = `${delname}`;
     deleteall = false;
     openDelete = true;
   }
 
   const delall = () =>
   {
+    deltitle = 'Delete All Saved Patterns';
     delname = '';
-    deltitle = 'Delete ALL Saved Patterns';
+    deltext = '';
     deleteall = true;
     openDelete = true;
   }
@@ -176,6 +178,9 @@
   bind:open={openDelete}
   on:close
   >
+  {#if deltext !== ''}
+    <p>{deltext}</p><br>
+  {/if}
   <Button on:click={dodelete}>Delete</Button>
   <Button kind="secondary" on:click={() =>{openDelete = false}}>Cancel</Button>
 </Modal>

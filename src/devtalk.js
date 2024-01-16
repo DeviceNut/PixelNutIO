@@ -28,7 +28,7 @@ export const devQuery = (device) =>
 {
   if ((device.qstate === undefined) || (device.qstate === QSTATE_RESTART))
   {
-    console.log(`SendQuery: "${device.curname}"`, device.qstate);
+    console.log(`SendQuery: "${device.curname}"`, device.qstate ?? '');
 
     device.qstate = QSTATE_WAIT_QUERY;
     device.send(queryStr_GetInfo, device.curname);

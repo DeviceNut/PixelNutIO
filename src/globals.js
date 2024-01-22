@@ -1,8 +1,8 @@
 import { get, writable } from 'svelte/store';
 
-export const appVersion     = 'PixelNutWeb 1.11';
+export const appVersion     = 'PixelNutWeb 1.12';
 export const defDeviceName  = 'MyPixelNut';
-export const titleDevices   = 'PixelNut Devices';
+export const titleDevices   = 'PixelNut!';
 export const titleHelpDocs  = 'PixelNut Docs';
 
 // export let selectBLE      = writable(false);  // false to use MQTT

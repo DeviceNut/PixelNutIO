@@ -290,6 +290,6 @@
     width: 100px;
     margin-top: 20px;
     padding: 8px;
-    font-size:1.0em;
+    font-size: 1em;
   }
 </style>

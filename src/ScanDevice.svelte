@@ -20,21 +20,26 @@
 
 </script>
 
-<div class="devbox" class:expand={device.doshow}>
+<div class="devbox" class:expand={device.doshow}
+  on:click={moreinfo}
+  >
+  <button class="button-left"
+    disabled={!device.ready}
+    on:click={dostop}
+    >X
+  </button>
   {#if device.ready }
-    <button class="button-left"
-      on:click={dostop}
-      >X
-    </button>
-    <div on:click={moreinfo} class="devname" >{device.curname}</div>
-    <button class="button-rite"
-      on:click={doctrls}
-      >Controls
-    </button>
-  {:else if !device.ignore}
-    <div class="devscan" >{device.curname}</div>
-    <Loading style="display:inline-block; margin-left:20px;" small withOverlay={false} />
+    <div class="namebox">
+      <div class="devname" >{device.curname}</div>
+    </div>
+  {:else}
+    <Loading style="display:inline-block; margin-top:7px;" small withOverlay={false} />
   {/if}
+  <button class="button-rite"
+    disabled={!device.ready}
+    on:click={doctrls}
+    >&gt;&gt;
+  </button>
 </div>
 {#key $devUpdate}
   {#if device.doshow}
@@ -89,38 +94,44 @@
   .devbox {
     margin: 0 auto;
     text-align: left;
-    width: 400px;
-    padding: 12px 5px 10px 5px;
+    height: 30px;
+    max-width: 400px;
     color: var(--text-lines);
     background-color: var(--page-header);
+  }
+  .devbox:hover {
+    cursor: pointer;
   }
   .devbox.expand {
     border-bottom: 0;
   }
-  .devscan {
+  .namebox {
     display: inline;
-    padding: 2px;
-    font-size:1.15em;
+  }
+  .namebox:hover {
+    cursor: pointer;
+    background-color: var(--btn-back-selected);
   }
   .devname {
-    display: inline;
-    padding: 2px;
+    float: left;
+    padding-top: 7px;
     color: var(--text-names);
-    font-size:1.15em;
-  }
-  .devname:hover {
-    cursor: pointer;
-    background-color: var(--panel-back);
+    font-size: 1.2em;
   }
   .button-left {
     float: left;
-    margin-top: -3px;
-    width: 30px;
     margin-right: 15px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    z-index: 2;
   }
   .button-rite {
     float: right;
-    margin-top: -3px;
+    width: 40px;
+    height: 30px;
+    border: none;
+    z-index: 2;
   }
   .infobox {
     margin: 0 auto;

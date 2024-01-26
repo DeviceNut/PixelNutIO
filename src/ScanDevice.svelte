@@ -135,6 +135,7 @@
   }
   .infobox {
     margin: 0 auto;
+    max-width: 400px;
     padding: 0 10px 10px 10px;
     color: var(--text-lines);
     background-color: var(--panel-back);

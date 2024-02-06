@@ -12,7 +12,7 @@ import {
   connectFail
 } from './globals.js';
 
-import { deviceAdd } from './device.js';
+import { deviceAdd, deviceReset } from './device.js';
 import { devQuery, devReply } from './devtalk.js';
 import { devStart } from './devstart.js';
 

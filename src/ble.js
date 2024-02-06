@@ -464,6 +464,7 @@ async function DevStart(device)
 
 async function BleStop(device)
 {
+  theDevice = null; // prevent error message
   await device.gatt.disconnect();
   deviceReset(device);
 }

@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 
-export const appVersion     = 'PixelNutWeb 1.14';
+export const appVersion     = 'PixelNutWeb 1.15';
 export const defDeviceName  = 'MyPixelNut';
 export const titleDevices   = 'PixelNut!';
 export const titleHelpDocs  = 'PixelNut Docs';
@@ -10,6 +10,7 @@ export let selectBLE      = writable(true);   // true to use BLE
 
 // only for BLE connection:
 export const SECS_QUERY_TIMEOUT     = 3;      // secs since started query for info
+export const OFFSET_PATTERN_NUM     = 100;    // offset for external pattern numbers
 
 // only in MQTT connection:
 export const MSECS_WAIT_CONNECTION  = 5000;   // msecs to wait for broker dis/connection

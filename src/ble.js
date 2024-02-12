@@ -378,6 +378,7 @@ async function DevQuery(device)
     BleSend('?S');
     if (!await WaitUntil(() => replyWait === false)) return;
   }
+  // TODO: query for custom patterns with '?P'
 
   for (let i = 0; i < device.report.nstrands; ++i)
   {

@@ -3,6 +3,7 @@
   import {
     pStrand,
     curDevice,
+    OFFSET_PATTERN_NUM,
   } from './globals.js';
 
   import {
@@ -28,8 +29,7 @@
 
   const onSelect = (i) =>
   {
-    const patnum = i+1;
-    const info = orgpatGetInfo(patnum);
+    const info = orgpatGetInfo(i);
     if (info)
     {
       $pStrand.curPatternName = info.name;
@@ -43,7 +43,7 @@
       $curDevice.send('.');
       $curDevice.send('P ' + info.cmds);
       $curDevice.send('.');
-      $curDevice.send(`${patnum}`);
+      $curDevice.send(`${i + OFFSET_PATTERN_NUM}`);
     }
   }
 

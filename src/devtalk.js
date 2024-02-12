@@ -87,7 +87,7 @@ export const devReply = (device, reply) =>
 
       console.log(`Device Ready: "${device.curname}" `)
       console.log(`Device Version: ${device.report.version}`);
-      //console.log(device.report);
+      // console.log(device.report); // DEBUG
     }
     catch(e)
     {

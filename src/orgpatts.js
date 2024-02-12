@@ -120,10 +120,12 @@ const pattBits =
 
 export const orgpatGetInfo = (patnum) =>
 {
-  if (patnum > pattNames.length) 
-    patnum -= 7; // skip basic patterns from app
+  if (patnum >= OFFSET_PATTERN_NUM) // from this app
+    patnum -= OFFSET_PATTERN_NUM;
 
-  --patnum; // make into index;
+  else if (patnum > pattNames.length) // phone app?
+    patnum = 0;
+
   if (patnum < 0) patnum = 0;
 
   return {

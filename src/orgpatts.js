@@ -120,15 +120,16 @@ const pattBits =
   0x11,
 ];
 
-export const orgpatGetInfo = (patnum) =>
+export const orgpatGetInfo = (patnum, intpats) =>
 {
-  if (patnum >= OFFSET_PATTERN_NUM) // from this app
+  if (patnum >= OFFSET_PATTERN_NUM) // stored value from this app
     patnum -= OFFSET_PATTERN_NUM;
 
-  else if (patnum > pattNames.length) // phone app?
-    patnum = 0;
-
-  if (patnum < 0) patnum = 0;
+  else if (intpats && (patnum <= intpats)) // internal patterns
+  {
+    return null; // FIXME
+  }
+  else if (intpats) return null;
 
   return {
     name  : pattNames[patnum],

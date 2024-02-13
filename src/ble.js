@@ -383,11 +383,14 @@ async function DevQuery(device)
   for (let i = 0; i < device.report.nstrands; ++i)
   {
     const strand = device.report.strands[i];
-    const info = orgpatGetInfo(strand.patnum);
-    strand.patname  = info.name;
-    strand.patstr   = info.cmds;
-    strand.patdesc  = info.desc;
-    strand.patbits  = info.bits;
+    const info = orgpatGetInfo(strand.patnum, device.report.npatterns);
+    if (info)
+    {
+      strand.patname  = info.name;
+      strand.patstr   = info.cmds;
+      strand.patdesc  = info.desc;
+      strand.patbits  = info.bits;
+    }
   }
 
   // await waitTimeout(3);

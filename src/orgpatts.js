@@ -1,4 +1,6 @@
 
+import { OFFSET_PATTERN_NUM } from './globals.js';
+
 export const MAX_FORCE_VALUE = 1000;
 
 export const pattNames =
